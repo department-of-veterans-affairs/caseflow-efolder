@@ -1,2 +1,8 @@
 <h1>Welcome to eFolder Express!</h1>
 
+<%= form_for @download, url: {action: "create"} do %>
+  <%= label_tag(:file_number, "File Number") %>
+  <%= text_field_tag(:file_number) %>
+  <%= submit_tag("Download") %>
+<% end %>
+
