@@ -40,21 +40,23 @@ $document-icon-size: 1.5rem;
 .document-pending {
 	@extend %document;
 	background-color:	$color-gold-lightest;
+
 	&:before {
 		@include spinny;
 		background-image: image-url('icons/spinner.png');
 	}
-
 }
 
 .document-success {
 	@extend %document;
 	background-color:	$color-green-lightest;
+
 	&:before { background-image: image-url('alerts/success.png'); }
 }
 
 .document-failed {
 	@extend %document;
 	background-color:	$color-secondary-lightest;
+
 	&:before { background-image: image-url('alerts/error.png'); }
 }

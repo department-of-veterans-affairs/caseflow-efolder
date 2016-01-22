@@ -4,7 +4,7 @@ class CreateDownloads < ActiveRecord::Migration
       t.string :request_id
       t.string :file_number
       t.integer :status, default: 0
-
+ 
       t.timestamps null: false
     end
   end

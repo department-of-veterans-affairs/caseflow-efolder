@@ -4,7 +4,6 @@ class CreateDocuments < ActiveRecord::Migration
 			t.belongs_to :download, index: true
 			t.integer :download_status
 			t.string :document_id
-			t.integer :download_status
 			t.string :filename
 			t.string :doc_type
 			t.string :source
