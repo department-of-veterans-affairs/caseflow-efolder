@@ -1,0 +1,13 @@
+@import "bourbon";
+@import "neat";
+@import "us_web_design_standards";
+@import "us_web_design_standards_fonts";
+@import "progress-bar";
+
+$gutter-spacing: 10px;
+
+.content {
+	@include outer-container;
+	padding: 0 $gutter-spacing;
+}
+

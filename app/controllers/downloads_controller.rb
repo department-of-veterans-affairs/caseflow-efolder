@@ -4,10 +4,11 @@ class DownloadsController < ApplicationController
   end
 
   def create
-  	@download = Download.create()
-  	redirect_to status_download_url(@download)
+  	@download = Download.create!
+  	redirect_to download_url(@download)
   end
 
-  def status
+  def show
+  	@download = Download.find(params[:id])
   end
 end

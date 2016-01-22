@@ -16,9 +16,9 @@ ActiveRecord::Schema.define(version: 20160121200552) do
   create_table "downloads", force: :cascade do |t|
     t.string   "request_id"
     t.string   "file_number"
-    t.string   "state"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.integer  "status",      default: 0
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
   end
 
 end

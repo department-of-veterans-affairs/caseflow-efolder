@@ -3,7 +3,7 @@ class CreateDownloads < ActiveRecord::Migration
     create_table :downloads do |t|
       t.string :request_id
       t.string :file_number
-      t.string :state
+      t.integer :status, default: 0
 
       t.timestamps null: false
     end

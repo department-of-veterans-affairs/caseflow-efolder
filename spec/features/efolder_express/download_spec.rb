@@ -9,7 +9,7 @@ RSpec.feature "Downloads" do
 		download = Download.last
 		expect(download).to_not be_nil
 
-		expect(page).to have_content 'Starting Download'
-		expect(page).to have_current_path(status_download_path(download))
+		expect(page).to have_content 'Fetching eFolder document manifest'
+		expect(page).to have_current_path(download_path(download))
 	end
 end

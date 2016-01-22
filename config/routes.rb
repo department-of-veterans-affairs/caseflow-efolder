@@ -3,9 +3,7 @@ Rails.application.routes.draw do
   # See how all your routes lay out with "rake routes".
   root 'downloads#new'
 
-  resources :downloads, only: [:new, :create] do
-    get 'status', on: :member
-  end
+  resources :downloads, only: [:new, :create, :show]
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

@@ -1,0 +1,18 @@
+<div id="status">
+	<h1><%= Download::STATUS_MESSAGES[@download.status] %>...</h1>
+
+	<div class="progress-bar">
+		<span style="width: 33%;">Progress: 33%</span>
+	</div>
+</div>
+
+<script>
+	var refreshStarted;
+
+	if(!refreshStarted) {
+		window.setInterval(function() {
+			//Turbolinks.visit("<%= download_url(@download) %>");
+		}, 2000)
+		refreshStarted = true;
+	}
+</script>
