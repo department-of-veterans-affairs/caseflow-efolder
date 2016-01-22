@@ -4,7 +4,7 @@ class DownloadsController < ApplicationController
   end
 
   def create
-  	@download = Download.create!
+  	@download = Download.create!(file_number: params[:file_number])
   	redirect_to download_url(@download)
   end
 

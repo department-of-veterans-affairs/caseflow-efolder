@@ -1,0 +1,7 @@
+@include keyframes(spin) {
+	100% { @include transform(rotate(360deg)); }
+}
+
+@mixin spinny {
+	@include animation(spin 4s linear infinite);
+}

@@ -1,8 +1,5 @@
 class Download < ActiveRecord::Base
-	enum status: {fetching_manifest: 0, no_documents: 1}
+	enum status: {fetching_manifest: 0, no_documents: 1, pending_documents: 2}
 
-	STATUS_MESSAGES = {
-		"fetching_manifest" => "Fetching eFolder document manifest...",
-		"no_documents" => "No documents found"
-	}
+	has_many :documents
 end
