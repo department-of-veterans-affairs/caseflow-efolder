@@ -16,8 +16,14 @@
 	    </div>
 	  </div>
 
-	<% elsif @download.pending_documents? %>
+	<% else %>
 		<p>We're downloading all of the files in the eFolder now. This should just take a moment.</p>
+
+		<% if @download.complete? %>
+			<a href="/path/to/zip" class="usa-button">
+				Download .zip!
+			</a>
+		<% end %>
 
 		<ul class="documents">
 			<% @download.documents.each do |document| %>

@@ -32,4 +32,15 @@ RSpec.feature "Downloads" do
 		expect(page).to have_css ".document-pending", text: "yawn.pdf"
 		expect(page).to have_css ".document-failed", text: "poo.pdf"
 	end
+
+	scenario "Completed download" do
+		@download = Download.create(status: :complete)
+		@download.documents.create(filename: "roll.pdf", download_status: :success)
+		@download.documents.create(filename: "tide.pdf", download_status: :success)
+
+		visit download_url(@download)
+		expect(page).to have_css ".document-success", text: "roll.pdf"
+		expect(page).to have_css ".document-success", text: "tide.pdf"
+		expect(page).to have_css ".usa-button", text: "Download .zip"
+	end
 end
