@@ -1,9 +1,18 @@
 <div id="status">
-	<h1><%= Download::STATUS_MESSAGES[@download.status] %>...</h1>
+	<h1><%= Download::STATUS_MESSAGES[@download.status] %></h1>
 
 	<div class="progress-bar">
 		<span style="width: 33%;">Progress: 33%</span>
 	</div>
+
+	<% if @download.no_documents? %>
+		<div class="usa-alert usa-alert-error" role="alert">
+    <div class="usa-alert-body">
+      <h3 class="usa-alert-heading">There were no documents found for this file</h3>
+      <p class="usa-alert-text">Please check that the file number you entered was correct.</p>
+    </div>
+  </div>
+	<% end %>
 </div>
 
 <script>
