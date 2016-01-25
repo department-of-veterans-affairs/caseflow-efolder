@@ -2,7 +2,9 @@
   <h1>Downloading File #<%=h @download.file_number %></h1>
 
   <div class="progress-bar">
-    <span style="width: 33%;">Progress: 33%</span>
+    <span style="width: <%= @download.progress_percentage %>%;">
+      Progress: <%= @download.progress_percentage %>%
+    </span>
   </div>
 
   <% if @download.fetching_manifest? %>

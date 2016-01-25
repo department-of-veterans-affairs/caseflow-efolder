@@ -1,13 +1,4 @@
 GIT
-  remote: git@github.com:harrisj/us_web_design_standards_gem.git
-  revision: 64ea75b6c17dfb8e6152013fedc9d84d027e9730
-  branch: rails-assets-fixes
-  specs:
-    us_web_design_standards (0.0.2)
-      railties
-      sass (~> 3.4)
-
-GIT
   remote: https://github.com/department-of-veterans-affairs/connect_vbms.git
   revision: 526dff00db4e10549c5bf5c582f20477e06b1afc
   specs:
@@ -16,6 +7,15 @@ GIT
       mail
       nokogiri (~> 1.6)
       xmlenc (~> 0.5.0)
+
+GIT
+  remote: https://github.com/harrisj/us_web_design_standards_gem.git
+  revision: 64ea75b6c17dfb8e6152013fedc9d84d027e9730
+  branch: rails-assets-fixes
+  specs:
+    us_web_design_standards (0.0.2)
+      railties
+      sass (~> 3.4)
 
 GEM
   remote: https://rubygems.org/

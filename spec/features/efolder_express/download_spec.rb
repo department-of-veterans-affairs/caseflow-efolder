@@ -13,6 +13,7 @@ RSpec.feature "Downloads" do
 
     expect(page).to have_content 'Downloading File #1234'
     expect(page).to have_content 'We are gathering the list of files in the eFolder now'
+    expect(page).to have_content 'Progress: 20%'
     expect(page).to have_current_path(download_path(@download))
   end
 
