@@ -15,15 +15,15 @@ ActiveRecord::Schema.define(version: 20160122174233) do
 
   create_table "documents", force: :cascade do |t|
     t.integer  "download_id"
-    t.integer  "download_status"
+    t.integer  "download_status", default: 0
     t.string   "document_id"
     t.string   "filename"
     t.string   "doc_type"
     t.string   "source"
     t.string   "mime_type"
     t.datetime "received_at"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
   end
 
   add_index "documents", ["download_id"], name: "index_documents_on_download_id"

@@ -2,7 +2,7 @@ class CreateDocuments < ActiveRecord::Migration
   def change
     create_table :documents do |t|
 			t.belongs_to :download, index: true
-			t.integer :download_status
+			t.integer :download_status, default: 0
 			t.string :document_id
 			t.string :filename
 			t.string :doc_type
