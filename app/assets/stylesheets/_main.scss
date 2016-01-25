@@ -11,52 +11,52 @@ $gutter-spacing: rem(10);
 $max-width: rem(800);
 
 .content {
-	@include outer-container;
-	padding: 0 $gutter-spacing;
+  @include outer-container;
+  padding: 0 $gutter-spacing;
 }
 
 .documents {
-	@include unstyled-list;
+  @include unstyled-list;
 }
 
 $document-icon-size: 1.5rem;
 
 %document {
-	padding: $small-spacing;
+  padding: $small-spacing;
 
-	&:before {
-		color: transparent;
-		display: inline-block !important;
-	  background-size: $document-icon-size;
-	  background-position: 50% 50%;
-	  background-repeat: no-repeat;
-		height: 100%;
-		width: $document-icon-size;
-		padding: 0;
-		margin: 0 $medium-spacing;
-	}
+  &:before {
+    color: transparent;
+    display: inline-block !important;
+    background-size: $document-icon-size;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    height: 100%;
+    width: $document-icon-size;
+    padding: 0;
+    margin: 0 $medium-spacing;
+  }
 }
 
 .document-pending {
-	@extend %document;
-	background-color:	$color-gold-lightest;
+  @extend %document;
+  background-color:  $color-gold-lightest;
 
-	&:before {
-		@include spinny;
-		background-image: image-url('icons/spinner.png');
-	}
+  &:before {
+    @include spinny;
+    background-image: image-url('icons/spinner.png');
+  }
 }
 
 .document-success {
-	@extend %document;
-	background-color:	$color-green-lightest;
+  @extend %document;
+  background-color:  $color-green-lightest;
 
-	&:before { background-image: image-url('alerts/success.png'); }
+  &:before { background-image: image-url('alerts/success.png'); }
 }
 
 .document-failed {
-	@extend %document;
-	background-color:	$color-secondary-lightest;
+  @extend %document;
+  background-color:  $color-secondary-lightest;
 
-	&:before { background-image: image-url('alerts/error.png'); }
+  &:before { background-image: image-url('alerts/error.png'); }
 }

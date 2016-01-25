@@ -1,47 +1,47 @@
 <div id="status">
-	<h1>Downloading File #<%=h @download.file_number %></h1>
+  <h1>Downloading File #<%=h @download.file_number %></h1>
 
-	<div class="progress-bar">
-		<span style="width: 33%;">Progress: 33%</span>
-	</div>
+  <div class="progress-bar">
+    <span style="width: 33%;">Progress: 33%</span>
+  </div>
 
-	<% if @download.fetching_manifest? %>
-		<p>We are gathering the list of files in the eFolder now, please be patient.</p>
+  <% if @download.fetching_manifest? %>
+    <p>We are gathering the list of files in the eFolder now, please be patient.</p>
 
-	<% elsif @download.no_documents? %>
-		<div class="usa-alert usa-alert-error" role="alert">
-	    <div class="usa-alert-body">
-	      <h3 class="usa-alert-heading">There were no documents found for this file</h3>
-	      <p class="usa-alert-text">Please check that the file number you entered was correct.</p>
-	    </div>
-	  </div>
+  <% elsif @download.no_documents? %>
+    <div class="usa-alert usa-alert-error" role="alert">
+      <div class="usa-alert-body">
+        <h3 class="usa-alert-heading">There were no documents found for this file</h3>
+        <p class="usa-alert-text">Please check that the file number you entered was correct.</p>
+      </div>
+    </div>
 
-	<% else %>
-		<p>We're downloading all of the files in the eFolder now. This should just take a moment.</p>
+  <% else %>
+    <p>We're downloading all of the files in the eFolder now. This should just take a moment.</p>
 
-		<% if @download.complete? %>
-			<a href="/path/to/zip" class="usa-button">
-				Download .zip!
-			</a>
-		<% end %>
+    <% if @download.complete? %>
+      <a href="/path/to/zip" class="usa-button">
+        Download .zip!
+      </a>
+    <% end %>
 
-		<ul class="documents">
-			<% @download.documents.each do |document| %>
-				<li class="document-<%= document.download_status %>">
-					<%= document.filename %>
-				</li>
-			<% end %>
-		</ul>
-	<% end %>
+    <ul class="documents">
+      <% @download.documents.each do |document| %>
+        <li class="document-<%= document.download_status %>">
+          <%= document.filename %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
 </div>
 
 <script>
-	var refreshStarted;
+  var refreshStarted;
 
-	if(!refreshStarted) {
-		window.setInterval(function() {
-			//Turbolinks.visit("<%= download_url(@download) %>");
-		}, 2000)
-		refreshStarted = true;
-	}
+  if(!refreshStarted) {
+    window.setInterval(function() {
+      //Turbolinks.visit("<%= download_url(@download) %>");
+    }, 2000)
+    refreshStarted = true;
+  }
 </script>
