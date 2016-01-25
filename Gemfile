@@ -15,7 +15,7 @@ gem 'coffee-rails', '~> 4.1.0'
 # gem 'therubyracer', platforms: :ruby
 
 # Style
-gem 'us_web_design_standards', git: 'git@github.com:harrisj/us_web_design_standards_gem.git', branch: 'rails-assets-fixes'
+gem 'us_web_design_standards', git: 'https://github.com/harrisj/us_web_design_standards_gem.git', branch: 'rails-assets-fixes'
 # TODO: We can remove the git path when this pull request is merged in:
 #       https://github.com/18F/us_web_design_standards_gem/pull/7/commits
 
