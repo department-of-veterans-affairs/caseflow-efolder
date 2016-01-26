@@ -1,28 +1,45 @@
-== README
+# First Time Development Setup
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Ruby Setup
 
-Things you may want to cover:
+Install rbenv, which is a tool that helps install/manage versions of Ruby (Note: make sure and follow the brew's post-install instructions):
 
-* Ruby version
+> $ brew install rbenv
 
-* System dependencies
+Using rbenv install ruby:
 
-* Configuration
+> $ rbenv install ruby 2.3.0p0
 
-* Database creation
+Install bundle, which will help download/manage Ruby dependencies:
 
-* Database initialization
+> $ gem install bundle
 
-* How to run the test suite
+Then use it to install dependencies:
 
-* Services (job queues, cache servers, search engines, etc.)
+> $ bundle install
 
-* Deployment instructions
+## Development setup
 
-* ...
+First you'll need to create the database
+
+> $ rake db:migrate
+
+Now start both the rails server,
+
+> $ rails s
+
+And in a seperate terminal, start a jobs worker
+
+> $ rake jobs:work
+
+If you want to test out the DEMO flow (without VBMS connection), 
+
+Visit [http://localhost:3000](),  
+Type in a file number with "DEMO" in it. (ie: "DEMO123")  
+Watch it download your fake file.
 
 
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+## Setting up VBMS
+
+TODO: fill this out
+You'll need to add all the VBMS info to your `config/secrets.yml`.
