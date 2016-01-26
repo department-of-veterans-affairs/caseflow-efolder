@@ -2,7 +2,7 @@ language: ruby
 rvm:
   - ruby-2.2
 
-install:
+after_install:
   - rake db:create
   - rake db:schema:load
 
