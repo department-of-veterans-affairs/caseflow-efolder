@@ -11,4 +11,10 @@ class DownloadsController < ApplicationController
   def show
     @download = Download.find(params[:id])
   end
+
+  def download
+    @download_documents = DownloadDocuments.new(download: Download.find(params[:id]))
+
+    send_file @download_documents.zip_path
+  end
 end

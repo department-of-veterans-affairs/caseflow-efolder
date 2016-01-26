@@ -10,7 +10,7 @@ class DownloadFileJob < ActiveJob::Base
     download_documents = DownloadDocuments.new(download: download, vbms_documents: vbms_documents)
     download_documents.perform
     
-   rescue VBMS::ClientError
+  rescue VBMS::ClientError
     download.update_attributes!(status: :no_documents)
   end
 end

@@ -22,9 +22,7 @@
     <p>We're downloading all of the files in the eFolder now. This should just take a moment.</p>
 
     <% if @download.complete? %>
-      <a href="/path/to/zip" class="usa-button">
-        Download .zip!
-      </a>
+      <%= link_to "Download .zip!", download_download_path(@download), {class: "usa-button"} %>
     <% end %>
 
     <ul class="documents">
@@ -37,13 +35,11 @@
   <% end %>
 </div>
 
-<script>
-  var refreshStarted;
-
-  if(!refreshStarted) {
-    window.setInterval(function() {
-      //Turbolinks.visit("<%= download_url(@download) %>");
-    }, 2000)
-    refreshStarted = true;
-  }
-</script>
+<%# Trigger the next ajax status update %>
+<% if !@download.complete? && !@download.no_documents? %>
+  <script>
+    window.setTimeout(function() {
+      Turbolinks.visit("<%= download_url(@download) %>");
+    }, 1000)
+  </script>
+<% end %>

@@ -4,7 +4,8 @@ require 'zip'
 class DownloadDocuments
   def initialize(opts = {})
     @download = opts[:download]
-    @vbms_documents = opts[:vbms_documents]
+    @vbms_documents = opts[:vbms_documents] || []
+    @vbms_service = opts[:vbms_service] || VBMSService
   end
 
   def perform
@@ -29,11 +30,11 @@ class DownloadDocuments
   def download_document_contents
     @download.documents.each do |document|
       begin
-        content = VBMSService.fetch_document_file(document)
+        content = @vbms_service.fetch_document_file(document)
         filepath = save_document_file(document, content)
         document.update_attributes!(filepath: filepath, download_status: :success)  
-      rescue 
-        document.update_attributes!(download_status: :failed)  
+      rescue VBMS::ClientError
+        document.update_attributes!(download_status: :failed)
       end
     end 
   end
@@ -59,13 +60,17 @@ class DownloadDocuments
     filename
   end
 
-  def package_documents
-    filename = File.join(download_dir, "documents.zip")
+  def zip_path
+    File.join(download_dir, "documents.zip")
+  end
 
-    Zip::File.open(filename, Zip::File::CREATE) do |zipfile|
+  def package_documents
+    Zip::File.open(zip_path, Zip::File::CREATE) do |zipfile|
       @download.documents.success.each do |document|
         zipfile.add(document.filename, document.filepath)
       end
     end
+
+    @download.update_attributes(status: :complete)
   end
 end

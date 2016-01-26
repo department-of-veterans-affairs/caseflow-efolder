@@ -37,13 +37,27 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Completed download" do
-    @download = Download.create(status: :complete)
-    @download.documents.create(filename: "roll.pdf", download_status: :success)
-    @download.documents.create(filename: "tide.pdf", download_status: :success)
+    # clean files
+    FileUtils.rm_rf(Rails.application.config.download_filepath)
+
+    @download = Download.create(file_number: "12", status: :complete)
+    @download.documents.create(filename: "roll.pdf")
+    @download.documents.create(filename: "tide.pdf")
+
+    class FakeVBMSService
+      def self.fetch_document_file(document)
+        "this is some document, woah!"
+      end
+    end
+
+    download_documents = DownloadDocuments.new(download: @download, vbms_service: FakeVBMSService)
+    download_documents.perform
 
     visit download_url(@download)
     expect(page).to have_css ".document-success", text: "roll.pdf"
     expect(page).to have_css ".document-success", text: "tide.pdf"
-    expect(page).to have_css ".usa-button", text: "Download .zip"
+
+    click_on "Download .zip"
+    expect(page.response_headers["Content-Type"]).to eq("application/zip")
   end
 end

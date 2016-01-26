@@ -77,6 +77,8 @@ describe DownloadDocuments do
 
         errored_document = Document.last
         expect(errored_document).to be_failed
+
+        expect(download).to be_complete
       end
 
       it "packages files into zip" do
