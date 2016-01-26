@@ -1,0 +1,9 @@
+language: ruby
+rvm:
+  - ruby-2.2
+
+bundler_args: "--without development"
+cache:
+  - bundler
+notifications:
+  email: false
