@@ -2,8 +2,13 @@ language: ruby
 rvm:
   - ruby-2.2
 
+install:
+  - rake db:create
+  - rake db:schema:load
+
 bundler_args: "--without development"
 cache:
   - bundler
+
 notifications:
   email: false
