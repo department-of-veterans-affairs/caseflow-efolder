@@ -45,7 +45,7 @@ class DownloadDocuments
     basepath = Rails.application.config.download_filepath
     Dir.mkdir(basepath) unless File.exists?(basepath)
 
-    @download_dir = File.join(basepath, @download.file_number)
+    @download_dir = File.join(basepath, @download.id.to_s)
     Dir.mkdir(@download_dir) unless File.exists?(@download_dir)
 
     @download_dir
