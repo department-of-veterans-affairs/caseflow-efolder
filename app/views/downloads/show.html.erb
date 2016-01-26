@@ -15,10 +15,9 @@
       <div class="usa-alert-body">
         <h3 class="usa-alert-heading">There were no documents found for this file</h3>
         <p class="usa-alert-text">Please check that the file number you entered was correct.</p>
+        <p class="usa-alert-text"><%= link_to "Try Again", root_path %></p>
       </div>
     </div>
-    <%= link_to "Try Again", root_path %>
-
   <% else %>
     <p>We're downloading all of the files in the eFolder now. This should just take a moment.</p>
 
