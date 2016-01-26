@@ -2,9 +2,9 @@ language: ruby
 rvm:
   - ruby-2.2
 
-after_install:
-  - rake db:create
-  - rake db:schema:load
+before_script:
+  - RAILS_ENV=test bundle exec rake db:create
+  - RAILS_ENV=test bundle exec rake db:schema:load
 
 bundler_args: "--without development"
 cache:
