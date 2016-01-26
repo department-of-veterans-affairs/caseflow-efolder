@@ -25,6 +25,9 @@ RSpec.feature "Downloads" do
     visit download_url(@download)
 
     expect(page).to have_css ".usa-alert-error", text: "no documents"
+
+    click_on "Try Again"
+    expect(page).to have_current_path(root_path)
   end
 
   scenario "Unfinished download with documents" do
@@ -37,6 +40,19 @@ RSpec.feature "Downloads" do
     expect(page).to have_css ".document-success", text: "smiley.pdf"
     expect(page).to have_css ".document-pending", text: "yawn.pdf"
     expect(page).to have_css ".document-failed", text: "poo.pdf"
+  end
+
+  scenario "Completed with at least one failed document download" do
+    @download = Download.create(file_number: "12", status: :complete)
+    @download.documents.create(filename: "roll.pdf", download_status: :failed)
+    @download.documents.create(filename: "tide.pdf", download_status: :success)
+
+    visit download_url(@download)
+
+    expect(page).to have_content 'Some documents failed to download'
+
+    click_on "Try Again"
+    expect(page).to have_current_path(root_path)
   end
 
   scenario "Completed download" do

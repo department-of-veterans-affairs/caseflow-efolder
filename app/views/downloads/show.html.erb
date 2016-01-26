@@ -17,12 +17,30 @@
         <p class="usa-alert-text">Please check that the file number you entered was correct.</p>
       </div>
     </div>
+    <%= link_to "Try Again", root_path %>
 
   <% else %>
     <p>We're downloading all of the files in the eFolder now. This should just take a moment.</p>
 
     <% if @download.complete? %>
-      <%= link_to "Download .zip!", download_download_path(@download), {class: "usa-button"} %>
+
+      <% if @download.documents.failed.any? %>
+        <div class="usa-alert usa-alert-error" role="alert">
+          <div class="usa-alert-body">
+            <h3 class="usa-alert-heading">Some documents failed to download</h3>
+            <p class="usa-alert-text">Try again, or attempt to download the missing files manually from VBMS.</p>
+          </div>
+        </div>
+
+        <p>
+          <%= link_to "Download .zip anyways", download_download_path(@download), {class: "usa-button"} %>
+          or <%= link_to "Try Again", root_path %>
+        </p>
+      <% else %>
+        <p>
+          <%= link_to "Download .zip!", download_download_path(@download), {class: "usa-button"} %>
+        </p>
+      <% end %>
     <% end %>
 
     <ul class="documents">
