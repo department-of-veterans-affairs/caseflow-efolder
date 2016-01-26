@@ -16,6 +16,7 @@ class VBMSService
 
   private
 
-  def init_client
+  def self.init_client
+    raise VBMS::ClientError
   end
 end

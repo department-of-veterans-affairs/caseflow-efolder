@@ -24,5 +24,9 @@ module CaseflowEfolder
     config.active_record.raise_in_transactional_callbacks = true
 
     config.download_filepath = "tmp/files"
+
+    config.autoload_paths += Dir[Rails.root + 'app/jobs']
+
+    config.active_job.queue_adapter = :delayed_job
   end
 end

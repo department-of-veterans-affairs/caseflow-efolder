@@ -1,9 +1,11 @@
 require "rails_helper"
 
 RSpec.feature "Downloads" do
-  scenario "Creating a download" do
-    # expect DownloadFileJob to be performed
+  before do
+    allow(DownloadFileJob).to receive(:perform_later)
+  end
 
+  scenario "Creating a download" do
     visit '/'
     fill_in "File Number", :with => '1234'
     click_button "Download"
@@ -15,6 +17,7 @@ RSpec.feature "Downloads" do
     expect(page).to have_content 'We are gathering the list of files in the eFolder now'
     expect(page).to have_content 'Progress: 20%'
     expect(page).to have_current_path(download_path(@download))
+    expect(DownloadFileJob).to have_received(:perform_later)
   end
 
   scenario "Download with no documents" do
