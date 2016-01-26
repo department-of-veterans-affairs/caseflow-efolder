@@ -1,7 +1,8 @@
 require 'fileutils'
+require 'zip'
 
 describe DownloadDocuments do
-  let(:download) { Download.create! }
+  let(:download) { Download.create!(file_number: "21012") }
 
   let(:vbms_documents) {[
     VBMS::Responses::Document.new(document_id: "1", filename: "filename.pdf", doc_type: "123",
@@ -15,7 +16,7 @@ describe DownloadDocuments do
 
   context "#save_document_file" do
     let(:document) {
-      Document.new(document_id: "21012", filename: "happyfile.pdf")
+      download.documents.build(document_id: "3", filename: "happyfile.pdf")
     }
 
     before do
@@ -34,6 +35,7 @@ describe DownloadDocuments do
     context "without downloading document content" do
       before do
         allow(download_documents).to receive(:download_document_contents)
+        allow(download_documents).to receive(:package_documents)
         download_documents.perform
       end
 
@@ -51,11 +53,12 @@ describe DownloadDocuments do
     end
 
     context "with downloading document content" do
-      let(:file) { double("file") }
+      let(:file) { "file content" }
 
       before do
-        allow(download_documents).to receive(:save_document_file).and_return("my/local/filename.pdf")
-  
+        # clean files
+        FileUtils.rm_rf(Rails.application.config.download_filepath)
+
         allow(VBMSService).to receive(:fetch_document_file) do |document|
           if document.document_id == "1"
             file
@@ -70,10 +73,16 @@ describe DownloadDocuments do
       it "saves download state for each document" do
         successful_document = Document.first
         expect(successful_document).to be_success
-        expect(successful_document.filename).to eq("my/local/filename.pdf")
+        expect(successful_document.filepath).to eq("tmp/files/21012/filename.pdf")
 
         errored_document = Document.last
         expect(errored_document).to be_failed
+      end
+
+      it "packages files into zip" do
+        Zip::File.open('tmp/files/21012/documents.zip') do |zip_file|
+          expect(zip_file.glob('filename.pdf').first).to_not be_nil
+        end
       end
     end
   end

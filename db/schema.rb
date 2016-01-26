@@ -18,6 +18,7 @@ ActiveRecord::Schema.define(version: 20160122174233) do
     t.integer  "download_status", default: 0
     t.string   "document_id"
     t.string   "filename"
+    t.string   "filepath"
     t.string   "doc_type"
     t.string   "source"
     t.string   "mime_type"

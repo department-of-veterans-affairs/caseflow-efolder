@@ -1,4 +1,5 @@
 require 'vbms'
+require 'zip'
 
 class DownloadDocuments
   def initialize(opts = {})
@@ -9,6 +10,7 @@ class DownloadDocuments
   def perform
     create_documents
     download_document_contents
+    package_documents
   end
 
   def create_documents
@@ -28,30 +30,42 @@ class DownloadDocuments
     @download.documents.each do |document|
       begin
         content = VBMSService.fetch_document_file(document)
-        filename = save_document_file(document, content)
-        document.update_attributes!(filename: filename, download_status: :success)  
+        filepath = save_document_file(document, content)
+        document.update_attributes!(filepath: filepath, download_status: :success)  
       rescue 
         document.update_attributes!(download_status: :failed)  
       end
     end 
   end
 
-  def basepath 
+  def download_dir
+    return @download_dir if @download_dir
+
     basepath = Rails.application.config.download_filepath
     Dir.mkdir(basepath) unless File.exists?(basepath)
 
-    basepath
+    @download_dir = File.join(basepath, @download.file_number)
+    Dir.mkdir(@download_dir) unless File.exists?(@download_dir)
+
+    @download_dir
   end
 
   def save_document_file(document, content)
-    filepath = File.join(basepath, document.document_id)
-    Dir.mkdir(filepath) unless File.exists?(filepath)
-
-    filename = File.join(filepath, document.filename)
+    filename = File.join(download_dir, document.filename)
     File.open(filename, 'w') do |f|
       f.puts content
     end
 
     filename
+  end
+
+  def package_documents
+    filename = File.join(download_dir, "documents.zip")
+
+    Zip::File.open(filename, Zip::File::CREATE) do |zipfile|
+      @download.documents.success.each do |document|
+        zipfile.add(document.filename, document.filepath)
+      end
+    end
   end
 end
