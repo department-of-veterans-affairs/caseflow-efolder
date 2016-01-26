@@ -1,6 +1,11 @@
-# First Time Development Setup
+# Caseflow - eFolder Express
+![Build Status](https://travis-ci.org/department-of-veterans-affairs/caseflow-efolder.svg)
 
-## Ruby Setup
+Download all case files with ease!
+
+## First Time Development Setup
+
+### Ruby Setup
 
 Install rbenv, which is a tool that helps install/manage versions of Ruby (Note: make sure and follow the brew's post-install instructions):
 
@@ -18,7 +23,7 @@ Then use it to install dependencies:
 
 > $ bundle install
 
-## Development setup
+### Development setup
 
 First you'll need to create the database
 
@@ -39,7 +44,7 @@ Type in a file number with "DEMO" in it. (ie: "DEMO123")
 Watch it download your fake file.
 
 
-## Setting up VBMS
+### Setting up VBMS
 
 TODO: fill this out
 You'll need to add all the VBMS info to your `config/secrets.yml`.
