@@ -6,17 +6,31 @@ class VBMSService
     @client ||= init_client
 
     # TODO: download the document list for the download and return it as a list of VBMS::Responses::Document
+  rescue
+    raise VBMS::ClientError
   end
 
   def self.fetch_document_file(document)
     @client ||= init_client
 
     # TODO: download the document file and return it as a String
+  rescue
+    raise VBMS::ClientError
   end
 
   private
 
   def self.init_client
-    raise VBMS::ClientError
+    vbms_config = Rails.application.secrets.vbms
+
+    VBMS::Client.new(
+      vbms_config["url"],
+      vbms_config["env_dir"],
+      vbms_config["keyfile"],
+      vbms_config["saml"],
+      vbms_config["keypass"],
+      vbms_config["cacert"],
+      vbms_config["cert"]
+    )
   end
 end
