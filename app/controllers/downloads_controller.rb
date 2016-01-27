@@ -4,15 +4,11 @@ class DownloadsController < ApplicationController
   end
 
   def create
-    @download = Download.create!(file_number: params[:file_number])
+    download = Download.create!(file_number: params[:file_number])
 
-    if @download.file_number =~ /DEMO/
-      DemoDownloadFileJob.perform_later(@download, false)
-    else
-      DownloadFileJob.perform_later(@download)
-    end
+    DownloadListingJob.perform_later(download)
 
-    redirect_to download_url(@download)
+    redirect_to download_url(download)
   end
 
   def show
@@ -20,8 +16,28 @@ class DownloadsController < ApplicationController
   end
 
   def download
-    @download_documents = DownloadDocuments.new(download: Download.find(params[:id]))
+    download_id = params[:id]
+    download = Download.find(download_id)
 
-    send_file @download_documents.zip_path
+    # TODO: assert completed state
+
+    # stream zip response back
+
+    # TODO: this build the entire zip in memory which is huge, not practical; need to stream directly to response
+    zip = EFolderExpress.zip_documents(download)
+
+    zip_name = download.file_number.gsub('"', '\"')
+
+    send_data(zip.string, :filename => "#{zip_name}.zip", :type => Mime::Type.lookup_by_extension('zip').to_s)
+  end
+
+  class ZipGenerator
+    def initialize(documents)
+      @documents = documents
+    end
+
+    def each(&block)
+      block.call("hi")
+    end
   end
 end

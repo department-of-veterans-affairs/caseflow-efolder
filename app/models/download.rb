@@ -7,6 +7,10 @@ class Download < ActiveRecord::Base
     documents.select { |d| !d.pending? }
   end
 
+  def pending_documents
+    documents.select { |d| d.pending? }
+  end
+
   def progress_percentage
     if fetching_manifest?
       20

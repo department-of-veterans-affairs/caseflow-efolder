@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 describe "Download" do
   let(:download) { Download.create }
 
@@ -15,7 +17,7 @@ describe "Download" do
         @document1 = download.documents.create(document_id: "1")
         @document2 = download.documents.create(document_id: "2")
         @document3 = download.documents.create(document_id: "3")
-      end 
+      end
 
       context "when all documents are pending" do
         it { is_expected.to eq(40) }
