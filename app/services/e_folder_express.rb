@@ -5,8 +5,12 @@ class EFolderExpress
 
   def self.check_demo(download)
     if download.file_number =~ /DEMO/
-      @@vbms = DemoVBMSService
+      self.vbms = DemoVBMSService
     end
+  end
+
+  def self.vbms=(vbms)
+    @@vbms = vbms
   end
 
   class DemoVBMSService

@@ -11,6 +11,8 @@ class DocIo
         DocEncryption.new(opts[:encryption_key]) :
         DocEncryption.random
     @download_dir_base = opts[:download_dir_base] || Dir.tmpdir
+
+    Dir.mkdir(@download_dir_base) unless File.exists?(@download_dir_base)
   end
 
   def save_encrypted(contents_bytes)
