@@ -11,13 +11,17 @@ Install rbenv, which is a tool that helps install/manage versions of Ruby (Note:
 
 > $ brew install rbenv
 
+And follow the initialization instructions for rbenv, provided by brew
+
+> $ rbenv init
+
 Using rbenv install ruby:
 
-> $ rbenv install ruby 2.3.0p0
+> $ rbenv install 2.3.0
 
 Install bundle, which will help download/manage Ruby dependencies:
 
-> $ gem install bundle
+> $ gem install bundler
 
 Then use it to install dependencies:
 
