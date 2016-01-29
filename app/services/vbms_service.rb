@@ -5,7 +5,8 @@ class VBMSService
   def self.fetch_documents_for(download)
     @client ||= init_client
 
-    # TODO: download the document list for the download and return it as a list of VBMS::Responses::Document
+    request = VBMS::Requests::ListDocuments.new(download.file_number)
+    @client.send_request(request)
   rescue
     raise VBMS::ClientError
   end
@@ -13,7 +14,9 @@ class VBMSService
   def self.fetch_document_file(document)
     @client ||= init_client
 
-    # TODO: download the document file and return it as a String
+    request = VBMS::Requests::FetchDocumentById.new(document.document_id)
+    result = @client.send_request(request)
+    result && result.content
   rescue
     raise VBMS::ClientError
   end
@@ -25,12 +28,12 @@ class VBMSService
 
     VBMS::Client.new(
       vbms_config["url"],
-      vbms_config["env_dir"],
-      vbms_config["keyfile"],
-      vbms_config["saml"],
+      File.join(vbms_config["env_dir"], vbms_config["keyfile"]),
+      File.join(vbms_config["env_dir"], vbms_config["saml"]),
+      File.join(vbms_config["env_dir"], vbms_config["key"]),
       vbms_config["keypass"],
-      vbms_config["cacert"],
-      vbms_config["cert"]
+      File.join(vbms_config["env_dir"], vbms_config["cacert"]),
+      File.join(vbms_config["env_dir"], vbms_config["cert"])
     )
   end
 end

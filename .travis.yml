@@ -1,10 +1,19 @@
 language: ruby
+
+branches:
+    only:
+        - master
 rvm:
-  - ruby-2.2
+  - jruby-9.0.3.0
+
+jdk: oraclejdk8
 
 before_script:
   - RAILS_ENV=test bundle exec rake db:create
   - RAILS_ENV=test bundle exec rake db:schema:load
+
+script:
+  - bundle exec rake
 
 bundler_args: "--without development"
 cache:

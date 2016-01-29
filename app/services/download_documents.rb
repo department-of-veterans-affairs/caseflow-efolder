@@ -53,8 +53,8 @@ class DownloadDocuments
 
   def save_document_file(document, content)
     filename = File.join(download_dir, document.filename)
-    File.open(filename, 'w') do |f|
-      f.puts content
+    File.open(filename, 'wb') do |f|
+      f.write(content)
     end
 
     filename
