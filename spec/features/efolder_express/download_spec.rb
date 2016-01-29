@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.feature "Downloads" do
   before do
-    allow(DownloadFileJob).to receive(:perform_later)
+    allow(DownloadListingJob).to receive(:perform_later)
   end
 
   scenario "Creating a download" do
@@ -17,7 +17,7 @@ RSpec.feature "Downloads" do
     expect(page).to have_content 'We are gathering the list of files in the eFolder now'
     expect(page).to have_content 'Progress: 20%'
     expect(page).to have_current_path(download_path(@download))
-    expect(DownloadFileJob).to have_received(:perform_later)
+    expect(DownloadListingJob).to have_received(:perform_later)
   end
 
   scenario "Download with no documents" do
@@ -64,13 +64,13 @@ RSpec.feature "Downloads" do
     @download.documents.create(filename: "tide.pdf")
 
     class FakeVBMSService
-      def self.fetch_document_file(document)
-        "this is some document, woah!"
+      def self.fetch_document_contents(document)
+        "this is some document, woah!".bytes
       end
     end
 
-    download_documents = DownloadDocuments.new(download: @download, vbms_service: FakeVBMSService)
-    download_documents.perform
+    EFolderExpress.vbms=FakeVBMSService
+    @download.documents.each {|doc|EFolderExpress.download_document(doc)}
 
     visit download_url(@download)
     expect(page).to have_css ".document-success", text: "roll.pdf"

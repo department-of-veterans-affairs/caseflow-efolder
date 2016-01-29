@@ -2,7 +2,7 @@ require 'vbms'
 
 # Thin interface to all things VBMS
 class VBMSService
-  def self.fetch_documents_for(download)
+  def self.fetch_document_listing(file_number)
     @client ||= init_client
 
     # TODO: download the document list for the download and return it as a list of VBMS::Responses::Document
@@ -10,7 +10,7 @@ class VBMSService
     raise VBMS::ClientError
   end
 
-  def self.fetch_document_file(document)
+  def self.fetch_document_contents(document_id)
     @client ||= init_client
 
     # TODO: download the document file and return it as a String
