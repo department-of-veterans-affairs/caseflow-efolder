@@ -66,7 +66,6 @@ module VBMS
 
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def send_request(request)
-      puts "SEND REQUEST VBMS"
       unencrypted_xml = request.render_xml
 
       log(
@@ -84,9 +83,6 @@ module VBMS
       remove_must_understand(doc)
 
       body = create_body(request, doc)
-
-      puts "CONTACTING VBMS"
-      puts @endpoint_url
 
       response = @http_client.post(
         @endpoint_url, body: body, header: [
