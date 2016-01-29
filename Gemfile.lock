@@ -1,14 +1,4 @@
 GIT
-  remote: https://github.com/department-of-veterans-affairs/connect_vbms.git
-  revision: 526dff00db4e10549c5bf5c582f20477e06b1afc
-  specs:
-    connect_vbms (0.1.2)
-      httpclient (~> 2.6.0.1)
-      mail
-      nokogiri (~> 1.6)
-      xmlenc (~> 0.5.0)
-
-GIT
   remote: https://github.com/harrisj/us_web_design_standards_gem.git
   revision: 64ea75b6c17dfb8e6152013fedc9d84d027e9730
   branch: rails-assets-fixes
@@ -16,6 +6,15 @@ GIT
     us_web_design_standards (0.0.2)
       railties
       sass (~> 3.4)
+
+PATH
+  remote: ./vendor/gems/connect_vbms
+  specs:
+    connect_vbms (0.1.2)
+      httpclient (~> 2.6.0.1)
+      mail
+      nokogiri (~> 1.6)
+      xmlenc (~> 0.5.0)
 
 GEM
   remote: https://rubygems.org/
