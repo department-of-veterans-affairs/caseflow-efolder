@@ -16,7 +16,6 @@ class EFolderExpress
   class DemoVBMSService
 
     def self.fetch_document_listing(case_id)
-      puts "downloading manifests for #{case_id}"
       (1...5).collect { |index| {
           document_id: index,
           filename: "file #{index}",
@@ -28,7 +27,6 @@ class EFolderExpress
     end
 
     def self.fetch_document_contents(document_id)
-      puts "downloading document #{document_id}"
       "test-contents for #{document_id}".bytes
     end
 
