@@ -17,7 +17,7 @@ And follow the initialization instructions for rbenv, provided by brew
 
 Using rbenv install ruby:
 
-> $ rbenv install 2.3.0
+> $ rbenv install jruby-9.0.3.0
 
 Install bundle, which will help download/manage Ruby dependencies:
 
