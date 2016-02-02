@@ -1,4 +1,4 @@
-require 'vbms'
+require "vbms"
 
 # Thin interface to all things VBMS
 class VBMSService
@@ -21,19 +21,25 @@ class VBMSService
     raise VBMS::ClientError
   end
 
-  private
+  def self.vbms_config
+    config = Rails.application.secrets.vbms.clone
+
+    %w(keyfile saml key cacert cert).each do |file|
+      config[file] = File.join(config["env_dir"], config[file])
+    end
+
+    config
+  end
 
   def self.init_client
-    vbms_config = Rails.application.secrets.vbms
-
     VBMS::Client.new(
       vbms_config["url"],
-      File.join(vbms_config["env_dir"], vbms_config["keyfile"]),
-      File.join(vbms_config["env_dir"], vbms_config["saml"]),
-      File.join(vbms_config["env_dir"], vbms_config["key"]),
+      vbms_config["keyfile"],
+      vbms_config["saml"],
+      vbms_config["key"],
       vbms_config["keypass"],
-      File.join(vbms_config["env_dir"], vbms_config["cacert"]),
-      File.join(vbms_config["env_dir"], vbms_config["cert"])
+      vbms_config["cacert"],
+      vbms_config["cert"]
     )
   end
 end

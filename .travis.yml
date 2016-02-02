@@ -13,6 +13,7 @@ before_script:
   - RAILS_ENV=test bundle exec rake db:schema:load
 
 script:
+  - bundle exec rubocop
   - bundle exec rake
   - bundle exec brakeman --exit-on-warn --run-all-checks --confidence-level=2
   - bundle exec bundle-audit update
