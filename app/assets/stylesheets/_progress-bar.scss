@@ -1,20 +1,22 @@
+$shadow: rgba(0, 0, 0, 0.25);
+
 .progress-bar {
   background-color: $color-gray-lighter;
   border-radius: 2px;
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.25) inset;
+  box-shadow: 0 2px 3px $shadow inset;
 
   width: 100%;
   height: 1.5em;
-  
+
   position: relative;
   display: block;
-}
-  
-.progress-bar > span {
-  background-color: $color-green;
-  border-radius: 2px;
-  height: 1.5em;
 
-  display: block;
-  text-indent: -9999px;
+  > span {
+    background-color: $color-green;
+    border-radius: 2px;
+    height: 1.5em;
+
+    display: block;
+    text-indent: -9999px;
+  }
 }
