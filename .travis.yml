@@ -14,6 +14,7 @@ before_script:
 
 script:
   - bundle exec rubocop
+  - bundle exec scss-lint
   - bundle exec rake
   - bundle exec brakeman --exit-on-warn --run-all-checks --confidence-level=2
   - bundle exec bundle-audit update

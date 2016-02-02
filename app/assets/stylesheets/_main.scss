@@ -1,9 +1,9 @@
-@import "bourbon";
-@import "neat";
-@import "us_web_design_standards";
-@import "us_web_design_standards_fonts";
-@import "progress-bar";
-@import "spin";
+@import 'bourbon';
+@import 'neat';
+@import 'us_web_design_standards';
+@import 'us_web_design_standards_fonts';
+@import 'progress-bar';
+@import 'spin';
 
 $small-spacing: 0.5rem;
 $medium-spacing: 1rem;
@@ -24,7 +24,7 @@ $document-icon-size: 1.5rem;
 %document {
   padding: $small-spacing;
 
-  &:before {
+  &::before {
     color: transparent;
     display: inline-block !important;
     background-size: $document-icon-size;
@@ -39,9 +39,9 @@ $document-icon-size: 1.5rem;
 
 .document-pending {
   @extend %document;
-  background-color:  $color-gold-lightest;
+  background-color: $color-gold-lightest;
 
-  &:before {
+  &::before {
     @include spinny;
     background-image: image-url('icons/spinner.png');
   }
@@ -49,14 +49,14 @@ $document-icon-size: 1.5rem;
 
 .document-success {
   @extend %document;
-  background-color:  $color-green-lightest;
+  background-color: $color-green-lightest;
 
-  &:before { background-image: image-url('alerts/success.png'); }
+  &::before { background-image: image-url('alerts/success.png'); }
 }
 
 .document-failed {
   @extend %document;
-  background-color:  $color-secondary-lightest;
+  background-color: $color-secondary-lightest;
 
-  &:before { background-image: image-url('alerts/error.png'); }
+  &::before { background-image: image-url('alerts/error.png'); }
 }
