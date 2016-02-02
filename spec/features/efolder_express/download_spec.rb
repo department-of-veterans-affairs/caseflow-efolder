@@ -6,16 +6,16 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Creating a download" do
-    visit '/'
-    fill_in "File Number", :with => '1234'
+    visit "/"
+    fill_in "File Number", with: "1234"
     click_button "Download"
 
     @download = Download.last
     expect(@download).to_not be_nil
 
     expect(page).to have_content 'Downloading File #1234'
-    expect(page).to have_content 'We are gathering the list of files in the eFolder now'
-    expect(page).to have_content 'Progress: 20%'
+    expect(page).to have_content "We are gathering the list of files in the eFolder now"
+    expect(page).to have_content "Progress: 20%"
     expect(page).to have_current_path(download_path(@download))
     expect(DownloadFileJob).to have_received(:perform_later)
   end
@@ -49,7 +49,7 @@ RSpec.feature "Downloads" do
 
     visit download_url(@download)
 
-    expect(page).to have_content 'Some documents failed to download'
+    expect(page).to have_content "Some documents failed to download"
 
     click_on "Try Again"
     expect(page).to have_current_path(root_path)
@@ -64,7 +64,7 @@ RSpec.feature "Downloads" do
     @download.documents.create(filename: "tide.pdf")
 
     class FakeVBMSService
-      def self.fetch_document_file(document)
+      def self.fetch_document_file(_document)
         "this is some document, woah!"
       end
     end

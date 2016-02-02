@@ -55,6 +55,8 @@ group :development, :test do
 
   gem 'brakeman'
   gem 'bundler-audit'
+
+  gem 'rubocop', '~> 0.36.0', require: false
 end
 
 group :test do

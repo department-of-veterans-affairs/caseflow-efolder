@@ -1,23 +1,26 @@
-require 'fileutils'
-require 'zip'
+require "fileutils"
+require "zip"
 
 describe DownloadDocuments do
   let(:download) { Download.create!(file_number: "21012") }
 
-  let(:vbms_documents) {[
-    VBMS::Responses::Document.new(document_id: "1", filename: "filename.pdf", doc_type: "123",
-      source: "SRC", received_at: Time.now, mime_type: 'application/pdf'),
-    VBMS::Responses::Document.new(document_id: "2")
-  ]}
+  let(:vbms_documents) do
+    [
+      VBMS::Responses::Document.new(document_id: "1", filename: "filename.pdf", doc_type: "123",
+                                    source: "SRC", received_at: Time.zone.now,
+                                    mime_type: "application/pdf"),
+      VBMS::Responses::Document.new(document_id: "2")
+    ]
+  end
 
-  let(:download_documents) {
+  let(:download_documents) do
     DownloadDocuments.new(download: download, vbms_documents: vbms_documents)
-  }
+  end
 
   context "#save_document_file" do
-    let(:document) {
+    let(:document) do
       download.documents.build(document_id: "3", filename: "happyfile.pdf")
-    }
+    end
 
     before do
       # clean files
@@ -25,7 +28,7 @@ describe DownloadDocuments do
     end
 
     it "creates a file in the correct directory and returns filename" do
-      filename = download_documents.save_document_file(document, "hi")  
+      filename = download_documents.save_document_file(document, "hi")
       expect(File.exist?("tmp/files/#{download.id}/happyfile.pdf")).to be_truthy
       expect(filename).to eq("tmp/files/#{download.id}/happyfile.pdf")
     end
@@ -60,11 +63,8 @@ describe DownloadDocuments do
         FileUtils.rm_rf(Rails.application.config.download_filepath)
 
         allow(VBMSService).to receive(:fetch_document_file) do |document|
-          if document.document_id == "1"
-            file
-          else
-            raise VBMS::ClientError
-          end
+          fail VBMS::ClientError if document.document_id != "1"
+          file
         end
 
         download_documents.perform
@@ -83,7 +83,7 @@ describe DownloadDocuments do
 
       it "packages files into zip" do
         Zip::File.open("tmp/files/#{download.id}/documents.zip") do |zip_file|
-          expect(zip_file.glob('filename.pdf').first).to_not be_nil
+          expect(zip_file.glob("filename.pdf").first).to_not be_nil
         end
       end
     end
