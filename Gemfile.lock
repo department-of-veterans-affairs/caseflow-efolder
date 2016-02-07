@@ -164,6 +164,7 @@ GEM
       method_source (~> 0.8.1)
       slop (~> 3.4)
       spoon (~> 0.0)
+    puma (2.16.0-java)
     rack (1.6.4)
     rack-test (0.6.3)
       rack (>= 1.0)
@@ -298,6 +299,7 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jquery-rails
   neat
+  puma
   rails (= 4.2.5.1)
   rspec
   rspec-rails
