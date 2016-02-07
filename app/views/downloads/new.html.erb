@@ -1,10 +1,8 @@
 <h1>Caseflow eFolder</h1>
 
 <%= form_for @download, url: {action: "create"} do %>
-  <fieldset>
-    <%= label_tag(:file_number, "File Number") %>
-    <%= text_field_tag(:file_number) %>
-    <%= submit_tag("Download") %>
-  </fieldset>
+  <%= label_tag(:file_number, "File Number") %>
+  <%= text_field_tag(:file_number) %>
+  <%= submit_tag("Download") %>
 <% end %>
 
