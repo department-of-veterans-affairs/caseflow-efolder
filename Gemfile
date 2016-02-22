@@ -24,6 +24,8 @@ gem 'us_web_design_standards', git: 'https://github.com/harrisj/us_web_design_st
 gem 'bourbon'
 gem 'neat'
 
+gem 'puma'
+
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
@@ -64,7 +66,8 @@ group :test do
   gem 'rspec'
   gem 'rspec-rails'
   gem 'guard-rspec'
-  gem 'capybara', '2.5.0'
+  gem 'capybara'
+  gem 'sniffybara', git: 'https://github.com/department-of-veterans-affairs/sniffybara.git'
 end
 
 group :development do

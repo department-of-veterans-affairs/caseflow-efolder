@@ -21,6 +21,9 @@ require "rspec/rails"
 # require only the support files necessary.
 #
 # Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
+require "capybara"
+
+Capybara.current_driver = :sniffybara
 
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
