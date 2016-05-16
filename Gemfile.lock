@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/department-of-veterans-affairs/sniffybara.git
-  revision: 705973205bb21c02b63874e25caf0a86627f0944
+  revision: d621881a2ef8311434d9cdcea5519026f9182981
   specs:
-    sniffybara (0.0.0)
+    sniffybara (0.0.1)
       poltergeist
       rainbow
       selenium-webdriver

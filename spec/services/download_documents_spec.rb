@@ -2,6 +2,8 @@ require "fileutils"
 require "zip"
 
 describe DownloadDocuments do
+  before { Download.delete_all; Document.delete_all }
+
   let(:download) { Download.create!(file_number: "21012") }
 
   let(:vbms_documents) do

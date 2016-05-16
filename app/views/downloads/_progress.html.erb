@@ -1,0 +1,38 @@
+<div class="cf-app-segment cf-app-segment--alt">
+  <% if @download.complete? %>
+    <% if @download.documents.failed.any? %>
+      <div class="usa-alert usa-alert-error" role="alert">
+        <div class="usa-alert-body">
+          <h3 class="usa-alert-heading">Some documents failed to download</h3>
+          <p id="two" class="usa-alert-text">Try again, or attempt to download the missing files manually from VBMS.</p>
+        </div>
+      </div>
+
+      <p>
+        <span><%= link_to "Download .zip anyways", download_download_path(@download), {class: "usa-button"} %></span>
+        or
+        <%= link_to "Try Again", root_path %>
+      </p>
+    <% else %>
+      <p>
+        <%= link_to "Download .zip!", download_download_path(@download), {class: "usa-button"} %>
+      </p>
+    <% end %>
+  <% else %>
+    <h1>Fetching Files</h1>
+
+    <div class="progress-bar">
+      <span style="width: <%= @download.progress_percentage %>%;">
+        Progress: <%= @download.progress_percentage %>%
+      </span>
+    </div>
+  <% end %>
+
+  <ul class="documents">
+    <% @download.documents.each do |document| %>
+      <li class="document-<%= document.download_status %>">
+        <%= document.filename %>
+      </li>
+    <% end %>
+  </ul>
+</div>
