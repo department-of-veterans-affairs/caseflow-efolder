@@ -24,6 +24,7 @@ require "rspec/rails"
 require "capybara"
 
 Capybara.default_driver = :sniffybara
+Sniffybara::Driver.accessibility_code_exceptions += ["WCAG2AA.Principle1.Guideline1_3.1_3_1_A.G141"]
 
 RSpec.configure do |config|
   # If you're not using ActiveRecord, or you'd prefer not to run each of your

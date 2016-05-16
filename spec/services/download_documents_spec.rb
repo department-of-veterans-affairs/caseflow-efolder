@@ -36,58 +36,73 @@ describe DownloadDocuments do
     end
   end
 
-  context "#perform" do
-    context "without downloading document content" do
-      before do
-        allow(download_documents).to receive(:download_document_contents)
-        allow(download_documents).to receive(:package_documents)
-        download_documents.perform
-      end
-
-      it "persists info about each document" do
-        expect(Document.count).to equal(2)
-
-        document = Document.first
-        expect(document.document_id).to eq("1")
-        expect(document.filename).to eq("filename.pdf")
-        expect(document.doc_type).to eq("123")
-        expect(document.source).to eq("SRC")
-        expect(document.mime_type).to eq("application/pdf")
-        expect(document).to be_pending
-      end
+  context "#create_documents" do
+    before do
+      download_documents.create_documents
     end
 
-    context "with downloading document content" do
-      let(:file) { "file content" }
+    it "persists info about each document" do
+      expect(Document.count).to equal(2)
 
-      before do
-        # clean files
-        FileUtils.rm_rf(Rails.application.config.download_filepath)
+      document = Document.first
+      expect(document.document_id).to eq("1")
+      expect(document.filename).to eq("filename.pdf")
+      expect(document.doc_type).to eq("123")
+      expect(document.source).to eq("SRC")
+      expect(document.mime_type).to eq("application/pdf")
+      expect(document).to be_pending
+    end
+  end
 
-        allow(VBMSService).to receive(:fetch_document_file) do |document|
-          fail VBMS::ClientError if document.document_id != "1"
-          file
-        end
+  context "#download_contents" do
+    let(:file) { "file content" }
 
-        download_documents.perform
+    before do
+      # clean files
+      FileUtils.rm_rf(Rails.application.config.download_filepath)
+
+      allow(VBMSService).to receive(:fetch_document_file) do |document|
+        fail VBMS::ClientError if document.document_id != "1"
+        file
       end
 
-      it "saves download state for each document" do
-        successful_document = Document.first
-        expect(successful_document).to be_success
-        expect(successful_document.filepath).to eq("tmp/files/#{download.id}/filename.pdf")
+      download_documents.create_documents
+      download_documents.download_contents
+    end
 
-        errored_document = Document.last
-        expect(errored_document).to be_failed
+    it "saves download state for each document" do
+      successful_document = Document.first
+      expect(successful_document).to be_success
+      expect(successful_document.filepath).to eq("tmp/files/#{download.id}/filename.pdf")
 
-        expect(download).to be_complete
+      errored_document = Document.last
+      expect(errored_document).to be_failed
+    end
+  end
+
+  context "#package_contents" do
+    let(:file) { "file content" }
+
+    before do
+      # clean files
+      FileUtils.rm_rf(Rails.application.config.download_filepath)
+
+      allow(VBMSService).to receive(:fetch_document_file) do |document|
+        fail VBMS::ClientError if document.document_id != "1"
+        file
       end
 
-      it "packages files into zip" do
-        Zip::File.open("tmp/files/#{download.id}/documents.zip") do |zip_file|
-          expect(zip_file.glob("filename.pdf").first).to_not be_nil
-        end
+      download_documents.create_documents
+      download_documents.download_contents
+      download_documents.package_contents
+    end
+
+    it "packages files into zip and completes" do
+      Zip::File.open("tmp/files/#{download.id}/documents.zip") do |zip_file|
+        expect(zip_file.glob("filename.pdf").first).to_not be_nil
       end
+
+      expect(download).to be_complete
     end
   end
 end

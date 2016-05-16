@@ -3,7 +3,7 @@ class DemoGetDownloadManifestJob < ActiveJob::Base
 
   def perform(download)
     sleep(3)
-    download.update_attributes!(status: :no_documents)
+    download.update_attributes!(status: :pending_confirmation)
 
     download.documents.create(filename: "demo1.txt", received_at: 12.days.ago)
     download.documents.create(filename: "demo2.txt", received_at: 6.days.ago)
