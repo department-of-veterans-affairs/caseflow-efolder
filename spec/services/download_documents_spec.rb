@@ -2,7 +2,10 @@ require "fileutils"
 require "zip"
 
 describe DownloadDocuments do
-  before { Download.delete_all; Document.delete_all }
+  before do
+    Download.delete_all
+    Document.delete_all
+  end
 
   let(:download) { Download.create!(file_number: "21012") }
 

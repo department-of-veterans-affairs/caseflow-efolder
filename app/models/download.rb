@@ -3,7 +3,6 @@ class Download < ActiveRecord::Base
 
   has_many :documents
 
-
   def confirmed?
     pending_documents? || complete?
   end

@@ -4,7 +4,6 @@ class GetDownloadManifestJob < ActiveJob::Base
   def perform(download)
     vbms_documents = VBMSService.fetch_documents_for(download)
 
-
     if vbms_documents.empty?
       download.update_attributes!(status: :no_documents)
     else

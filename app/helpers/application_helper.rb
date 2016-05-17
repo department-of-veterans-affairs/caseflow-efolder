@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ModuleLength
 module ApplicationHelper
   FAILED_ICON = <<-HTML.freeze
     <svg width="55" height="55" class="cf-icon-missing"

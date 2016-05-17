@@ -16,7 +16,7 @@ RSpec.feature "Downloads" do
     @download = Download.last
     expect(@download).to_not be_nil
 
-    expect(page).to have_content '(1234)'
+    expect(page).to have_content "(1234)"
     expect(page).to have_content "We are gathering the list of files in the eFolder now"
     expect(page).to have_current_path(download_path(@download))
     expect(GetDownloadManifestJob).to have_received(:perform_later)
@@ -39,8 +39,10 @@ RSpec.feature "Downloads" do
     expect(page).to have_content "We are gathering the list of files in the eFolder now..."
 
     @download.update_attributes!(status: :pending_confirmation)
-    @download.documents.create(filename: "yawn.pdf", received_at: DateTime.new(2015, 9, 6), download_status: :pending)
-    @download.documents.create(filename: "smiley.pdf", received_at: DateTime.new(2015, 1, 19), download_status: :pending)
+    @download.documents.create(
+      filename: "yawn.pdf", received_at: Time.zone.local(2015, 9, 6), download_status: :pending)
+    @download.documents.create(
+      filename: "smiley.pdf", received_at: Time.zone.local(2015, 1, 19), download_status: :pending)
     page.execute_script("window.DownloadStatus.recheck();")
 
     expect(page).to have_content "eFolder Express found 2 files in eFolder #3456"
