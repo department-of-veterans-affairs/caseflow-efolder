@@ -8,12 +8,6 @@ class DownloadDocuments
     @vbms_service = opts[:vbms_service] || VBMSService
   end
 
-  def perform
-    create_documents
-    download_document_contents
-    package_documents
-  end
-
   def create_documents
     @vbms_documents.each do |vbms_document|
       @download.documents.create!(
@@ -27,7 +21,7 @@ class DownloadDocuments
     end
   end
 
-  def download_document_contents
+  def download_contents
     @download.documents.each do |document|
       begin
         content = @vbms_service.fetch_document_file(document)
@@ -64,7 +58,7 @@ class DownloadDocuments
     File.join(download_dir, "documents.zip")
   end
 
-  def package_documents
+  def package_contents
     Zip::File.open(zip_path, Zip::File::CREATE) do |zipfile|
       @download.documents.success.each do |document|
         zipfile.add(document.filename, document.filepath)

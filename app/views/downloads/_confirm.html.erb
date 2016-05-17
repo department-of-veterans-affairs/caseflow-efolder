@@ -1,0 +1,56 @@
+<script>
+  // Set up automatic download status updates
+  window.DownloadStatus.init(<%= @download.id %>, "<%= @download.status %>");
+</script>
+
+<% fetch_button_text = "Fetch Files from VBMS" %>
+
+<div class="cf-app-segment cf-app-segment--alt">
+  <h1>Veteran Files (<%=h @download.file_number %>)</h1>
+
+  <% if @download.fetching_manifest? %>
+    <%= page_loading_indicator "We are gathering the list of files in the eFolder now..." %>
+
+  <% elsif @download.no_documents? %>
+    <div class="usa-alert usa-alert-error" role="alert">
+      <div class="usa-alert-body">
+        <h3 class="usa-alert-heading">There were no documents found for this file</h3>
+        <p class="usa-alert-text">Please check that the file number you entered was correct.</p>
+        <p class="usa-alert-text"><%= link_to "Try Again", root_path %></p>
+      </div>
+    </div>
+
+  <% elsif @download.pending_confirmation? %>
+    <p>
+      eFolder Express found <%= @download.documents.length %> files in eFolder #<%= @download.file_number %>.
+      Click the <%= fetch_button_text %> button below to zip the files.
+    </p>
+
+    <table class="usa-table-borderless" summary="Files in veteran's eFolder">
+    <caption>eFolder files</caption>
+    <thead>
+      <tr>
+        <th scope="col">Filename</th>
+        <th scope="col">Upload Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @download.documents.each do |document| %>
+        <tr>
+          <td class="ee-filename-row"><%= document.filename %></td>
+          <td><%= document.received_at && document.received_at.to_formatted_s(:short_date) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+    </table>
+  <% end %>
+</div>
+
+<div class="cf-app-segment">
+  <% if @download.pending_confirmation? %>
+    <%= button_to fetch_button_text, start_download_path(@download), method: :post, class: "ee-right-button cf-submit" %>
+  <% end %>
+
+  <%= link_to "Start over", root_path %>
+</div>
+

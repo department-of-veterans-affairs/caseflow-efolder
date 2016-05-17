@@ -1,16 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Caseflow eFolder</title>
-  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+
+  <title>eFolder Express</title>
+  <%= stylesheet_link_tag    'application', media: 'all' %>
+  <%= javascript_include_tag 'application' %>
   <%= csrf_meta_tags %>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+
+<!--
+
+ _   _ ____    ____  _       _ _        _   ____                  _              ____   __     ___
+| | | / ___|  |  _ \(_) __ _(_) |_ __ _| | / ___|  ___ _ ____   _(_) ___ ___    / __ \  \ \   / / \
+| | | \___ \  | | | | |/ _` | | __/ _` | | \___ \ / _ \ '__\ \ / / |/ __/ _ \  / / _` |  \ \ / / _ \
+| |_| |___) | | |_| | | (_| | | || (_| | |  ___) |  __/ |   \ V /| | (_|  __/ | | (_| |   \ V / ___ \
+ \___/|____/  |____/|_|\__, |_|\__\__,_|_| |____/ \___|_|    \_/ |_|\___\___|  \ \__,_|    \_/_/   \_\
+                       |___/                                                    \____/
+
+        ZZZZZZZZZZZZZZUZZZZZZZZUZZUZZZZZZZZZZZZZZXZZZZZZZZZZUZZZZZZZZZZZZZZZZZZZZUZZZUZZ
+        UZZZUZZZUZZZUZZZUZZZUZZZUZZZZZXSXkX2Z3XXSXkXoZdSXSXXXZZZUZZZUZZZUZZZUZZZUZZZUZZZ
+        ZZZZZZZZZZZZZZZZZZZZZZZZZZZXX                      )oXZZZZZZZZZZZZZZZZZZZZZZZZZZ
+        ZZZZZZZZZZZZZZZZZZZZZZZZZZZXo                      ]nZZZZZZZZZZZZZZZZZZZZZZZZZZZ
+        ,            .=;;;;;=;;;;;;dS          )X          )2c:;;;;;=;;;;;;
+        U,            ;;;=;=;;;=;=;XX         _ZZL         )o(;;=;=;;;;=;=.            J
+        ZZLs,          =;;;;;;;;;;;XX   __asssXZZZLsss,_.  )n[;;;;;;;=;;;:          a_mZ
+        ZZZXZZZF"!"!"!!'=;=;;;=;;=;XX     "{nnXXXXXnn"'    )2c:=;;;=;;;;:!"!"!"!"#ZZX#ZZ
+        ZZZZZZZZL,       :;;;=;;;;;XX       =2oZZXoS,      )o(;;;;=;;;;-       aJZZZZZZZ
+        UZZZZZZZZZZZa,     :=;;;=;;XX      _XdF""!ZXs      ]o[=;;=;;;-     aJXZXXZZZZZZZ
+        ZZZZUZZZZZZZXXLs     -:;;;;XX      "!      -!'     )Xc:;=;-     _sXXXZZZZZZZZZZZ
+        ZZZZZZZZZZZZZZZZ#ZUZZZZZ6a/dX,                     J2[aaXZZZZZUZZZXZZZZZZZZZZZZZ
+        ZZZZZZZZZZZUZZZZZZZZZZZZXXZZXXs,                _snXXXXXXZZZZZZZZZZZZZZZZZZZZZZU
+        UZZZUZZZZUZZZZZZZZZZZZZZZZZZZZhoXs            _JXXdXZZZZZZZZZUZZZZZZZZZZZZZZZZZZ
+        ZZZZZZZZZZZZZZZZZZZZZZZUZZZZZZZZXXXs        _JXqZZXZZZZZZZUZZZZZZZZZZUZZZUZZZUZZ
+        ZZZZZZZZZZZZZZZZZZZZZZZZZZZUZZZZZZZXSL,   suXXZZZZZZZZZZUZZZZZZZZZZUZZZZZZZZZZZZ
+        ZZZZZZZZZUZZZZZZUZZUZZZZZZZZZZZUZZZZZXXLseXXXZZZZZZZZZUZZZZZZZZZZZZZZZZZZZZZZZZZ
+        UZZUZZZUZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZXXdXZZZZZZZZZZZZZZZZZZZZZUZZZZZZZZZZZZZZZ
+        ZZZZZZZZZZZZZZUZZZZZZZZUZZUZZZZZZZZZZZZZZXZZZZZZZZZZUZZZZZZZZZZZZZZZZZZZZUZZZUZZ
+
+        Well, hey there! We are the US Digtial Service at the VA. We're a group of
+        super-motivated folks working on important problems at the VA which change
+        lives, every day.
+
+        Learn more about us at http://www.va.gov/ds/
+
+-->
+
+  <link rel="icon" type="image/png" sizes="32x32"   href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96"   href="/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16"   href="/favicon-16x16.png">
 </head>
 <body>
+  <header>
+    <nav class="cf-nav">
+      <div class="usa-grid-full">
+        <h1 class="cf-logo"><span class="cf-logo-image"></span>eFolder Express</h1>
+        <% if content_for?(:page_title) %>
+          <h2 id="page-title" class="cf-application-title"><%= yield :page_title %></h2>
+        <% end %>
 
-<main class="content">
-  <%= yield %>
-</main>
+        <% if true #current_user.ssoi_authenticated? %>
+          <div class="cf-dropdown cf-nav-dropdown">
+            <a href="#menu" class="cf-dropdown-trigger" id="menu-trigger">
+              SHANE RUSSELL
+            </a>
 
+            <ul id="menu" class="cf-dropdown-menu" aria-labeledby="menu-trigger">
+              <li><a href="/help">Help</a></li>
+              <li><a href="https://vaww.vaco.portal.va.gov/sites/BVA/olkm/DigitalService/Lists/Feedback/NewForm.aspx" target="_blank">Send Feedback</a></li>
+              <li><a id="whats-new-item" href="/<%#= url_for controller: 'whats_new', action: 'show'%>">What's New?</a></li>
+              <li>
+                <a href="/<%#= url_for controller: 'sessions', action: 'destroy'%>">Sign out</a>
+              </li>
+            </ul>
+          </div>
+        <% end %>
+      </div>
+    </nav>
+  </header>
+
+  <main class="usa-grid">
+    <div class="cf-app">
+      <%= yield %>
+    </div>
+  </main>
+
+  <footer class="cf-txt-c usa-grid cf-app-footer">
+    <div class="cf-push-left">
+      <span <%# if Rails.application.config.build_version %>title="<%#= Rails.application.config.build_version[:date] %>"<%# end %>>
+       Built
+      </span>
+      with <abbr title="love">&#9825;</abbr> by the
+      <a href="http://www.va.gov/ds/">Digital Service at the <abbr title="Department of Veterans Affairs">VA</abbr></a>.
+    </div>
+    <div class="cf-push-right">
+      <a target="_blank" href="https://vaww.vaco.portal.va.gov/sites/BVA/olkm/DigitalService/Lists/Feedback/NewForm.aspx">
+        Send feedback
+      </a>
+    </div>
+  </footer>
 </body>
 </html>
+<%# if Rails.application.config.build_version %>
+    <%#= Rails.application.config.build_version.to_s.html_safe %>
+<%# end %>

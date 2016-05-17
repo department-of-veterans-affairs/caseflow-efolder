@@ -7,9 +7,22 @@ class DownloadsController < ApplicationController
     @download = Download.create!(file_number: params[:file_number])
 
     if @download.file_number =~ /DEMO/
-      DemoDownloadFileJob.perform_later(@download, false)
+      DemoGetDownloadManifestJob.perform_later(@download)
     else
-      DownloadFileJob.perform_later(@download)
+      GetDownloadManifestJob.perform_later(@download)
+    end
+
+    redirect_to download_url(@download)
+  end
+
+  def start
+    @download = Download.find(params[:id])
+    @download.update_attributes!(status: :pending_documents)
+
+    if @download.file_number =~ /DEMO/
+      DemoGetDownloadFilesJob.perform_later(@download, false)
+    else
+      GetDownloadFilesJob.perform_later(@download)
     end
 
     redirect_to download_url(@download)
@@ -17,6 +30,16 @@ class DownloadsController < ApplicationController
 
   def show
     @download = Download.find(params[:id])
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @download.to_json }
+    end
+  end
+
+  def progress
+    @download = Download.find(params[:id])
+    render "_progress", layout: false
   end
 
   def download

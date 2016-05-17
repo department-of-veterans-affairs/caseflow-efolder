@@ -14,15 +14,15 @@
 ActiveRecord::Schema.define(version: 20160125220724) do
 
   create_table "delayed_jobs", force: :cascade do |t|
-    t.integer  "priority",   default: 0, null: false
-    t.integer  "attempts",   default: 0, null: false
-    t.text     "handler",                null: false
+    t.integer  "priority",               default: 0, null: false
+    t.integer  "attempts",               default: 0, null: false
+    t.text     "handler",                            null: false
     t.text     "last_error"
     t.datetime "run_at"
     t.datetime "locked_at"
     t.datetime "failed_at"
-    t.string   "locked_by"
-    t.string   "queue"
+    t.string   "locked_by",  limit: 255
+    t.string   "queue",      limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -31,26 +31,26 @@ ActiveRecord::Schema.define(version: 20160125220724) do
 
   create_table "documents", force: :cascade do |t|
     t.integer  "download_id"
-    t.integer  "download_status", default: 0
-    t.string   "document_id"
-    t.string   "filename"
-    t.string   "filepath"
-    t.string   "doc_type"
-    t.string   "source"
-    t.string   "mime_type"
+    t.integer  "download_status",             default: 0
+    t.string   "document_id",     limit: 255
+    t.string   "filename",        limit: 255
+    t.string   "filepath",        limit: 255
+    t.string   "doc_type",        limit: 255
+    t.string   "source",          limit: 255
+    t.string   "mime_type",       limit: 255
     t.datetime "received_at"
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
   end
 
   add_index "documents", ["download_id"], name: "index_documents_on_download_id"
 
   create_table "downloads", force: :cascade do |t|
-    t.string   "request_id"
-    t.string   "file_number"
-    t.integer  "status",      default: 0
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.string   "request_id",  limit: 255
+    t.string   "file_number", limit: 255
+    t.integer  "status",                  default: 0
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
   end
 
 end

@@ -1,62 +1,12 @@
-<div id="status">
-  <h1>Downloading File #<%=h @download.file_number %></h1>
-
-  <div class="progress-bar">
-    <span style="width: <%= @download.progress_percentage %>%;">
-      Progress: <%= @download.progress_percentage %>%
-    </span>
-  </div>
-
-  <% if @download.fetching_manifest? %>
-    <p>We are gathering the list of files in the eFolder now, please be patient.</p>
-
-  <% elsif @download.no_documents? %>
-    <div class="usa-alert usa-alert-error" role="alert">
-      <div class="usa-alert-body">
-        <h3 class="usa-alert-heading">There were no documents found for this file</h3>
-        <p class="usa-alert-text">Please check that the file number you entered was correct.</p>
-        <p class="usa-alert-text"><%= link_to "Try Again", root_path %></p>
-      </div>
-    </div>
-  <% else %>
-    <p>We're downloading all of the files in the eFolder now. This should just take a moment.</p>
-
-    <% if @download.complete? %>
-
-      <% if @download.documents.failed.any? %>
-        <div class="usa-alert usa-alert-error" role="alert">
-          <div class="usa-alert-body">
-            <h3 class="usa-alert-heading">Some documents failed to download</h3>
-            <p class="usa-alert-text">Try again, or attempt to download the missing files manually from VBMS.</p>
-          </div>
-        </div>
-
-        <p>
-          <%= link_to "Download .zip anyways", download_download_path(@download), {class: "usa-button"} %>
-          or <%= link_to "Try Again", root_path %>
-        </p>
-      <% else %>
-        <p>
-          <%= link_to "Download .zip!", download_download_path(@download), {class: "usa-button"} %>
-        </p>
-      <% end %>
-    <% end %>
-
-    <ul class="documents">
-      <% @download.documents.each do |document| %>
-        <li class="document-<%= document.download_status %>">
-          <%= document.filename %>
-        </li>
-      <% end %>
-    </ul>
-  <% end %>
-</div>
-
-<%# Trigger the next ajax status update %>
-<% if !@download.complete? && !@download.no_documents? %>
+<% if @download.confirmed? %>
   <script>
-    window.setTimeout(function() {
-      Turbolinks.visit("<%= download_url(@download) %>");
-    }, 1000)
+    // Set up automatic download progress updates
+    window.DownloadProgress.init(<%= @download.id %>);
   </script>
+
+  <div id="download-progress">
+    <%= render "progress" %>
+  </div>
+<% else %>
+  <%= render "confirm" %>
 <% end %>

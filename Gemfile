@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.5.1'
+gem 'rails', '4.2.5.2'
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3', platforms: :ruby
 gem 'activerecord-jdbcsqlite3-adapter', platforms: :jruby
@@ -57,7 +57,7 @@ group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   # gem 'byebug'
 
-  gem 'brakeman'
+  gem 'brakeman', '3.1.5'
   gem 'bundler-audit'
 
   gem 'rubocop', '~> 0.36.0', require: false
@@ -67,8 +67,8 @@ end
 group :test do
   gem 'rspec'
   gem 'rspec-rails'
-  gem 'guard-rspec'
-  gem 'capybara'
+  #gem 'guard-rspec'
+  gem 'capybara', '2.6.2'
   gem 'sniffybara', git: 'https://github.com/department-of-veterans-affairs/sniffybara.git'
 end
 
@@ -76,9 +76,6 @@ group :development do
   # Access an IRB console on exception pages or by using <%= console %> in views
   #gem 'web-console', '~> 2.0'
 
-  # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-  gem 'spring'
-  
   # For windows
   gem 'tzinfo-data'
 end
