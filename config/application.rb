@@ -26,6 +26,7 @@ module CaseflowEfolder
     config.download_filepath = "tmp/files"
 
     config.autoload_paths += Dir[Rails.root + 'app/jobs']
+    config.autoload_paths << Rails.root.join('lib')
 
     config.active_job.queue_adapter = :delayed_job
   end

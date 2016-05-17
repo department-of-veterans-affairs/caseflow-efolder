@@ -8,7 +8,10 @@ RSpec.feature "Downloads" do
     allow(GetDownloadFilesJob).to receive(:perform_later)
   end
 
-  scenario "Creating a download" do
+  scenario "Creating a download", focus: true do
+    Download.bgs_service = Fakes::BGSService
+    Fakes::BGSService.veteran_names = {"1234" => "Stan Lee"}
+
     visit "/"
     fill_in "Search for a VBMS eFolder to get started.", with: "1234"
     click_button "Search"
@@ -16,7 +19,7 @@ RSpec.feature "Downloads" do
     @download = Download.last
     expect(@download).to_not be_nil
 
-    expect(page).to have_content "(1234)"
+    expect(page).to have_content "Stan Lee (1234)"
     expect(page).to have_content "We are gathering the list of files in the eFolder now"
     expect(page).to have_current_path(download_path(@download))
     expect(GetDownloadManifestJob).to have_received(:perform_later)

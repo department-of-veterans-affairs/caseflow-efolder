@@ -6,7 +6,7 @@
 <% fetch_button_text = "Fetch Files from VBMS" %>
 
 <div class="cf-app-segment cf-app-segment--alt">
-  <h1>Veteran Files (<%=h @download.file_number %>)</h1>
+  <h1><%= @download.veteran_name %> (<%=h @download.file_number %>)</h1>
 
   <% if @download.fetching_manifest? %>
     <%= page_loading_indicator "We are gathering the list of files in the eFolder now..." %>
