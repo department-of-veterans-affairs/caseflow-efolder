@@ -10,7 +10,7 @@ RSpec.feature "Downloads" do
 
   scenario "Creating a download", focus: true do
     Download.bgs_service = Fakes::BGSService
-    Fakes::BGSService.veteran_names = {"1234" => "Stan Lee"}
+    Fakes::BGSService.veteran_names = { "1234" => "Stan Lee" }
 
     visit "/"
     fill_in "Search for a VBMS eFolder to get started.", with: "1234"

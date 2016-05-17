@@ -11,12 +11,12 @@ class BGSService
 
   def self.init_client
     BGS::Services.new(
-     env: "beplinktest",
-     application: "CASEFLOW",
-     client_ip: "127.0.0.1",
-     client_station_id: "283",
-     client_username: "CSFLOW",
-     log: true,
+      env: "beplinktest",
+      application: "CASEFLOW",
+      client_ip: "127.0.0.1",
+      client_station_id: "283",
+      client_username: "CSFLOW",
+      log: true
     )
   end
 end
