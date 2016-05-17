@@ -1,5 +1,12 @@
 <% if @download.confirmed? %>
-  <%= render "progress" %>
+  <script>
+    // Set up automatic download progress updates
+    window.DownloadProgress.init(<%= @download.id %>);
+  </script>
+
+  <div id="download-progress">
+    <%= render "progress" %>
+  </div>
 <% else %>
   <%= render "confirm" %>
 <% end %>

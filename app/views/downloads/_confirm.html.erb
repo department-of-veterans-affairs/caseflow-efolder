@@ -26,7 +26,8 @@
       Click the <%= fetch_button_text %> button below to zip the files.
     </p>
 
-    <table class="usa-table-borderless">
+    <table class="usa-table-borderless" summary="Files in veteran's eFolder">
+    <caption>eFolder files</caption>
     <thead>
       <tr>
         <th scope="col">Filename</th>
@@ -37,7 +38,7 @@
       <% @download.documents.each do |document| %>
         <tr>
           <td class="ee-filename-row"><%= document.filename %></td>
-          <td><%= document.received_at.to_formatted_s(:short_date) %></td>
+          <td><%= document.received_at && document.received_at.to_formatted_s(:short_date) %></td>
         </tr>
       <% end %>
     </tbody>

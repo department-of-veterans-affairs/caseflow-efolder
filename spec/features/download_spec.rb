@@ -1,5 +1,4 @@
 require "rails_helper"
-require "rails_helper"
 
 RSpec.feature "Downloads" do
   before do
@@ -74,9 +73,9 @@ RSpec.feature "Downloads" do
 
     visit download_path(@download)
 
-    expect(page).to have_content "Some documents failed to download"
+    expect(page).to have_content "Trouble Fetching Files"
 
-    click_on "Try Again"
+    click_on "Search for Another eFolder"
     expect(page).to have_current_path(root_path)
   end
 
@@ -103,7 +102,7 @@ RSpec.feature "Downloads" do
     expect(page).to have_css ".document-success", text: "roll.pdf"
     expect(page).to have_css ".document-success", text: "tide.pdf"
 
-    click_on "Download .zip"
+    click_on "Download Zip"
     expect(page.response_headers["Content-Type"]).to eq("application/zip")
   end
 end

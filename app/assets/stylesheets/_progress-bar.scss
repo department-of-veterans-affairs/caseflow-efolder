@@ -1,20 +1,26 @@
-$shadow: rgba(0, 0, 0, 0.25);
+$progress-bar-shadow: rgba(0, 0, 0, 0.25);
+$progress-bar-thickness: 2.5em;
 
 .progress-bar {
-  background-color: $color-gray-lighter;
-  border-radius: 2px;
-  box-shadow: 0 2px 3px $shadow inset;
+  background-color: $color-gray-lightest;
+  box-shadow: 0 1px 2px $progress-bar-shadow inset;
 
   width: 100%;
-  height: 1.5em;
+  height: $progress-bar-thickness;
 
   position: relative;
   display: block;
 
   > span {
-    background-color: $color-green;
-    border-radius: 2px;
-    height: 1.5em;
+    background: repeating-linear-gradient(
+      45deg,
+      darken($color-green, 12),
+      darken($color-green, 12) 2px,
+      $color-green 2px,
+      $color-green 20px
+    );
+
+    height: $progress-bar-thickness;
 
     display: block;
     text-indent: -9999px;

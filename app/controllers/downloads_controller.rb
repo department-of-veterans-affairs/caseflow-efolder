@@ -20,7 +20,7 @@ class DownloadsController < ApplicationController
     @download.update_attributes!(status: :pending_documents)
 
     if @download.file_number =~ /DEMO/
-      # demo thing
+      DemoGetDownloadFilesJob.perform_later(@download, false)
     else
       GetDownloadFilesJob.perform_later(@download)
     end
@@ -35,6 +35,11 @@ class DownloadsController < ApplicationController
       format.html
       format.json { render json: @download.to_json }
     end
+  end
+
+  def progress
+    @download = Download.find(params[:id])
+    render "_progress", layout: false
   end
 
   def download

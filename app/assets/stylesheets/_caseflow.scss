@@ -815,6 +815,25 @@ fieldset {
   }
 }
 
+.cf-icon-missing {
+  vertical-align: -.15ex;
+  width: .8em;
+  height: 1em;
+
+  path {
+    fill: $color-secondary-dark;
+  }
+}
+
+.cf-icon-found {
+  width: 1em;
+  height: 1em;
+
+  path {
+    fill: $color-green;
+  }
+}
+
 .icon-loading-front {
   @include animation(backwardspin 9s linear infinite);
 }

@@ -8,6 +8,15 @@
 @import 'download';
 
 
+.cf-spacer-icon {
+  height: 1em;
+  width: 1em;
+}
+
+.ee-fetching-files {
+  text-align: center;
+  color: $color-gray;
+}
 
 .ee-page-loading {
   width: 100%;
