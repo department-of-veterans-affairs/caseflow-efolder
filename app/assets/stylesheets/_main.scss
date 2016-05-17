@@ -1,9 +1,50 @@
 @import 'bourbon';
 @import 'neat';
 @import 'us_web_design_standards';
-@import 'us_web_design_standards_fonts';
+@import 'fonts';
+@import 'caseflow';
 @import 'progress-bar';
 @import 'spin';
+@import 'download';
+
+
+.cf-spacer-icon {
+  height: 1em;
+  width: 1em;
+}
+
+.ee-fetching-files {
+  text-align: center;
+  color: $color-gray;
+}
+
+.ee-page-loading {
+  width: 100%;
+  text-align: center;
+  color: $color-gray;
+}
+
+.ee-page-loading-icon {
+  padding-top: 220px;
+  position: relative;
+  height: 200px;
+  width: 200px;
+  margin: auto;
+}
+
+.ee-icon-loading-front {
+  @include animation(backwardspin 9s linear infinite);
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.ee-icon-loading-back {
+  @include animation(spin 9s linear infinite);
+  position: absolute;
+  top: 0;
+  left: 0;
+}
 
 $small-spacing: 0.5rem;
 $medium-spacing: 1rem;
