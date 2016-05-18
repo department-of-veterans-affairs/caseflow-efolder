@@ -8,7 +8,7 @@ class DownloadsController < ApplicationController
 
     if !@download.demo? && !@download.case_exists?
       @veteran_not_found_error = true
-      render 'new'
+      render "new"
       return
     end
 

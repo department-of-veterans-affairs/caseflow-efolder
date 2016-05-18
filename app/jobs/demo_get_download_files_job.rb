@@ -1,7 +1,7 @@
 class FakeVBMSService
   cattr_accessor :errors, :max_time
 
-  def self.fetch_document_file(document)
+  def self.fetch_document_file(_document)
     sleep(rand(FakeVBMSService.max_time))
     fail VBMS::ClientError if FakeVBMSService.errors && rand(5) == 3
     "this is some document, woah!"

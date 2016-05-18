@@ -28,7 +28,7 @@ class DemoGetDownloadManifestJob < ActiveJob::Base
       num_docs: 10,
       max_file_load: 3
     }
-  }
+  }.freeze
 
   def perform(download)
     demo = DEMOS[download.file_number] || DEMOS["DEMODEFAULT"]
