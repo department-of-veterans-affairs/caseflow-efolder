@@ -60,10 +60,10 @@
           <h2 id="page-title" class="cf-application-title"><%= yield :page_title %></h2>
         <% end %>
 
-        <% if true #current_user.ssoi_authenticated? %>
+        <% if !current_user.nil? %>
           <div class="cf-dropdown cf-nav-dropdown">
             <a href="#menu" class="cf-dropdown-trigger" id="menu-trigger">
-              SHANE RUSSELL
+                <%= current_user.display_name %>
             </a>
 
             <ul id="menu" class="cf-dropdown-menu" aria-labeledby="menu-trigger">
