@@ -32,6 +32,20 @@
 
     <% end %>
   <% else %>
+    <p>
+      <div class="usa-alert usa-alert-info" role="alert">
+        <div class="usa-alert-body">
+          <h3 class="usa-alert-heading">Take a breather!</h3>
+          <p class="usa-alert-text">
+            You can close this window at any time and get back to this page from the eFolder Express homepage.
+          </p>
+          <p>
+            Note: Zip files expire within 24 hours after they've been fetched by eFolder Express.
+          </p>
+        </div>
+      </div>
+    </p>
+
     <div class="progress-bar">
       <span style="width: <%= @download.progress_percentage %>%;">
         Progress: <%= @download.progress_percentage %>%
@@ -42,7 +56,6 @@
   <% end %>
 
   <table class="usa-table-borderless" summary="Status of veteran eFolder file downloads">
-  <caption>eFolder file download status</caption>
   <thead>
     <tr>
       <th scope="col"></th>

@@ -1,13 +1,20 @@
 class DownloadsController < ApplicationController
   def new
     @download = Download.new
-    @recent_downloads = Download.where(status: [3, 4])
   end
 
   def create
-    @download = Download.create!(file_number: params[:file_number])
+    @download = Download.new(file_number: params[:file_number])
 
-    if @download.file_number =~ /DEMO/
+    if !@download.demo? && !@download.case_exists?
+      @veteran_not_found_error = true
+      render "new"
+      return
+    end
+
+    @download.save!
+
+    if @download.demo?
       DemoGetDownloadManifestJob.perform_later(@download)
     else
       GetDownloadManifestJob.perform_later(@download)
@@ -48,4 +55,11 @@ class DownloadsController < ApplicationController
 
     send_file @download_documents.zip_path
   end
+
+  private
+
+  def recent_downloads
+    @recent_downloads ||= Download.where(status: [3, 4])
+  end
+  helper_method :recent_downloads
 end

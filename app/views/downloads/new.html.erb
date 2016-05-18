@@ -1,8 +1,19 @@
 <div class="cf-app-segment cf-app-segment--alt ee-new-download">
   <h1>Welcome to eFolder Express!</h1>
 
+  <% if @veteran_not_found_error %>
+  <div class="usa-alert usa-alert-error" role="alert">
+      <div class="usa-alert-body">
+        <h3 class="usa-alert-heading">Couldn't find an eFolder with that ID</h3>
+        <p class="usa-alert-text">
+          eFolder Express couldn't find an eFolder with the ID 222222222. Check to make sure you entered the ID correctly and try again.
+        </p>
+      </div>
+    </div>
+  <% end %>
+
   <div class="ee-search">
-    <%= form_for @download, url: {action: "create"}, html: { class: "usa-search usa-search-big" } do %>
+    <%= form_for @download, method: :post, html: { class: "usa-search usa-search-big" } do %>
       <div role="search">
         <%= label_tag(:file_number, "Search for a VBMS eFolder to get started.") %>
         <%= search_field_tag(:file_number) %>
@@ -13,7 +24,7 @@
     <% end %>
   </div>
 
-  <% unless @recent_downloads.empty? %>
+  <% unless recent_downloads.empty? %>
     <h2>Recent Searches</h2>
     <table class="usa-table-borderless" summary="List of recent downloads and links to download their contents">
     <thead>
@@ -23,7 +34,7 @@
       </tr>
     </thead>
     <tbody>
-      <% @recent_downloads.each do |download| %>
+      <% recent_downloads.each do |download| %>
         <tr id="download-<%= download.id %>">
           <td>
             <%= download.file_number %>
