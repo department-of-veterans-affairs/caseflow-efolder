@@ -3,8 +3,12 @@ class Download < ActiveRecord::Base
 
   has_many :documents
 
+  def demo?
+    file_number =~ /DEMO/
+  end
+
   def veteran_name
-    @veteran_name ||= Download.bgs_service.fetch_veteran_name(file_number)
+    @veteran_name ||= demo? ? "TEST" : Download.bgs_service.fetch_veteran_name(file_number)
   end
 
   def confirmed?

@@ -7,7 +7,7 @@ class DownloadsController < ApplicationController
   def create
     @download = Download.create!(file_number: params[:file_number])
 
-    if @download.file_number =~ /DEMO/
+    if @download.demo?
       DemoGetDownloadManifestJob.perform_later(@download)
     else
       GetDownloadManifestJob.perform_later(@download)
