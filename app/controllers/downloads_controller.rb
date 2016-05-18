@@ -1,6 +1,7 @@
 class DownloadsController < ApplicationController
   def new
     @download = Download.new
+    @recent_downloads = Download.where(status: [3, 4])
   end
 
   def create
