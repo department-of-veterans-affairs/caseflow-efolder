@@ -8,11 +8,13 @@ RSpec.feature "Downloads" do
     allow(GetDownloadFilesJob).to receive(:perform_later)
   end
 
-  scenario "Creating a download", focus: true do
+  scenario "Creating a download" do
     Download.bgs_service = Fakes::BGSService
     Fakes::BGSService.veteran_names = { "1234" => "Stan Lee" }
 
     visit "/"
+    expect(page).to_not have_content "Recent Searches"
+
     fill_in "Search for a VBMS eFolder to get started.", with: "1234"
     click_button "Search"
 
@@ -109,5 +111,30 @@ RSpec.feature "Downloads" do
 
     click_on "Download Zip"
     expect(page.response_headers["Content-Type"]).to eq("application/zip")
+
+    visit "/"
+    within("#download-#{@download.id}") { click_on("Download Zip") }
+    expect(page.response_headers["Content-Type"]).to eq("application/zip")
+  end
+
+  scenario "Recent download list" do
+    Download.create!(file_number: "12345", status: :pending_confirmation)
+    pending_documents = Download.create!(file_number: "45678", status: :pending_documents)
+    complete = Download.create!(file_number: "78901", status: :complete)
+
+    visit "/"
+
+    expect(page).to_not have_content("12345")
+
+    pending_documents_row = "#download-#{pending_documents.id}"
+    expect(find(pending_documents_row)).to have_content("45678")
+    expect(find(pending_documents_row)).to have_content("Downloading...")
+    within(pending_documents_row) { click_on("View Results") }
+    expect(page).to have_current_path(download_path(pending_documents))
+
+    visit "/"
+    complete_row = "#download-#{complete.id}"
+    expect(find(complete_row)).to have_content("78901")
+    expect(find(complete_row)).to have_content("Download Zip")
   end
 end
