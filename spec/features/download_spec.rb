@@ -31,7 +31,7 @@ RSpec.feature "Downloads" do
     @download = Download.create(status: :no_documents)
     visit download_path(@download)
 
-    expect(page).to have_css ".usa-alert-error", text: "no documents"
+    expect(page).to have_css ".usa-alert-error", text: "Couldn't find documents in eFolder"
 
     click_on "Try Again"
     expect(page).to have_current_path(root_path)

@@ -14,8 +14,10 @@
   <% elsif @download.no_documents? %>
     <div class="usa-alert usa-alert-error" role="alert">
       <div class="usa-alert-body">
-        <h3 class="usa-alert-heading">There were no documents found for this file</h3>
-        <p class="usa-alert-text">Please check that the file number you entered was correct.</p>
+        <h3 class="usa-alert-heading">Couldn't find documents in eFolder</h3>
+        <p class="usa-alert-text">
+          eFolder Express could not find any documents in the eFolder with ID 222222222. It's possible this eFolder does not exist.
+        </p>
         <p class="usa-alert-text"><%= link_to "Try Again", root_path %></p>
       </div>
     </div>
