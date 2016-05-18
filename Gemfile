@@ -23,6 +23,9 @@ gem 'us_web_design_standards', git: 'https://github.com/harrisj/us_web_design_st
 # TODO: We can remove the git path when this pull request is merged in:
 #       https://github.com/18F/us_web_design_standards_gem/pull/7/commits
 
+# SSOI
+gem 'omniauth-saml-va', git: 'https://github.com/department-of-veterans-affairs/omniauth-saml-va', branch: 'paultag/css'
+
 gem 'bourbon'
 gem 'neat'
 
@@ -60,6 +63,8 @@ group :development, :test do
 
   gem 'brakeman', '3.1.5'
   gem 'bundler-audit'
+
+  gem 'pry'
 
   gem 'rubocop', '~> 0.36.0', require: false
   gem 'scss_lint', require: false

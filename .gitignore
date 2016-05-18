@@ -16,3 +16,6 @@
 !/log/.keep
 /tmp
 .DS_Store
+
+# Ingore vim swap files
+*swp
