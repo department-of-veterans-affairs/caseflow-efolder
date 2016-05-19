@@ -23,9 +23,10 @@ module CaseflowEfolder
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
 
-    config.download_filepath = "tmp/files"
+    config.download_filepath = Rails.root + "tmp/files"
 
     config.autoload_paths += Dir[Rails.root + 'app/jobs']
+    config.autoload_paths << Rails.root.join('lib')
 
     config.active_job.queue_adapter = :delayed_job
   end

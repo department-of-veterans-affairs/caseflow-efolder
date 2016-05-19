@@ -3,6 +3,21 @@ class Download < ActiveRecord::Base
 
   has_many :documents
 
+  def demo?
+    file_number =~ /DEMO/
+  end
+
+  def veteran_name
+    @veteran_name ||= demo? ? "TEST" : Download.bgs_service.fetch_veteran_name(file_number)
+  end
+
+  def case_exists?
+    Download.bgs_service.fetch_veteran_name(file_number)
+    true
+  rescue
+    false
+  end
+
   def confirmed?
     pending_documents? || complete?
   end
@@ -18,6 +33,14 @@ class Download < ActiveRecord::Base
       20 + ((complete_documents.count + 1.0) / (documents.count + 1.0) * 80).round
     else
       100
+    end
+  end
+
+  class << self
+    attr_writer :bgs_service
+
+    def bgs_service
+      @bgs_service ||= BGSService
     end
   end
 end

@@ -6,7 +6,7 @@
 <% fetch_button_text = "Fetch Files from VBMS" %>
 
 <div class="cf-app-segment cf-app-segment--alt">
-  <h1>Veteran Files (<%=h @download.file_number %>)</h1>
+  <h1><%= @download.veteran_name %> (<%=h @download.file_number %>)</h1>
 
   <% if @download.fetching_manifest? %>
     <%= page_loading_indicator "We are gathering the list of files in the eFolder now..." %>
@@ -14,8 +14,10 @@
   <% elsif @download.no_documents? %>
     <div class="usa-alert usa-alert-error" role="alert">
       <div class="usa-alert-body">
-        <h3 class="usa-alert-heading">There were no documents found for this file</h3>
-        <p class="usa-alert-text">Please check that the file number you entered was correct.</p>
+        <h3 class="usa-alert-heading">Couldn't find documents in eFolder</h3>
+        <p class="usa-alert-text">
+          eFolder Express could not find any documents in the eFolder with ID 222222222. It's possible this eFolder does not exist.
+        </p>
         <p class="usa-alert-text"><%= link_to "Try Again", root_path %></p>
       </div>
     </div>
@@ -27,7 +29,6 @@
     </p>
 
     <table class="usa-table-borderless" summary="Files in veteran's eFolder">
-    <caption>eFolder files</caption>
     <thead>
       <tr>
         <th scope="col">Filename</th>
