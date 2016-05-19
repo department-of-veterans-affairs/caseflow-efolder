@@ -34,8 +34,8 @@ describe DownloadDocuments do
 
     it "creates a file in the correct directory and returns filename" do
       filename = download_documents.save_document_file(document, "hi")
-      expect(File.exist?("tmp/files/#{download.id}/happyfile.pdf")).to be_truthy
-      expect(filename).to eq("tmp/files/#{download.id}/happyfile.pdf")
+      expect(File.exist?(Rails.root + "tmp/files/#{download.id}/happyfile.pdf")).to be_truthy
+      expect(filename).to eq((Rails.root + "tmp/files/#{download.id}/happyfile.pdf").to_s)
     end
   end
 
@@ -76,7 +76,7 @@ describe DownloadDocuments do
     it "saves download state for each document" do
       successful_document = Document.first
       expect(successful_document).to be_success
-      expect(successful_document.filepath).to eq("tmp/files/#{download.id}/filename.pdf")
+      expect(successful_document.filepath).to eq((Rails.root + "tmp/files/#{download.id}/filename.pdf").to_s)
 
       errored_document = Document.last
       expect(errored_document).to be_failed
@@ -101,7 +101,7 @@ describe DownloadDocuments do
     end
 
     it "packages files into zip and completes" do
-      Zip::File.open("tmp/files/#{download.id}/documents.zip") do |zip_file|
+      Zip::File.open(Rails.root + "tmp/files/#{download.id}/documents.zip") do |zip_file|
         expect(zip_file.glob("filename.pdf").first).to_not be_nil
       end
 
