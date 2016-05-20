@@ -15,6 +15,7 @@ class OmniAuth::Strategies::TestAuthStrategy < OmniAuth::Strategies::Developer
   def auth_hash
     hash = super
     hash.extra = OmniAuth::AuthHash.new(raw_info: OneLogin::RubySaml::Attributes.new(
+      "http://vba.va.gov/css/common/subjectId" => [hash["email"]],
       "http://vba.va.gov/css/common/emailAddress" => [hash["email"]],
       "http://vba.va.gov/css/common/fName" => ["First"],
       "http://vba.va.gov/css/common/lName" => ["Last"],

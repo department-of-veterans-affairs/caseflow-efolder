@@ -32,10 +32,11 @@ Sniffybara::Driver.accessibility_code_exceptions += [
 ApplicationController.class_eval do
   def current_user
     User.new(
+      id: "123123",
       name: "first last",
       email: "test@gmail.com",
       roles: ["Download eFolder"],
-      station: "116"
+      station_id: "116"
     )
   end
 end

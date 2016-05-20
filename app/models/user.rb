@@ -1,7 +1,7 @@
 class User
   include ActiveModel::Model
 
-  attr_accessor :email, :name, :roles, :station
+  attr_accessor :id, :email, :name, :roles, :station_id
 
   def display_name
     return "Unknown" if name.nil?
@@ -19,10 +19,11 @@ class User
       first_name = raw_css_response["http://vba.va.gov/css/common/fName"]
       last_name = raw_css_response["http://vba.va.gov/css/common/lName"]
       User.new(
+        id: raw_css_response["http://vba.va.gov/css/common/subjectId"],
         email: raw_css_response["http://vba.va.gov/css/common/emailAddress"],
         name: "#{first_name} #{last_name}",
         roles: raw_css_response.attributes["http://vba.va.gov/css/caseflow/role"],
-        station: raw_css_response["http://vba.va.gov/css/common/stationId"]
+        station_id: raw_css_response["http://vba.va.gov/css/common/stationId"]
       )
     end
   end
