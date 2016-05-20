@@ -38,14 +38,14 @@ class VBMSService
     ) if Rails.application.secrets.vbms["env"]
 
     VBMS::Client.new(
-        vbms_config["url"],
-        vbms_config["keyfile"],
-        vbms_config["saml"],
-        vbms_config["key"],
-        vbms_config["keypass"],
-        vbms_config["cacert"],
-        vbms_config["cert"],
-        RailsVBMSLogger.new
+      vbms_config["url"],
+      vbms_config["keyfile"],
+      vbms_config["saml"],
+      vbms_config["key"],
+      vbms_config["keypass"],
+      vbms_config["cacert"],
+      vbms_config["cert"],
+      RailsVBMSLogger.new
     )
   end
 
