@@ -32,14 +32,34 @@ class VBMSService
   end
 
   def self.init_client
+    return VBMS::Client.from_env_vars(
+        logger: RailsVBMSLogger.new,
+        env_name: ENV["CONNECT_VBMS_ENV"]
+    ) if Rails.application.secrets.vbms["env"]
+
     VBMS::Client.new(
-      vbms_config["url"],
-      vbms_config["keyfile"],
-      vbms_config["saml"],
-      vbms_config["key"],
-      vbms_config["keypass"],
-      vbms_config["cacert"],
-      vbms_config["cert"]
+        vbms_config["url"],
+        vbms_config["keyfile"],
+        vbms_config["saml"],
+        vbms_config["key"],
+        vbms_config["keypass"],
+        vbms_config["cacert"],
+        vbms_config["cert"],
+        RailsVBMSLogger.new
     )
+  end
+
+  class RailsVBMSLogger
+    def log(event, data)
+      case event
+        when :request
+          if data[:response_code] != 200
+            Rails.logger.error(
+                "VBMS HTTP Error #{data[:response_code]} " \
+          "(#{data[:request].class.name}) #{data[:response_body]}"
+            )
+          end
+      end
+    end
   end
 end
