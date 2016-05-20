@@ -22,7 +22,6 @@ class Download < ActiveRecord::Base
     Download.bgs_service.check_sensitivity(file_number)
   end
 
-
   def confirmed?
     pending_documents? || complete?
   end
