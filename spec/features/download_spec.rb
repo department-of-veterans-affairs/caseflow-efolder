@@ -6,10 +6,11 @@ RSpec.feature "Downloads" do
     Document.delete_all
     allow(GetDownloadManifestJob).to receive(:perform_later)
     allow(GetDownloadFilesJob).to receive(:perform_later)
+
+    Download.bgs_service = Fakes::BGSService
   end
 
   scenario "Creating a download" do
-    Download.bgs_service = Fakes::BGSService
     Fakes::BGSService.veteran_names = { "1234" => "Stan Lee" }
 
     visit "/"
@@ -25,6 +26,17 @@ RSpec.feature "Downloads" do
     expect(page).to have_content "We are gathering the list of files in the eFolder now"
     expect(page).to have_current_path(download_path(@download))
     expect(GetDownloadManifestJob).to have_received(:perform_later)
+  end
+
+  scenario "Sensitive download error" do
+    Fakes::BGSService.veteran_names = { "8888" => "Nick Saban" }
+    Fakes::BGSService.sensitive_files = { "8888" => true }
+
+    visit "/"
+    fill_in "Search for a VBMS eFolder to get started.", with: "8888"
+    click_button "Search"
+    expect(page).to have_current_path("/downloads")
+    expect(page).to have_content("contains sensitive information")
   end
 
   scenario "Download with no documents" do

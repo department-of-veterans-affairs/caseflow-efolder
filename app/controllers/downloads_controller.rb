@@ -6,12 +6,11 @@ class DownloadsController < ApplicationController
   def create
     @download = Download.new(file_number: params[:file_number])
 
-    if !@download.demo? && !@download.case_exists?
-      @veteran_not_found_error = true
-      render "new"
-      return
+    if !@download.demo?
+      @error = :veteran_not_found if !@download.case_exists?
+      @error = :access_denied if !@download.can_access?
+      render "new" and return if @error
     end
-
     @download.save!
 
     if @download.demo?
