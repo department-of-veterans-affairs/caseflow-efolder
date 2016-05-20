@@ -33,8 +33,8 @@ class VBMSService
 
   def self.init_client
     return VBMS::Client.from_env_vars(
-        logger: RailsVBMSLogger.new,
-        env_name: ENV["CONNECT_VBMS_ENV"]
+      logger: RailsVBMSLogger.new,
+      env_name: ENV["CONNECT_VBMS_ENV"]
     ) if Rails.application.secrets.vbms["env"]
 
     VBMS::Client.new(
@@ -52,13 +52,13 @@ class VBMSService
   class RailsVBMSLogger
     def log(event, data)
       case event
-        when :request
-          if data[:response_code] != 200
-            Rails.logger.error(
-                "VBMS HTTP Error #{data[:response_code]} " \
-          "(#{data[:request].class.name}) #{data[:response_body]}"
-            )
-          end
+      when :request
+        if data[:response_code] != 200
+          Rails.logger.error(
+            "VBMS HTTP Error #{data[:response_code]} " \
+            "(#{data[:request].class.name}) #{data[:response_body]}"
+          )
+        end
       end
     end
   end
