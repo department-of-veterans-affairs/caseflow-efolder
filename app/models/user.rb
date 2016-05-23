@@ -18,8 +18,9 @@ class User
       raw_css_response = auth_hash.extra.raw_info
       first_name = raw_css_response["http://vba.va.gov/css/common/fName"]
       last_name = raw_css_response["http://vba.va.gov/css/common/lName"]
+
       User.new(
-        id: raw_css_response["http://vba.va.gov/css/common/subjectId"],
+        id: auth_hash.uid,
         email: raw_css_response["http://vba.va.gov/css/common/emailAddress"],
         name: "#{first_name} #{last_name}",
         roles: raw_css_response.attributes["http://vba.va.gov/css/caseflow/role"],
