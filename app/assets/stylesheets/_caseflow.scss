@@ -172,7 +172,8 @@ dd {
   margin-right: .5em;
   height: 32px;
   width: 32px;
-  @include retina-image("efolder-express-logo", 32px 32px, $asset-pipeline: true)
+  @include retina-image("efolder-express-logo", 32px 32px, $asset-pipeline: true);
+  background-size: 32px;
 }
 
 .cf-application-title {
