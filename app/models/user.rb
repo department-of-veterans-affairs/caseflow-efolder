@@ -1,7 +1,7 @@
 class User
   include ActiveModel::Model
 
-  attr_accessor :id, :email, :name, :roles, :station_id
+  attr_accessor :id, :email, :name, :roles, :station_id, :ip_address
 
   def display_name
     return "Unknown" if name.nil?

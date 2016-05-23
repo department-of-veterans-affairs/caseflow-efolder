@@ -2,6 +2,8 @@ require "bgs"
 
 # Thin interface to all things BGS
 class BGSService
+  cattr_accessor :user
+
   def self.fetch_veteran_name(file_number)
     @client ||= init_client
     veteran_data = @client.people.find_by_file_number(file_number) || {}
@@ -16,11 +18,11 @@ class BGSService
 
   def self.init_client
     BGS::Services.new(
-      env: "beplinktest",
+      env: Rails.application.config.bgs_environment,
       application: "CASEFLOW",
-      client_ip: "127.0.0.1",
-      client_station_id: "283",
-      client_username: "CSFLOW",
+      client_ip: user.ip_address,
+      client_station_id: user.station_id,
+      client_username: user.id,
       log: true
     )
   end
