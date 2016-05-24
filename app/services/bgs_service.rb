@@ -13,7 +13,7 @@ class BGSService
 
   def self.check_sensitivity(file_number)
     @client ||= init_client
-    @client.claimants.get_sensitivity_access(file_number)
+    @client.can_access? file_number
   end
 
   def self.init_client
