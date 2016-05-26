@@ -2,14 +2,19 @@ require "rails_helper"
 
 RSpec.feature "Downloads" do
   before do
+    @user_download = Download.where(
+      user_station_id: "116",
+      user_id: "123123"
+    )
     Download.delete_all
     Document.delete_all
     allow(GetDownloadManifestJob).to receive(:perform_later)
     allow(GetDownloadFilesJob).to receive(:perform_later)
+
+    Download.bgs_service = Fakes::BGSService
   end
 
   scenario "Creating a download" do
-    Download.bgs_service = Fakes::BGSService
     Fakes::BGSService.veteran_names = { "1234" => "Stan Lee" }
 
     visit "/"
@@ -18,7 +23,7 @@ RSpec.feature "Downloads" do
     fill_in "Search for a VBMS eFolder to get started.", with: "1234"
     click_button "Search"
 
-    @download = Download.last
+    @download = @user_download.last
     expect(@download).to_not be_nil
 
     expect(page).to have_content "Stan Lee (1234)"
@@ -27,8 +32,31 @@ RSpec.feature "Downloads" do
     expect(GetDownloadManifestJob).to have_received(:perform_later)
   end
 
+  scenario "Sensitive download error" do
+    Fakes::BGSService.veteran_names = { "8888" => "Nick Saban" }
+    Fakes::BGSService.sensitive_files = { "8888" => true }
+
+    visit "/"
+    fill_in "Search for a VBMS eFolder to get started.", with: "8888"
+    click_button "Search"
+    expect(page).to have_current_path("/downloads")
+    expect(page).to have_content("contains sensitive information")
+  end
+
+  scenario "Attempting to view download created by another user" do
+    another_user = Download.create!(
+      user_station_id: "222",
+      user_id: "123123",
+      file_number: "22222",
+      status: :complete
+    )
+
+    visit download_path(another_user)
+    expect(page).to have_content("not found")
+  end
+
   scenario "Download with no documents" do
-    @download = Download.create(status: :no_documents)
+    @download = @user_download.create(status: :no_documents)
     visit download_path(@download)
 
     expect(page).to have_css ".usa-alert-error", text: "Couldn't find documents in eFolder"
@@ -38,7 +66,7 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Confirming download" do
-    @download = Download.create(file_number: "3456", status: :fetching_manifest)
+    @download = @user_download.create(file_number: "3456", status: :fetching_manifest)
 
     visit download_path(@download)
     expect(page).to have_content "We are gathering the list of files in the eFolder now..."
@@ -62,7 +90,7 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Unfinished download with documents" do
-    @download = Download.create(status: :pending_documents)
+    @download = @user_download.create(status: :pending_documents)
     @download.documents.create(filename: "yawn.pdf", download_status: :pending)
     @download.documents.create(filename: "poo.pdf", download_status: :failed)
     @download.documents.create(filename: "smiley.pdf", download_status: :success)
@@ -74,7 +102,7 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Completed with at least one failed document download" do
-    @download = Download.create(file_number: "12", status: :complete)
+    @download = @user_download.create(file_number: "12", status: :complete)
     @download.documents.create(filename: "roll.pdf", download_status: :failed)
     @download.documents.create(filename: "tide.pdf", download_status: :success)
 
@@ -90,7 +118,7 @@ RSpec.feature "Downloads" do
     # clean files
     FileUtils.rm_rf(Rails.application.config.download_filepath)
 
-    @download = Download.create(file_number: "12", status: :complete)
+    @download = @user_download.create(file_number: "12", status: :complete)
     @download.documents.create(filename: "roll.pdf")
     @download.documents.create(filename: "tide.pdf")
 
@@ -118,13 +146,30 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Recent download list" do
-    Download.create!(file_number: "12345", status: :pending_confirmation)
-    pending_documents = Download.create!(file_number: "45678", status: :pending_documents)
-    complete = Download.create!(file_number: "78901", status: :complete)
+    pending_confirmation = @user_download.create!(
+      file_number: "12345",
+      status: :pending_confirmation
+    )
+    pending_documents = @user_download.create!(
+      file_number: "45678",
+      status: :pending_documents
+    )
+    complete = @user_download.create!(
+      file_number: "78901",
+      status: :complete
+    )
+    another_user = Download.create!(
+      user_station_id: "222",
+      user_id: "123123",
+      file_number: "22222",
+      status: :complete
+    )
 
     visit "/"
 
-    expect(page).to_not have_content("12345")
+    expect(page).to_not have_content(pending_confirmation.file_number)
+
+    expect(page).to_not have_content(another_user.file_number)
 
     pending_documents_row = "#download-#{pending_documents.id}"
     expect(find(pending_documents_row)).to have_content("45678")

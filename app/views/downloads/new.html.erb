@@ -1,15 +1,28 @@
 <div class="cf-app-segment cf-app-segment--alt ee-new-download">
   <h1>Welcome to eFolder Express!</h1>
 
-  <% if @veteran_not_found_error %>
-  <div class="usa-alert usa-alert-error" role="alert">
-      <div class="usa-alert-body">
-        <h3 class="usa-alert-heading">Couldn't find an eFolder with that ID</h3>
-        <p class="usa-alert-text">
-          eFolder Express couldn't find an eFolder with the ID 222222222. Check to make sure you entered the ID correctly and try again.
-        </p>
+  <% if @error == :veteran_not_found %>
+    <p>
+      <div class="usa-alert usa-alert-error" role="alert">
+        <div class="usa-alert-body">
+          <h3 class="usa-alert-heading">Couldn't find an eFolder with that ID</h3>
+          <p class="usa-alert-text">
+            eFolder Express couldn't find an eFolder with the ID 222222222. Check to make sure you entered the ID correctly and try again.
+          </p>
+        </div>
       </div>
-    </div>
+    </p>
+  <% elsif @error == :access_denied %>
+    <p>
+      <div class="usa-alert usa-alert-error" role="alert">
+        <div class="usa-alert-body">
+          <h3 class="usa-alert-heading">You don't have permission to view this eFolder​</h3>
+          <p class="usa-alert-text">
+            It looks like you don't have permission to view this eFolder. This usually happens if the eFolder contains sensitive information.
+          </p>
+        </div>
+      </div>
+    </p>
   <% end %>
 
   <div class="ee-search">
