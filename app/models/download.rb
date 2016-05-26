@@ -18,6 +18,10 @@ class Download < ActiveRecord::Base
     false
   end
 
+  def can_access?
+    Download.bgs_service.check_sensitivity(file_number)
+  end
+
   def confirmed?
     pending_documents? || complete?
   end

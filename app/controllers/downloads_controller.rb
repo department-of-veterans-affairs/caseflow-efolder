@@ -1,16 +1,14 @@
 class DownloadsController < ApplicationController
+  rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
+
   def new
     @download = Download.new
   end
 
   def create
-    @download = Download.new(file_number: params[:file_number])
-
-    if !@download.demo? && !@download.case_exists?
-      @veteran_not_found_error = true
-      render "new"
-      return
-    end
+    @download = downloads.new(file_number: params[:file_number])
+    check_error unless @download.demo?
+    render("new") && return if @error
 
     @download.save!
 
@@ -24,7 +22,7 @@ class DownloadsController < ApplicationController
   end
 
   def start
-    @download = Download.find(params[:id])
+    @download = downloads.find(params[:id])
     @download.update_attributes!(status: :pending_documents)
 
     if @download.file_number =~ /DEMO/
@@ -37,7 +35,7 @@ class DownloadsController < ApplicationController
   end
 
   def show
-    @download = Download.find(params[:id])
+    @download = downloads.find(params[:id])
 
     respond_to do |format|
       format.html
@@ -46,20 +44,33 @@ class DownloadsController < ApplicationController
   end
 
   def progress
-    @download = Download.find(params[:id])
+    @download = downloads.find(params[:id])
     render "_progress", layout: false
   end
 
   def download
-    @download_documents = DownloadDocuments.new(download: Download.find(params[:id]))
+    @download_documents = DownloadDocuments.new(download: downloads.find(params[:id]))
 
     send_file @download_documents.zip_path
   end
 
+  def record_not_found
+    render "not_found"
+  end
+
   private
 
+  def check_error
+    @error = :veteran_not_found unless @download.case_exists?
+    @error = :access_denied unless @download.can_access?
+  end
+
+  def downloads
+    Download.where(user_id: current_user.id, user_station_id: current_user.station_id)
+  end
+
   def recent_downloads
-    @recent_downloads ||= Download.where(status: [3, 4])
+    @recent_downloads ||= downloads.where(status: [3, 4])
   end
   helper_method :recent_downloads
 end
