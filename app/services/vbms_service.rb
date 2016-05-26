@@ -8,7 +8,7 @@ class VBMSService
     request = VBMS::Requests::ListDocuments.new(download.file_number)
     @client.send_request(request)
   rescue => e
-    Rails.logger.error e.backtrace
+    Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
     raise VBMS::ClientError
   end
 
@@ -19,7 +19,7 @@ class VBMSService
     result = @client.send_request(request)
     result && result.content
   rescue => e
-    Rails.logger.error e.backtrace
+    Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
     raise VBMS::ClientError
   end
 
