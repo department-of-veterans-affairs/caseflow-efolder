@@ -7,7 +7,8 @@ class VBMSService
 
     request = VBMS::Requests::ListDocuments.new(download.file_number)
     @client.send_request(request)
-  rescue
+  rescue => e
+    Rails.logger.error e.backtrace
     raise VBMS::ClientError
   end
 
@@ -17,7 +18,8 @@ class VBMSService
     request = VBMS::Requests::FetchDocumentById.new(document.document_id)
     result = @client.send_request(request)
     result && result.content
-  rescue
+  rescue => e
+    Rails.logger.error e.backtrace
     raise VBMS::ClientError
   end
 
