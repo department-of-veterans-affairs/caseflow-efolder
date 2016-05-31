@@ -99,7 +99,7 @@ module VBMS
                                keypass,
                                logfile,
                                ignore_timestamp = false)
-    if RUBY_PLATFORM == 'java'
+    if RUBY_PLATFORM == 'java' && in_xml.length < 10.megabytes
       begin
         return Java::DecryptMessage.decrypt(
           in_xml, keyfile, keypass, ignore_timestamp

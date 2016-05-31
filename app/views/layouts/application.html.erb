@@ -88,7 +88,7 @@
 
   <footer class="cf-txt-c usa-grid cf-app-footer">
     <div class="cf-push-left">
-      <span <%# if Rails.application.config.build_version %>title="<%#= Rails.application.config.build_version[:date] %>"<%# end %>>
+      <span <% if Rails.application.config.build_version %>title="<%= Rails.application.config.build_version[:date] %>"<% end %>>
        Built
       </span>
       with <abbr title="love">&#9825;</abbr> by the
@@ -102,6 +102,6 @@
   </footer>
 </body>
 </html>
-<%# if Rails.application.config.build_version %>
-    <%#= Rails.application.config.build_version.to_s.html_safe %>
-<%# end %>
+<% if Rails.application.config.build_version %>
+    <%= Rails.application.config.build_version.to_s.html_safe %>
+<% end %>

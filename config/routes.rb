@@ -7,6 +7,8 @@ Rails.application.routes.draw do
   get 'logout', to: 'sessions#destroy'
   get 'unauthorized', to: 'sessions#unauthorized'
 
+  get 'health-check', to: 'health_checks#show'
+
   resources :downloads, only: [:new, :create, :show] do
     post :start, on: :member
     get :download, on: :member

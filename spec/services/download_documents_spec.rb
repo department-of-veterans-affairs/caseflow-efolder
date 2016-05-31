@@ -33,9 +33,9 @@ describe DownloadDocuments do
     end
 
     it "creates a file in the correct directory and returns filename" do
-      filename = download_documents.save_document_file(document, "hi")
-      expect(File.exist?(Rails.root + "tmp/files/#{download.id}/happyfile.pdf")).to be_truthy
-      expect(filename).to eq((Rails.root + "tmp/files/#{download.id}/happyfile.pdf").to_s)
+      filename = download_documents.save_document_file(document, "hi", 3)
+      expect(File.exist?(Rails.root + "tmp/files/#{download.id}/3-happyfile.pdf")).to be_truthy
+      expect(filename).to eq((Rails.root + "tmp/files/#{download.id}/3-happyfile.pdf").to_s)
     end
   end
 
@@ -63,23 +63,56 @@ describe DownloadDocuments do
     before do
       # clean files
       FileUtils.rm_rf(Rails.application.config.download_filepath)
-
-      allow(VBMSService).to receive(:fetch_document_file) do |document|
-        fail VBMS::ClientError if document.document_id != "1"
-        file
-      end
-
-      download_documents.create_documents
-      download_documents.download_contents
     end
 
-    it "saves download state for each document" do
-      successful_document = Document.first
-      expect(successful_document).to be_success
-      expect(successful_document.filepath).to eq((Rails.root + "tmp/files/#{download.id}/filename.pdf").to_s)
+    context "when one file errors" do
+      before do
+        allow(VBMSService).to receive(:fetch_document_file) do |document|
+          fail VBMS::ClientError if document.document_id != "1"
+          file
+        end
 
-      errored_document = Document.last
-      expect(errored_document).to be_failed
+        download_documents.create_documents
+        download_documents.download_contents
+      end
+
+      it "saves download state for each document" do
+        successful_document = Document.first
+        expect(successful_document).to be_success
+        expect(successful_document.filepath).to eq((Rails.root + "tmp/files/#{download.id}/0-filename.pdf").to_s)
+
+        errored_document = Document.last
+        expect(errored_document).to be_failed
+      end
+    end
+
+    context "when two files have the same name" do
+      before do
+        allow(VBMSService).to receive(:fetch_document_file) { |_document| file }
+        download_documents.create_documents
+        download_documents.download_contents
+      end
+
+      let(:vbms_documents) do
+        [
+          VBMS::Responses::Document.new(document_id: "1", filename: "filename.pdf", doc_type: "123",
+                                        source: "SRC", received_at: Time.zone.now,
+                                        mime_type: "application/pdf"),
+          VBMS::Responses::Document.new(document_id: "2", filename: "filename.pdf", doc_type: "123",
+                                        source: "SRC", received_at: Time.zone.now,
+                                        mime_type: "application/pdf")
+        ]
+      end
+
+      it "saves download state for each document" do
+        expect(Dir[Rails.root + "tmp/files/#{download.id}/*"].size).to eq(2)
+
+        Document.all.each_with_index do |document, i|
+          expect(document).to be_success
+          expect(document.filepath).to eq((Rails.root + "tmp/files/#{download.id}/#{i}-filename.pdf").to_s)
+          expect(File.exist?(document.filepath)).to be_truthy
+        end
+      end
     end
   end
 
