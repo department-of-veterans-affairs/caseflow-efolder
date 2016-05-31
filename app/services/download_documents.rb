@@ -22,10 +22,10 @@ class DownloadDocuments
   end
 
   def download_contents
-    @download.documents.each do |document|
+    @download.documents.each_with_index do |document, i|
       begin
         content = @vbms_service.fetch_document_file(document)
-        filepath = save_document_file(document, content)
+        filepath = save_document_file(document, content, i)
         document.update_attributes!(filepath: filepath, download_status: :success)
       rescue VBMS::ClientError
         document.update_attributes!(download_status: :failed)
@@ -45,8 +45,8 @@ class DownloadDocuments
     @download_dir
   end
 
-  def save_document_file(document, content)
-    filename = File.join(download_dir, document.filename)
+  def save_document_file(document, content, index)
+    filename = File.join(download_dir, "#{index}-#{document.filename}")
     File.open(filename, "wb") do |f|
       f.write(content)
     end
