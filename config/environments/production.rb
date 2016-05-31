@@ -46,7 +46,9 @@ Rails.application.configure do
 
   # exemption for a load-balancer health-check, which comes in after SSL is terminated
   config.ssl_options = {
-    exclude: proc { |env| env['PATH_INFO'].start_with('/health-check')}
+    redirect: {
+      exclude: -> request { request.path =~ /health-check/ }
+    }
   }
 
   # Use the lowest log level to ensure availability of diagnostic information
