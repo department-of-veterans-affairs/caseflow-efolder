@@ -33,13 +33,18 @@ First you'll need to create the database
 
 > $ rake db:migrate
 
+You'll also need to install `redis`. Follow the post-install instructions
+to start the redis server.
+
+> $ brew install redis
+
 Now start both the rails server,
 
 > $ rails s
 
 And in a seperate terminal, start a jobs worker
 
-> $ rake jobs:work
+> $ bundle exec sidekiq
 
 If you want to test out the DEMO flow (without VBMS connection), 
 
