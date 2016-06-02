@@ -8,7 +8,8 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/ruby-bgs.git
-  revision: 6a425607c535ad81260dc340b0b5c56617a76bba
+  revision: a114261b9339d3976a8451b8591cb61b59152509
+  branch: master
   specs:
     bgs (0.1)
       nokogiri

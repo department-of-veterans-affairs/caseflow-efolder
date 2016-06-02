@@ -12,7 +12,7 @@ class DownloadDocuments
     @vbms_documents.each do |vbms_document|
       @download.documents.create!(
         document_id: vbms_document.document_id,
-        filename: vbms_document.filename,
+        vbms_filename: vbms_document.filename,
         doc_type: vbms_document.doc_type,
         source: vbms_document.source,
         mime_type: vbms_document.mime_type,
