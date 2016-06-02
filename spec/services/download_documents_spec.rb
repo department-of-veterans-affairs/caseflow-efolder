@@ -24,7 +24,7 @@ describe DownloadDocuments do
 
   context "#save_document_file" do
     let(:document) do
-      download.documents.build(document_id: "3", filename: "happyfile.pdf")
+      download.documents.build(document_id: "3", vbms_filename: "happyfile.pdf", mime_type: "application/pdf")
     end
 
     before do
