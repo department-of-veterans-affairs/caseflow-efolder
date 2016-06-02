@@ -40,12 +40,12 @@ gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0', group: :doc
 
-gem 'delayed_job_active_record'
+gem 'sidekiq'
 
 gem 'rubyzip'
 
 gem 'connect_vbms', path: './vendor/gems/connect_vbms'
-gem 'bgs', git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git"
+gem 'bgs', git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", :branch => 'master'
 #gem 'connect_vbms', git: 'https://github.com/department-of-veterans-affairs/connect_vbms.git'
 
 # Use ActiveModel has_secure_password
