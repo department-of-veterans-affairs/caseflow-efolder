@@ -1,6 +1,16 @@
 describe "Download" do
   let(:download) { Download.create }
 
+  context "#s3_filename" do
+    subject { download.s3_filename }
+
+    let(:document) do
+      Download.new
+    end
+
+    it { is_expected.to eq("#{download.id}-download.zip") }
+  end
+
   context "#progress_percentage" do
     subject { download.progress_percentage }
 

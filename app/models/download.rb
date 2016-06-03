@@ -40,6 +40,10 @@ class Download < ActiveRecord::Base
     end
   end
 
+  def s3_filename
+    "#{id}-download.zip"
+  end
+
   class << self
     attr_writer :bgs_service
 
