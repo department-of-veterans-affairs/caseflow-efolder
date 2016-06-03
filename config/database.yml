@@ -25,6 +25,4 @@ test:
 
 production:
   <<: *default
-  username: <%= ENV["POSTGRES_USERNAME"] %>
-  password: <%= ENV["POSTGRES_PASSWORD"] %>
-  database: caseflow_efolder
+  url: <%= ENV["POSTGRES_URL"] %>
