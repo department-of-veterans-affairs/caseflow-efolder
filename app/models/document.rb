@@ -5,6 +5,10 @@ class Document < ActiveRecord::Base
     "#{vbms_filename.gsub(/\.\w+$/, '')}.#{preferred_extension}"
   end
 
+  def s3_filename
+    "#{download_id}-#{id}-#{filename}"
+  end
+
   def download_status_icon
     {
       "success" => :success,
