@@ -76,6 +76,6 @@ Rails.application.configure do
 
   config.bgs_environment = ENV["BGS_ENVIRONMENT"] || "beplinktest"
 
-  config.s3_enabled? = true
+  config.s3_enabled = true
   config.s3_bucket_name = ENV["AWS_BUCKET_NAME"]
 end
