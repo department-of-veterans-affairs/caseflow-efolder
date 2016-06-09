@@ -149,7 +149,7 @@ describe DownloadDocuments do
       download_documents.package_contents
 
       Zip::File.open(Rails.root + "tmp/files/#{download.id}/documents.zip") do |zip_file|
-        expect(zip_file.glob("keep-stamping.pdf").first).to_not be_nil
+        expect(zip_file.glob("0-keep-stamping.pdf").first).to_not be_nil
       end
 
       expect(download).to be_complete
@@ -166,7 +166,7 @@ describe DownloadDocuments do
         download_documents.package_contents
 
         Zip::File.open(Rails.root + "tmp/files/#{download.id}/documents.zip") do |zip_file|
-          expect(zip_file.glob("keep-stamping.pdf").first).to_not be_nil
+          expect(zip_file.glob("0-keep-stamping.pdf").first).to_not be_nil
         end
       end
     end
