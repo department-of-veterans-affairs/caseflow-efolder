@@ -15,5 +15,6 @@ config.log_tags = log_tags
 
 # roll logger over every 1MB, retain 10
 logger_path = config.paths["log"].first
-Rails.logger = Logger.new(logger_path, 10, 1.megabyte) unless Rails.env.development?
+rollover_logger = Logger.new(logger_path, 10, 1.megabyte)
+Rails.logger = ActiveSupport::TaggedLogging.new(rollover_logger) unless Rails.env.development?
 # :nocov:
