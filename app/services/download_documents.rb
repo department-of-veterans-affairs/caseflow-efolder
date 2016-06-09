@@ -85,9 +85,9 @@ class DownloadDocuments
 
   def package_contents
     Zip::File.open(zip_path, Zip::File::CREATE) do |zipfile|
-      @download.documents.success.each_with_index do |document, i|
+      @download.documents.success.each_with_index do |document, index|
         fetch_from_s3(document)
-        zipfile.add(unique_filename(document, i), document.filepath)
+        zipfile.add(unique_filename(document, index), document.filepath)
       end
     end
 
