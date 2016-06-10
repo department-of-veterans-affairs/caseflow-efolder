@@ -53,12 +53,16 @@ class DownloadDocuments
   end
 
   def save_document_file(document, content, index)
-    filename = File.join(download_dir, "#{index}-#{document.filename}")
+    filename = File.join(download_dir, unique_filename(document, index))
     File.open(filename, "wb") do |f|
       f.write(content)
     end
 
     filename
+  end
+
+  def unique_filename(document, index)
+    "#{index}-#{document.filename}"
   end
 
   def fetch_from_s3(document)
@@ -81,9 +85,9 @@ class DownloadDocuments
 
   def package_contents
     Zip::File.open(zip_path, Zip::File::CREATE) do |zipfile|
-      @download.documents.success.each do |document|
+      @download.documents.success.each_with_index do |document, index|
         fetch_from_s3(document)
-        zipfile.add(document.filename, document.filepath)
+        zipfile.add(unique_filename(document, index), document.filepath)
       end
     end
 
