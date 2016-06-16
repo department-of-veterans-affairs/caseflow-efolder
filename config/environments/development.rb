@@ -37,6 +37,9 @@ Rails.application.configure do
   config.assets.raise_runtime_errors = true
 
   config.bgs_environment = "beplinktest"
+
+  config.s3_enabled = !ENV['AWS_ACCESS_KEY_ID'].nil?
+  config.s3_bucket_name = "efolder-express-staging"
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 end

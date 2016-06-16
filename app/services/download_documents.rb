@@ -6,13 +6,14 @@ class DownloadDocuments
     @download = opts[:download]
     @vbms_documents = opts[:vbms_documents] || []
     @vbms_service = opts[:vbms_service] || VBMSService
+    @s3 = opts[:s3] || (Rails.application.config.s3_enabled ? S3Service : Fakes::S3Service)
   end
 
   def create_documents
     @vbms_documents.each do |vbms_document|
       @download.documents.create!(
         document_id: vbms_document.document_id,
-        filename: vbms_document.filename,
+        vbms_filename: vbms_document.filename,
         doc_type: vbms_document.doc_type,
         source: vbms_document.source,
         mime_type: vbms_document.mime_type,
@@ -25,8 +26,14 @@ class DownloadDocuments
     @download.documents.each_with_index do |document, i|
       begin
         content = @vbms_service.fetch_document_file(document)
+
+        @s3.store_file(document.s3_filename, content)
+
         filepath = save_document_file(document, content, i)
-        document.update_attributes!(filepath: filepath, download_status: :success)
+        document.update_attributes!(
+          filepath: filepath,
+          download_status: :success
+        )
       rescue VBMS::ClientError
         document.update_attributes!(download_status: :failed)
       end
@@ -46,12 +53,30 @@ class DownloadDocuments
   end
 
   def save_document_file(document, content, index)
-    filename = File.join(download_dir, "#{index}-#{document.filename}")
+    filename = File.join(download_dir, unique_filename(document, index))
     File.open(filename, "wb") do |f|
       f.write(content)
     end
 
     filename
+  end
+
+  def unique_filename(document, index)
+    "#{index}-#{document.filename}"
+  end
+
+  def fetch_from_s3(document)
+    # if the file exists on the filesystem, skip
+    return if File.exist?(document.filepath)
+
+    @s3.fetch_file(document.s3_filename, document.filepath)
+  end
+
+  def fetch_zip_from_s3
+    # if the file exists on the filesystem, skip
+    return if File.exist?(zip_path)
+
+    @s3.fetch_file(@download.s3_filename, zip_path)
   end
 
   def zip_path
@@ -60,10 +85,13 @@ class DownloadDocuments
 
   def package_contents
     Zip::File.open(zip_path, Zip::File::CREATE) do |zipfile|
-      @download.documents.success.each do |document|
-        zipfile.add(document.filename, document.filepath)
+      @download.documents.success.each_with_index do |document, index|
+        fetch_from_s3(document)
+        zipfile.add(unique_filename(document, index), document.filepath)
       end
     end
+
+    @s3.store_file(@download.s3_filename, zip_path, :filepath)
 
     @download.update_attributes(status: :complete)
   end

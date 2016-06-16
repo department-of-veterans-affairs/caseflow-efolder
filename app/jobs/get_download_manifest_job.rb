@@ -7,9 +7,9 @@ class GetDownloadManifestJob < ActiveJob::Base
     if vbms_documents.empty?
       download.update_attributes!(status: :no_documents)
     else
-      download.update_attributes!(status: :pending_confirmation)
       download_documents = DownloadDocuments.new(download: download, vbms_documents: vbms_documents)
       download_documents.create_documents
+      download.update_attributes!(status: :pending_confirmation)
     end
   rescue
     download.update_attributes!(status: :no_documents)

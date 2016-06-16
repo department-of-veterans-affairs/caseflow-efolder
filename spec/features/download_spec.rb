@@ -72,10 +72,10 @@ RSpec.feature "Downloads" do
     expect(page).to have_content "We are gathering the list of files in the eFolder now..."
 
     @download.update_attributes!(status: :pending_confirmation)
-    @download.documents.create(
-      filename: "yawn.pdf", received_at: Time.zone.local(2015, 9, 6), download_status: :pending)
-    @download.documents.create(
-      filename: "smiley.pdf", received_at: Time.zone.local(2015, 1, 19), download_status: :pending)
+    @download.documents.create(vbms_filename: "yawn.pdf", mime_type: "application/pdf",
+                               received_at: Time.zone.local(2015, 9, 6), download_status: :pending)
+    @download.documents.create(vbms_filename: "smiley.pdf", mime_type: "application/pdf",
+                               received_at: Time.zone.local(2015, 1, 19), download_status: :pending)
     page.execute_script("window.DownloadStatus.recheck();")
 
     expect(page).to have_content "eFolder Express found 2 files in eFolder #3456"
@@ -91,9 +91,9 @@ RSpec.feature "Downloads" do
 
   scenario "Unfinished download with documents" do
     @download = @user_download.create(status: :pending_documents)
-    @download.documents.create(filename: "yawn.pdf", download_status: :pending)
-    @download.documents.create(filename: "poo.pdf", download_status: :failed)
-    @download.documents.create(filename: "smiley.pdf", download_status: :success)
+    @download.documents.create(vbms_filename: "yawn.pdf", mime_type: "application/pdf", download_status: :pending)
+    @download.documents.create(vbms_filename: "poo.pdf", mime_type: "application/pdf", download_status: :failed)
+    @download.documents.create(vbms_filename: "smiley.pdf", mime_type: "application/pdf", download_status: :success)
 
     visit download_path(@download)
     expect(page).to have_css ".document-success", text: "smiley.pdf"
@@ -103,8 +103,8 @@ RSpec.feature "Downloads" do
 
   scenario "Completed with at least one failed document download" do
     @download = @user_download.create(file_number: "12", status: :complete)
-    @download.documents.create(filename: "roll.pdf", download_status: :failed)
-    @download.documents.create(filename: "tide.pdf", download_status: :success)
+    @download.documents.create(vbms_filename: "roll.pdf", mime_type: "application/pdf", download_status: :failed)
+    @download.documents.create(vbms_filename: "tide.pdf", mime_type: "application/pdf", download_status: :success)
 
     visit download_path(@download)
 
@@ -119,8 +119,8 @@ RSpec.feature "Downloads" do
     FileUtils.rm_rf(Rails.application.config.download_filepath)
 
     @download = @user_download.create(file_number: "12", status: :complete)
-    @download.documents.create(filename: "roll.pdf")
-    @download.documents.create(filename: "tide.pdf")
+    @download.documents.create(vbms_filename: "roll.pdf", mime_type: "application/pdf")
+    @download.documents.create(vbms_filename: "tide.pdf", mime_type: "application/pdf")
 
     class FakeVBMSService
       def self.fetch_document_file(_document)

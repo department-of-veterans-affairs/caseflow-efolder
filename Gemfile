@@ -3,9 +3,12 @@ source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.5.2'
+
 # Use sqlite3 as the database for Active Record
-gem 'sqlite3', platforms: :ruby
-gem 'activerecord-jdbcsqlite3-adapter', platforms: :jruby
+gem 'pg', platforms: :ruby
+gem 'activerecord-jdbcpostgresql-adapter', platforms: :jruby
+
+gem 'aws-sdk', '~> 2'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
@@ -43,6 +46,8 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'sidekiq'
 
 gem 'rubyzip'
+
+gem 'zaru'
 
 gem 'connect_vbms', path: './vendor/gems/connect_vbms'
 gem 'bgs', git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", :branch => 'master'

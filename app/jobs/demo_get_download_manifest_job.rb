@@ -40,7 +40,11 @@ class DemoGetDownloadManifestJob < ActiveJob::Base
 
   def create_documents(download, number)
     number.times do |i|
-      download.documents.create(filename: "happy-thursday-#{SecureRandom.hex}.txt", received_at: (i * 2).days.ago)
+      download.documents.create(
+        vbms_filename: "happy-thursday-#{SecureRandom.hex}.txt",
+        mime_type: "text/plain",
+        received_at: (i * 2).days.ago
+      )
     end
   end
 end

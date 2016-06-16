@@ -50,6 +50,7 @@ class DownloadsController < ApplicationController
 
   def download
     @download_documents = DownloadDocuments.new(download: downloads.find(params[:id]))
+    @download_documents.fetch_zip_from_s3
 
     send_file @download_documents.zip_path
   end
