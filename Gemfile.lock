@@ -365,6 +365,7 @@ GEM
       nokogiri (~> 1.6.0)
     xpath (2.0.0)
       nokogiri (~> 1.3)
+    zaru (0.1.0)
 
 PLATFORMS
   java
@@ -403,6 +404,7 @@ DEPENDENCIES
   tzinfo-data
   uglifier (>= 1.3.0)
   us_web_design_standards!
+  zaru
 
 BUNDLED WITH
    1.11.2
