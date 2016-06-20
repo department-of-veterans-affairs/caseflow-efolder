@@ -27,6 +27,10 @@ describe DownloadDocuments do
       download.documents.build(document_id: "3", vbms_filename: "happyfile.pdf", mime_type: "application/pdf")
     end
 
+    let(:malicious_document) do
+      download.documents.build(document_id: "4", vbms_filename: "../../../bin/rake", mime_type: "application/pdf")
+    end
+
     before do
       # clean files
       FileUtils.rm_rf(Rails.application.config.download_filepath)
@@ -36,6 +40,12 @@ describe DownloadDocuments do
       filename = download_documents.save_document_file(document, "hi", 3)
       expect(File.exist?(Rails.root + "tmp/files/#{download.id}/3-happyfile.pdf")).to be_truthy
       expect(filename).to eq((Rails.root + "tmp/files/#{download.id}/3-happyfile.pdf").to_s)
+    end
+
+    it "sanitizes malicious filenames" do
+      filename = download_documents.save_document_file(malicious_document, "hi", 4)
+      expect(File.exist?(Rails.root + "tmp/files/#{download.id}/4-file......binrake.pdf")).to be_truthy
+      expect(filename).to eq((Rails.root + "tmp/files/#{download.id}/4-file......binrake.pdf").to_s)
     end
   end
 
