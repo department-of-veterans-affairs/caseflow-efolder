@@ -1,4 +1,17 @@
 GIT
+  remote: https://github.com/department-of-veterans-affairs/connect_vbms.git
+  revision: 6cde66023ccbd09676b851bdb97f5b8ac383960b
+  ref: 6cde66023ccbd09676b851bdb97f5b8ac383960b
+  specs:
+    connect_vbms (1.0.0)
+      httpclient (~> 2.6.0.1)
+      httpi (~> 2.4)
+      mail
+      nokogiri (~> 1.6)
+      xmldsig (~> 0.3.1)
+      xmlenc (~> 0.5.0)
+
+GIT
   remote: https://github.com/department-of-veterans-affairs/omniauth-saml-va
   revision: 56b01ea3d672ce3a00d0073b64c1dd469c012a83
   branch: paultag/css
@@ -33,15 +46,6 @@ GIT
     us_web_design_standards (0.0.2)
       railties
       sass (~> 3.4)
-
-PATH
-  remote: ./vendor/gems/connect_vbms
-  specs:
-    connect_vbms (0.1.2)
-      httpclient (~> 2.6.0.1)
-      mail
-      nokogiri (~> 1.6)
-      xmlenc (~> 0.5.0)
 
 GEM
   remote: https://rubygems.org/
@@ -142,6 +146,7 @@ GEM
     erubis (2.7.0)
     execjs (2.7.0)
     fastercsv (1.5.5)
+    ffi (1.9.10)
     ffi (1.9.10-java)
     ffi (1.9.10-x64-mingw32)
     globalid (0.3.6)
@@ -170,6 +175,7 @@ GEM
     json (1.8.3)
     json (1.8.3-java)
     json_pure (1.8.3)
+    libv8 (3.16.14.15)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
     mail (2.6.4)
@@ -184,6 +190,9 @@ GEM
     neat (1.7.4)
       bourbon (>= 4.0)
       sass (>= 3.3)
+    nokogiri (1.6.8)
+      mini_portile2 (~> 2.1.0)
+      pkg-config (~> 1.1.7)
     nokogiri (1.6.8-java)
     nokogiri (1.6.8-x64-mingw32)
       mini_portile2 (~> 2.1.0)
@@ -197,6 +206,7 @@ GEM
       ruby-saml (~> 1.1, >= 1.1.1)
     parser (2.3.1.2)
       ast (~> 2.2)
+    pg (0.18.4)
     pkg-config (1.1.7)
     poltergeist (1.9.0)
       capybara (~> 2.1)
@@ -249,6 +259,7 @@ GEM
     rdoc (4.2.2)
       json (~> 1.4)
     redis (3.3.0)
+    ref (2.0.0)
     rspec (3.4.0)
       rspec-core (~> 3.4.0)
       rspec-expectations (~> 3.4.0)
@@ -335,6 +346,9 @@ GEM
       sprockets (>= 3.0.0)
     temple (0.7.7)
     terminal-table (1.6.0)
+    therubyracer (0.12.2)
+      libv8 (~> 3.16.14.0)
+      ref
     therubyrhino (2.0.4)
       therubyrhino_jar (>= 1.7.3)
     therubyrhino_jar (1.7.6)
@@ -359,6 +373,8 @@ GEM
     websocket-driver (0.6.4-java)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.2)
+    xmldsig (0.3.2)
+      nokogiri
     xmlenc (0.5.0)
       activemodel (>= 3.0.0)
       activesupport (>= 3.0.0)
@@ -369,6 +385,7 @@ GEM
 
 PLATFORMS
   java
+  ruby
   x64-mingw32
 
 DEPENDENCIES
@@ -407,4 +424,4 @@ DEPENDENCIES
   zaru
 
 BUNDLED WITH
-   1.11.2
+   1.12.4
