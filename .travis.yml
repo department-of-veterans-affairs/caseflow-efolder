@@ -4,9 +4,7 @@ branches:
     only:
         - master
 rvm:
-  - jruby-9.0.3.0
-
-jdk: oraclejdk8
+  - 2.3.0
 
 before_script:
   - RAILS_ENV=test bundle exec rake db:create
