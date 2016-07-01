@@ -24,6 +24,8 @@ class DownloadDocuments
 
   def download_contents
     @download.documents.each_with_index do |document, i|
+      started_at = Time.zone.now
+
       begin
         content = @vbms_service.fetch_document_file(document)
 
@@ -31,11 +33,16 @@ class DownloadDocuments
 
         filepath = save_document_file(document, content, i)
         document.update_attributes!(
+          started_at: started_at,
+          completed_at: Time.zone.now,
           filepath: filepath,
           download_status: :success
         )
       rescue VBMS::ClientError
-        document.update_attributes!(download_status: :failed)
+        document.update_attributes!(
+          download_status: :failed,
+          started_at: started_at
+        )
       end
     end
   end

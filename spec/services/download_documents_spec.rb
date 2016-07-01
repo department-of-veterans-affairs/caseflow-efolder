@@ -73,7 +73,10 @@ describe DownloadDocuments do
     before do
       # clean files
       FileUtils.rm_rf(Rails.application.config.download_filepath)
+      Timecop.freeze
     end
+
+    after { Timecop.return }
 
     context "when one file errors" do
       before do
@@ -90,6 +93,8 @@ describe DownloadDocuments do
         successful_document = Document.first
         expect(successful_document).to be_success
         expect(successful_document.filepath).to eq((Rails.root + "tmp/files/#{download.id}/0-filename.pdf").to_s)
+        expect(successful_document.started_at).to eq(Time.zone.now)
+        expect(successful_document.completed_at).to eq(Time.zone.now)
 
         errored_document = Document.last
         expect(errored_document).to be_failed
