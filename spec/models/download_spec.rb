@@ -1,5 +1,7 @@
 describe "Download" do
   let(:download) { Download.create }
+  before { Timecop.freeze }
+  after { Timecop.return }
 
   context "#s3_filename" do
     subject { download.s3_filename }
@@ -7,8 +9,6 @@ describe "Download" do
   end
 
   context "#stalled?" do
-    before { Timecop.freeze }
-    after { Timecop.return }
     subject { download.stalled? }
 
     context "when not pending_documents" do
@@ -33,6 +33,46 @@ describe "Download" do
         end
 
         it { is_expected.to be_falsey }
+      end
+    end
+  end
+
+  context "#estimated_to_complete_at" do
+    before { download.documents.create!(started_at: 1.minute.ago) }
+    subject { download.estimated_to_complete_at }
+    let(:document) { download.documents.first }
+
+    context "when download is fetching manifest" do
+      before { download.update_attributes!(status: :fetching_manifest) }
+      it { is_expected.to be_nil }
+    end
+
+    context "when download is pending documents" do
+      before { download.update_attributes!(status: :pending_documents) }
+
+      context "when no documents have been downloaded" do
+        before { document.update_attributes(started_at: Time.zone.now) }
+        it { is_expected.to be_nil }
+      end
+
+      context "when a documents have been downloaded" do
+        before do
+          download.documents.create!(started_at: 3.minutes.ago, completed_at: 1.minute.ago)
+        end
+
+        it "calculates correctly with one download" do
+          expect(subject).to eq(1.minute.from_now)
+        end
+
+        it "calculates correctly with two downloads completed" do
+          download.documents.create!(started_at: 7.minutes.ago, completed_at: 3.minutes.ago)
+          expect(subject).to eq(2.minutes.from_now)
+        end
+
+        it "calculates corrrectly with two downloads left" do
+          download.documents.create!
+          expect(subject).to eq(3.minutes.from_now)
+        end
       end
     end
   end
