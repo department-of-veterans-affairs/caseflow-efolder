@@ -1,6 +1,8 @@
 class Document < ActiveRecord::Base
   enum download_status: { pending: 0, success: 1, failed: 2 }
 
+  TIMEOUT = 10.minutes
+
   def filename
     Zaru.sanitize! "#{vbms_filename.gsub(/\.\w+$/, '')}.#{preferred_extension}"
   end

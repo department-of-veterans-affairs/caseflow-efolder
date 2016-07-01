@@ -14,6 +14,14 @@ class Download < ActiveRecord::Base
     file_number =~ /DEMO/
   end
 
+  def stalled?
+    return false unless pending_documents?
+
+    documents.where(download_status: 0).where.not(started_at: nil).none? do |document|
+      (Time.zone.now - document.started_at) < Document::TIMEOUT
+    end
+  end
+
   def veteran_name
     @veteran_name ||= demo? ? "TEST" : Download.bgs_service.fetch_veteran_name(file_number)
   end
