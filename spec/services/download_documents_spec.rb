@@ -98,6 +98,7 @@ describe DownloadDocuments do
 
         errored_document = Document.last
         expect(errored_document).to be_failed
+        expect(errored_document.started_at).to eq(Time.zone.now)
       end
 
       it "stores successful document in s3" do
@@ -137,7 +138,7 @@ describe DownloadDocuments do
     end
   end
 
-  context "#package_contents" do
+  context "#download_and_package" do
     let(:file) { "file content" }
     let(:vbms_documents) do
       [
@@ -157,11 +158,26 @@ describe DownloadDocuments do
       end
 
       download_documents.create_documents
-      download_documents.download_contents
+    end
+
+    it "exits on document stale record error" do
+      expect(download_documents).to receive(:before_document_download) do |document|
+        Document.find(document.id).update_attributes!(started_at: Time.zone.now)
+      end
+
+      download_documents.download_and_package
+      expect(File.exist?(Rails.root + "tmp/files/#{download.id}/documents.zip")).to be_falsey
+    end
+
+    it "exits on stale record error when packaging" do
+      Download.find(download.id).update_attributes!(status: :packaging_contents)
+
+      download_documents.download_and_package
+      expect(File.exist?(Rails.root + "tmp/files/#{download.id}/documents.zip")).to be_falsey
     end
 
     it "packages files into zip and completes" do
-      download_documents.package_contents
+      download_documents.download_and_package
 
       Zip::File.open(Rails.root + "tmp/files/#{download.id}/documents.zip") do |zip_file|
         expect(zip_file.glob("0-keep-stamping.pdf").first).to_not be_nil
@@ -172,13 +188,15 @@ describe DownloadDocuments do
 
     context "when files are deleted from the file system" do
       before do
-        Document.all.each do |document|
-          FileUtils.rm_rf(document.filepath)
+        expect(download_documents).to receive(:before_package_contents) do
+          Document.all.each do |document|
+            FileUtils.rm_rf(document.filepath)
+          end
         end
       end
 
       it "retrieves them from s3" do
-        download_documents.package_contents
+        download_documents.download_and_package
 
         Zip::File.open(Rails.root + "tmp/files/#{download.id}/documents.zip") do |zip_file|
           expect(zip_file.glob("0-keep-stamping.pdf").first).to_not be_nil

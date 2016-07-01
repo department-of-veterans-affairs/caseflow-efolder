@@ -71,7 +71,7 @@ class DownloadsController < ApplicationController
   end
 
   def recent_downloads
-    @recent_downloads ||= downloads.where(status: [3, 4])
+    @recent_downloads ||= downloads.where(status: [3, 4, 5])
   end
   helper_method :recent_downloads
 end

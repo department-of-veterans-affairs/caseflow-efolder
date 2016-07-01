@@ -1,5 +1,12 @@
 class Download < ActiveRecord::Base
-  enum status: { fetching_manifest: 0, no_documents: 1, pending_confirmation: 2, pending_documents: 3, complete: 4 }
+  enum status: {
+    fetching_manifest: 0,
+    no_documents: 1,
+    pending_confirmation: 2,
+    pending_documents: 3,
+    packaging_contents: 4,
+    complete: 5
+  }
 
   has_many :documents
 
