@@ -186,6 +186,11 @@ describe DownloadDocuments do
       expect(download).to be_complete
     end
 
+    it "works even if zip exists" do
+      download_documents.download_and_package
+      expect { download_documents.download_and_package }.to_not raise_error
+    end
+
     context "when files are deleted from the file system" do
       before do
         expect(download_documents).to receive(:before_package_contents) do

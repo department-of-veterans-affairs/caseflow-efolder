@@ -96,6 +96,8 @@ class DownloadDocuments
     before_package_contents
     @download.update_attributes(status: :packaging_contents)
 
+    File.delete(zip_path) if File.exist?(zip_path)
+
     Zip::File.open(zip_path, Zip::File::CREATE) do |zipfile|
       @download.documents.success.each_with_index do |document, index|
         fetch_from_s3(document)
