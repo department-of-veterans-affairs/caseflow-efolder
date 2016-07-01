@@ -4,19 +4,14 @@ branches:
     only:
         - master
 rvm:
-  - 2.2.3
+  - 2.3.0
 
 before_script:
   - RAILS_ENV=test bundle exec rake db:create
   - RAILS_ENV=test bundle exec rake db:schema:load
 
 script:
-  - bundle exec rubocop
-  - bundle exec scss-lint
   - bundle exec rake
-  - bundle exec brakeman --exit-on-warn --run-all-checks --confidence-level=2
-  - bundle exec bundle-audit update
-  - bundle exec bundle-audit check
 
 bundler_args: "--without development"
 cache:

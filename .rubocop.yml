@@ -1,12 +1,18 @@
 AllCops:
+  TargetRubyVersion: 2.3
   Include:
-    - '**/Rakefile'
     - '**/config.ru'
+    - '**/Rakefile'
+    - '**/*.rake'
   Exclude:
     - 'db/**/*'
     - 'config/**/*'
     - 'script/**/*'
     - 'vendor/**/*'
+
+Rails/Output:
+  Exclude:
+    - 'lib/**/*.rb'
 
 Style/StringLiterals:
   EnforcedStyle: double_quotes

@@ -37,7 +37,7 @@
     <% end %>
   </div>
 
-  <% unless recent_downloads.empty? %>
+  <% if recent_downloads.exists? %>
     <h2>Recent Searches</h2>
     <table class="usa-table-borderless" summary="List of recent downloads and links to download their contents">
     <thead>

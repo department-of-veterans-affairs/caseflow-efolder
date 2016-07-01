@@ -13,6 +13,9 @@
 
 ActiveRecord::Schema.define(version: 20160602141549) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer  "priority",   default: 0, null: false
     t.integer  "attempts",   default: 0, null: false
@@ -27,7 +30,7 @@ ActiveRecord::Schema.define(version: 20160602141549) do
     t.datetime "updated_at"
   end
 
-  add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority"
+  add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
 
   create_table "documents", force: :cascade do |t|
     t.integer  "download_id"
@@ -43,7 +46,7 @@ ActiveRecord::Schema.define(version: 20160602141549) do
     t.datetime "updated_at",                  null: false
   end
 
-  add_index "documents", ["download_id"], name: "index_documents_on_download_id"
+  add_index "documents", ["download_id"], name: "index_documents_on_download_id", using: :btree
 
   create_table "downloads", force: :cascade do |t|
     t.string   "request_id"
@@ -55,6 +58,6 @@ ActiveRecord::Schema.define(version: 20160602141549) do
     t.string   "user_id"
   end
 
-  add_index "downloads", ["user_id", "user_station_id"], name: "index_downloads_on_user_id_and_user_station_id"
+  add_index "downloads", ["user_id", "user_station_id"], name: "index_downloads_on_user_id_and_user_station_id", using: :btree
 
 end
