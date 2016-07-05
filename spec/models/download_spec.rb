@@ -19,10 +19,9 @@ describe "Download" do
     context "when pending_documents" do
       before { download.status = :pending_documents }
 
-      context "when no pending documents have been started" do
+      context "when last updated after the threshold" do
         before do
-          download.documents.create(download_status: :success)
-          download.documents.create(download_status: :pending)
+          download.update_attributes(updated_at: 11.minutes.ago)
         end
 
         it { is_expected.to be_truthy }
@@ -30,15 +29,7 @@ describe "Download" do
 
       context "when most recent pending document started before the threshold" do
         before do
-          download.documents.create(download_status: :pending, started_at: 11.minutes.ago)
-        end
-
-        it { is_expected.to be_truthy }
-      end
-
-      context "when most recent document started after the threshold" do
-        before do
-          download.documents.create(download_status: :pending, started_at: 9.minutes.ago)
+          download.update_attributes(updated_at: 9.minutes.ago)
         end
 
         it { is_expected.to be_falsey }

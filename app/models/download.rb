@@ -10,16 +10,14 @@ class Download < ActiveRecord::Base
 
   has_many :documents
 
+  TIMEOUT = 10.minutes
+
   def demo?
     file_number =~ /DEMO/
   end
 
   def stalled?
-    return false unless pending_documents?
-
-    documents.where(download_status: 0).where.not(started_at: nil).none? do |document|
-      (Time.zone.now - document.started_at) < Document::TIMEOUT
-    end
+    pending_documents? && ((Time.zone.now - TIMEOUT) > updated_at)
   end
 
   def veteran_name

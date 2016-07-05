@@ -25,13 +25,13 @@ class DownloadDocuments
   def download_contents
     @download.documents.where(download_status: 0).each_with_index do |document, i|
       before_document_download(document)
+
       begin
         document.update_attributes!(started_at: Time.zone.now)
 
         content = @vbms_service.fetch_document_file(document)
 
         @s3.store_file(document.s3_filename, content)
-
         filepath = save_document_file(document, content, i)
         document.update_attributes!(
           completed_at: Time.zone.now,
