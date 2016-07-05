@@ -258,6 +258,8 @@ GEM
     rdoc (4.2.2)
       json (~> 1.4)
     redis (3.3.0)
+    redis-namespace (1.5.2)
+      redis (~> 3.0, >= 3.0.4)
     ref (2.0.0)
     rspec (3.4.0)
       rspec-core (~> 3.4.0)
@@ -294,6 +296,7 @@ GEM
     ruby_parser (3.7.3)
       sexp_processor (~> 4.1)
     rubyzip (1.2.0)
+    rufus-scheduler (3.2.1)
     safe_yaml (1.0.4)
     sass (3.4.22)
     sass-rails (5.0.4)
@@ -326,6 +329,10 @@ GEM
       connection_pool (~> 2.2, >= 2.2.0)
       redis (~> 3.2, >= 3.2.1)
       sinatra (~> 1.4, >= 1.4.6)
+    sidekiq-cron (0.4.2)
+      redis-namespace (>= 1.5.2)
+      rufus-scheduler (>= 2.0.24)
+      sidekiq (>= 4.0.0)
     sinatra (1.4.7)
       rack (~> 1.5)
       rack-protection (~> 1.4)
@@ -415,6 +422,7 @@ DEPENDENCIES
   scss_lint
   sdoc (~> 0.4.0)
   sidekiq
+  sidekiq-cron (~> 0.4.0)
   sniffybara!
   therubyracer
   therubyrhino
