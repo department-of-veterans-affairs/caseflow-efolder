@@ -130,8 +130,7 @@ RSpec.feature "Downloads" do
 
     download_documents = DownloadDocuments.new(download: @download, vbms_service: FakeVBMSService)
     download_documents.create_documents
-    download_documents.download_contents
-    download_documents.package_contents
+    download_documents.download_and_package
 
     visit download_path(@download)
     expect(page).to have_css ".document-success", text: "roll.pdf"

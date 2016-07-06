@@ -3,12 +3,38 @@ describe "Download" do
 
   context "#s3_filename" do
     subject { download.s3_filename }
+    it { is_expected.to eq("#{download.id}-download.zip") }
+  end
 
-    let(:document) do
-      Download.new
+  context "#stalled?" do
+    before { Timecop.freeze }
+    after { Timecop.return }
+    subject { download.stalled? }
+
+    context "when not pending_documents" do
+      before { download.status = :packaging_contents }
+      it { is_expected.to be_falsey }
     end
 
-    it { is_expected.to eq("#{download.id}-download.zip") }
+    context "when pending_documents" do
+      before { download.status = :pending_documents }
+
+      context "when last updated after the threshold" do
+        before do
+          download.update_attributes(updated_at: 11.minutes.ago)
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context "when most recent pending document started before the threshold" do
+        before do
+          download.update_attributes(updated_at: 9.minutes.ago)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+    end
   end
 
   context "#progress_percentage" do

@@ -1,0 +1,5 @@
+schedule_example_job:
+  cron: "*/1 * * * *"
+  class: "RestartStalledDownloadsJob"
+  queue: default
+  active_job: true

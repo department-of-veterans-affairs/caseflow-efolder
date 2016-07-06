@@ -3,8 +3,8 @@ class GetDownloadFilesJob < ActiveJob::Base
 
   def perform(download)
     download_documents = DownloadDocuments.new(download: download)
-    download_documents.download_contents
-    download_documents.package_contents
+
+    download_documents.download_and_package
   end
 
   def max_attempts

@@ -25,12 +25,7 @@ class DownloadsController < ApplicationController
     @download = downloads.find(params[:id])
     @download.update_attributes!(status: :pending_documents)
 
-    if @download.file_number =~ /DEMO/
-      DemoGetDownloadFilesJob.perform_later(@download, false)
-    else
-      GetDownloadFilesJob.perform_later(@download)
-    end
-
+    start_download_files
     redirect_to download_url(@download)
   end
 
@@ -45,6 +40,12 @@ class DownloadsController < ApplicationController
 
   def progress
     @download = downloads.find(params[:id])
+
+    if @download.stalled?
+      Rails.logger.info "Stalled job detected... Restarting download: #{@download.id}"
+      start_download_files
+    end
+
     render "_progress", layout: false
   end
 
@@ -61,6 +62,16 @@ class DownloadsController < ApplicationController
 
   private
 
+  def start_download_files
+    @download.touch
+
+    if @download.file_number =~ /DEMO/
+      DemoGetDownloadFilesJob.perform_later(@download)
+    else
+      GetDownloadFilesJob.perform_later(@download)
+    end
+  end
+
   def check_error
     @error = :veteran_not_found unless @download.case_exists?
     @error = :access_denied unless @download.can_access?
@@ -71,7 +82,7 @@ class DownloadsController < ApplicationController
   end
 
   def recent_downloads
-    @recent_downloads ||= downloads.where(status: [3, 4])
+    @recent_downloads ||= downloads.where(status: [3, 4, 5])
   end
   helper_method :recent_downloads
 end
