@@ -38,14 +38,14 @@ describe DownloadDocuments do
 
     it "creates a file in the correct directory and returns filename" do
       filename = download_documents.save_document_file(document, "hi", 3)
-      expect(File.exist?(Rails.root + "tmp/files/#{download.id}/3-happyfile.pdf")).to be_truthy
-      expect(filename).to eq((Rails.root + "tmp/files/#{download.id}/3-happyfile.pdf").to_s)
+      expect(File.exist?(Rails.root + "tmp/files/#{download.id}/00030-happyfile.pdf")).to be_truthy
+      expect(filename).to eq((Rails.root + "tmp/files/#{download.id}/00030-happyfile.pdf").to_s)
     end
 
     it "sanitizes malicious filenames" do
       filename = download_documents.save_document_file(malicious_document, "hi", 4)
-      expect(File.exist?(Rails.root + "tmp/files/#{download.id}/4-file......binrake.pdf")).to be_truthy
-      expect(filename).to eq((Rails.root + "tmp/files/#{download.id}/4-file......binrake.pdf").to_s)
+      expect(File.exist?(Rails.root + "tmp/files/#{download.id}/00040-file......binrake.pdf")).to be_truthy
+      expect(filename).to eq((Rails.root + "tmp/files/#{download.id}/00040-file......binrake.pdf").to_s)
     end
   end
 
@@ -92,11 +92,11 @@ describe DownloadDocuments do
       it "saves download state for each document" do
         successful_document = Document.first
         expect(successful_document).to be_success
-        expect(successful_document.filepath).to eq((Rails.root + "tmp/files/#{download.id}/0-filename.pdf").to_s)
+        expect(successful_document.filepath).to eq((Rails.root + "tmp/files/#{download.id}/00000-filename.pdf").to_s)
         expect(successful_document.started_at).to eq(Time.zone.now)
         expect(successful_document.completed_at).to eq(Time.zone.now)
 
-        errored_document = Document.last
+        errored_document = Document.all[1]
         expect(errored_document).to be_failed
         expect(errored_document.started_at).to eq(Time.zone.now)
       end
@@ -131,7 +131,7 @@ describe DownloadDocuments do
 
         Document.all.each_with_index do |document, i|
           expect(document).to be_success
-          expect(document.filepath).to eq((Rails.root + "tmp/files/#{download.id}/#{i}-filename.pdf").to_s)
+          expect(document.filepath).to eq((Rails.root + "tmp/files/#{download.id}/000#{i}0-filename.pdf").to_s)
           expect(File.exist?(document.filepath)).to be_truthy
         end
       end
@@ -180,7 +180,7 @@ describe DownloadDocuments do
       download_documents.download_and_package
 
       Zip::File.open(Rails.root + "tmp/files/#{download.id}/documents.zip") do |zip_file|
-        expect(zip_file.glob("0-keep-stamping.pdf").first).to_not be_nil
+        expect(zip_file.glob("00000-keep-stamping.pdf").first).to_not be_nil
       end
 
       expect(download).to be_complete
@@ -204,7 +204,7 @@ describe DownloadDocuments do
         download_documents.download_and_package
 
         Zip::File.open(Rails.root + "tmp/files/#{download.id}/documents.zip") do |zip_file|
-          expect(zip_file.glob("0-keep-stamping.pdf").first).to_not be_nil
+          expect(zip_file.glob("00000-keep-stamping.pdf").first).to_not be_nil
         end
       end
     end
