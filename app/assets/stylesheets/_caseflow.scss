@@ -158,6 +158,11 @@ dd {
   }
 }
 
+.cf-header-link:hover {
+  h1 { color: $color-gray-light; }
+  text-decoration: none;
+}
+
 .cf-logo {
   color: $color-gray-dark;
   margin-right: rem(10px);
