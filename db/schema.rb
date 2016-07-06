@@ -11,7 +11,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160602141549) do
+ActiveRecord::Schema.define(version: 20160701165219) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,6 +47,9 @@ ActiveRecord::Schema.define(version: 20160602141549) do
     t.datetime "received_at"
     t.datetime "created_at",                  null: false
     t.datetime "updated_at",                  null: false
+    t.datetime "started_at"
+    t.datetime "completed_at"
+    t.integer  "lock_version"
   end
 
   add_index "documents", ["download_id"], name: "index_documents_on_download_id", using: :btree
@@ -56,6 +62,7 @@ ActiveRecord::Schema.define(version: 20160602141549) do
     t.datetime "updated_at",                  null: false
     t.string   "user_station_id"
     t.string   "user_id"
+    t.integer  "lock_version"
   end
 
   add_index "downloads", ["user_id", "user_station_id"], name: "index_downloads_on_user_id_and_user_station_id", using: :btree

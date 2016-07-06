@@ -1,10 +1,23 @@
 class Download < ActiveRecord::Base
-  enum status: { fetching_manifest: 0, no_documents: 1, pending_confirmation: 2, pending_documents: 3, complete: 4 }
+  enum status: {
+    fetching_manifest: 0,
+    no_documents: 1,
+    pending_confirmation: 2,
+    pending_documents: 3,
+    packaging_contents: 4,
+    complete: 5
+  }
 
-  has_many :documents
+  has_many :documents, -> { order(:id) }
+
+  TIMEOUT = 10.minutes
 
   def demo?
     file_number =~ /DEMO/
+  end
+
+  def stalled?
+    pending_documents? && ((Time.zone.now - TIMEOUT) > updated_at)
   end
 
   def veteran_name

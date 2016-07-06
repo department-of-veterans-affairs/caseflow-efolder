@@ -23,19 +23,28 @@ class DownloadDocuments
   end
 
   def download_contents
-    @download.documents.each_with_index do |document, i|
+    @download.documents.where(download_status: 0).each_with_index do |document, i|
+      before_document_download(document)
+
       begin
+        document.update_attributes!(started_at: Time.zone.now)
+
         content = @vbms_service.fetch_document_file(document)
 
         @s3.store_file(document.s3_filename, content)
-
         filepath = save_document_file(document, content, i)
         document.update_attributes!(
+          completed_at: Time.zone.now,
           filepath: filepath,
           download_status: :success
         )
+
       rescue VBMS::ClientError
         document.update_attributes!(download_status: :failed)
+
+      rescue ActiveRecord::StaleObjectError
+        Rails.logger.info "Duplicate download detected. Document ID: #{document.id}"
+        return false
       end
     end
   end
@@ -84,6 +93,11 @@ class DownloadDocuments
   end
 
   def package_contents
+    before_package_contents
+    @download.update_attributes(status: :packaging_contents)
+
+    File.delete(zip_path) if File.exist?(zip_path)
+
     Zip::File.open(zip_path, Zip::File::CREATE) do |zipfile|
       @download.documents.success.each_with_index do |document, index|
         fetch_from_s3(document)
@@ -94,5 +108,20 @@ class DownloadDocuments
     @s3.store_file(@download.s3_filename, zip_path, :filepath)
 
     @download.update_attributes(status: :complete)
+
+  rescue ActiveRecord::StaleObjectError
+    Rails.logger.info "Duplicate packaging detected. Download ID: #{@download.id}"
+  end
+
+  def download_and_package
+    package_contents if download_contents
+  end
+
+  def before_document_download(document)
+    # Test hook for testing race conditions
+  end
+
+  def before_package_contents
+    # Test hook for testing race conditions
   end
 end
