@@ -8,7 +8,7 @@ class Download < ActiveRecord::Base
     complete: 5
   }
 
-  has_many :documents
+  has_many :documents, -> { order(:id) }
 
   TIMEOUT = 10.minutes
 
