@@ -1,6 +1,6 @@
 describe "Download" do
   let(:download) { Download.create }
-  before { Timecop.freeze }
+  before { Timecop.freeze(Time.utc(2015, 1, 1, 12, 0, 0)) }
   after { Timecop.return }
 
   context "#s3_filename" do

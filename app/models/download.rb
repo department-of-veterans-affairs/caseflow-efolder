@@ -12,8 +12,6 @@ class Download < ActiveRecord::Base
 
   TIMEOUT = 10.minutes
 
-  TIMEOUT = 10.minutes
-
   def demo?
     file_number =~ /DEMO/
   end
