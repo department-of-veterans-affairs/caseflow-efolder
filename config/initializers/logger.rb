@@ -19,9 +19,17 @@ if !ENV["IS_WORKER"].blank?
 end
 
 # roll logger over every 1MB, retain 10
-logger_path = config.paths["log"].first
-rollover_logger = Logger.new(logger_path, 10, 1.megabyte)
-Rails.logger = ActiveSupport::TaggedLogging.new(rollover_logger) unless Rails.env.development?
+unless Rails.env.development?
+  logger_path = config.paths["log"].first
+  rollover_logger = Logger.new(logger_path, 10, 1.megabyte)
+  Rails.logger = rollover_logger
+
+  # set the format again in case it was overwritten
+  Rails.logger.formatter = config.log_formatter if config.log_formatter
+
+  # recreate the logger with Tagged support which Rails expects
+  Rails.logger = ActiveSupport::TaggedLogging.new(Rails.logger)
+end
 
 # log sidekiq to application logger (defaults to stdout)
 Sidekiq::Logging.logger = Rails.logger
