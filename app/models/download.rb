@@ -24,6 +24,10 @@ class Download < ActiveRecord::Base
     @veteran_name ||= demo? ? "TEST" : Download.bgs_service.fetch_veteran_name(file_number)
   end
 
+  def estimated_to_complete_at
+    @estimated_to_complete_at ||= calculate_estimated_to_complete_at
+  end
+
   def case_exists?
     Download.bgs_service.fetch_veteran_name(file_number)
     true
@@ -63,5 +67,23 @@ class Download < ActiveRecord::Base
     def bgs_service
       @bgs_service ||= BGSService
     end
+  end
+
+  private
+
+  def calculate_estimated_to_complete_at
+    return nil unless pending_documents?
+
+    current_doc = documents.where(completed_at: nil).where.not(started_at: nil).first
+    return nil unless current_doc
+
+    completed_durations = documents.where.not(completed_at: nil).map do |document|
+      document.completed_at - document.started_at
+    end
+    return nil if completed_durations.empty?
+
+    documents_left = documents.where(completed_at: nil).count
+
+    current_doc.started_at + (completed_durations.inject(:+) / completed_durations.count * documents_left)
   end
 end

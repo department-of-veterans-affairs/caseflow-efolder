@@ -51,7 +51,12 @@
         Progress: <%= @download.progress_percentage %>%
       </span>
     </div>
-    <p class="ee-fetching-files">Fetching Files...</p>
+    <p class="ee-fetching-files">
+      Fetching Files...
+      <% if @download.estimated_to_complete_at %>
+        <br/>Estimated time left: <%= distance_of_time_in_words(@download.estimated_to_complete_at, Time.zone.now, include_seconds: true) %>
+      <% end %>
+    </p>
 
   <% end %>
 
