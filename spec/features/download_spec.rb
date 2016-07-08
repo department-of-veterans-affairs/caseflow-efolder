@@ -32,6 +32,21 @@ RSpec.feature "Downloads" do
     expect(GetDownloadManifestJob).to have_received(:perform_later)
   end
 
+  scenario "Trim search input" do
+    Fakes::BGSService.veteran_names = { "1234" => "Stan Lee" }
+
+    visit "/"
+    expect(page).to_not have_content "Recent Searches"
+
+    fill_in "Search for a VBMS eFolder to get started.", with: " 1234 "
+    click_button "Search"
+
+    @download = @user_download.last
+    expect(@download).to_not be_nil
+
+    expect(page).to have_content "Stan Lee (1234)"
+  end
+
   scenario "Sensitive download error" do
     Fakes::BGSService.veteran_names = { "8888" => "Nick Saban" }
     Fakes::BGSService.sensitive_files = { "8888" => true }
