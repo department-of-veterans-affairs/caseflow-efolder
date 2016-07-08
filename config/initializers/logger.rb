@@ -6,7 +6,8 @@ end
 log_tags = []
 log_tags << lambda { |req|
   session = get_session(req)
-  session["user"]
+  user = session["user"]
+  ["id", "email"].map { | attr | user[attr] }.join(" ") if user
 }
 
 # :nocov:
