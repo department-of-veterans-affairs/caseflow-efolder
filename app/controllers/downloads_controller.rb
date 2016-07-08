@@ -6,7 +6,9 @@ class DownloadsController < ApplicationController
   end
 
   def create
-    @download = downloads.new(file_number: params[:file_number])
+    file_number = params[:file_number] || ""
+    file_number = file_number.strip
+    @download = downloads.new(file_number: file_number)
     check_error unless @download.demo?
     render("new") && return if @error
 
