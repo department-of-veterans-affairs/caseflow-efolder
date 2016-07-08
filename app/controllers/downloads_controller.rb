@@ -75,8 +75,11 @@ class DownloadsController < ApplicationController
   end
 
   def check_error
-    @error = :veteran_not_found unless @download.case_exists?
-    @error = :access_denied unless @download.can_access?
+    if !@download.case_exists?
+      @error = :veteran_not_found
+    elsif !@download.can_access?
+      @error = :access_denied
+    end
   end
 
   def downloads
