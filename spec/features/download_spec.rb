@@ -32,7 +32,7 @@ RSpec.feature "Downloads" do
     expect(GetDownloadManifestJob).to have_received(:perform_later)
   end
 
-    scenario "Extraneous spaces in search input" do
+  scenario "Extraneous spaces in search input" do
     Fakes::BGSService.veteran_names = { "1234" => "Stan Lee" }
 
     visit "/"
