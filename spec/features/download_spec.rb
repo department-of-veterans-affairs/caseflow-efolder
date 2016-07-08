@@ -23,8 +23,12 @@ RSpec.feature "Downloads" do
     fill_in "Search for a VBMS eFolder to get started.", with: "1234"
     click_button "Search"
 
+    # Test that Caseflow caches veteran name for a download
+    Fakes::BGSService.veteran_names = {}
+
     @download = @user_download.last
     expect(@download).to_not be_nil
+    expect(@download.veteran_name).to eq("Stan Lee")
 
     expect(page).to have_content "Stan Lee (1234)"
     expect(page).to have_content "We are gathering the list of files in the eFolder now"
@@ -81,6 +85,7 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Confirming download" do
+    Fakes::BGSService.veteran_names = { "3456" => "Steph Curry" }
     @download = @user_download.create(file_number: "3456", status: :fetching_manifest)
 
     visit download_path(@download)
@@ -94,6 +99,7 @@ RSpec.feature "Downloads" do
     page.execute_script("window.DownloadStatus.recheck();")
 
     expect(page).to have_content "eFolder Express found 2 files in eFolder #3456"
+    expect(page).to have_content "Steph Curry (3456)"
     expect(page).to have_content "yawn.pdf 09/06/2015"
     expect(page).to have_content "smiley.pdf 01/19/2015"
     click_on "Fetch Files from VBMS"

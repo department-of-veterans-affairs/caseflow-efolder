@@ -8,9 +8,15 @@ class Download < ActiveRecord::Base
     complete: 5
   }
 
+  TIMEOUT = 10.minutes
+
   has_many :documents, -> { order(:id) }
 
-  TIMEOUT = 10.minutes
+  after_initialize do |download|
+    if download.file_number
+      download.veteran_name ||= download.demo? ? "TEST" : Download.bgs_service.fetch_veteran_name(download.file_number)
+    end
+  end
 
   def demo?
     file_number =~ /DEMO/
@@ -18,10 +24,6 @@ class Download < ActiveRecord::Base
 
   def stalled?
     pending_documents? && ((Time.zone.now - TIMEOUT) > updated_at)
-  end
-
-  def veteran_name
-    @veteran_name ||= demo? ? "TEST" : Download.bgs_service.fetch_veteran_name(file_number)
   end
 
   def estimated_to_complete_at
