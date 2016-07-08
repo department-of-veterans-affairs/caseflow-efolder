@@ -47,7 +47,7 @@ RSpec.feature "Downloads" do
     expect(page).to have_content "Stan Lee (1234)"
   end
 
-  scenario "Requesting non-existant case" do
+  scenario "Requesting non-existent case" do
     visit "/"
 
     fill_in "Search for a VBMS eFolder to get started.", with: "abcd"
