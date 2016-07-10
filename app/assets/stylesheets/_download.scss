@@ -1,3 +1,9 @@
+.ee-heading {
+  text-align: center;
+  margin: auto;
+  width: 600px;
+}
+
 .ee-new-download {
   label {
     color: $color-gray;
@@ -15,7 +21,13 @@
 }
 
 .ee-search {
-  margin-bottom: 45px;
+  margin: 0 auto 45px;
+  width: 600px;
+}
+
+.ee-recent-searches {
+  border-top: 1px solid $color-gray-lighter;
+  padding-top: 45px;
 }
 
 .ee-actions-cell {
