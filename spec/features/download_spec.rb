@@ -36,6 +36,19 @@ RSpec.feature "Downloads" do
     expect(GetDownloadManifestJob).to have_received(:perform_later)
   end
 
+  scenario "Searching for a completed download" do
+    @user_download.create!(
+      file_number: "5555",
+      status: :complete_success
+    )
+
+    visit "/"
+    fill_in "Search for a VBMS eFolder to get started.", with: "5555"
+    click_button "Search"
+
+    expect(page).to have_content("Success")
+  end
+
   scenario "Extraneous spaces in search input" do
     Fakes::BGSService.veteran_names = { "1234" => "Stan Lee" }
 

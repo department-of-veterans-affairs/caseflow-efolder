@@ -6,9 +6,9 @@ class DownloadsController < ApplicationController
   end
 
   def create
-    file_number = params[:file_number] || ""
-    file_number = file_number.strip
-    @download = downloads.new(file_number: file_number)
+    return if redirect_to_download_if_exists
+
+    @download = downloads.new(file_number: sanitized_file_number)
     check_error unless @download.demo?
     render("new") && return if @error
 
@@ -63,6 +63,15 @@ class DownloadsController < ApplicationController
   end
 
   private
+
+  def redirect_to_download_if_exists
+    @download = downloads.where(file_number: sanitized_file_number).first
+    redirect_to(download_url(@download)) && (return true) if @download
+  end
+
+  def sanitized_file_number
+    (params[:file_number] || "").strip
+  end
 
   def start_download_files
     @download.touch
