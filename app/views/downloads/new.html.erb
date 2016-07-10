@@ -58,6 +58,10 @@
             <% else %>
               <%= link_to "View Results", download_path(download) %>
             <% end %>
+
+            <% if download.complete_with_errors? %>
+              <%= svg_icon(:alert) %>
+            <% end %>
           </td>
         </tr>
       <% end %>

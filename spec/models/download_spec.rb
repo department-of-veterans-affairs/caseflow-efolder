@@ -129,7 +129,7 @@ describe "Download" do
     end
 
     context "when complete" do
-      before { download.status = :complete }
+      before { download.status = :complete_success }
       it { is_expected.to eq(100) }
     end
 

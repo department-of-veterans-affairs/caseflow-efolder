@@ -5,7 +5,8 @@ class Download < ActiveRecord::Base
     pending_confirmation: 2,
     pending_documents: 3,
     packaging_contents: 4,
-    complete: 5
+    complete_success: 5,
+    complete_with_errors: 6
   }
 
   TIMEOUT = 10.minutes
@@ -24,6 +25,14 @@ class Download < ActiveRecord::Base
 
   def stalled?
     pending_documents? && ((Time.zone.now - TIMEOUT) > updated_at)
+  end
+
+  def errors?
+    documents.where(download_status: 2).any?
+  end
+
+  def complete?
+    complete_success? || complete_with_errors?
   end
 
   def estimated_to_complete_at

@@ -67,7 +67,7 @@ RSpec.feature "Downloads" do
       user_station_id: "222",
       user_id: "123123",
       file_number: "22222",
-      status: :complete
+      status: :complete_success
     )
 
     visit download_path(another_user)
@@ -123,7 +123,7 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Completed with at least one failed document download" do
-    @download = @user_download.create(file_number: "12", status: :complete)
+    @download = @user_download.create(file_number: "12", status: :complete_success)
     @download.documents.create(vbms_filename: "roll.pdf", mime_type: "application/pdf", download_status: :failed)
     @download.documents.create(vbms_filename: "tide.pdf", mime_type: "application/pdf", download_status: :success)
 
@@ -139,7 +139,7 @@ RSpec.feature "Downloads" do
     # clean files
     FileUtils.rm_rf(Rails.application.config.download_filepath)
 
-    @download = @user_download.create(file_number: "12", status: :complete)
+    @download = @user_download.create(file_number: "12", status: :complete_success)
     @download.documents.create(vbms_filename: "roll.pdf", mime_type: "application/pdf")
     @download.documents.create(vbms_filename: "tide.pdf", mime_type: "application/pdf")
 
@@ -172,21 +172,31 @@ RSpec.feature "Downloads" do
     )
     complete = @user_download.create!(
       file_number: "78901",
-      status: :complete
+      status: :complete_success
+    )
+    complete_with_errors = @user_download.create!(
+      file_number: "78902",
+      status: :complete_with_errors
     )
     another_user = Download.create!(
       user_station_id: "222",
       user_id: "123123",
       file_number: "22222",
-      status: :complete
+      status: :complete_success
     )
 
     visit "/"
 
     expect(page).to_not have_content(pending_confirmation.file_number)
-
     expect(page).to_not have_content(another_user.file_number)
 
+    complete_with_errors_row = "#download-#{complete_with_errors.id}"
+    expect(find(complete_with_errors_row)).to have_content("78902")
+    expect(find(complete_with_errors_row)).to have_css(".cf-icon-alert")
+    within(complete_with_errors_row) { click_on("View Results") }
+    expect(page).to have_content("Download Zip")
+
+    visit "/"
     pending_documents_row = "#download-#{pending_documents.id}"
     expect(find(pending_documents_row)).to have_content("45678")
     within(pending_documents_row) { click_on("View Progress") }
