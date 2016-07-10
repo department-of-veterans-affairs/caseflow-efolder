@@ -53,15 +53,11 @@
             <%= download.file_number %>
           </td>
           <td class="ee-actions-cell">
-            <%= link_to "View Results", download_path(download) %>
-
-            <span class="ee-download-status">
-              <% if download.pending_documents? %>
-                Downloading...
-              <% else %>
-                <%= link_to "Download Zip", download_download_path(download) %>
-              <% end %>
-            </span>
+            <% if download.pending_documents? %>
+              <%= link_to "View Progress", download_path(download) %>
+            <% else %>
+              <%= link_to "View Results", download_path(download) %>
+            <% end %>
           </td>
         </tr>
       <% end %>

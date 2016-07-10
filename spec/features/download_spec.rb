@@ -159,10 +159,6 @@ RSpec.feature "Downloads" do
 
     click_on "Download Zip"
     expect(page.response_headers["Content-Type"]).to eq("application/zip")
-
-    visit "/"
-    within("#download-#{@download.id}") { click_on("Download Zip") }
-    expect(page.response_headers["Content-Type"]).to eq("application/zip")
   end
 
   scenario "Recent download list" do
@@ -193,13 +189,13 @@ RSpec.feature "Downloads" do
 
     pending_documents_row = "#download-#{pending_documents.id}"
     expect(find(pending_documents_row)).to have_content("45678")
-    expect(find(pending_documents_row)).to have_content("Downloading...")
-    within(pending_documents_row) { click_on("View Results") }
+    within(pending_documents_row) { click_on("View Progress") }
     expect(page).to have_current_path(download_path(pending_documents))
 
     visit "/"
     complete_row = "#download-#{complete.id}"
     expect(find(complete_row)).to have_content("78901")
-    expect(find(complete_row)).to have_content("Download Zip")
+    within(complete_row) { click_on("View Results") }
+    expect(page).to have_current_path(download_path(complete))
   end
 end
