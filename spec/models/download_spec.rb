@@ -1,7 +1,14 @@
 describe "Download" do
-  let(:download) { Download.create }
-  before { Timecop.freeze(Time.utc(2015, 1, 1, 12, 0, 0)) }
+  before do
+    Timecop.freeze(Time.utc(2015, 1, 1, 12, 0, 0))
+
+    Download.bgs_service = Fakes::BGSService
+    Fakes::BGSService.veteran_names = { "1234" => "Stan Lee" }
+  end
   after { Timecop.return }
+
+  let(:file_number) { "1234" }
+  let(:download) { Download.create(file_number: file_number) }
 
   context ".new" do
     subject { Download.new(file_number: file_number) }
@@ -11,8 +18,6 @@ describe "Download" do
         Download.bgs_service = Fakes::BGSService
         Fakes::BGSService.veteran_names = { "1234" => "Stan Lee" }
       end
-
-      let(:file_number) { "1234" }
 
       it "sets veteran name" do
         expect(subject.veteran_name).to eq("Stan Lee")
@@ -31,6 +36,11 @@ describe "Download" do
   context "#s3_filename" do
     subject { download.s3_filename }
     it { is_expected.to eq("#{download.id}-download.zip") }
+  end
+
+  context "package_filename" do
+    subject { download.package_filename }
+    it { is_expected.to eq("stanlee-20150101.zip") }
   end
 
   context "#stalled?" do

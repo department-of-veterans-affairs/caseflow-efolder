@@ -5,9 +5,10 @@ describe DownloadDocuments do
   before do
     Download.delete_all
     Document.delete_all
+    Download.bgs_service = Fakes::BGSService
   end
 
-  let(:download) { Download.create!(file_number: "21012") }
+  let(:download) { Download.create!(file_number: "21012", veteran_name: "George Washington") }
 
   let(:vbms_documents) do
     [
@@ -165,7 +166,7 @@ describe DownloadDocuments do
 
       download_documents.create_documents
       download_documents.download_and_package
-      expect(File.exist?(Rails.root + "tmp/files/#{download.id}/documents.zip")).to be_falsey
+      expect(File.exist?(Rails.root + "tmp/files/#{download.id}/#{download.package_filename}")).to be_falsey
     end
 
     it "exits on stale record error when packaging" do
@@ -173,14 +174,14 @@ describe DownloadDocuments do
 
       download_documents.create_documents
       download_documents.download_and_package
-      expect(File.exist?(Rails.root + "tmp/files/#{download.id}/documents.zip")).to be_falsey
+      expect(File.exist?(Rails.root + "tmp/files/#{download.id}/#{download.package_filename}")).to be_falsey
     end
 
     it "packages files into zip and completes" do
       download_documents.create_documents
       download_documents.download_and_package
 
-      Zip::File.open(Rails.root + "tmp/files/#{download.id}/documents.zip") do |zip_file|
+      Zip::File.open(Rails.root + "tmp/files/#{download.id}/#{download.package_filename}") do |zip_file|
         expect(zip_file.glob("00000-keep-stamping.pdf").first).to_not be_nil
       end
 
@@ -224,7 +225,7 @@ describe DownloadDocuments do
         download_documents.create_documents
         download_documents.download_and_package
 
-        Zip::File.open(Rails.root + "tmp/files/#{download.id}/documents.zip") do |zip_file|
+        Zip::File.open(Rails.root + "tmp/files/#{download.id}/#{download.package_filename}") do |zip_file|
           expect(zip_file.glob("00000-keep-stamping.pdf").first).to_not be_nil
         end
       end
