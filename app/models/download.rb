@@ -5,12 +5,19 @@ class Download < ActiveRecord::Base
     pending_confirmation: 2,
     pending_documents: 3,
     packaging_contents: 4,
-    complete: 5
+    complete_success: 5,
+    complete_with_errors: 6
   }
+
+  TIMEOUT = 10.minutes
 
   has_many :documents, -> { order(:id) }
 
-  TIMEOUT = 10.minutes
+  after_initialize do |download|
+    if download.file_number
+      download.veteran_name ||= download.demo? ? "TEST" : Download.bgs_service.fetch_veteran_name(download.file_number)
+    end
+  end
 
   def demo?
     file_number =~ /DEMO/
@@ -20,8 +27,12 @@ class Download < ActiveRecord::Base
     pending_documents? && ((Time.zone.now - TIMEOUT) > updated_at)
   end
 
-  def veteran_name
-    @veteran_name ||= demo? ? "TEST" : Download.bgs_service.fetch_veteran_name(file_number)
+  def errors?
+    documents.where(download_status: 2).any?
+  end
+
+  def complete?
+    complete_success? || complete_with_errors?
   end
 
   def estimated_to_complete_at
@@ -29,8 +40,7 @@ class Download < ActiveRecord::Base
   end
 
   def case_exists?
-    Download.bgs_service.fetch_veteran_name(file_number)
-    true
+    !Download.bgs_service.fetch_veteran_name(file_number).nil?
   rescue
     false
   end

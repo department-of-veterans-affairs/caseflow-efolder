@@ -14,8 +14,8 @@ class DemoGetDownloadManifestJob < ActiveJob::Base
     },
     "DEMO3" => {
       manifest_load: 4,
-      num_docs: 100,
-      max_file_load: 10,
+      num_docs: 10,
+      max_file_load: 1,
       error: true
     },
     "DEMO4" => {

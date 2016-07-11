@@ -6,9 +6,9 @@ class DownloadsController < ApplicationController
   end
 
   def create
-    file_number = params[:file_number] || ""
-    file_number = file_number.strip
-    @download = downloads.new(file_number: file_number)
+    return if redirect_to_download_if_exists
+
+    @download = downloads.new(file_number: sanitized_file_number)
     check_error unless @download.demo?
     render("new") && return if @error
 
@@ -64,6 +64,15 @@ class DownloadsController < ApplicationController
 
   private
 
+  def redirect_to_download_if_exists
+    @download = downloads.where(file_number: sanitized_file_number).first
+    redirect_to(download_url(@download)) && (return true) if @download
+  end
+
+  def sanitized_file_number
+    (params[:file_number] || "").strip
+  end
+
   def start_download_files
     @download.touch
 
@@ -75,8 +84,11 @@ class DownloadsController < ApplicationController
   end
 
   def check_error
-    @error = :veteran_not_found unless @download.case_exists?
-    @error = :access_denied unless @download.can_access?
+    if !@download.case_exists?
+      @error = :veteran_not_found
+    elsif !@download.can_access?
+      @error = :access_denied
+    end
   end
 
   def downloads
@@ -84,7 +96,7 @@ class DownloadsController < ApplicationController
   end
 
   def recent_downloads
-    @recent_downloads ||= downloads.where(status: [3, 4, 5])
+    @recent_downloads ||= downloads.where(status: [3, 4, 5, 6])
   end
   helper_method :recent_downloads
 end
