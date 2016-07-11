@@ -40,8 +40,7 @@ class Download < ActiveRecord::Base
   end
 
   def case_exists?
-    Download.bgs_service.fetch_veteran_name(file_number)
-    true
+    !Download.bgs_service.fetch_veteran_name(file_number).nil?
   rescue
     false
   end

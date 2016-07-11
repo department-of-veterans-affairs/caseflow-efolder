@@ -64,6 +64,15 @@ RSpec.feature "Downloads" do
     expect(page).to have_content "Stan Lee (1234)"
   end
 
+  scenario "Requesting non-existent case" do
+    visit "/"
+
+    fill_in "Search for a VBMS eFolder to get started.", with: "abcd"
+    click_button "Search"
+
+    expect(page).to have_content "Couldn't find an eFolder with that ID"
+  end
+
   scenario "Sensitive download error" do
     Fakes::BGSService.veteran_names = { "8888" => "Nick Saban" }
     Fakes::BGSService.sensitive_files = { "8888" => true }
