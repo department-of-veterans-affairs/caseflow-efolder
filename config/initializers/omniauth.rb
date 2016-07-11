@@ -23,7 +23,7 @@ if ssoi_authentication_enabled?
       ENV[ENV_SAML_KEY],
       ENV[ENV_SAML_CRT],
       ENV[ENV_SAML_XML],
-      false,
+      true,
       callback_path: '/auth/saml_callback',
       path_prefix: '/auth',
       name_identifier_format: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
