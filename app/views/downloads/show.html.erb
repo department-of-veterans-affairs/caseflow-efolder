@@ -1,3 +1,5 @@
+<% content_for :page_title do %><%= @download.veteran_name %> (<%=h @download.file_number %>)<% end %>
+
 <% if @download.confirmed? %>
   <script>
     // Set up automatic download progress updates

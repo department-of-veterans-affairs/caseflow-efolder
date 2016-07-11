@@ -3,6 +3,31 @@ describe "Download" do
   before { Timecop.freeze(Time.utc(2015, 1, 1, 12, 0, 0)) }
   after { Timecop.return }
 
+  context ".new" do
+    subject { Download.new(file_number: file_number) }
+
+    context "when file number is set" do
+      before do
+        Download.bgs_service = Fakes::BGSService
+        Fakes::BGSService.veteran_names = { "1234" => "Stan Lee" }
+      end
+
+      let(:file_number) { "1234" }
+
+      it "sets veteran name" do
+        expect(subject.veteran_name).to eq("Stan Lee")
+      end
+    end
+
+    context "when no file number" do
+      let(:file_number) { nil }
+
+      it "doesn't set veteran name" do
+        expect(subject.veteran_name).to be_nil
+      end
+    end
+  end
+
   context "#s3_filename" do
     subject { download.s3_filename }
     it { is_expected.to eq("#{download.id}-download.zip") }
@@ -104,7 +129,7 @@ describe "Download" do
     end
 
     context "when complete" do
-      before { download.status = :complete }
+      before { download.status = :complete_success }
       it { is_expected.to eq(100) }
     end
 

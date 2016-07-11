@@ -129,7 +129,7 @@ describe DownloadDocuments do
       it "saves download state for each document" do
         expect(Dir[Rails.root + "tmp/files/#{download.id}/*"].size).to eq(2)
 
-        Document.all.each_with_index do |document, i|
+        download.documents.each_with_index do |document, i|
           expect(document).to be_success
           expect(document.filepath).to eq((Rails.root + "tmp/files/#{download.id}/000#{i}0-filename.pdf").to_s)
           expect(File.exist?(document.filepath)).to be_truthy
@@ -156,8 +156,6 @@ describe DownloadDocuments do
         fail VBMS::ClientError if document.document_id != "1"
         file
       end
-
-      download_documents.create_documents
     end
 
     it "exits on document stale record error" do
@@ -165,6 +163,7 @@ describe DownloadDocuments do
         Document.find(document.id).update_attributes!(started_at: Time.zone.now)
       end
 
+      download_documents.create_documents
       download_documents.download_and_package
       expect(File.exist?(Rails.root + "tmp/files/#{download.id}/documents.zip")).to be_falsey
     end
@@ -172,23 +171,44 @@ describe DownloadDocuments do
     it "exits on stale record error when packaging" do
       Download.find(download.id).update_attributes!(status: :packaging_contents)
 
+      download_documents.create_documents
       download_documents.download_and_package
       expect(File.exist?(Rails.root + "tmp/files/#{download.id}/documents.zip")).to be_falsey
     end
 
     it "packages files into zip and completes" do
+      download_documents.create_documents
       download_documents.download_and_package
 
       Zip::File.open(Rails.root + "tmp/files/#{download.id}/documents.zip") do |zip_file|
         expect(zip_file.glob("00000-keep-stamping.pdf").first).to_not be_nil
       end
 
-      expect(download).to be_complete
+      expect(download).to be_complete_success
     end
 
     it "works even if zip exists" do
+      download_documents.create_documents
       download_documents.download_and_package
       expect { download_documents.download_and_package }.to_not raise_error
+    end
+
+    context "when one document errors" do
+      let(:vbms_documents) do
+        [
+          VBMS::Responses::Document.new(document_id: "1", filename: "filename.pdf", doc_type: "123",
+                                        source: "SRC", received_at: Time.zone.now,
+                                        mime_type: "application/pdf"),
+          VBMS::Responses::Document.new(document_id: "2")
+        ]
+      end
+
+      it "sets status to complete_with_errors" do
+        download_documents.create_documents
+        download_documents.download_and_package
+
+        expect(download).to be_complete_with_errors
+      end
     end
 
     context "when files are deleted from the file system" do
@@ -201,6 +221,7 @@ describe DownloadDocuments do
       end
 
       it "retrieves them from s3" do
+        download_documents.create_documents
         download_documents.download_and_package
 
         Zip::File.open(Rails.root + "tmp/files/#{download.id}/documents.zip") do |zip_file|

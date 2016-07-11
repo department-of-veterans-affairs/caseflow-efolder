@@ -23,13 +23,30 @@ RSpec.feature "Downloads" do
     fill_in "Search for a VBMS eFolder to get started.", with: "1234"
     click_button "Search"
 
+    # Test that Caseflow caches veteran name for a download
+    Fakes::BGSService.veteran_names = {}
+
     @download = @user_download.last
     expect(@download).to_not be_nil
+    expect(@download.veteran_name).to eq("Stan Lee")
 
     expect(page).to have_content "Stan Lee (1234)"
     expect(page).to have_content "We are gathering the list of files in the eFolder now"
     expect(page).to have_current_path(download_path(@download))
     expect(GetDownloadManifestJob).to have_received(:perform_later)
+  end
+
+  scenario "Searching for a completed download" do
+    @user_download.create!(
+      file_number: "5555",
+      status: :complete_success
+    )
+
+    visit "/"
+    fill_in "Search for a VBMS eFolder to get started.", with: "5555"
+    click_button "Search"
+
+    expect(page).to have_content("Success")
   end
 
   scenario "Extraneous spaces in search input" do
@@ -72,7 +89,7 @@ RSpec.feature "Downloads" do
       user_station_id: "222",
       user_id: "123123",
       file_number: "22222",
-      status: :complete
+      status: :complete_success
     )
 
     visit download_path(another_user)
@@ -90,6 +107,7 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Confirming download" do
+    Fakes::BGSService.veteran_names = { "3456" => "Steph Curry" }
     @download = @user_download.create(file_number: "3456", status: :fetching_manifest)
 
     visit download_path(@download)
@@ -103,6 +121,7 @@ RSpec.feature "Downloads" do
     page.execute_script("window.DownloadStatus.recheck();")
 
     expect(page).to have_content "eFolder Express found 2 files in eFolder #3456"
+    expect(page).to have_content "Steph Curry (3456)"
     expect(page).to have_content "yawn.pdf 09/06/2015"
     expect(page).to have_content "smiley.pdf 01/19/2015"
     click_on "Fetch Files from VBMS"
@@ -126,7 +145,7 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Completed with at least one failed document download" do
-    @download = @user_download.create(file_number: "12", status: :complete)
+    @download = @user_download.create(file_number: "12", status: :complete_success)
     @download.documents.create(vbms_filename: "roll.pdf", mime_type: "application/pdf", download_status: :failed)
     @download.documents.create(vbms_filename: "tide.pdf", mime_type: "application/pdf", download_status: :success)
 
@@ -142,7 +161,7 @@ RSpec.feature "Downloads" do
     # clean files
     FileUtils.rm_rf(Rails.application.config.download_filepath)
 
-    @download = @user_download.create(file_number: "12", status: :complete)
+    @download = @user_download.create(file_number: "12", status: :complete_success)
     @download.documents.create(vbms_filename: "roll.pdf", mime_type: "application/pdf")
     @download.documents.create(vbms_filename: "tide.pdf", mime_type: "application/pdf")
 
@@ -162,10 +181,6 @@ RSpec.feature "Downloads" do
 
     click_on "Download Zip"
     expect(page.response_headers["Content-Type"]).to eq("application/zip")
-
-    visit "/"
-    within("#download-#{@download.id}") { click_on("Download Zip") }
-    expect(page.response_headers["Content-Type"]).to eq("application/zip")
   end
 
   scenario "Recent download list" do
@@ -179,30 +194,40 @@ RSpec.feature "Downloads" do
     )
     complete = @user_download.create!(
       file_number: "78901",
-      status: :complete
+      status: :complete_success
+    )
+    complete_with_errors = @user_download.create!(
+      file_number: "78902",
+      status: :complete_with_errors
     )
     another_user = Download.create!(
       user_station_id: "222",
       user_id: "123123",
       file_number: "22222",
-      status: :complete
+      status: :complete_success
     )
 
     visit "/"
 
     expect(page).to_not have_content(pending_confirmation.file_number)
-
     expect(page).to_not have_content(another_user.file_number)
 
+    complete_with_errors_row = "#download-#{complete_with_errors.id}"
+    expect(find(complete_with_errors_row)).to have_content("78902")
+    expect(find(complete_with_errors_row)).to have_css(".cf-icon-alert")
+    within(complete_with_errors_row) { click_on("View Results") }
+    expect(page).to have_content("Download Zip")
+
+    visit "/"
     pending_documents_row = "#download-#{pending_documents.id}"
     expect(find(pending_documents_row)).to have_content("45678")
-    expect(find(pending_documents_row)).to have_content("Downloading...")
-    within(pending_documents_row) { click_on("View Results") }
+    within(pending_documents_row) { click_on("View Progress") }
     expect(page).to have_current_path(download_path(pending_documents))
 
     visit "/"
     complete_row = "#download-#{complete.id}"
     expect(find(complete_row)).to have_content("78901")
-    expect(find(complete_row)).to have_content("Download Zip")
+    within(complete_row) { click_on("View Results") }
+    expect(page).to have_current_path(download_path(complete))
   end
 end

@@ -1,5 +1,12 @@
 <div class="cf-app-segment cf-app-segment--alt ee-new-download">
-  <h1>Welcome to eFolder Express!</h1>
+  <div class="ee-heading">
+    <h1>Welcome to eFolder Express!</h1>
+
+    <p>
+      eFolder Express allows VA employees to bulk-download VBMS eFolders.<br/>
+      Search for a File Number below to get started.
+    </p>
+  </div>
 
   <% if @error == :veteran_not_found %>
     <p>
@@ -28,17 +35,21 @@
   <div class="ee-search">
     <%= form_for @download, method: :post, html: { class: "usa-search usa-search-big" } do %>
       <div role="search">
-        <%= label_tag(:file_number, "Search for a VBMS eFolder to get started.") %>
+        <%= label_tag(:file_number, "Search for a VBMS eFolder to get started.", class: "usa-sr-only") %>
         <%= search_field_tag(:file_number) %>
         <button type="submit">
           <span class='usa-search-submit-text'>Search</span>
         </button>
       </div>
     <% end %>
+
+    <p class="cf-txt-c">
+      <em>Note: eFolder Express does not currently support Virtual VA documents.</em>
+    </p>
   </div>
 
   <% if recent_downloads.exists? %>
-    <h2>Recent Searches</h2>
+    <h2 class="ee-recent-searches">Download History</h2>
     <table class="usa-table-borderless" summary="List of recent downloads and links to download their contents">
     <thead>
       <tr class="usa-sr-only">
@@ -50,18 +61,19 @@
       <% recent_downloads.each do |download| %>
         <tr id="download-<%= download.id %>">
           <td>
-            <%= download.file_number %>
+            <%= download.veteran_name %>
+            <span class="cf-subtext">(<%= download.file_number %>)</span>
           </td>
           <td class="ee-actions-cell">
-            <%= link_to "View Results", download_path(download) %>
+            <% if download.pending_documents? %>
+              <%= link_to "View Progress", download_path(download) %>
+            <% else %>
+              <%= link_to "View Results", download_path(download) %>
+            <% end %>
 
-            <span class="ee-download-status">
-              <% if download.pending_documents? %>
-                Downloading...
-              <% else %>
-                <%= link_to "Download Zip", download_download_path(download) %>
-              <% end %>
-            </span>
+            <% if download.complete_with_errors? %>
+              <%= svg_icon(:alert) %>
+            <% end %>
           </td>
         </tr>
       <% end %>
