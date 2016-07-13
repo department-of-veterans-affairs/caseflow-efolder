@@ -158,6 +158,8 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Completed download" do
+    Fakes::BGSService.veteran_names = { "12" => "Tom Thomson" }
+
     # clean files
     FileUtils.rm_rf(Rails.application.config.download_filepath)
 
