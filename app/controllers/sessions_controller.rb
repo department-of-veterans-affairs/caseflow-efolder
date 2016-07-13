@@ -5,7 +5,8 @@ class SessionsController < ApplicationController
 
   def create
     session["user"] = User.from_css_auth_hash auth_hash
-    redirect_to "/"
+
+    redirect_to session.delete("return_to") || "/"
   end
 
   def destroy
