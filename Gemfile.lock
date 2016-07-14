@@ -21,8 +21,8 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/ruby-bgs.git
-  revision: a114261b9339d3976a8451b8591cb61b59152509
-  branch: master
+  revision: 573c3302d594fc2d674bb80158f2f8730a9d408f
+  branch: ssl
   specs:
     bgs (0.1)
       nokogiri
