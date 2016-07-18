@@ -71,6 +71,10 @@ class Download < ActiveRecord::Base
     "#{id}-download.zip"
   end
 
+  def package_filename
+    "#{veteran_name.gsub(/\s*/, '').downcase}-#{created_at.to_formatted_s(:filename)}.zip"
+  end
+
   class << self
     attr_writer :bgs_service
 

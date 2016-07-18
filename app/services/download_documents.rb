@@ -89,7 +89,7 @@ class DownloadDocuments
   end
 
   def zip_path
-    File.join(download_dir, "documents.zip")
+    File.join(download_dir, @download.package_filename)
   end
 
   def package_contents

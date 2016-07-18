@@ -9,7 +9,10 @@ class ApplicationController < ActionController::Base
   before_action :strict_transport_security
 
   def authenticate
-    redirect_to "/auth/samlva" if current_user.nil?
+    return true unless current_user.nil?
+
+    session["return_to"] = request.original_url
+    redirect_to((ENV["SSO_HOST"] || "") + "/auth/samlva")
   end
 
   def authorize
