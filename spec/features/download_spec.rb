@@ -132,25 +132,43 @@ RSpec.feature "Downloads" do
     expect(page).to have_content("Fetching Files")
   end
 
-  scenario "Unfinished download with documents" do
+  scenario "Download progress shows documents in tabs based on their status" do
     @download = @user_download.create(status: :pending_documents)
     @download.documents.create(vbms_filename: "yawn.pdf", mime_type: "application/pdf", download_status: :pending)
     @download.documents.create(vbms_filename: "poo.pdf", mime_type: "application/pdf", download_status: :failed)
     @download.documents.create(vbms_filename: "smiley.pdf", mime_type: "application/pdf", download_status: :success)
 
     visit download_path(@download)
-    expect(page).to have_css ".document-success", text: "smiley.pdf"
+    expect(page).to have_css ".cf-tab.cf-active", text: "Progress (1)"
     expect(page).to have_css ".document-pending", text: "yawn.pdf"
+    expect(page).to_not have_css ".document-success", text: "smiley.pdf"
+    expect(page).to_not have_css ".document-failed", text: "poo.pdf"
+
+    click_on "Completed"
+    expect(page).to have_css ".cf-tab.cf-active", text: "Completed (1)"
+    expect(page).to have_css ".document-success", text: "smiley.pdf"
+    expect(page).to_not have_css ".document-pending", text: "yawn.pdf"
+    expect(page).to_not have_css ".document-failed", text: "poo.pdf"
+
+    click_on "Errored"
+    expect(page).to have_css ".cf-tab.cf-active", text: "Errored (1)"
     expect(page).to have_css ".document-failed", text: "poo.pdf"
+    expect(page).to_not have_css ".document-success", text: "smiley.pdf"
+    expect(page).to_not have_css ".document-pending", text: "yawn.pdf"
   end
 
   scenario "Completed with at least one failed document download" do
-    @download = @user_download.create(file_number: "12", status: :complete_success)
+    @download = @user_download.create(file_number: "12", status: :pending_documents)
     @download.documents.create(vbms_filename: "roll.pdf", mime_type: "application/pdf", download_status: :failed)
     @download.documents.create(vbms_filename: "tide.pdf", mime_type: "application/pdf", download_status: :success)
 
     visit download_path(@download)
+    expect(page).to have_css ".cf-tab.cf-active", text: "Progress (0)"
 
+    @download.update_attributes(status: :complete_with_errors)
+    page.execute_script("window.DownloadProgress.reload();")
+    expect(page).to have_css ".cf-tab.cf-active", text: "Completed (1)"
+    expect(page).to have_button "Progress (0)", disabled: true
     expect(page).to have_content "Trouble Fetching Files"
 
     click_on "Search for Another eFolder"

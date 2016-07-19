@@ -3,21 +3,57 @@ window.DownloadProgress = (function($) {
 
   // public
   return {
-    reload: function() {
+    currentTab: "progress",
+    completed: false,
+
+    initTabs: function() {
+      var self = this;
+      $(".cf-tab").click(function() {
+        self.changeTabs($(this).attr("data-tab"));
+      });
+    },
+
+    reload: function(changingTabs) {
+      var self = this;
+
       if (id) {
-        $.get("/downloads/" + id + "/progress").then(function(fragment) {
+        $.get("/downloads/" + id + "/progress?current_tab=" + this.currentTab).then(function(fragment) {
+          var scrollTop = $(".cf-tab-content")[0].scrollTop;
           $("#download-progress").html(fragment);
+
+          if(!changingTabs) {
+            $(".cf-tab-content")[0].scrollTop = scrollTop;
+          }
+
+          self.initTabs();
         });
       }
     },
 
+    changeTabs: function(tabName) {
+      if(tabName != this.currentTab) {
+        this.currentTab = tabName;
+        this.reload(true);
+      }
+    },
+
     complete: function() {
-      clearInterval(intervalID);
+      if(!this.completed) {
+        this.changeTabs("completed");
+        clearInterval(intervalID);
+        this.completed = true;
+      }
     },
 
     init: function(downloadId) {
+      var self = this;
+
       id = downloadId;
-      intervalID = window.setInterval(this.reload, 1000);
+      intervalID = window.setInterval(function() {
+        self.reload(false);
+      }, 1000);
+
+      $(document).ready(function() { self.initTabs(); });
     }
   };
 })($);

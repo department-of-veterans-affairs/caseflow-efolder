@@ -1,0 +1,70 @@
+.cf-tab-navigation {
+  margin-top: 1em;
+  position: relative;
+  width: 100%;
+  border-bottom: 1px solid $color-primary;
+}
+
+.cf-tab {
+  @extend .usa-button-unstyled;
+
+  margin: 0;
+  margin-right: -3.5px;
+  padding: 15px 1.5em 15px 1em;
+  color: $color-gray;
+  background-color: $color-white;
+  border: 1px solid $color-gray-light;
+  border-bottom: 0;
+  border-left-width: 0;
+  font-weight: normal;
+  white-space: nowrap;
+
+  &::before { content: ''; }
+  &::after { margin: 0; }
+  &:first-child { border-left-width: 1px; }
+
+  &:hover {
+    color: $color-gray-dark;
+    background-color: $color-white;
+  }
+
+  &:disabled:hover {
+    color: $color-gray;
+  }
+
+  &:focus {
+    outline: -webkit-focus-ring-color auto 5px;
+
+    svg path {
+      fill: $color-primary;
+    }
+  }
+
+  &.cf-active {
+    position: relative;
+    color: $color-primary;
+    border-color: $color-primary;
+    border-top-width: 4px;
+    border-left-width: 1px;
+    padding-top: 13px;
+    right: 1px;
+    top: 1px;
+    margin-right: -4.5px;
+
+    svg path { fill: $color-primary; }
+  }
+
+  svg {
+    margin-right: 0.25em;
+    path { fill: $color-gray; }
+  }
+}
+
+.cf-tab-content {
+  border: 1px solid $color-gray-lighter;
+  border-top: 0;
+  padding-top: 1px;
+  max-height: 600px;
+  overflow-y: scroll;
+}
+

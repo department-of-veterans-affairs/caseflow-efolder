@@ -5,7 +5,16 @@
 @import 'caseflow';
 @import 'progress-bar';
 @import 'spin';
+@import 'tabs';
 @import 'download';
+
+
+// USWDS override
+table th,
+table td {
+  border-color: $color-gray-lighter;
+}
+
 
 .cf-spacer-icon {
   height: 1em;
@@ -29,6 +38,16 @@
   height: 200px;
   width: 200px;
   margin: auto;
+}
+
+.ee-icon-progress {
+  vertical-align: -.45ex;
+  width: 1em;
+  height: 1em;
+
+  path {
+    fill: $color-secondary-dark;
+  }
 }
 
 .ee-icon-loading-front {
@@ -57,4 +76,8 @@ $max-width: rem(800);
 
 .documents {
   @include unstyled-list;
+}
+
+.ee-documents-table {
+  margin-top: 0;
 }
