@@ -124,7 +124,7 @@ RSpec.feature "Downloads" do
     expect(page).to have_content "Steph Curry (3456)"
     expect(page).to have_content "yawn.pdf 09/06/2015"
     expect(page).to have_content "smiley.pdf 01/19/2015"
-    click_on "Fetch Files from VBMS"
+    first(:button, "Prepare for Download").click
 
     expect(@download.reload).to be_pending_documents
     expect(GetDownloadFilesJob).to have_received(:perform_later)

@@ -3,10 +3,10 @@
   window.DownloadStatus.init(<%= @download.id %>, "<%= @download.status %>");
 </script>
 
-<% fetch_button_text = "Fetch Files from VBMS" %>
+<% fetch_button_text = "Prepare for Download" %>
 
 <div class="cf-app-segment cf-app-segment--alt">
-  <h1><%= @download.veteran_name %> (<%=h @download.file_number %>)</h1>
+  <h1><%= @download.veteran_name %> <span class="ee-subheading">(<%=h @download.file_number %>)</span></h1>
 
   <% if @download.fetching_manifest? %>
     <%= page_loading_indicator "We are gathering the list of files in the eFolder now..." %>
@@ -24,27 +24,33 @@
 
   <% elsif @download.pending_confirmation? %>
     <p>
-      eFolder Express found <%= @download.documents.count %> files in eFolder #<%= @download.file_number %>.
-      Click the <%= fetch_button_text %> button below to zip the files.
+      eFolder Express found <%= @download.documents.count %> files in eFolder #<%= @download.file_number %> (<%= @download.veteran_name %>).
+      Click the <%= fetch_button_text %> button below to retrieve files from VBMS.
     </p>
 
-    <table class="usa-table-borderless" summary="Files in veteran's eFolder">
-    <thead>
-      <tr>
-        <th scope="col">Filename</th>
-        <th scope="col">Receipt Date</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @download.documents.each do |document| %>
+    <p>
+      <%= button_to fetch_button_text, start_download_path(@download), method: :post, class: "cf-submit" %>
+    </p>
+
+    <div class="ee-document-list">
+      <table class="usa-table-borderless ee-documents-table" summary="Files in veteran's eFolder">
+      <thead>
         <tr>
-          <td class="ee-filename-row"><%= document.filename %></td>
-          <td><%= document.received_at && document.received_at.to_formatted_s(:short_date) %></td>
+          <th scope="col">Filename</th>
+          <th scope="col">Receipt Date</th>
         </tr>
-      <% end %>
-    </tbody>
-    </table>
-  <% end %>
+      </thead>
+      <tbody>
+        <% @download.documents.each do |document| %>
+          <tr>
+            <td class="ee-filename-row"><%= document.filename %></td>
+            <td><%= document.received_at && document.received_at.to_formatted_s(:short_date) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+      </table>
+    <% end %>
+  </div>
 </div>
 
 <div class="cf-app-segment">

@@ -74,6 +74,18 @@ $max-width: rem(800);
   padding: 0 $gutter-spacing;
 }
 
+.ee-document-list {
+  border: 1px solid $color-gray-lighter;
+  padding-top: 1px;
+  max-height: 600px;
+  overflow-y: scroll;
+}
+
+.ee-subheading {
+  font-weight: normal !important;
+  color: $color-gray;
+}
+
 .documents {
   @include unstyled-list;
 }
