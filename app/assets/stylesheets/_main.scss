@@ -8,13 +8,11 @@
 @import 'tabs';
 @import 'download';
 
-
 // USWDS override
 table th,
 table td {
   border-color: $color-gray-lighter;
 }
-
 
 .cf-spacer-icon {
   height: 1em;
@@ -62,16 +60,6 @@ table td {
   position: absolute;
   top: 0;
   left: 0;
-}
-
-$small-spacing: 0.5rem;
-$medium-spacing: 1rem;
-$gutter-spacing: rem(10);
-$max-width: rem(800);
-
-.content {
-  @include outer-container;
-  padding: 0 $gutter-spacing;
 }
 
 .ee-document-list {
