@@ -51,7 +51,7 @@ window.DownloadProgress = (function($) {
       id = downloadId;
       intervalID = window.setInterval(function() {
         self.reload(false);
-      }, 1000);
+      }, 2000);
 
       $(document).ready(function() { self.initTabs(); });
     }

@@ -65,14 +65,14 @@
             <span class="cf-subtext">(<%= download.file_number %>)</span>
           </td>
           <td class="ee-actions-cell">
+            <% if download.complete_with_errors? %>
+              <%= svg_icon(:alert) %>
+            <% end %>
+
             <% if download.pending_documents? %>
               <%= link_to "View Progress", download_path(download) %>
             <% else %>
               <%= link_to "View Results", download_path(download) %>
-            <% end %>
-
-            <% if download.complete_with_errors? %>
-              <%= svg_icon(:alert) %>
             <% end %>
           </td>
         </tr>

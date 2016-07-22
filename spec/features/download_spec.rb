@@ -124,12 +124,12 @@ RSpec.feature "Downloads" do
     expect(page).to have_content "Steph Curry (3456)"
     expect(page).to have_content "yawn.pdf 09/06/2015"
     expect(page).to have_content "smiley.pdf 01/19/2015"
-    click_on "Fetch Files from VBMS"
+    first(:button, "Prepare for Download").click
 
     expect(@download.reload).to be_pending_documents
     expect(GetDownloadFilesJob).to have_received(:perform_later)
 
-    expect(page).to have_content("Fetching Files")
+    expect(page).to have_content("Retrieving Files ...")
   end
 
   scenario "Download progress shows documents in tabs based on their status" do
@@ -150,8 +150,8 @@ RSpec.feature "Downloads" do
     expect(page).to_not have_css ".document-pending", text: "yawn.pdf"
     expect(page).to_not have_css ".document-failed", text: "poo.pdf"
 
-    click_on "Errored"
-    expect(page).to have_css ".cf-tab.cf-active", text: "Errored (1)"
+    click_on "Errors"
+    expect(page).to have_css ".cf-tab.cf-active", text: "Errors (1)"
     expect(page).to have_css ".document-failed", text: "poo.pdf"
     expect(page).to_not have_css ".document-success", text: "smiley.pdf"
     expect(page).to_not have_css ".document-pending", text: "yawn.pdf"
@@ -169,7 +169,7 @@ RSpec.feature "Downloads" do
     page.execute_script("window.DownloadProgress.reload();")
     expect(page).to have_css ".cf-tab.cf-active", text: "Completed (1)"
     expect(page).to have_button "Progress (0)", disabled: true
-    expect(page).to have_content "Trouble Fetching Files"
+    expect(page).to have_content "Some files couldn't be added"
 
     click_on "Search for Another eFolder"
     expect(page).to have_current_path(root_path)
@@ -199,7 +199,7 @@ RSpec.feature "Downloads" do
     expect(page).to have_css ".document-success", text: "roll.pdf"
     expect(page).to have_css ".document-success", text: "tide.pdf"
 
-    click_on "Download Zip"
+    first(:link, "Download Zip").click
     expect(page.response_headers["Content-Type"]).to eq("application/zip")
   end
 
