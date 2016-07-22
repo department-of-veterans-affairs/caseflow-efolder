@@ -15,7 +15,7 @@ describe DownloadDocuments do
       VBMS::Responses::Document.new(document_id: "1", filename: "filename.pdf", doc_type: "123",
                                     source: "SRC", received_at: Time.zone.now,
                                     mime_type: "application/pdf"),
-      VBMS::Responses::Document.new(document_id: "2")
+      VBMS::Responses::Document.new(document_id: "2", received_at: 1.hour.ago)
     ]
   end
 
