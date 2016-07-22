@@ -199,7 +199,7 @@ RSpec.feature "Downloads" do
     expect(page).to have_css ".document-success", text: "roll.pdf"
     expect(page).to have_css ".document-success", text: "tide.pdf"
 
-    click_on "Download Zip"
+    first(:link, "Download Zip").click
     expect(page.response_headers["Content-Type"]).to eq("application/zip")
   end
 
