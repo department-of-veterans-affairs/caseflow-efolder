@@ -9,13 +9,14 @@
     <% if @download.documents.failed.any? %>
       <div class="usa-alert usa-alert-error" role="alert">
         <div class="usa-alert-body">
-          <h3 class="usa-alert-heading">Trouble Fetching Files</h3>
+          <h3 class="usa-alert-heading">Some files couldn't be added</h3>
           <p class="usa-alert-text">
-            eFolder Express couldn't fetch the file(s) with an <%= svg_icon(:failed) %> below. You may be able to download them these files manually from VBMS.
+            eFolder Express couldn't fetch some files. Click on the "Errors" tab below.
           </p>
           <p>
-            You can still download the files with a <%= svg_icon(:success) %> by clicking the "<%= download_button_text %>" button below.
+            You can still download the rest of the files by clicking the "Download" button below.
           </p>
+          <%= link_to "Download Anyway", download_download_path(@download), {class: "usa-button"} %>
         </div>
       </div>
 
@@ -71,7 +72,7 @@
     </button>
     <button class="cf-tab <% if current_tab == "errored" %>cf-active<% end %>" data-tab="errored"
       <% if @download.documents.where(download_status: 2).empty? %>disabled<% end %>>
-     <%= svg_icon(:failed) %> Errored (<%= @download.documents.where(download_status: 2).count %>)
+     <%= svg_icon(:failed) %> Errors (<%= @download.documents.where(download_status: 2).count %>)
     </button>
   </div>
 
@@ -108,7 +109,7 @@
 
 <div class="cf-app-segment">
   <% if @download.complete? %>
-    <%= link_to "Download Zip", download_download_path(@download), {class: "usa-button ee-right-button"} %>
+    <%= link_to (@download.documents.failed.any? ? "Download Anyway" : "Download Zip"), download_download_path(@download), {class: "usa-button ee-right-button"} %>
   <% else %>
     <button class="usa-button-disabled ee-right-button">Download Zip</button>
   <% end %>

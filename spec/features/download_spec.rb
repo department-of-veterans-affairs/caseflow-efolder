@@ -150,8 +150,8 @@ RSpec.feature "Downloads" do
     expect(page).to_not have_css ".document-pending", text: "yawn.pdf"
     expect(page).to_not have_css ".document-failed", text: "poo.pdf"
 
-    click_on "Errored"
-    expect(page).to have_css ".cf-tab.cf-active", text: "Errored (1)"
+    click_on "Errors"
+    expect(page).to have_css ".cf-tab.cf-active", text: "Errors (1)"
     expect(page).to have_css ".document-failed", text: "poo.pdf"
     expect(page).to_not have_css ".document-success", text: "smiley.pdf"
     expect(page).to_not have_css ".document-pending", text: "yawn.pdf"
@@ -169,7 +169,7 @@ RSpec.feature "Downloads" do
     page.execute_script("window.DownloadProgress.reload();")
     expect(page).to have_css ".cf-tab.cf-active", text: "Completed (1)"
     expect(page).to have_button "Progress (0)", disabled: true
-    expect(page).to have_content "Trouble Fetching Files"
+    expect(page).to have_content "Some files couldn't be added"
 
     click_on "Search for Another eFolder"
     expect(page).to have_current_path(root_path)
