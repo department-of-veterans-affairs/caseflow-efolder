@@ -60,26 +60,50 @@
 
   <% end %>
 
-  <table class="usa-table-borderless" summary="Status of veteran eFolder file downloads">
-  <thead>
-    <tr>
-      <th scope="col"></th>
-      <th scope="col">Filename</th>
-      <th scope="col">Receipt Date</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @download.documents.each do |document| %>
-      <tr class="document-<%= document.download_status %>">
-        <td class="ee-status-row">
-          <%= svg_icon(document.download_status_icon) %>
-        </td>
-        <td class="ee-filename-row"><%= document.filename %></td>
-        <td><%= document.received_at && document.received_at.to_formatted_s(:short_date) %></td>
-      </tr>
+  <div class="cf-tab-navigation">
+    <button class="cf-tab <% if current_tab == "progress" %>cf-active<% end %>" data-tab="progress"
+      <% if @download.documents.where(download_status: 0).empty? %>disabled<% end %>>
+      <%= svg_icon(:progress) %> Progress (<%= @download.documents.where(download_status: 0).count %>)
+    </button>
+    <button class="cf-tab <% if current_tab == "completed" %>cf-active<% end %>" data-tab="completed"
+      <% if @download.documents.where(download_status: 1).empty? %>disabled<% end %>>
+      <%= svg_icon(:success) %> Completed (<%= @download.documents.where(download_status: 1).count %>)
+    </button>
+    <button class="cf-tab <% if current_tab == "errored" %>cf-active<% end %>" data-tab="errored"
+      <% if @download.documents.where(download_status: 2).empty? %>disabled<% end %>>
+     <%= svg_icon(:failed) %> Errored (<%= @download.documents.where(download_status: 2).count %>)
+    </button>
+  </div>
+
+  <div class="cf-tab-content">
+    <%if @download.documents.where(download_status: current_document_status).empty? %>
+      <p class="cf-txt-c">
+        There are no documents here.
+      </p>
+    <% else %>
+      <table class="usa-table-borderless ee-documents-table" summary="Status of veteran eFolder file downloads">
+      <thead>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">Filename</th>
+          <th scope="col">Receipt Date</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% @download.documents.where(download_status: current_document_status).each do |document| %>
+          <tr class="document-<%= document.download_status %>">
+            <td class="ee-status-row">
+              <%= svg_icon(document.download_status_icon) %>
+            </td>
+            <td class="ee-filename-row"><%= document.filename %></td>
+            <td><%= document.received_at && document.received_at.to_formatted_s(:short_date) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+      </table>
     <% end %>
-  </tbody>
-  </table>
+  </div>
 </div>
 
 <div class="cf-app-segment">

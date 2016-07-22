@@ -99,4 +99,14 @@ class DownloadsController < ApplicationController
     @recent_downloads ||= downloads.where(status: [3, 4, 5, 6])
   end
   helper_method :recent_downloads
+
+  def current_tab
+    params[:current_tab] || (@download.complete? ? "completed" : "progress")
+  end
+  helper_method :current_tab
+
+  def current_document_status
+    { "progress": 0, "completed": 1, "errored": 2 }[current_tab.to_sym]
+  end
+  helper_method :current_document_status
 end
