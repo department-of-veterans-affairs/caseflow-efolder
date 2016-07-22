@@ -32,18 +32,11 @@
 
     <% end %>
   <% else %>
-    <p>
-      <div class="usa-alert usa-alert-info" role="alert">
-        <div class="usa-alert-body">
-          <h3 class="usa-alert-heading">Take a breather!</h3>
-          <p class="usa-alert-text">
-            You can close this window at any time and get back to this page from the eFolder Express homepage.
-          </p>
-          <p>
-            Note: Zip files expire within 24 hours after they've been fetched by eFolder Express.
-          </p>
-        </div>
-      </div>
+    <h1 class="cf-txt-c">Retrieving Files ...</h1>
+    <p class="ee-fetching-files">
+      <% if @download.estimated_to_complete_at %>
+        Estimated time left: <%= distance_of_time_in_words(@download.estimated_to_complete_at, Time.zone.now, include_seconds: true) %>
+      <% end %>
     </p>
 
     <div class="progress-bar">
@@ -51,13 +44,20 @@
         Progress: <%= @download.progress_percentage %>%
       </span>
     </div>
-    <p class="ee-fetching-files">
-      Fetching Files...
-      <% if @download.estimated_to_complete_at %>
-        <br/>Estimated time left: <%= distance_of_time_in_words(@download.estimated_to_complete_at, Time.zone.now, include_seconds: true) %>
-      <% end %>
-    </p>
 
+    <p>
+      <div class="usa-alert usa-alert-info" role="alert">
+        <div class="usa-alert-body">
+          <h3 class="usa-alert-heading">You can close this page at any time.</h3>
+          <p class="usa-alert-text">
+            eFolder Express will still continue downloading. Go to your home screen — <a href="/">https://efolder.cf.ds.va.gov</a> — to open the documents once they've finished.
+          </p>
+          <p>
+            Note: Zip files expire within 24 hours after they've been fetched by eFolder Express.
+          </p>
+        </div>
+      </div>
+    </p>
   <% end %>
 
   <div class="cf-tab-navigation">
