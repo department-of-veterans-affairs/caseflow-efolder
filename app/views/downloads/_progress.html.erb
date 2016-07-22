@@ -2,10 +2,6 @@
 
 <div class="cf-app-segment cf-app-segment--alt">
   <% if @download.complete? %>
-    <script>
-      window.DownloadProgress.complete();
-    </script>
-
     <% if @download.documents.failed.any? %>
       <div class="usa-alert usa-alert-error" role="alert">
         <div class="usa-alert-body">
@@ -116,3 +112,10 @@
 
   <span><%= link_to "Search for Another eFolder", root_path %></span>
 </div>
+
+
+<% if @download.complete? %>
+  <script>
+    window.DownloadProgress.complete();
+  </script>
+<% end %>
