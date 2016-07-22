@@ -129,7 +129,7 @@ RSpec.feature "Downloads" do
     expect(@download.reload).to be_pending_documents
     expect(GetDownloadFilesJob).to have_received(:perform_later)
 
-    expect(page).to have_content("Fetching Files")
+    expect(page).to have_content("Retrieving Files ...")
   end
 
   scenario "Download progress shows documents in tabs based on their status" do
