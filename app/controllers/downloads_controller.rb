@@ -65,7 +65,7 @@ class DownloadsController < ApplicationController
   private
 
   def redirect_to_download_if_exists
-    @download = downloads.where(file_number: sanitized_file_number).first
+    @download = recent_downloads.where(file_number: sanitized_file_number).first
     redirect_to(download_url(@download)) && (return true) if @download
   end
 
