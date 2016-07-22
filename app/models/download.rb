@@ -11,7 +11,7 @@ class Download < ActiveRecord::Base
 
   TIMEOUT = 10.minutes
 
-  has_many :documents, -> { order(:id) }
+  has_many :documents, -> { order(received_at: :desc) }
 
   after_initialize do |download|
     if download.file_number
