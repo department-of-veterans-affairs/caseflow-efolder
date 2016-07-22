@@ -1,5 +1,3 @@
-<% download_button_text = "Download Zip" %>
-
 <div class="cf-app-segment cf-app-segment--alt">
   <% if @download.complete? %>
     <% if @download.documents.failed.any? %>
@@ -19,11 +17,13 @@
     <% else %>
       <div class="usa-alert usa-alert-success" role="alert">
         <div class="usa-alert-body">
-          <h3 class="usa-alert-heading">Success</h3>
+          <h3 class="usa-alert-heading">Success!</h3>
           <p class="usa-alert-text">
-            The contents of eFolder #<%= @download.file_number %> are ready to download.
-            Click the "<%= download_button_text %> button
+            All of the documents in the VBMS eFolder for #<%= @download.file_number %> are ready to download.
+            Click the "Download" button below.
           </p>
+          <br/>
+          <%= link_to "Download Zip", download_download_path(@download), {class: "usa-button"} %>
         </div>
       </div>
 
