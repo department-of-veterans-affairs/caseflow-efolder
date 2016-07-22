@@ -21,12 +21,12 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/ruby-bgs.git
-  revision: 573c3302d594fc2d674bb80158f2f8730a9d408f
+  revision: a24c18e711be2109c34699f57ab2251088a286e9
   branch: ssl
   specs:
     bgs (0.1)
       nokogiri
-      savon (~> 2.0)
+      savon (~> 2.11)
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/sniffybara.git
