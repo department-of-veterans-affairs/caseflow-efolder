@@ -10,7 +10,10 @@
           <p>
             You can still download the rest of the files by clicking the "Download" button below.
           </p>
-          <%= link_to "Download Anyway", download_download_path(@download), {class: "usa-button"} %>
+          <ul class="ee-button-list">
+            <li><%= link_to "Download Anyway", download_download_path(@download), {class: "usa-button"} %></li>
+            <li><%= link_to "Retry Download", retry_download_path(@download), {method: :post, class: "usa-button usa-button-gray"} %></li>
+          </ul>
         </div>
       </div>
 

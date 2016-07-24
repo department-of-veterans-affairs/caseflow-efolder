@@ -72,6 +72,27 @@ describe "Download" do
     end
   end
 
+  context "#reset!" do
+    before do
+      download.update_attributes(status: :complete_with_errors)
+
+      @documents = [
+        download.documents.create(vbms_filename: "roll.pdf", mime_type: "application/pdf", download_status: :failed),
+        download.documents.create(vbms_filename: "tide.pdf", mime_type: "application/pdf", download_status: :success)
+      ]
+    end
+
+    it "resets status of download and documents" do
+      download.reset!
+
+      expect(download.reload).to be_pending_documents
+      expect(@documents.first.reload).to be_pending
+      expect(@documents.first.filepath).to be_nil
+      expect(@documents.last.reload).to be_pending
+      expect(@documents.last.filepath).to be_nil
+    end
+  end
+
   context "#estimated_to_complete_at" do
     before { download.documents.create!(started_at: 1.minute.ago) }
     subject { download.estimated_to_complete_at }
