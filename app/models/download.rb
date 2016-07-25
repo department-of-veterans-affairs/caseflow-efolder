@@ -10,6 +10,7 @@ class Download < ActiveRecord::Base
   }
 
   TIMEOUT = 10.minutes
+  HOURS_UNTIL_EXPIRY = 24
 
   has_many :documents, -> { order(received_at: :desc) }
 
@@ -17,6 +18,10 @@ class Download < ActiveRecord::Base
     if download.file_number
       download.veteran_name ||= download.demo? ? "TEST" : Download.bgs_service.fetch_veteran_name(download.file_number)
     end
+  end
+
+  def self.active
+    where(created_at: Download::HOURS_UNTIL_EXPIRY.hours.ago..Time.zone.now)
   end
 
   def demo?

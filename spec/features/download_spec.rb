@@ -96,6 +96,17 @@ RSpec.feature "Downloads" do
     expect(page).to have_content("not found")
   end
 
+  scenario "Attempting to view expired download fails" do
+    expired = @user_download.create!(
+      file_number: "78901",
+      created_at: 27.hours.ago,
+      status: :complete_success
+    )
+
+    visit download_path(expired)
+    expect(page).to have_content("not found")
+  end
+
   scenario "Download with no documents" do
     @download = @user_download.create(status: :no_documents)
     visit download_path(@download)
@@ -201,6 +212,17 @@ RSpec.feature "Downloads" do
 
     first(:link, "Download Zip").click
     expect(page.response_headers["Content-Type"]).to eq("application/zip")
+  end
+
+  scenario "Recent download list expires old downloads" do
+    @user_download.create!(
+      file_number: "78901",
+      created_at: 27.hours.ago,
+      status: :complete_success
+    )
+
+    visit "/"
+    expect(page).to_not have_content("78901")
   end
 
   scenario "Recent download list" do
