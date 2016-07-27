@@ -2,25 +2,17 @@ class DownloadsController < ApplicationController
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
 
   def new
-    @download = Download.new
+    @search = Search.new
   end
 
   def create
-    return if redirect_to_download_if_exists
+    @search = Search.new(user: current_user, file_number: params[:file_number])
 
-    @download = downloads.new(file_number: sanitized_file_number)
-    check_error unless @download.demo?
-    render("new") && return if @error
-
-    @download.save!
-
-    if @download.demo?
-      DemoGetDownloadManifestJob.perform_later(@download)
+    if @search.perform!
+      redirect_to download_url(@search.download)
     else
-      GetDownloadManifestJob.perform_later(@download)
+      render("new")
     end
-
-    redirect_to download_url(@download)
   end
 
   def start
@@ -64,15 +56,6 @@ class DownloadsController < ApplicationController
 
   private
 
-  def redirect_to_download_if_exists
-    @download = recent_downloads.where(file_number: sanitized_file_number).first
-    redirect_to(download_url(@download)) && (return true) if @download
-  end
-
-  def sanitized_file_number
-    (params[:file_number] || "").strip
-  end
-
   def start_download_files
     @download.touch
 
@@ -80,14 +63,6 @@ class DownloadsController < ApplicationController
       DemoGetDownloadFilesJob.perform_later(@download)
     else
       GetDownloadFilesJob.perform_later(@download)
-    end
-  end
-
-  def check_error
-    if !@download.case_exists?
-      @error = :veteran_not_found
-    elsif !@download.can_access?
-      @error = :access_denied
     end
   end
 

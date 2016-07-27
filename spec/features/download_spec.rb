@@ -8,6 +8,7 @@ RSpec.feature "Downloads" do
     )
     Download.delete_all
     Document.delete_all
+    Search.delete_all
     allow(GetDownloadManifestJob).to receive(:perform_later)
     allow(GetDownloadFilesJob).to receive(:perform_later)
 
@@ -34,6 +35,9 @@ RSpec.feature "Downloads" do
     expect(page).to have_content "We are gathering the list of files in the eFolder now"
     expect(page).to have_current_path(download_path(@download))
     expect(GetDownloadManifestJob).to have_received(:perform_later)
+
+    @search = Search.where(user_id: "123123", file_number: "1234").first
+    expect(@search).to be_download_created
   end
 
   scenario "Searching for a completed download" do
@@ -47,6 +51,9 @@ RSpec.feature "Downloads" do
     click_button "Search"
 
     expect(page).to have_content("Success")
+
+    @search = Search.where(user_id: "123123", file_number: "5555").first
+    expect(@search).to be_download_found
   end
 
   scenario "Extraneous spaces in search input" do
@@ -71,6 +78,9 @@ RSpec.feature "Downloads" do
     click_button "Search"
 
     expect(page).to have_content "Couldn't find an eFolder with that ID"
+
+    @search = Search.where(user_id: "123123", file_number: "abcd").first
+    expect(@search).to be_veteran_not_found
   end
 
   scenario "Sensitive download error" do
@@ -82,6 +92,9 @@ RSpec.feature "Downloads" do
     click_button "Search"
     expect(page).to have_current_path("/downloads")
     expect(page).to have_content("contains sensitive information")
+
+    @search = Search.where(user_id: "123123", file_number: "8888").first
+    expect(@search).to be_access_denied
   end
 
   scenario "Attempting to view download created by another user" do
