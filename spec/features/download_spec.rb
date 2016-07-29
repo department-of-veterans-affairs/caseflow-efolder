@@ -186,6 +186,20 @@ RSpec.feature "Downloads" do
     expect(page).to have_current_path(root_path)
   end
 
+  scenario "Retry failed download" do
+    @download = @user_download.create(file_number: "12", status: :complete_with_errors)
+    @download.documents.create(vbms_filename: "roll.pdf", mime_type: "application/pdf", download_status: :failed)
+    @download.documents.create(vbms_filename: "tide.pdf", mime_type: "application/pdf", download_status: :success)
+
+    visit download_path(@download)
+    click_on "Retry Download"
+
+    expect(page).to have_css ".cf-tab.cf-active", text: "Progress (2)"
+    expect(page).to have_content "Completed (0)"
+    expect(page).to have_content "Errors (0)"
+    expect(GetDownloadFilesJob).to have_received(:perform_later)
+  end
+
   scenario "Completed download" do
     Fakes::BGSService.veteran_names = { "12" => "Tom Thomson" }
 

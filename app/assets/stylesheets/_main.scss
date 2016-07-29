@@ -75,6 +75,12 @@ table td {
   color: $color-gray;
 }
 
+.ee-button-list {
+  @include unstyled-list;
+
+  li { display: inline-block; }
+}
+
 .documents {
   @include unstyled-list;
 }
