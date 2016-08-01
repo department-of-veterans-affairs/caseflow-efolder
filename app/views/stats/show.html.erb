@@ -40,5 +40,56 @@
         </div>
       </div>
     </div>
+
+    <h3>Searches</h3>
+    <div class="ee-stats-section">
+      <div class="ee-stat-panel">
+        <div class="ee-stat-title">
+          Successful
+        </div>
+        <div class="ee-stat-figure -searches">
+          <%= @stats.values[:complete_searches] %>
+          <span class="ee-stat-unit">
+            / <%= @stats.values[:searches_count] %>
+          </span>
+        </div>
+      </div>
+
+      <div class="ee-stat-panel">
+        <div class="ee-stat-title">
+          Not Found
+        </div>
+        <div class="ee-stat-figure -searches">
+          <%= @stats.values[:not_found_searches] %>
+          <span class="ee-stat-unit">
+            / <%= @stats.values[:searches_count] %>
+          </span>
+        </div>
+      </div>
+
+      <div class="ee-stat-panel">
+        <div class="ee-stat-title">
+          Access Denied
+        </div>
+        <div class="ee-stat-figure -searches">
+          <%= @stats.values[:access_denied_searches] %>
+          <span class="ee-stat-unit">
+            / <%= @stats.values[:searches_count] %>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <h3>Errors</h3>
+    <div class="ee-stats-section">
+      <div class="ee-stat-panel">
+        <div class="ee-stat-title">
+          Document Errors
+        </div>
+        <div class="ee-stat-figure -errors">
+          <%= @stats.values[:document_errors] %>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

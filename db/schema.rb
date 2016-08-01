@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160729173414) do
+ActiveRecord::Schema.define(version: 20160801203957) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -50,6 +50,7 @@ ActiveRecord::Schema.define(version: 20160729173414) do
   end
 
   add_index "documents", ["download_id"], name: "index_documents_on_download_id", using: :btree
+  add_index "documents", ["download_status", "completed_at"], name: "searches_download_status_completed_at", using: :btree
 
   create_table "downloads", force: :cascade do |t|
     t.string   "request_id"
@@ -67,17 +68,19 @@ ActiveRecord::Schema.define(version: 20160729173414) do
   end
 
   add_index "downloads", ["completed_at"], name: "downloads_completed_at", using: :btree
-  add_index "downloads", ["manifest_fetched_at"], name: "downloads_manifest_fetched_at", using: :btree
   add_index "downloads", ["user_id", "user_station_id"], name: "index_downloads_on_user_id_and_user_station_id", using: :btree
 
   create_table "searches", force: :cascade do |t|
-    t.integer "download_id"
-    t.string  "file_number"
-    t.integer "status",          default: 0
-    t.string  "user_station_id"
-    t.string  "user_id"
+    t.integer  "download_id"
+    t.string   "file_number"
+    t.integer  "status",          default: 0
+    t.string   "user_station_id"
+    t.string   "user_id"
+    t.datetime "created_at"
   end
 
+  add_index "searches", ["created_at"], name: "searches_created_at", using: :btree
   add_index "searches", ["download_id"], name: "index_searches_on_download_id", using: :btree
+  add_index "searches", ["status", "created_at"], name: "searches_status_created_at", using: :btree
 
 end

@@ -18,6 +18,26 @@ class Stats
 
     time_to_fetch_files: lambda do |range|
       Stats.percentile(:time_to_fetch_files, Download.where(completed_at: range), 95)
+    end,
+
+    searches_count: lambda do |range|
+      Search.where(created_at: range).count
+    end,
+
+    complete_searches: lambda do |range|
+      Search.where(status: [0, 1], created_at: range).count
+    end,
+
+    not_found_searches: lambda do |range|
+      Search.veteran_not_found.where(created_at: range).count
+    end,
+
+    access_denied_searches: lambda do |range|
+      Search.access_denied.where(created_at: range).count
+    end,
+
+    document_errors: lambda do |range|
+      Document.failed.where(created_at: range).count
     end
   }.freeze
 
