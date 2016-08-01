@@ -9,7 +9,7 @@ class Stats
 
   CALCULATIONS = {
     completed_download_count: lambda do |range|
-      Download.complete.where(completed_at: range).count
+      Download.where(completed_at: range).count
     end,
 
     time_to_fetch_manifest: lambda do |range|
