@@ -29,5 +29,8 @@ module CaseflowEfolder
     config.autoload_paths << Rails.root.join('lib')
 
     config.active_job.queue_adapter = :sidekiq
+
+    # default to no analytics (production only)
+    config.analytics_account = nil
   end
 end
