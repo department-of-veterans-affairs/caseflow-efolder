@@ -158,4 +158,19 @@ module ApplicationHelper
     return "#{format('%.2f', seconds)} <span class=\"ee-stat-unit\">sec</span>".html_safe if seconds < 60
     "#{format('%.2f', seconds / 60)} <span class=\"ee-stat-unit\">min</span>".html_safe
   end
+
+  def current_ga_path
+    full_path = request.env["PATH_INFO"]
+
+    begin
+      route = Rails.application.routes.recognize_path(full_path)
+      return full_path unless route
+      ["", route[:controller], route[:action]].join("/")
+
+    # no match in recognize_path
+    rescue ActionController::RoutingError
+      full_path
+    end
+
+  end
 end
