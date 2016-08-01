@@ -1,0 +1,44 @@
+<div class="cf-app-segment cf-app-segment--alt">
+  <h1 class="cf-txt-c">eFolder Express Dashboard</h1>
+
+  <ul class="cf-tab-navigation">
+    <% Stats::INTERVALS.each do |interval| %>
+      <li>
+        <%= link_to interval.to_s.capitalize, stats_path(interval),
+              class: "cf-tab #{(@stats.interval == interval) && "cf-active"}" %>
+      </li>
+    <% end %>
+  </ul>
+
+  <div class="ee-stats">
+    <h3>Downloads</h3>
+    <div class="ee-stats-section">
+      <div class="ee-stat-panel">
+        <div class="ee-stat-title">
+          Completed Downloads
+        </div>
+        <div class="ee-stat-figure -downloads">
+          <%= @stats.values[:completed_download_count] %>
+        </div>
+      </div>
+
+      <div class="ee-stat-panel">
+        <div class="ee-stat-title">
+          Time to Manifest (95 %tile)
+        </div>
+        <div class="ee-stat-figure -downloads">
+          <%= format_time_duration_stat(@stats.values[:time_to_fetch_manifest]) %>
+        </div>
+      </div>
+
+      <div class="ee-stat-panel">
+        <div class="ee-stat-title">
+          Time to Files (95 %tile)
+        </div>
+        <div class="ee-stat-figure -downloads">
+          <%= format_time_duration_stat(@stats.values[:time_to_fetch_files]) %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,16 +1,23 @@
 .cf-tab-navigation {
+  @include unstyled-list;
+
   margin-top: 2em;
   position: relative;
   width: 100%;
   border-bottom: 1px solid $color-primary;
+
+  li {
+    display: inline-block;
+    margin-right: -1px;
+  }
 }
 
 .cf-tab {
   @extend .usa-button-unstyled;
 
-  margin: 0;
-  margin-right: -3.5px;
-  padding: 15px 1.5em 15px 1em;
+  display: inline-block;
+  margin: 0 -3.5px 0 0;
+  padding: 15px 1.5em;
   color: $color-gray;
   background-color: $color-white;
   border: 1px solid $color-gray-light;
@@ -56,6 +63,7 @@
 
   svg {
     margin-right: 0.25em;
+    margin-left: -0.4em;
     path { fill: $color-gray; }
   }
 }

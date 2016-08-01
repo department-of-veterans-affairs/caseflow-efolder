@@ -152,4 +152,10 @@ module ApplicationHelper
       "#{svg_icon(:page_loading_front)} #{svg_icon(:page_loading_back)}".html_safe
     end
   end
+
+  def format_time_duration_stat(seconds)
+    return "?? <span class=\"ee-stat-unit\">sec</span>".html_safe unless seconds
+    return "#{format('%.2f', seconds)} <span class=\"ee-stat-unit\">sec</span>".html_safe if seconds < 60
+    "#{format('%.2f', seconds / 60)} <span class=\"ee-stat-unit\">min</span>".html_safe
+  end
 end

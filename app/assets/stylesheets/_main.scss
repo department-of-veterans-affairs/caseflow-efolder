@@ -14,6 +14,49 @@ table td {
   border-color: $color-gray-lighter;
 }
 
+.ee-stats {
+  margin-top: 20px;
+}
+
+.ee-stats-section {
+  @include outer-container;
+  margin-bottom: 1em;
+}
+
+.ee-stat-panel {
+  @include span-columns(4);
+  border: 1px solid $color-gray-lighter;
+  padding: 1em;
+}
+
+.ee-stat-title {
+  color: $color-gray;
+}
+
+.ee-stat-figure {
+  font-size: 6rem;
+  font-weight: bold;
+
+  &.-downloads {
+    color: $color-green;
+  }
+
+  &.-searches {
+    color: $color-cool-blue;
+  }
+
+  &.-errors {
+    color: $color-secondary-dark;
+  }
+}
+
+.ee-stat-unit {
+  font-size: 1.6rem;
+  font-weight: normal;
+  color: $color-gray;
+  margin-left: -0.5em;
+}
+
 .cf-spacer-icon {
   height: 1em;
   width: 1em;

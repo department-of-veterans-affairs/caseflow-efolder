@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160726190352) do
+ActiveRecord::Schema.define(version: 20160729173414) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -54,15 +54,20 @@ ActiveRecord::Schema.define(version: 20160726190352) do
   create_table "downloads", force: :cascade do |t|
     t.string   "request_id"
     t.string   "file_number"
-    t.integer  "status",          default: 0
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.integer  "status",              default: 0
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
     t.string   "user_station_id"
     t.string   "user_id"
     t.integer  "lock_version"
     t.string   "veteran_name"
+    t.datetime "manifest_fetched_at"
+    t.datetime "started_at"
+    t.datetime "completed_at"
   end
 
+  add_index "downloads", ["completed_at"], name: "downloads_completed_at", using: :btree
+  add_index "downloads", ["manifest_fetched_at"], name: "downloads_manifest_fetched_at", using: :btree
   add_index "downloads", ["user_id", "user_station_id"], name: "index_downloads_on_user_id_and_user_station_id", using: :btree
 
   create_table "searches", force: :cascade do |t|

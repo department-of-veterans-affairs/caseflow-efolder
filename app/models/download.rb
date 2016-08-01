@@ -24,8 +24,22 @@ class Download < ActiveRecord::Base
     where(created_at: Download::HOURS_UNTIL_EXPIRY.hours.ago..Time.zone.now)
   end
 
+  def self.complete
+    where(status: [5, 6])
+  end
+
   def demo?
     file_number =~ /DEMO/
+  end
+
+  def time_to_fetch_manifest
+    manifest_fetched_at - created_at
+  end
+
+  def time_to_fetch_files
+    return nil unless started_at && completed_at
+
+    completed_at - started_at
   end
 
   def stalled?
@@ -85,6 +99,13 @@ class Download < ActiveRecord::Base
       update_attributes!(status: :pending_documents)
       documents.update_all(filepath: nil, download_status: 0)
     end
+  end
+
+  def complete!
+    update_attributes(
+      completed_at: Time.zone.now,
+      status: errors? ? :complete_with_errors : :complete_success
+    )
   end
 
   class << self

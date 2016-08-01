@@ -6,6 +6,8 @@ describe DownloadDocuments do
     Download.delete_all
     Document.delete_all
     Download.bgs_service = Fakes::BGSService
+
+    Timecop.freeze(Time.utc(2015, 1, 1, 12, 0, 0))
   end
 
   let(:download) { Download.create!(file_number: "21012", veteran_name: "George Washington") }
@@ -55,7 +57,7 @@ describe DownloadDocuments do
       download_documents.create_documents
     end
 
-    it "persists info about each document" do
+    it "persists info about each document and sets manifest_fetched_at" do
       expect(Document.count).to equal(2)
 
       document = Document.first
@@ -65,6 +67,8 @@ describe DownloadDocuments do
       expect(document.source).to eq("SRC")
       expect(document.mime_type).to eq("application/pdf")
       expect(document).to be_pending
+
+      expect(download.manifest_fetched_at).to eq(Time.zone.now)
     end
   end
 
@@ -170,7 +174,9 @@ describe DownloadDocuments do
     end
 
     it "exits on stale record error when packaging" do
-      Download.find(download.id).update_attributes!(status: :packaging_contents)
+      expect(download_documents).to receive(:before_document_download) do |_|
+        Download.find(download.id).update_attributes!(status: :packaging_contents)
+      end
 
       download_documents.create_documents
       download_documents.download_and_package
@@ -186,6 +192,8 @@ describe DownloadDocuments do
       end
 
       expect(download).to be_complete_success
+      expect(download.started_at).to eq(Time.zone.now)
+      expect(download.completed_at).to eq(Time.zone.now)
     end
 
     it "works even if zip exists" do
