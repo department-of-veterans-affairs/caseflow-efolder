@@ -8,7 +8,7 @@
     </p>
   </div>
 
-  <% if @error == :veteran_not_found %>
+  <% if @search.veteran_not_found? %>
     <p>
       <div class="usa-alert usa-alert-error" role="alert">
         <div class="usa-alert-body">
@@ -19,7 +19,7 @@
         </div>
       </div>
     </p>
-  <% elsif @error == :access_denied %>
+  <% elsif @search.access_denied? %>
     <p>
       <div class="usa-alert usa-alert-error" role="alert">
         <div class="usa-alert-body">
@@ -33,7 +33,7 @@
   <% end %>
 
   <div class="ee-search">
-    <%= form_for @download, method: :post, html: { class: "usa-search usa-search-big" } do %>
+    <%= form_for Download.new, method: :post, html: { class: "usa-search usa-search-big" } do %>
       <div role="search">
         <%= label_tag(:file_number, "Search for a VBMS eFolder to get started.", class: "usa-sr-only") %>
         <%= search_field_tag(:file_number) %>
