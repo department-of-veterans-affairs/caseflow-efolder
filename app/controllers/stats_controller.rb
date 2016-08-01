@@ -1,6 +1,5 @@
 class StatsController < ApplicationController
-  skip_before_action :authenticate
-  skip_before_action :authorize
+  before_action :authorize_system_admin
 
   def show
     @stats = Stats.new(

@@ -7,7 +7,16 @@ RSpec.feature "Stats Dashboard" do
     Download.delete_all
   end
 
+  scenario "Vist from unauthenticated user" do
+    User.authenticate!
+
+    visit "/stats"
+    expect(page).to have_content("Unauthorized")
+  end
+
   scenario "Switching tab intervals" do
+    User.authenticate!(roles: ["System Admin"])
+
     Download.create(
       status: :complete_with_errors,
       created_at: 6.hours.ago - 10.37,

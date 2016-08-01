@@ -1,4 +1,6 @@
 class DownloadsController < ApplicationController
+  before_action :authorize
+
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
 
   def new
