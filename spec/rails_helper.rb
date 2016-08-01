@@ -29,17 +29,39 @@ Sniffybara::Driver.accessibility_code_exceptions += [
   "WCAG2AA.Principle1.Guideline1_3.1_3_1.H39.3.NoCaption"
 ]
 
-ApplicationController.class_eval do
-  def current_user
-    User.new(
-      id: "123123",
-      name: "first last",
-      email: "test@gmail.com",
-      roles: ["Download eFolder"],
-      station_id: "116"
-    )
+# Convenience methods for stubbing current user
+module StubbableUser
+  module ClassMethods
+    def stub=(user)
+      @stub = user
+    end
+
+    def authenticate!(options = {})
+      self.stub = User.new(
+        id: "123123",
+        name: "first last",
+        email: "test@gmail.com",
+        roles: options[:roles] || ["Download eFolder"],
+        station_id: "116"
+      )
+    end
+
+    def unauthenticate!
+      self.stub = nil
+    end
+
+    def from_session(session, request)
+      @stub || super(session, request)
+    end
+  end
+
+  def self.prepended(base)
+    class << base
+      prepend ClassMethods
+    end
   end
 end
+User.prepend(StubbableUser)
 
 RSpec.configure do |config|
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
