@@ -24,10 +24,6 @@ class Download < ActiveRecord::Base
     where(created_at: Download::HOURS_UNTIL_EXPIRY.hours.ago..Time.zone.now)
   end
 
-  def self.complete
-    where(status: [5, 6])
-  end
-
   def demo?
     file_number =~ /DEMO/
   end

@@ -12,6 +12,7 @@ RSpec.feature "Downloads" do
     allow(GetDownloadManifestJob).to receive(:perform_later)
     allow(GetDownloadFilesJob).to receive(:perform_later)
 
+    User.authenticate!
     Download.bgs_service = Fakes::BGSService
   end
 

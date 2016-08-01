@@ -4,7 +4,6 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   force_ssl if: :ssl_enabled?
   before_action :authenticate
-  before_action :authorize
   before_action :configure_bgs
   before_action :strict_transport_security
 
@@ -15,18 +14,20 @@ class ApplicationController < ActionController::Base
     redirect_to((ENV["SSO_HOST"] || "") + "/auth/samlva")
   end
 
+  def authorize_system_admin
+    redirect_to "/unauthorized" unless current_user.can? "System Admin"
+  end
+
   def authorize
     redirect_to "/unauthorized" unless current_user.can? "Download eFolder"
   end
 
-  def current_user
-    return nil if session["user"].nil?
+  private
 
-    User.new session["user"].merge(ip_address: request.remote_ip)
+  def current_user
+    @current_user ||= User.from_session(session, request)
   end
   helper_method :current_user
-
-  private
 
   def ssl_enabled?
     Rails.env.production? && !(request.path =~ /health-check/)

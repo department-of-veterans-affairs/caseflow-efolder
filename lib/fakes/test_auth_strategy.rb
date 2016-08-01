@@ -19,7 +19,7 @@ class OmniAuth::Strategies::TestAuthStrategy < OmniAuth::Strategies::Developer
       "http://vba.va.gov/css/common/emailAddress" => [hash["email"]],
       "http://vba.va.gov/css/common/fName" => ["First"],
       "http://vba.va.gov/css/common/lName" => ["Last"],
-      "http://vba.va.gov/css/caseflow/role" => ["Download eFolder"],
+      "http://vba.va.gov/css/caseflow/role" => ["Download eFolder", "System Admin"],
       "http://vba.va.gov/css/common/stationId" => ["283"]
     ))
     hash

@@ -14,6 +14,12 @@ class User
   end
 
   class << self
+    def from_session(session, request)
+      return nil if session["user"].nil?
+
+      User.new(session["user"].merge(ip_address: request.remote_ip))
+    end
+
     def from_css_auth_hash(auth_hash)
       raw_css_response = auth_hash.extra.raw_info
       first_name = raw_css_response["http://vba.va.gov/css/common/fName"]
