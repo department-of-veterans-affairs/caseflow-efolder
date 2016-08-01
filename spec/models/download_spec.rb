@@ -33,6 +33,53 @@ describe "Download" do
     end
   end
 
+  context "#time_to_fetch_manifest" do
+    let(:download) do
+      Download.create(
+        file_number: file_number,
+        created_at: 4.hours.ago,
+        manifest_fetched_at: 1.hour.ago
+      )
+    end
+
+    subject { download.time_to_fetch_manifest }
+
+    it { is_expected.to eq(3.hours) }
+  end
+
+  context "#time_to_fetch_files" do
+    let(:download) do
+      Download.create(
+        file_number: file_number,
+        started_at: 10.hours.ago,
+        completed_at: 3.hours.ago
+      )
+    end
+
+    subject { download.time_to_fetch_files }
+
+    it { is_expected.to eq(7.hours) }
+  end
+
+  context "#complete!" do
+    it "sets status to complete_success and sets completed_at" do
+      download.complete!
+      expect(download.reload).to be_complete_success
+      expect(download.completed_at).to eq(Time.zone.now)
+    end
+
+    context "when some documents are errors" do
+      before do
+        download.documents.create(download_status: :failed)
+      end
+
+      it "sets status to complete_with_errors" do
+        download.complete!
+        expect(download.reload).to be_complete_with_errors
+      end
+    end
+  end
+
   context "#s3_filename" do
     subject { download.s3_filename }
     it { is_expected.to eq("#{download.id}-download.zip") }

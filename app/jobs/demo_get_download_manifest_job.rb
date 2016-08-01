@@ -46,5 +46,7 @@ class DemoGetDownloadManifestJob < ActiveJob::Base
         received_at: (i * 2).days.ago
       )
     end
+
+    download.update_attributes!(manifest_fetched_at: Time.zone.now)
   end
 end

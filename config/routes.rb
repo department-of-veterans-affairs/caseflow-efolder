@@ -15,4 +15,6 @@ Rails.application.routes.draw do
     get :download, on: :member
     get :progress, on: :member
   end
+
+  get '/stats(/:interval)', to: 'stats#show', as: 'stats'
 end

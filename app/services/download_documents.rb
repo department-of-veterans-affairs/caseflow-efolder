@@ -10,19 +10,24 @@ class DownloadDocuments
   end
 
   def create_documents
-    @vbms_documents.each do |vbms_document|
-      @download.documents.create!(
-        document_id: vbms_document.document_id,
-        vbms_filename: vbms_document.filename,
-        doc_type: vbms_document.doc_type,
-        source: vbms_document.source,
-        mime_type: vbms_document.mime_type,
-        received_at: vbms_document.received_at
-      )
+    Download.transaction do
+      @vbms_documents.each do |vbms_document|
+        @download.documents.create!(
+          document_id: vbms_document.document_id,
+          vbms_filename: vbms_document.filename,
+          doc_type: vbms_document.doc_type,
+          source: vbms_document.source,
+          mime_type: vbms_document.mime_type,
+          received_at: vbms_document.received_at
+        )
+      end
+
+      @download.update_attributes!(manifest_fetched_at: Time.zone.now)
     end
   end
 
   def download_contents
+    @download.update_attributes!(started_at: Time.zone.now)
     @download.documents.where(download_status: 0).each_with_index do |document, i|
       before_document_download(document)
 
@@ -106,10 +111,7 @@ class DownloadDocuments
     end
 
     @s3.store_file(@download.s3_filename, zip_path, :filepath)
-
-    @download.update_attributes(
-      status: @download.errors? ? :complete_with_errors : :complete_success
-    )
+    @download.complete!
 
   rescue ActiveRecord::StaleObjectError
     Rails.logger.info "Duplicate packaging detected. Download ID: #{@download.id}"
