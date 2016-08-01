@@ -171,6 +171,5 @@ module ApplicationHelper
     rescue ActionController::RoutingError
       full_path
     end
-
   end
 end
