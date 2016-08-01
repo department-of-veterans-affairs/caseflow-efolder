@@ -1,6 +1,13 @@
 require "rails_helper"
 
 describe Document do
+  context ".new" do
+    subject { Document.new }
+    it "defaults vbms_filename to empty string" do
+      expect(subject.vbms_filename).to eq("")
+    end
+  end
+
   context "#s3_filename" do
     subject { document.s3_filename }
 

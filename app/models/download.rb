@@ -80,6 +80,13 @@ class Download < ActiveRecord::Base
     "#{veteran_name.gsub(/\s*/, '').downcase}-#{created_at.to_formatted_s(:filename)}.zip"
   end
 
+  def reset!
+    Download.transaction do
+      update_attributes!(status: :pending_documents)
+      documents.update_all(filepath: nil, download_status: 0)
+    end
+  end
+
   class << self
     attr_writer :bgs_service
 

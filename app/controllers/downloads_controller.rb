@@ -43,6 +43,15 @@ class DownloadsController < ApplicationController
     render "_progress", layout: false
   end
 
+  def retry
+    @download = downloads.find(params[:id])
+
+    @download.reset!
+    start_download_files
+
+    redirect_to download_url(@download)
+  end
+
   def download
     @download_documents = DownloadDocuments.new(download: downloads.find(params[:id]))
     @download_documents.fetch_zip_from_s3
