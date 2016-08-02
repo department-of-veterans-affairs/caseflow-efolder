@@ -161,6 +161,25 @@ describe "Download" do
     end
   end
 
+  context ".top_users" do
+    let(:downloads) do
+      (0..1).map { Download.new(user_id: "RADIOHEAD", user_station_id: "203") } +
+        (0..9).map  { Download.new(user_id: "ARCADE_FIRE", user_station_id: "102") } +
+        (0..11).map { Download.new(user_id: "QUEEN", user_station_id: "103") }
+    end
+
+    subject { Download.top_users(downloads: downloads) }
+
+    it "finds the top 3 users by number of downloads" do
+      expect(subject[0][:id]).to eq("QUEEN (Station 103)")
+      expect(subject[0][:count]).to eq(12)
+      expect(subject[1][:id]).to eq("ARCADE_FIRE (Station 102)")
+      expect(subject[1][:count]).to eq(10)
+      expect(subject[2][:id]).to eq("RADIOHEAD (Station 203)")
+      expect(subject[2][:count]).to eq(2)
+    end
+  end
+
   context "#progress_percentage" do
     subject { download.progress_percentage }
 
