@@ -126,7 +126,7 @@ describe DownloadDocuments do
                                         source: "SRC", received_at: Time.zone.now,
                                         mime_type: "application/pdf"),
           VBMS::Responses::Document.new(document_id: "2", filename: "filename.pdf", doc_type: "123",
-                                        source: "SRC", received_at: Time.zone.now,
+                                        source: "SRC", received_at: 1.hour.ago,
                                         mime_type: "application/pdf")
         ]
       end
