@@ -91,5 +91,15 @@
         </div>
       </div>
     </div>
+
+    <h3>Most Active Users</h3>
+    <table class="usa-table-borderless ee-stats-table">
+      <% (@stats.values[:top_users] || []).each do |user| %>
+        <tr>
+          <td><%= user[:id] %></td>
+          <td><%= pluralize(user[:count], "Download") %></td>
+        </tr>
+      <% end %>
+    </table>
   </div>
 </div>

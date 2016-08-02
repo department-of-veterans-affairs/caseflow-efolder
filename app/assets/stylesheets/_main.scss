@@ -23,6 +23,10 @@ table td {
   margin-bottom: 1em;
 }
 
+.ee-stats-table {
+  margin-top: 0;
+}
+
 .ee-stat-panel {
   @include span-columns(4);
   border: 1px solid $color-gray-lighter;

@@ -38,6 +38,10 @@ class Stats
 
     document_errors: lambda do |range|
       Document.failed.where(created_at: range).count
+    end,
+
+    top_users: lambda do |range|
+      Download.top_users(downloads: Download.where(completed_at: range))
     end
   }.freeze
 

@@ -104,6 +104,20 @@ class Download < ActiveRecord::Base
     )
   end
 
+  def user_id_string
+    "#{user_id} (Station #{user_station_id})"
+  end
+
+  def self.top_users(downloads:)
+    users = downloads.each_with_object({}) do |download, result|
+      result[download.user_id_string] ||= 0
+      result[download.user_id_string] += 1
+    end
+
+    sorted = users.sort_by { |_k, v| -v }
+    sorted.map { |values| { id: values[0], count: values[1] } }.first(3)
+  end
+
   class << self
     attr_writer :bgs_service
 

@@ -18,6 +18,8 @@ RSpec.feature "Stats Dashboard" do
     User.authenticate!(roles: ["System Admin"])
 
     Download.create(
+      user_id: "ROCKY",
+      user_station_id: "203",
       status: :complete_with_errors,
       created_at: 6.hours.ago - 10.37,
       manifest_fetched_at: 6.hours.ago,
@@ -32,5 +34,7 @@ RSpec.feature "Stats Dashboard" do
     expect(page).to have_content("Completed Downloads 1")
     expect(page).to have_content("Time to Manifest (95 %tile) 10.37 sec")
     expect(page).to have_content("Time to Files (95 %tile) 60.00 min")
+
+    expect(page).to have_content("Most Active Users ROCKY (Station 203) 1 Download")
   end
 end
