@@ -1,11 +1,20 @@
+# Every minute
 restart_stalled_downloads_job:
   cron: "*/1 * * * *"
   class: "RestartStalledDownloadsJob"
   queue: default
   active_job: true
 
+# Every 2 minutes
 calculate_stats_job:
   cron: "*/2 * * * *"
   class: "CalculateStatsJob"
+  queue: default
+  active_job: true
+
+# Every night at midnight
+clean_download_files_job:
+  cron: "0 0 * * * America/New_York"
+  class: "CleanDownloadFilesJob"
   queue: default
   active_job: true
