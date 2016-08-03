@@ -16,4 +16,5 @@
 
 $(function() {
   window.Dropdown.bind();
+  window.LoadingIndicator.bind();
 });

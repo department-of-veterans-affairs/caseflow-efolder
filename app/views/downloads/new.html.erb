@@ -33,11 +33,16 @@
   <% end %>
 
   <div class="ee-search">
-    <%= form_for Download.new, method: :post, html: { class: "usa-search usa-search-big" } do %>
+    <%= form_for Download.new, method: :post, html: { class: "usa-search usa-search-big cf-form" } do %>
       <div role="search">
         <%= label_tag(:file_number, "Search for a VBMS eFolder to get started.", class: "usa-sr-only") %>
         <%= search_field_tag(:file_number) %>
-        <button type="submit">
+
+        <button type="submit" class="cf-submit">
+          <span class='usa-search-submit-text'>Search</span>
+        </button>
+
+        <button disabled type="submit" class="cf-loading-indicator">
           <span class='usa-search-submit-text'>Search</span>
         </button>
       </div>
