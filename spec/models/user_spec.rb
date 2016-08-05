@@ -1,10 +1,12 @@
-describe User, focus: true do
+describe User do
   let(:name) { "Billy Bob Thorton" }
   let(:roles) { ["Download eFolder"] }
   let(:user) do
     User.new(id: "123", email: "email@va.gov", name: name,
              roles: roles, station_id: "213", ip_address: "12.12.12.12")
   end
+
+  before { User.stub = nil }
 
   context "#display_name" do
     subject { user.display_name }
