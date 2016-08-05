@@ -28,6 +28,18 @@ RSpec.feature "Downloads" do
     expect(page).to have_current_path(root_path)
   end
 
+  scenario "Logging out" do
+    User.unauthenticate!
+
+    visit("/")
+    fill_in "Email:", with: "xyz@va.gov"
+    click_on "Sign In"
+
+    click_on "First Last"
+    click_on "Sign out"
+    expect(page).to have_content("Test VA Saml")
+  end
+
   scenario "Creating a download" do
     Fakes::BGSService.veteran_names = { "1234" => "Stan Lee" }
 

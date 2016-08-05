@@ -7,6 +7,8 @@ RSpec.feature "Stats Dashboard" do
     Download.delete_all
   end
 
+  after { Timecop.return }
+
   scenario "Vist from unauthenticated user" do
     User.authenticate!
 
