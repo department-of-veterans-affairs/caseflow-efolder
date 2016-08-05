@@ -30,13 +30,12 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/sniffybara.git
-  revision: d621881a2ef8311434d9cdcea5519026f9182981
+  revision: e355cfde5ae039601b3f273fe07c1b36a129c4c6
   specs:
     sniffybara (0.0.1)
       poltergeist
       rainbow
       selenium-webdriver
-      sinatra
 
 GIT
   remote: https://github.com/harrisj/us_web_design_standards_gem.git
