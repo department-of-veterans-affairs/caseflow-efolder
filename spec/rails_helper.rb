@@ -24,6 +24,7 @@ require "rspec/rails"
 require "capybara"
 
 Capybara.default_driver = :sniffybara
+Sniffybara::Driver.path_exclusions << /samlva/
 Sniffybara::Driver.accessibility_code_exceptions += [
   "WCAG2AA.Principle1.Guideline1_3.1_3_1_A.G141",
   "WCAG2AA.Principle1.Guideline1_3.1_3_1.H39.3.NoCaption"
