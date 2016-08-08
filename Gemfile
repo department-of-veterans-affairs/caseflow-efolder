@@ -80,6 +80,7 @@ group :test do
   gem 'rspec'
   gem 'rspec-rails'
   #gem 'guard-rspec'
+  gem 'simplecov'
   gem 'capybara', '2.6.2'
   gem 'sniffybara', git: 'https://github.com/department-of-veterans-affairs/sniffybara.git'
 end

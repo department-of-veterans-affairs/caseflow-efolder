@@ -16,6 +16,7 @@
 !/log/.keep
 /tmp
 .DS_Store
+/coverage
 
 # Ingore vim swap files
 *swp
