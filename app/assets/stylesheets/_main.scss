@@ -8,6 +8,22 @@
 @import 'tabs';
 @import 'download';
 
+
+// Candidate for Caseflow Commons
+.cf-loading-indicator {
+  display: none !important;
+}
+
+.cf-is-loading {
+  .cf-submit {
+    display: none;
+  }
+
+  .cf-loading-indicator {
+    display: block !important;
+  }
+}
+
 // USWDS override
 table th,
 table td {
