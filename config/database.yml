@@ -7,7 +7,7 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  pool: 5
+  pool: <%= ENV["DB_CONN_POOL_MAX_SIZE"] || 5 %>
   timeout: 5000
 
 development:
