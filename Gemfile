@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.5.2'
+gem 'rails', '4.2.7.1'
 
 gem 'pg', platforms: :ruby
 gem 'activerecord-jdbcpostgresql-adapter', platforms: :jruby
