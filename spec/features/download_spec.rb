@@ -65,6 +65,21 @@ RSpec.feature "Downloads" do
     expect(@search).to be_download_created
   end
 
+  scenario "Searching for an errored download tries again" do
+    Fakes::BGSService.veteran_names = { "5555" => "Stan Lee" }
+
+    @user_download.create!(
+      file_number: "5555",
+      status: :no_documents
+    )
+
+    visit "/"
+    fill_in "Search for a VBMS eFolder to get started.", with: "5555"
+    click_button "Search"
+
+    expect(page).to have_content "We are gathering the list of files in the eFolder now"
+  end
+
   scenario "Searching for a completed download" do
     @user_download.create!(
       file_number: "5555",
