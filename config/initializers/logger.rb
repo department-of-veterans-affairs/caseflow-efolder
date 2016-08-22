@@ -12,12 +12,14 @@ log_tags << lambda { |req|
 
 # :nocov:
 config = Rails.application.config
-config.log_tags = log_tags
 
 # don't mix worker and RAILS http logs
 if !ENV["IS_WORKER"].blank?
   config.paths["log"] = "log/efolder-express-worker.log"
+  log_tags << "jobs-worker"
 end
+
+config.log_tags = log_tags
 
 # roll logger over every 1MB, retain 10
 unless Rails.env.development?
