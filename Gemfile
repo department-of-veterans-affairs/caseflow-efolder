@@ -25,6 +25,9 @@ gem 'us_web_design_standards', git: 'https://github.com/harrisj/us_web_design_st
 # TODO: We can remove the git path when this pull request is merged in:
 #       https://github.com/18F/us_web_design_standards_gem/pull/7/commits
 
+# Error reporting to Sentry
+gem "sentry-raven"
+
 # SSOI
 gem 'omniauth-saml-va', git: 'https://github.com/department-of-veterans-affairs/omniauth-saml-va', branch: 'paultag/css'
 
