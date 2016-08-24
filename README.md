@@ -5,31 +5,11 @@ Download all case files with ease!
 
 ## First Time Development Setup
 
-### Ruby Setup
-
-Install rbenv, which is a tool that helps install/manage versions of Ruby (Note: make sure and follow the brew's post-install instructions):
-
-> $ brew install rbenv
-
-And follow the initialization instructions for rbenv, provided by brew
-
-> $ rbenv init
-
-Using rbenv install ruby:
-
-> $ rbenv install jruby-9.0.3.0
-
-Install bundle, which will help download/manage Ruby dependencies:
-
-> $ gem install bundler
-
-Then use it to install dependencies:
+Install dependencies
 
 > $ bundle install
 
-### Development setup
-
-First you'll need to create the database
+Create the database
 
 > $ rake db:migrate
 
