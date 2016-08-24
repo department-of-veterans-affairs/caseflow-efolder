@@ -40,7 +40,7 @@ class Search < ActiveRecord::Base
   private
 
   def download_scope
-    Download.where(
+    Download.active.where(
       file_number: sanitized_file_number,
       user_id: user_id,
       user_station_id: user_station_id
