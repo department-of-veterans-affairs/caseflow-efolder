@@ -1,7 +1,7 @@
 class CalculateStatsJob < ActiveJob::Base
   queue_as :default
 
-  def perform(_download)
+  def perform
     Stats.calculate_all!
   end
 
