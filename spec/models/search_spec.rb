@@ -66,6 +66,18 @@ describe Search do
         expect(search.download.id).to eq(@existing_download.id)
         expect(search.reload).to be_download_found
       end
+
+      context "when that download is inactive" do
+        before do
+          @existing_download.update_attributes!(created_at: 2.days.ago)
+        end
+
+        it "creates a new download" do
+          expect(subject).to be_truthy
+          expect(search.reload).to be_download_created
+          expect(search.download.id).to_not eq(@existing_download.id)
+        end
+      end
     end
 
     context "when case is not found in BGS" do
