@@ -11,10 +11,13 @@ Install dependencies
 
 Create the database
 
-> $ rake db:migrate
+> $ rake db:create
 
-You'll also need to install `redis`. Follow the post-install instructions
-to start the redis server.
+Load the schema
+
+> $ rake db:schema:load
+
+You'll also need to install `redis`. Follow the post-install instructions to start the redis server.
 
 > $ brew install redis
 
@@ -26,10 +29,10 @@ And in a seperate terminal, start a jobs worker
 
 > $ bundle exec sidekiq
 
-If you want to test out the DEMO flow (without VBMS connection), 
+If you want to test out the DEMO flow (without VBMS connection),
 
-Visit [http://localhost:3000](),  
-Type in a file number with "DEMO" in it. (ie: "DEMO123")  
+Visit [http://localhost:3000](),
+Type in a file number with "DEMO" in it. (ie: "DEMO123")
 Watch it download your fake file.
 
 
