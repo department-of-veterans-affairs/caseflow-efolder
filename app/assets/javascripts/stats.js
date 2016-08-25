@@ -13,4 +13,5 @@
 //= require_tree ./stats
 
 $(function() {
+  window.StatsPanelToggle.bind();
 });
