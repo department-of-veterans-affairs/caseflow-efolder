@@ -20,6 +20,14 @@ class Stats
       Stats.percentile(:time_to_fetch_files, Download.where(completed_at: range), 95)
     end,
 
+    median_time_to_fetch_manifest: lambda do |range|
+      Stats.percentile(:time_to_fetch_manifest, Download.where(manifest_fetched_at: range), 50)
+    end,
+
+    median_time_to_fetch_files: lambda do |range|
+      Stats.percentile(:time_to_fetch_files, Download.where(completed_at: range), 50)
+    end,
+
     searches_count: lambda do |range|
       Search.where(created_at: range).count
     end,

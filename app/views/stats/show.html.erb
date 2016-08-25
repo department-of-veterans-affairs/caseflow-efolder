@@ -26,21 +26,41 @@
         </div>
       </div>
 
-      <div class="ee-stat-panel">
-        <div class="ee-stat-title">
-          Time to Manifest (95 %tile)
+      <div class="ee-stat-panel -toggle">
+        <div class="ee-stat-option active">
+          <div class="ee-stat-title">
+            Time to Manifest (median)
+          </div>
+          <div class="ee-stat-figure -downloads">
+            <%= format_time_duration_stat(@stats.values[:median_time_to_fetch_manifest]) %>
+          </div>
         </div>
-        <div class="ee-stat-figure -downloads">
-          <%= format_time_duration_stat(@stats.values[:time_to_fetch_manifest]) %>
+        <div class="ee-stat-option">
+          <div class="ee-stat-title">
+            Time to Manifest (95th percentile)
+          </div>
+          <div class="ee-stat-figure -downloads">
+            <%= format_time_duration_stat(@stats.values[:time_to_fetch_manifest]) %>
+          </div>
         </div>
       </div>
 
-      <div class="ee-stat-panel">
-        <div class="ee-stat-title">
-          Time to Files (95 %tile)
+      <div class="ee-stat-panel -toggle">
+        <div class="ee-stat-option active">
+          <div class="ee-stat-title">
+            Time to Files (median)
+          </div>
+          <div class="ee-stat-figure -downloads">
+            <%= format_time_duration_stat(@stats.values[:median_time_to_fetch_files]) %>
+          </div>
         </div>
-        <div class="ee-stat-figure -downloads">
-          <%= format_time_duration_stat(@stats.values[:time_to_fetch_files]) %>
+        <div class="ee-stat-option">
+          <div class="ee-stat-title">
+            Time to Files (95th percentile)
+          </div>
+          <div class="ee-stat-figure -downloads">
+            <%= format_time_duration_stat(@stats.values[:time_to_fetch_files]) %>
+          </div>
         </div>
       </div>
     </div>
