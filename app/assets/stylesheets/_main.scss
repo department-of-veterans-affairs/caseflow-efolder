@@ -82,18 +82,19 @@ table td {
 .ee-stat-figure {
   font-size: 6rem;
   font-weight: bold;
+}
 
-  &.-downloads {
-    color: $color-green;
-  }
+.-activity .ee-stat-figure,
+.-searches .ee-stat-figure {
+  color: $color-cool-blue;
+}
 
-  &.-searches {
-    color: $color-cool-blue;
-  }
+.-timing .ee-stat-figure {
+  color: $color-green;
+}
 
-  &.-errors {
-    color: $color-secondary;
-  }
+.-errors .ee-stat-figure {
+  color: $color-secondary;
 }
 
 .ee-stat-unit {

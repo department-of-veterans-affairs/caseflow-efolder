@@ -15,17 +15,75 @@
   </ul>
 
   <div class="ee-stats">
-    <h3>Downloads</h3>
-    <div class="ee-stats-section">
+    <div class="ee-stats-section -activity">
+      <h3>Activity</h3>
+      <div class="ee-stat-panel">
+        <div class="ee-stat-title">
+          Active Users
+        </div>
+        <div class="ee-stat-figure">
+        </div>
+      </div>
+
       <div class="ee-stat-panel">
         <div class="ee-stat-title">
           Completed Downloads
         </div>
-        <div class="ee-stat-figure -downloads">
+        <div class="ee-stat-figure">
           <%= @stats.values[:completed_download_count] %>
         </div>
       </div>
 
+      <div class="ee-stat-panel">
+        <div class="ee-stat-title">
+          Documents Retrieved
+        </div>
+        <div class="ee-stat-figure">
+        </div>
+      </div>
+    </div>
+
+    <div class="ee-stats-section -searches">
+      <h3>Searches</h3>
+      <div class="ee-stat-panel">
+        <div class="ee-stat-title">
+          Successful
+        </div>
+        <div class="ee-stat-figure">
+          <%= @stats.values[:complete_searches] %>
+          <span class="ee-stat-unit">
+            / <%= @stats.values[:searches_count] %>
+          </span>
+        </div>
+      </div>
+
+      <div class="ee-stat-panel">
+        <div class="ee-stat-title">
+          Not Found
+        </div>
+        <div class="ee-stat-figure">
+          <%= @stats.values[:not_found_searches] %>
+          <span class="ee-stat-unit">
+            / <%= @stats.values[:searches_count] %>
+          </span>
+        </div>
+      </div>
+
+      <div class="ee-stat-panel">
+        <div class="ee-stat-title">
+          Access Denied
+        </div>
+        <div class="ee-stat-figure">
+          <%= @stats.values[:access_denied_searches] %>
+          <span class="ee-stat-unit">
+            / <%= @stats.values[:searches_count] %>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ee-stats-section -timing">
+    <h3>Timing</h3>
       <div class="ee-stat-panel -toggle"
         role="button" tabindex="0"
         aria-label="Switch between median and 95th percentile statistics">
@@ -33,7 +91,7 @@
           <div class="ee-stat-title">
             Time to Manifest (median)
           </div>
-          <div class="ee-stat-figure -downloads">
+          <div class="ee-stat-figure">
             <%= format_time_duration_stat(@stats.values[:median_time_to_fetch_manifest]) %>
           </div>
         </div>
@@ -41,7 +99,7 @@
           <div class="ee-stat-title">
             Time to Manifest (95th percentile)
           </div>
-          <div class="ee-stat-figure -downloads">
+          <div class="ee-stat-figure">
             <%= format_time_duration_stat(@stats.values[:time_to_fetch_manifest]) %>
           </div>
         </div>
@@ -54,7 +112,7 @@
           <div class="ee-stat-title">
             Time to Files (median)
           </div>
-          <div class="ee-stat-figure -downloads">
+          <div class="ee-stat-figure">
             <%= format_time_duration_stat(@stats.values[:median_time_to_fetch_files]) %>
           </div>
         </div>
@@ -62,59 +120,20 @@
           <div class="ee-stat-title">
             Time to Files (95th percentile)
           </div>
-          <div class="ee-stat-figure -downloads">
+          <div class="ee-stat-figure">
             <%= format_time_duration_stat(@stats.values[:time_to_fetch_files]) %>
           </div>
         </div>
       </div>
     </div>
 
-    <h3>Searches</h3>
-    <div class="ee-stats-section">
-      <div class="ee-stat-panel">
-        <div class="ee-stat-title">
-          Successful
-        </div>
-        <div class="ee-stat-figure -searches">
-          <%= @stats.values[:complete_searches] %>
-          <span class="ee-stat-unit">
-            / <%= @stats.values[:searches_count] %>
-          </span>
-        </div>
-      </div>
-
-      <div class="ee-stat-panel">
-        <div class="ee-stat-title">
-          Not Found
-        </div>
-        <div class="ee-stat-figure -searches">
-          <%= @stats.values[:not_found_searches] %>
-          <span class="ee-stat-unit">
-            / <%= @stats.values[:searches_count] %>
-          </span>
-        </div>
-      </div>
-
-      <div class="ee-stat-panel">
-        <div class="ee-stat-title">
-          Access Denied
-        </div>
-        <div class="ee-stat-figure -searches">
-          <%= @stats.values[:access_denied_searches] %>
-          <span class="ee-stat-unit">
-            / <%= @stats.values[:searches_count] %>
-          </span>
-        </div>
-      </div>
-    </div>
-
-    <h3>Errors</h3>
-    <div class="ee-stats-section">
+    <div class="ee-stats-section -errors">
+      <h3>Errors</h3>
       <div class="ee-stat-panel">
         <div class="ee-stat-title">
           Document Errors
         </div>
-        <div class="ee-stat-figure -errors">
+        <div class="ee-stat-figure">
           <%= @stats.values[:document_errors] %>
         </div>
       </div>
