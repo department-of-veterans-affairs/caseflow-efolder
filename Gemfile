@@ -42,6 +42,8 @@ gem 'jquery-rails'
 gem 'turbolinks'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
+# D3.js for data visualization
+gem 'd3-rails', git: "https://github.com/department-of-veterans-affairs/d3-rails.git"
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0', group: :doc
 
