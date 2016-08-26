@@ -50,9 +50,11 @@ RSpec.feature "Stats Dashboard" do
     User.authenticate!(roles: ["System Admin"])
 
     visit "/stats"
+    expect(page).to have_content("Active Users 0")
     expect(page).to have_content("Completed Downloads 0")
 
     click_on "Daily"
+    expect(page).to have_content("Active Users 1")
     expect(page).to have_content("Completed Downloads 3")
     expect(page).to have_content("Time to Manifest (median) 12.37 sec")
     expect(page).to have_content("Time to Files (median) 60.00 min")

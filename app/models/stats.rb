@@ -8,6 +8,10 @@ class Stats
   INTERVALS = [:hourly, :daily, :weekly, :monthly].freeze
 
   CALCULATIONS = {
+    user_count: lambda do |range|
+      Download.all_users(downloads: Download.where(completed_at: range)).count
+    end,
+
     completed_download_count: lambda do |range|
       Download.where(completed_at: range).count
     end,
