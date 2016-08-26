@@ -47,6 +47,11 @@ table td {
   @include span-columns(4);
   border: 1px solid $color-gray-lighter;
   padding: 1em;
+
+  &.-toggle .ee-stat-option {
+    display: none;
+    &.active { display: block; }
+  }
 }
 
 .ee-stat-title {
