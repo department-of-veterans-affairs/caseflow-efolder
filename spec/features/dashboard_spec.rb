@@ -60,15 +60,15 @@ RSpec.feature "Stats Dashboard" do
     expect(page).to have_content("Most Active Users ROCKY (Station 203) 3 Downloads")
   end
 
-  scenario 'Toggle median to 95th percentile' do
-    User.authenticate!(roles: ['System Admin'])
+  scenario "Toggle median to 95th percentile" do
+    User.authenticate!(roles: ["System Admin"])
 
-    visit '/stats'
-    click_on 'Daily'
+    visit "/stats"
+    click_on "Daily"
 
-    find('*[role="button"]', :text => 'Time to Manifest').click
-    expect(page).to have_content('Time to Manifest (95th percentile) 14.37 sec')
-    find('*[role="button"]', :text => 'Time to Manifest').click
-    expect(page).to have_content('Time to Manifest (median) 12.37 sec')
+    find('*[role="button"]', :text => "Time to Manifest").click
+    expect(page).to have_content("Time to Manifest (95th percentile) 14.37 sec")
+    find('*[role="button"]', :text => "Time to Manifest").click
+    expect(page).to have_content("Time to Manifest (median) 12.37 sec")
   end
 end
