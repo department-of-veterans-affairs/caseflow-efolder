@@ -9,6 +9,27 @@
 @import 'download';
 
 
+// Candidate for USWDS
+.usa-table-no-header {
+  @extend .usa-table-borderless;
+
+  thead {
+    th {
+      background-color: $color-white;
+    }
+  }
+
+  th:first-child,
+  td:first-child {
+    padding-left: 0;
+  }
+
+  th:last-child,
+  td:last-child {
+    padding-right: 0;
+  }
+}
+
 // Candidate for Caseflow Commons
 .cf-loading-indicator {
   display: none !important;
