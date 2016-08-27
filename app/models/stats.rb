@@ -16,6 +16,10 @@ class Stats
       Download.where(completed_at: range).count
     end,
 
+    document_count: lambda do |range|
+      Download.document_count(downloads: Download.where(completed_at: range))
+    end,
+
     time_to_fetch_manifest: lambda do |range|
       Stats.percentile(:time_to_fetch_manifest, Download.where(manifest_fetched_at: range), 95)
     end,

@@ -72,6 +72,10 @@ class Download < ActiveRecord::Base
     documents.select { |d| !d.pending? }
   end
 
+  def successful_documents
+    documents.select(&:success?)
+  end
+
   def progress_percentage
     if fetching_manifest?
       20
@@ -119,6 +123,12 @@ class Download < ActiveRecord::Base
     users = all_users(downloads: downloads)
     sorted = users.sort_by { |_k, v| -v }
     sorted.map { |values| { id: values[0], count: values[1] } }.first(3)
+  end
+
+  def self.document_count(downloads:)
+    downloads.reduce(0) do |sum, download|
+      sum + download.successful_documents.count
+    end
   end
 
   class << self
