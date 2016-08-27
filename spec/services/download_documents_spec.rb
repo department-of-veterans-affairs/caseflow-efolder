@@ -101,7 +101,7 @@ describe DownloadDocuments do
         expect(successful_document.started_at).to eq(Time.zone.now)
         expect(successful_document.completed_at).to eq(Time.zone.now)
 
-        errored_document = Document.all[1]
+        errored_document = Document.last
         expect(errored_document).to be_failed
         expect(errored_document.started_at).to eq(Time.zone.now)
       end
