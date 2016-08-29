@@ -66,8 +66,10 @@ table td {
 
 .ee-stat-panel {
   @include span-columns(4);
+  position: relative;
   border: 1px solid $color-gray-lighter;
   padding: 1em;
+  overflow: hidden;
 
   &.-toggle .ee-stat-option {
     display: none;
@@ -84,17 +86,20 @@ table td {
   font-weight: bold;
 }
 
-.-activity .ee-stat-figure,
-.-searches .ee-stat-figure {
-  color: $color-cool-blue;
+.-activity,
+.-searches {
+  .ee-stat-figure { color: $color-cool-blue; }
+  svg .bar { fill: $color-cool-blue; }
 }
 
-.-timing .ee-stat-figure {
-  color: $color-green;
+.-timing {
+  .ee-stat-figure { color: $color-green; }
+  svg .bar { fill: $color-green; }
 }
 
-.-errors .ee-stat-figure {
-  color: $color-secondary;
+.-errors {
+  .ee-stat-figure { color: $color-secondary; }
+  svg .bar { fill: $color-secondary; }
 }
 
 .ee-stat-unit {
@@ -102,6 +107,11 @@ table td {
   font-weight: normal;
   color: $color-gray;
   margin-left: -0.5em;
+}
+
+.data-chart svg {
+  position: absolute;
+  top: 0; left: 0;
 }
 
 .cf-spacer-icon {

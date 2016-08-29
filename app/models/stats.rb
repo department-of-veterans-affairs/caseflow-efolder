@@ -121,10 +121,10 @@ class Stats
   def self.calculate_all!
     INTERVALS.each do |interval|
       {
-        hourly: 0..24,
-        daily: 0..30,
-        weekly: 0..26,
-        monthly: 0..24
+        hourly: 0...24,
+        daily: 0...30,
+        weekly: 0...26,
+        monthly: 0...24
       }[interval].each do |i|
         Stats.offset(interval: interval, time: Time.zone.now, offset: i)
              .calculate_and_save_values!

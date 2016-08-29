@@ -11,8 +11,10 @@
 // about supported directives.
 //
 //= require d3
+//= require moment
 //= require_tree ./stats
 
 $(function() {
   window.StatsPanelToggle.bind();
+  window.Dashboard.init();
 });
