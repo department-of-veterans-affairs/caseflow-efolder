@@ -137,9 +137,9 @@ window.Dashboard = (function(d3, moment) {
 
   var format = d3.format('.2f')
   function timeFormat(seconds) {
-    return (!seconds ? '??' : format(seconds)) + (seconds > 60 ?
-      ' <span class="ee-stat-unit">min</span>' :
-      ' <span class="ee-stat-unit">sec</span>')
+    return !seconds ? '?? <span class="ee-stat-unit">sec</span>' :
+      seconds > 60 ? format(seconds / 60) + ' <span class="ee-stat-unit">min</span>' :
+      format(seconds) + ' <span class="ee-stat-unit">sec</span>'
   }
 
   // public
