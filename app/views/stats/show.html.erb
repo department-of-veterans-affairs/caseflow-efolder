@@ -1,4 +1,7 @@
 <% content_for :head do %>
+  <script>
+    var data = <%= raw @json %>
+  </script>
   <%= javascript_include_tag 'stats' %>
 <% end %>
 
@@ -9,7 +12,7 @@
     <% Stats::INTERVALS.each do |interval| %>
       <li>
         <%= link_to interval.to_s.capitalize, stats_path(interval),
-              class: "cf-tab #{(@stats.interval == interval) && "cf-active"}" %>
+              class: "cf-tab #{(@stats[0].interval == interval) && "cf-active"}" %>
       </li>
     <% end %>
   </ul>
@@ -22,7 +25,7 @@
           Active Users
         </div>
         <div class="ee-stat-figure">
-          <%= @stats.values[:user_count] %>
+          <%= @stats[0].values[:user_count] %>
         </div>
       </div>
 
@@ -31,7 +34,7 @@
           Completed Downloads
         </div>
         <div class="ee-stat-figure">
-          <%= @stats.values[:completed_download_count] %>
+          <%= @stats[0].values[:completed_download_count] %>
         </div>
       </div>
 
@@ -40,7 +43,7 @@
           Documents Retrieved
         </div>
         <div class="ee-stat-figure">
-          <%= @stats.values[:document_count] %>
+          <%= @stats[0].values[:document_count] %>
         </div>
       </div>
     </div>
@@ -52,9 +55,9 @@
           Successful
         </div>
         <div class="ee-stat-figure">
-          <%= @stats.values[:complete_searches] %>
+          <%= @stats[0].values[:complete_searches] %>
           <span class="ee-stat-unit">
-            / <%= @stats.values[:searches_count] %>
+            / <%= @stats[0].values[:searches_count] %>
           </span>
         </div>
       </div>
@@ -64,9 +67,9 @@
           Not Found
         </div>
         <div class="ee-stat-figure">
-          <%= @stats.values[:not_found_searches] %>
+          <%= @stats[0].values[:not_found_searches] %>
           <span class="ee-stat-unit">
-            / <%= @stats.values[:searches_count] %>
+            / <%= @stats[0].values[:searches_count] %>
           </span>
         </div>
       </div>
@@ -76,9 +79,9 @@
           Access Denied
         </div>
         <div class="ee-stat-figure">
-          <%= @stats.values[:access_denied_searches] %>
+          <%= @stats[0].values[:access_denied_searches] %>
           <span class="ee-stat-unit">
-            / <%= @stats.values[:searches_count] %>
+            / <%= @stats[0].values[:searches_count] %>
           </span>
         </div>
       </div>
@@ -94,7 +97,7 @@
             Time to Manifest (median)
           </div>
           <div class="ee-stat-figure">
-            <%= format_time_duration_stat(@stats.values[:median_time_to_fetch_manifest]) %>
+            <%= format_time_duration_stat(@stats[0].values[:median_time_to_fetch_manifest]) %>
           </div>
         </div>
         <div class="ee-stat-option">
@@ -102,7 +105,7 @@
             Time to Manifest (95th percentile)
           </div>
           <div class="ee-stat-figure">
-            <%= format_time_duration_stat(@stats.values[:time_to_fetch_manifest]) %>
+            <%= format_time_duration_stat(@stats[0].values[:time_to_fetch_manifest]) %>
           </div>
         </div>
       </div>
@@ -115,7 +118,7 @@
             Time to Files (median)
           </div>
           <div class="ee-stat-figure">
-            <%= format_time_duration_stat(@stats.values[:median_time_to_fetch_files]) %>
+            <%= format_time_duration_stat(@stats[0].values[:median_time_to_fetch_files]) %>
           </div>
         </div>
         <div class="ee-stat-option">
@@ -123,7 +126,7 @@
             Time to Files (95th percentile)
           </div>
           <div class="ee-stat-figure">
-            <%= format_time_duration_stat(@stats.values[:time_to_fetch_files]) %>
+            <%= format_time_duration_stat(@stats[0].values[:time_to_fetch_files]) %>
           </div>
         </div>
       </div>
@@ -136,14 +139,14 @@
           Document Errors
         </div>
         <div class="ee-stat-figure">
-          <%= @stats.values[:document_errors] %>
+          <%= @stats[0].values[:document_errors] %>
         </div>
       </div>
     </div>
 
     <h3>Most Active Users</h3>
     <table class="usa-table-no-header ee-stats-table">
-      <% (@stats.values[:top_users] || []).each do |user| %>
+      <% (@stats[0].values[:top_users] || []).each do |user| %>
         <tr>
           <td><%= user[:id] %></td>
           <td><%= pluralize(user[:count], "Download") %></td>

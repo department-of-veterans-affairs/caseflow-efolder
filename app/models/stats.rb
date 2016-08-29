@@ -75,6 +75,28 @@ class Stats
     values && values[:complete]
   end
 
+  def range
+    range_start..range_finish
+  end
+
+  def range_start
+    @range_start ||= {
+      hourly: time.beginning_of_hour,
+      daily: time.beginning_of_day,
+      weekly: time.beginning_of_week,
+      monthly: time.beginning_of_month
+    }[interval]
+  end
+
+  def range_finish
+    @range_finish ||= {
+      hourly: range_start + 1.hour,
+      daily: range_start + 1.day,
+      weekly: range_start + 1.week,
+      monthly: range_start.next_month
+    }[interval]
+  end
+
   def calculate_and_save_values!
     return true if complete?
     calculated_values = calculate_values
@@ -144,27 +166,5 @@ class Stats
     when :daily   then id + "-#{range_start.month}-#{range_start.day}"
     when :hourly  then id + "-#{range_start.month}-#{range_start.day}-#{range_start.hour}"
     end
-  end
-
-  def range
-    range_start..range_finish
-  end
-
-  def range_start
-    @range_start ||= {
-      hourly: time.beginning_of_hour,
-      daily: time.beginning_of_day,
-      weekly: time.beginning_of_week,
-      monthly: time.beginning_of_month
-    }[interval]
-  end
-
-  def range_finish
-    @range_finish ||= {
-      hourly: range_start + 1.hour,
-      daily: range_start + 1.day,
-      weekly: range_start + 1.week,
-      monthly: range_start.next_month
-    }[interval]
   end
 end
