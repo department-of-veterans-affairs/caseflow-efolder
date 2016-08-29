@@ -3,7 +3,7 @@
 # it is responsible for aggregating and caching statistics.
 #
 class Stats
-  attr_accessor :interval, :time, :past_period, :values
+  attr_accessor :interval, :time, :values
 
   INTERVALS = [:hourly, :daily, :weekly, :monthly].freeze
 
@@ -61,10 +61,9 @@ class Stats
     end
   }.freeze
 
-  def initialize(interval:, time:, past_period:)
+  def initialize(interval:, time:)
     self.interval = interval.to_sym
     self.time = time
-    self.past_period = past_period
   end
 
   def values
@@ -79,9 +78,22 @@ class Stats
   def calculate_and_save_values!
     return true if complete?
     calculated_values = calculate_values
-    calculated_values[:complete] = time >= range_finish
+    calculated_values[:complete] = Time.zone.now >= range_finish
     Rails.cache.write(cache_id, calculated_values)
     calculated_values
+  end
+
+  def self.offset(interval:, time:, offset:)
+    offset_time = time
+
+    case interval
+    when :monthly then offset_time -= offset.months
+    when :weekly  then offset_time -= offset.weeks
+    when :daily   then offset_time -= offset.days
+    when :hourly  then offset_time -= offset.hours
+    end
+
+    Stats.new(interval: interval, time: offset_time)
   end
 
   def self.calculate_all!
@@ -91,8 +103,8 @@ class Stats
         daily: 0..30,
         weekly: 0..26,
         monthly: 0..24
-      }[interval].each do |past_period|
-        Stats.new(interval: interval, time: Time.zone.now, past_period: past_period)
+      }[interval].each do |i|
+        Stats.offset(interval: interval, time: Time.zone.now, offset: i)
              .calculate_and_save_values!
       end
     end
@@ -140,10 +152,10 @@ class Stats
 
   def range_start
     @range_start ||= {
-      hourly: time.beginning_of_hour - past_period.hours,
-      daily: time.beginning_of_day - past_period.days,
-      weekly: time.beginning_of_week - past_period.weeks,
-      monthly: time.beginning_of_month - past_period.months
+      hourly: time.beginning_of_hour,
+      daily: time.beginning_of_day,
+      weekly: time.beginning_of_week,
+      monthly: time.beginning_of_month
     }[interval]
   end
 

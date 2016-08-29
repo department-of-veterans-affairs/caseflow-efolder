@@ -4,8 +4,7 @@ class StatsController < ApplicationController
   def show
     @stats = Stats.new(
       time: Time.zone.now,
-      interval: interval,
-      past_period: 0
+      interval: interval
     )
   end
 
