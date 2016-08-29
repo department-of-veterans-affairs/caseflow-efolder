@@ -89,7 +89,7 @@ window.Dashboard = (function(d3, moment) {
     charts
       .attr('width', width)
       .attr('height', height)
-      .each(function () { y.get(this).range([2, height]) })
+      .each(function () { y.get(this).range([2, height / 2]) })
 
     bars
       .attr('x', function (d, i) { return x(i) })
