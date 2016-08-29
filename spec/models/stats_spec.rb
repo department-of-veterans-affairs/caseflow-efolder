@@ -9,9 +9,10 @@ describe Stats do
   let(:weekly_stats) { Rails.cache.read("stats-2016-w07") }
   let(:daily_stats) { Rails.cache.read("stats-2016-2-17") }
   let(:hourly_stats) { Rails.cache.read("stats-2016-2-17-15") }
+  let(:prev_weekly_stats) { Rails.cache.read("stats-2016-w06") }
 
   context "#values" do
-    let(:stats) { Stats.new(time: Time.zone.now, interval: "daily") }
+    let(:stats) { Stats.new(time: Time.zone.now, interval: "daily", past_period: 0) }
     subject { stats.values }
 
     context "when cached stat values exist" do
@@ -38,7 +39,7 @@ describe Stats do
   context ".calculate_all!" do
     it "calculates and saves all calculated stats" do
       Download.create(status: :complete_success, completed_at: 40.days.ago)
-      Download.create(status: :complete_success, completed_at: 13.days.ago)
+      Download.create(status: :complete_success, completed_at: 7.days.ago)
       Download.create(status: :complete_success, completed_at: 2.days.ago)
       Download.create(status: :complete_success, completed_at: 4.hours.ago)
       Download.create(status: :complete_success, completed_at: 30.minutes.ago)
@@ -49,6 +50,25 @@ describe Stats do
       expect(weekly_stats[:completed_download_count]).to eq(3)
       expect(daily_stats[:completed_download_count]).to eq(2)
       expect(hourly_stats[:completed_download_count]).to eq(1)
+      expect(prev_weekly_stats[:completed_download_count]).to eq(1)
+    end
+
+    it "overwrites incomplete periods" do
+      Download.create(status: :complete_success, completed_at: 30.minutes.ago)
+      Stats.calculate_all!
+      Download.create(status: :complete_success, completed_at: 1.minute.ago)
+      Stats.calculate_all!
+
+      expect(hourly_stats[:completed_download_count]).to eq(2)
+    end
+
+    it "does not recalculate complete periods" do
+      Download.create(status: :complete_success, completed_at: 7.days.ago)
+      Stats.calculate_all!
+      Download.create(status: :complete_success, completed_at: 7.days.ago)
+      Stats.calculate_all!
+
+      expect(prev_weekly_stats[:completed_download_count]).to eq(1)
     end
   end
 

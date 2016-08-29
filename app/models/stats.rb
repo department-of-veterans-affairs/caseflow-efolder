@@ -3,7 +3,7 @@
 # it is responsible for aggregating and caching statistics.
 #
 class Stats
-  attr_accessor :interval, :time, :values
+  attr_accessor :interval, :time, :past_period, :values
 
   INTERVALS = [:hourly, :daily, :weekly, :monthly].freeze
 
@@ -61,24 +61,40 @@ class Stats
     end
   }.freeze
 
-  def initialize(interval:, time:)
+  def initialize(interval:, time:, past_period:)
     self.interval = interval.to_sym
     self.time = time
+    self.past_period = past_period
   end
 
   def values
     @values ||= load_values || calculate_and_save_values!
   end
 
+  def complete?
+    values = load_values
+    values && values[:complete]
+  end
+
   def calculate_and_save_values!
+    return true if complete?
     calculated_values = calculate_values
+    calculated_values[:complete] = time >= range_finish
     Rails.cache.write(cache_id, calculated_values)
     calculated_values
   end
 
   def self.calculate_all!
     INTERVALS.each do |interval|
-      Stats.new(interval: interval, time: Time.zone.now).calculate_and_save_values!
+      {
+        hourly: 0..24,
+        daily: 0..30,
+        weekly: 0..26,
+        monthly: 0..24
+      }[interval].each do |past_period|
+        Stats.new(interval: interval, time: Time.zone.now, past_period: past_period)
+             .calculate_and_save_values!
+      end
     end
   end
 
@@ -112,9 +128,9 @@ class Stats
 
     case interval
     when :monthly then id + "-#{range_start.month}"
-    when :weekly  then id + "-w#{time.strftime('%U')}"
-    when :daily   then id + "-#{range_start.month}-#{time.day}"
-    when :hourly  then id + "-#{range_start.month}-#{time.day}-#{time.hour}"
+    when :weekly  then id + "-w#{range_start.strftime('%U')}"
+    when :daily   then id + "-#{range_start.month}-#{range_start.day}"
+    when :hourly  then id + "-#{range_start.month}-#{range_start.day}-#{range_start.hour}"
     end
   end
 
@@ -124,10 +140,10 @@ class Stats
 
   def range_start
     @range_start ||= {
-      hourly: time.beginning_of_hour,
-      daily: time.beginning_of_day,
-      weekly: time.beginning_of_week,
-      monthly: time.beginning_of_month
+      hourly: time.beginning_of_hour - past_period.hours,
+      daily: time.beginning_of_day - past_period.days,
+      weekly: time.beginning_of_week - past_period.weeks,
+      monthly: time.beginning_of_month - past_period.months
     }[interval]
   end
 
@@ -135,7 +151,7 @@ class Stats
     @range_finish ||= {
       hourly: range_start + 1.hour,
       daily: range_start + 1.day,
-      weekly: range_start + 7.days,
+      weekly: range_start + 1.week,
       monthly: range_start.next_month
     }[interval]
   end
