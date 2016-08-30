@@ -74,7 +74,7 @@ window.Dashboard = (function(d3, moment) {
       })
 
     charts.on('mousemove', function () {
-      index = maxIndex - Math.floor((d3.event.offsetX) / x.step())
+      index = maxIndex - Math.max(Math.floor((d3.event.offsetX) / x.step()), 0)
       update()
     })
   }
