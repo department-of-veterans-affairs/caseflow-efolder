@@ -93,17 +93,14 @@ table td {
 
 .-activity,
 .-searches {
-  // .ee-stat-figure { color: $color-primary-alt; }
   svg .bar { fill: $color-primary-alt; }
 }
 
 .-timing {
-  // .ee-stat-figure { color: $color-green-light; }
   svg .bar { fill: $color-green-light; }
 }
 
 .-errors {
-  // .ee-stat-figure { color: $color-secondary; }
   svg .bar { fill: $color-secondary; }
 }
 
