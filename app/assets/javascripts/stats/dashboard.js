@@ -4,14 +4,14 @@ window.Dashboard = (function(d3, moment) {
   var index = 0
   var maxIndex = data.length - 1
   var dateStrings = data.map(function (d, i) {
-    var date = moment.unix(d.key)
+    var date = moment.unix(d.key).utc()
     var str = ''
     switch (interval) {
-    case 'hourly': str += date.format('HH:mm') + '–' + date.add(59, 'm').format('HH:mm'); break
-    case 'daily': str += date.utc().format('MMMM D'); break
-    case 'weekly': str += 'the week of ' + date.utc().format('MMMM D'); break
-    case 'monthly': str += date.utc().format(i < 12 ? 'MMMM' : 'MMMM YYYY'); break
-    default: str += date.utc().format('X')
+    case 'hourly': str += date.format('HH:mm') + '–' + date.add(59, 'm').format('HH:mm') + ' UTC'; break
+    case 'daily': str += date.format('MMMM D'); break
+    case 'weekly': str += 'the week of ' + date.format('MMMM D'); break
+    case 'monthly': str += date.format(i < 12 ? 'MMMM' : 'MMMM YYYY'); break
+    default: str += date.format('X')
     }
 
     if (i === 0) { str += ' (so far)'}

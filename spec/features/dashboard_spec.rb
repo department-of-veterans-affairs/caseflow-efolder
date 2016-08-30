@@ -59,7 +59,7 @@ RSpec.feature "Stats Dashboard" do
     User.authenticate!(roles: ["System Admin"])
 
     visit "/stats"
-    expect(page).to have_content("Activity for 07:00–07:59 (so far)")
+    expect(page).to have_content("Activity for 12:00–12:59 UTC (so far)")
     expect(page).to have_content("Active Users 0")
     expect(page).to have_content("Completed Downloads 0")
     expect(page).to have_content("Documents Retrieved 0")
