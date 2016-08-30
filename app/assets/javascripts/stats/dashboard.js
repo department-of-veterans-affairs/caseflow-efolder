@@ -49,7 +49,7 @@ window.Dashboard = (function(d3, moment) {
         .domain([0, max])
     })
 
-    charts.append('title').text('Historical Data')
+    charts.append('g').append('title').text('Historical Data')
 
     bars = charts.selectAll('.bar')
       .data(function (d) { return d.values })

@@ -22,27 +22,27 @@
     <div class="ee-stats-section -activity">
       <h3>Activity <span class="data-date"></span></h3>
       <div class="ee-stat-panel data-chart" data-key="user_count">
-        <div class="ee-stat-title">
+        <h4 class="ee-stat-title">
           Active Users
-        </div>
+        </h4>
         <div class="ee-stat-figure data-value" data-key="user_count">
           <%= @stats[0].values[:user_count] %>
         </div>
       </div>
 
       <div class="ee-stat-panel data-chart" data-key="completed_download_count">
-        <div class="ee-stat-title">
+        <h4 class="ee-stat-title">
           Completed Downloads
-        </div>
+        </h4>
         <div class="ee-stat-figure data-value" data-key="completed_download_count">
           <%= @stats[0].values[:completed_download_count] %>
         </div>
       </div>
 
       <div class="ee-stat-panel data-chart" data-key="document_count">
-        <div class="ee-stat-title">
+        <h4 class="ee-stat-title">
           Documents Retrieved
-        </div>
+        </h4>
         <div class="ee-stat-figure data-value" data-key="document_count">
           <%= @stats[0].values[:document_count] %>
         </div>
@@ -52,9 +52,9 @@
     <div class="ee-stats-section -searches">
       <h3>Searches <span class="data-date"></span></h3>
       <div class="ee-stat-panel data-chart" data-key="complete_searches">
-        <div class="ee-stat-title">
+        <h4 class="ee-stat-title">
           Successful
-        </div>
+        </h4>
         <div class="ee-stat-figure">
           <span class="data-value" data-key="complete_searches">
             <%= @stats[0].values[:complete_searches] %>
@@ -66,9 +66,9 @@
       </div>
 
       <div class="ee-stat-panel data-chart" data-key="not_found_searches">
-        <div class="ee-stat-title">
+        <h4 class="ee-stat-title">
           Not Found
-        </div>
+        </h4>
         <div class="ee-stat-figure">
           <span class="data-value" data-key="not_found_searches">
             <%= @stats[0].values[:not_found_searches] %>
@@ -80,9 +80,9 @@
       </div>
 
       <div class="ee-stat-panel data-chart" data-key="access_denied_searches">
-        <div class="ee-stat-title">
+        <h4 class="ee-stat-title">
           Access Denied
-        </div>
+        </h4>
         <div class="ee-stat-figure">
           <span class="data-value" data-key="access_denied_searches">
             <%= @stats[0].values[:access_denied_searches] %>
@@ -100,17 +100,17 @@
         role="button" tabindex="0"
         aria-label="Switch between median and 95th percentile statistics">
         <div class="ee-stat-option active data-chart" data-key="median_time_to_fetch_manifest">
-          <div class="ee-stat-title">
+          <h4 class="ee-stat-title">
             Time to Manifest (median)
-          </div>
+          </h4>
           <div class="ee-stat-figure data-time" data-key="median_time_to_fetch_manifest">
             <%= format_time_duration_stat(@stats[0].values[:median_time_to_fetch_manifest]) %>
           </div>
         </div>
         <div class="ee-stat-option data-chart" data-key="time_to_fetch_manifest">
-          <div class="ee-stat-title">
+          <h4 class="ee-stat-title">
             Time to Manifest (95th percentile)
-          </div>
+          </h4>
           <div class="ee-stat-figure data-time" data-key="time_to_fetch_manifest">
             <%= format_time_duration_stat(@stats[0].values[:time_to_fetch_manifest]) %>
           </div>
@@ -121,17 +121,17 @@
         role="button" tabindex="0"
         aria-label="Switch between median and 95th percentile statistics">
         <div class="ee-stat-option active data-chart" data-key="median_time_to_fetch_files">
-          <div class="ee-stat-title">
+          <h4 class="ee-stat-title">
             Time to Files (median)
-          </div>
+          </h4>
           <div class="ee-stat-figure data-time" data-key="median_time_to_fetch_files">
             <%= format_time_duration_stat(@stats[0].values[:median_time_to_fetch_files]) %>
           </div>
         </div>
         <div class="ee-stat-option data-chart" data-key="time_to_fetch_files">
-          <div class="ee-stat-title">
+          <h4 class="ee-stat-title">
             Time to Files (95th percentile)
-          </div>
+          </h4>
           <div class="ee-stat-figure data-time" data-key="time_to_fetch_files">
             <%= format_time_duration_stat(@stats[0].values[:time_to_fetch_files]) %>
           </div>
@@ -142,9 +142,9 @@
     <div class="ee-stats-section -errors">
       <h3>Errors <span class="data-date"></span></h3>
       <div class="ee-stat-panel data-chart" data-key="document_errors">
-        <div class="ee-stat-title">
+        <h4 class="ee-stat-title">
           Document Errors
-        </div>
+        </h4>
         <div class="ee-stat-figure data-value" data-key="document_errors">
           <%= @stats[0].values[:document_errors] %>
         </div>
