@@ -17,7 +17,7 @@ class Stats
     end,
 
     document_count: lambda do |range|
-      Download.document_count(downloads: Download.where(completed_at: range))
+      Document.where(completed_at: range, download_status: 1).count
     end,
 
     time_to_fetch_manifest: lambda do |range|

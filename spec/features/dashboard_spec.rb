@@ -40,9 +40,18 @@ RSpec.feature "Stats Dashboard" do
     ]
 
     @downloads.each do |download|
-      download.documents.create(download_status: :success)
-      download.documents.create(download_status: :success)
-      download.documents.create(download_status: :failed)
+      download.documents.create(
+        download_status: :success,
+        completed_at: 3.hours.ago
+      )
+      download.documents.create(
+        download_status: :success,
+        completed_at: 3.hours.ago
+      )
+      download.documents.create(
+        download_status: :failed,
+        completed_at: 3.hours.ago
+      )
     end
   end
 
