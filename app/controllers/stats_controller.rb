@@ -12,13 +12,12 @@ class StatsController < ApplicationController
     }[interval].map { |i| Stats.offset(time: Time.zone.now, interval: interval, offset: i) }
 
     @json = @stats.map { |d| { key: d.range_start.to_f, value: d.values } }.to_json
-
-    @interval = interval
   end
 
   private
 
   def interval
-    Stats::INTERVALS.find { |i| i.to_s == params[:interval] } || :hourly
+    @interval ||= Stats::INTERVALS.find { |i| i.to_s == params[:interval] } || :hourly
   end
+  helper_method :interval
 end
