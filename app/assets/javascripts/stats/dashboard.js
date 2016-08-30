@@ -1,26 +1,29 @@
 window.Dashboard = (function(d3, moment) {
   // private
+  var data, interval, index, maxIndex, dateStrings, charts, values, times, dates, table, x, y, bars
 
-  var index = 0
-  var maxIndex = data.length - 1
-  var dateStrings = data.map(function (d, i) {
-    var date = moment.unix(d.key).utc()
-    var str = ''
-    switch (interval) {
-    case 'hourly': str += date.format('HH:mm') + '–' + date.add(59, 'm').format('HH:mm') + ' UTC'; break
-    case 'daily': str += date.format('MMMM D'); break
-    case 'weekly': str += 'the week of ' + date.format('MMMM D'); break
-    case 'monthly': str += date.format(i < 12 ? 'MMMM' : 'MMMM YYYY'); break
-    default: str += date.format('X')
-    }
+  function init(opts) {
+    data = opts.data
+    interval = opts.interval
 
-    if (i === 0) { str += ' (so far)'}
+    index = 0
+    maxIndex = data.length - 1
+    dateStrings = data.map(function (d, i) {
+      var date = moment.unix(d.key).utc()
+      var str = ''
+      switch (interval) {
+      case 'hourly': str += date.format('HH:mm') + '–' + date.add(59, 'm').format('HH:mm') + ' UTC'; break
+      case 'daily': str += date.format('MMMM D'); break
+      case 'weekly': str += 'the week of ' + date.format('MMMM D'); break
+      case 'monthly': str += date.format(i < 12 ? 'MMMM' : 'MMMM YYYY'); break
+      default: str += date.format('X')
+      }
 
-    return str
-  })
-  var charts, values, times, dates, table, x, y, bars
+      if (i === 0) { str += ' (so far)'}
 
-  function init() {
+      return str
+    })
+
     charts = d3.selectAll('.data-chart')
       .call(setDataByKey)
       .append('svg')

@@ -16,5 +16,4 @@
 
 $(function() {
   window.StatsPanelToggle.bind();
-  window.Dashboard.init();
 });

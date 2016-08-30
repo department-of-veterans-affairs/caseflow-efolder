@@ -1,9 +1,13 @@
 <% content_for :head do %>
-  <script>
-    var data = <%= raw @json %>
-    var interval = "<%= @interval %>"
-  </script>
   <%= javascript_include_tag 'stats' %>
+  <script>
+    $(function() {
+      window.Dashboard.init({
+        data: <%= raw @json %>,
+        interval: "<%= @interval %>"
+      })
+    })
+  </script>
 <% end %>
 
 <div class="cf-app-segment cf-app-segment--alt">
