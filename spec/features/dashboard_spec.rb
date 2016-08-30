@@ -59,11 +59,13 @@ RSpec.feature "Stats Dashboard" do
     User.authenticate!(roles: ["System Admin"])
 
     visit "/stats"
+    expect(page).to have_content("Activity for 07:00–07:59 (so far)")
     expect(page).to have_content("Active Users 0")
     expect(page).to have_content("Completed Downloads 0")
     expect(page).to have_content("Documents Retrieved 0")
 
     click_on "Daily"
+    expect(page).to have_content("Activity for January 1 (so far)")
     expect(page).to have_content("Active Users 1")
     expect(page).to have_content("Completed Downloads 3")
     expect(page).to have_content("Documents Retrieved 6")
@@ -83,5 +85,21 @@ RSpec.feature "Stats Dashboard" do
     expect(page).to have_content("Time to Manifest (95th percentile) 14.37 sec")
     find('*[role="button"]', text: "Time to Manifest").trigger("click")
     expect(page).to have_content("Time to Manifest (median) 12.37 sec")
+  end
+
+  scenario "Navigate to past periods with arrow keys" do
+    leftarrow = "d3.select(window).dispatch('keydown', { detail: { keyCode: 37 } })"
+
+    User.authenticate!(roles: ["System Admin"])
+
+    visit "/stats"
+    click_on "Monthly"
+    expect(page).to have_content("Activity for January (so far)")
+
+    12.times do
+      page.driver.execute_script(leftarrow)
+    end
+
+    expect(page).to have_content("Activity for January 2014")
   end
 end

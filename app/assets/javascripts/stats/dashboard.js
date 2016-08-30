@@ -62,7 +62,7 @@ window.Dashboard = (function(d3, moment) {
     d3.select(window)
       .on('resize', resize)
       .on('keydown', function () {
-        switch (d3.event.keyCode) {
+        switch (d3.event.keyCode || d3.event.detail.keyCode) {
         case 37: index += 1; d3.event.preventDefault(); break // left
         case 39: index -= 1; d3.event.preventDefault(); break // right
         }
