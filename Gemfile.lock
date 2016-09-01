@@ -12,6 +12,13 @@ GIT
       xmlenc (~> 0.5.0)
 
 GIT
+  remote: https://github.com/department-of-veterans-affairs/d3-rails.git
+  revision: 6b11194470d0b39ca0025b4d7f3e768fd985fd91
+  specs:
+    d3-rails (4.2.2)
+      railties (>= 3.1)
+
+GIT
   remote: https://github.com/department-of-veterans-affairs/omniauth-saml-va
   revision: 24a515b3cbaf17e543e1351c2846001cc2b40c09
   branch: paultag/css
@@ -176,6 +183,8 @@ GEM
     mime-types-data (3.2016.0521)
     mini_portile2 (2.1.0)
     minitest (5.9.0)
+    momentjs-rails (2.11.1)
+      railties (>= 3.1)
     multi_json (1.12.1)
     multipart-post (2.0.0)
     neat (1.8.0)
@@ -385,8 +394,10 @@ DEPENDENCIES
   capybara (= 2.6.2)
   coffee-rails (~> 4.1.0)
   connect_vbms!
+  d3-rails!
   jbuilder (~> 2.0)
   jquery-rails
+  momentjs-rails
   neat
   omniauth-saml-va!
   pg

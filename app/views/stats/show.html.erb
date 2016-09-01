@@ -1,5 +1,13 @@
 <% content_for :head do %>
   <%= javascript_include_tag 'stats' %>
+  <script>
+    $(function() {
+      window.Dashboard.init({
+        data: <%= raw json %>,
+        interval: "<%= interval %>"
+      })
+    })
+  </script>
 <% end %>
 
 <div class="cf-app-segment cf-app-segment--alt">
@@ -9,120 +17,147 @@
     <% Stats::INTERVALS.each do |interval| %>
       <li>
         <%= link_to interval.to_s.capitalize, stats_path(interval),
-              class: "cf-tab #{(@stats.interval == interval) && "cf-active"}" %>
+              class: "cf-tab #{(@stats[0].interval == interval) && "cf-active"}" %>
       </li>
     <% end %>
   </ul>
 
   <div class="ee-stats">
-    <h3>Downloads</h3>
-    <div class="ee-stats-section">
-      <div class="ee-stat-panel">
-        <div class="ee-stat-title">
+    <div class="ee-stats-section -activity">
+      <h3>Activity <span class="data-date"></span></h3>
+      <div class="ee-stat-panel data-chart" data-key="user_count">
+        <h4 class="ee-stat-title">
+          Active Users
+        </h4>
+        <div class="ee-stat-figure data-value" data-key="user_count">
+          <%= @stats[0].values[:user_count] %>
+        </div>
+      </div>
+
+      <div class="ee-stat-panel data-chart" data-key="completed_download_count">
+        <h4 class="ee-stat-title">
           Completed Downloads
-        </div>
-        <div class="ee-stat-figure -downloads">
-          <%= @stats.values[:completed_download_count] %>
-        </div>
-      </div>
-
-      <div class="ee-stat-panel -toggle"
-        role="button" tabindex="0"
-        aria-label="Switch between median and 95th percentile statistics">
-        <div class="ee-stat-option active">
-          <div class="ee-stat-title">
-            Time to Manifest (median)
-          </div>
-          <div class="ee-stat-figure -downloads">
-            <%= format_time_duration_stat(@stats.values[:median_time_to_fetch_manifest]) %>
-          </div>
-        </div>
-        <div class="ee-stat-option">
-          <div class="ee-stat-title">
-            Time to Manifest (95th percentile)
-          </div>
-          <div class="ee-stat-figure -downloads">
-            <%= format_time_duration_stat(@stats.values[:time_to_fetch_manifest]) %>
-          </div>
+        </h4>
+        <div class="ee-stat-figure data-value" data-key="completed_download_count">
+          <%= @stats[0].values[:completed_download_count] %>
         </div>
       </div>
 
-      <div class="ee-stat-panel -toggle"
-        role="button" tabindex="0"
-        aria-label="Switch between median and 95th percentile statistics">
-        <div class="ee-stat-option active">
-          <div class="ee-stat-title">
-            Time to Files (median)
-          </div>
-          <div class="ee-stat-figure -downloads">
-            <%= format_time_duration_stat(@stats.values[:median_time_to_fetch_files]) %>
-          </div>
-        </div>
-        <div class="ee-stat-option">
-          <div class="ee-stat-title">
-            Time to Files (95th percentile)
-          </div>
-          <div class="ee-stat-figure -downloads">
-            <%= format_time_duration_stat(@stats.values[:time_to_fetch_files]) %>
-          </div>
+      <div class="ee-stat-panel data-chart" data-key="document_count">
+        <h4 class="ee-stat-title">
+          Documents Retrieved
+        </h4>
+        <div class="ee-stat-figure data-value" data-key="document_count">
+          <%= @stats[0].values[:document_count] %>
         </div>
       </div>
     </div>
 
-    <h3>Searches</h3>
-    <div class="ee-stats-section">
-      <div class="ee-stat-panel">
-        <div class="ee-stat-title">
+    <div class="ee-stats-section -searches">
+      <h3>Searches <span class="data-date"></span></h3>
+      <div class="ee-stat-panel data-chart" data-key="complete_searches">
+        <h4 class="ee-stat-title">
           Successful
-        </div>
-        <div class="ee-stat-figure -searches">
-          <%= @stats.values[:complete_searches] %>
+        </h4>
+        <div class="ee-stat-figure">
+          <span class="data-value" data-key="complete_searches">
+            <%= @stats[0].values[:complete_searches] %>
+          </span>
           <span class="ee-stat-unit">
-            / <%= @stats.values[:searches_count] %>
+            / <span class="data-value" data-key="searches_count"><%= @stats[0].values[:searches_count] %></span>
           </span>
         </div>
       </div>
 
-      <div class="ee-stat-panel">
-        <div class="ee-stat-title">
+      <div class="ee-stat-panel data-chart" data-key="not_found_searches">
+        <h4 class="ee-stat-title">
           Not Found
-        </div>
-        <div class="ee-stat-figure -searches">
-          <%= @stats.values[:not_found_searches] %>
+        </h4>
+        <div class="ee-stat-figure">
+          <span class="data-value" data-key="not_found_searches">
+            <%= @stats[0].values[:not_found_searches] %>
+          </span>
           <span class="ee-stat-unit">
-            / <%= @stats.values[:searches_count] %>
+            / <span class="data-value" data-key="searches_count"><%= @stats[0].values[:searches_count] %></span>
           </span>
         </div>
       </div>
 
-      <div class="ee-stat-panel">
-        <div class="ee-stat-title">
+      <div class="ee-stat-panel data-chart" data-key="access_denied_searches">
+        <h4 class="ee-stat-title">
           Access Denied
-        </div>
-        <div class="ee-stat-figure -searches">
-          <%= @stats.values[:access_denied_searches] %>
+        </h4>
+        <div class="ee-stat-figure">
+          <span class="data-value" data-key="access_denied_searches">
+            <%= @stats[0].values[:access_denied_searches] %>
+          </span>
           <span class="ee-stat-unit">
-            / <%= @stats.values[:searches_count] %>
+            / <span class="data-value" data-key="searches_count"><%= @stats[0].values[:searches_count] %></span>
           </span>
         </div>
       </div>
     </div>
 
-    <h3>Errors</h3>
-    <div class="ee-stats-section">
-      <div class="ee-stat-panel">
-        <div class="ee-stat-title">
-          Document Errors
+    <div class="ee-stats-section -timing">
+    <h3>Timing <span class="data-date"></span></h3>
+      <div class="ee-stat-panel -toggle"
+        role="button" tabindex="0"
+        aria-label="Switch between median and 95th percentile statistics">
+        <div class="ee-stat-option active data-chart" data-key="median_time_to_fetch_manifest">
+          <h4 class="ee-stat-title">
+            Time to Manifest (median)
+          </h4>
+          <div class="ee-stat-figure data-time" data-key="median_time_to_fetch_manifest">
+            <%= format_time_duration_stat(@stats[0].values[:median_time_to_fetch_manifest]) %>
+          </div>
         </div>
-        <div class="ee-stat-figure -errors">
-          <%= @stats.values[:document_errors] %>
+        <div class="ee-stat-option data-chart" data-key="time_to_fetch_manifest">
+          <h4 class="ee-stat-title">
+            Time to Manifest (95th percentile)
+          </h4>
+          <div class="ee-stat-figure data-time" data-key="time_to_fetch_manifest">
+            <%= format_time_duration_stat(@stats[0].values[:time_to_fetch_manifest]) %>
+          </div>
+        </div>
+      </div>
+
+      <div class="ee-stat-panel -toggle"
+        role="button" tabindex="0"
+        aria-label="Switch between median and 95th percentile statistics">
+        <div class="ee-stat-option active data-chart" data-key="median_time_to_fetch_files">
+          <h4 class="ee-stat-title">
+            Time to Files (median)
+          </h4>
+          <div class="ee-stat-figure data-time" data-key="median_time_to_fetch_files">
+            <%= format_time_duration_stat(@stats[0].values[:median_time_to_fetch_files]) %>
+          </div>
+        </div>
+        <div class="ee-stat-option data-chart" data-key="time_to_fetch_files">
+          <h4 class="ee-stat-title">
+            Time to Files (95th percentile)
+          </h4>
+          <div class="ee-stat-figure data-time" data-key="time_to_fetch_files">
+            <%= format_time_duration_stat(@stats[0].values[:time_to_fetch_files]) %>
+          </div>
         </div>
       </div>
     </div>
 
-    <h3>Most Active Users</h3>
-    <table class="usa-table-no-header ee-stats-table">
-      <% (@stats.values[:top_users] || []).each do |user| %>
+    <div class="ee-stats-section -errors">
+      <h3>Errors <span class="data-date"></span></h3>
+      <div class="ee-stat-panel data-chart" data-key="document_errors">
+        <h4 class="ee-stat-title">
+          Document Errors
+        </h4>
+        <div class="ee-stat-figure data-value" data-key="document_errors">
+          <%= @stats[0].values[:document_errors] %>
+        </div>
+      </div>
+    </div>
+
+    <h3>Most Active Users <span class="data-date"></span></h3>
+    <table class="usa-table-no-header ee-stats-table" id="top-users-table">
+      <% (@stats[0].values[:top_users] || []).each do |user| %>
         <tr>
           <td><%= user[:id] %></td>
           <td><%= pluralize(user[:count], "Download") %></td>

@@ -66,8 +66,11 @@ table td {
 
 .ee-stat-panel {
   @include span-columns(4);
+  position: relative;
   border: 1px solid $color-gray-lighter;
   padding: 1em;
+  padding-bottom: 6em;
+  overflow: hidden;
 
   &.-toggle .ee-stat-option {
     display: none;
@@ -77,23 +80,28 @@ table td {
 
 .ee-stat-title {
   color: $color-gray;
+  font-weight: 400;
+  margin: 0;
 }
 
 .ee-stat-figure {
   font-size: 6rem;
   font-weight: bold;
+  color: $color-gray;
+  line-height: .9;
+}
 
-  &.-downloads {
-    color: $color-green;
-  }
+.-activity,
+.-searches {
+  svg .bar { fill: $color-primary-alt; }
+}
 
-  &.-searches {
-    color: $color-cool-blue;
-  }
+.-timing {
+  svg .bar { fill: $color-green-light; }
+}
 
-  &.-errors {
-    color: $color-secondary;
-  }
+.-errors {
+  svg .bar { fill: $color-secondary; }
 }
 
 .ee-stat-unit {
@@ -101,6 +109,12 @@ table td {
   font-weight: normal;
   color: $color-gray;
   margin-left: -0.5em;
+}
+
+.data-chart svg {
+  position: absolute;
+  bottom: 0;
+  left: 0;
 }
 
 .cf-spacer-icon {
