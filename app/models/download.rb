@@ -12,7 +12,9 @@ class Download < ActiveRecord::Base
   TIMEOUT = 10.minutes
   HOURS_UNTIL_EXPIRY = 24
 
-  has_many :documents, -> { order(received_at: :desc) }
+  # sort by receipt date; documents with same date ordered as sent by vbms; see
+  # https://github.com/department-of-veterans-affairs/caseflow-efolder/issues/213
+  has_many :documents, -> { order(received_at: :desc, id: :desc) }
 
   after_initialize do |download|
     if download.file_number
