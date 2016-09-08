@@ -4,7 +4,7 @@ require "zip"
 class DownloadDocuments
   def initialize(opts = {})
     @download = opts[:download]
-    @vbms_documents = opts[:vbms_documents] || []
+    @vbms_documents = DownloadDocuments.filter_vbms_documents(opts[:vbms_documents] || [])
     @vbms_service = opts[:vbms_service] || VBMSService
     @s3 = opts[:s3] || (Rails.application.config.s3_enabled ? S3Service : Fakes::S3Service)
   end
@@ -127,5 +127,19 @@ class DownloadDocuments
 
   def before_package_contents
     # Test hook for testing race conditions
+  end
+
+  def self.ignored_doc_types
+    [
+      # C&P Exam (DBQ) sent back as both XML and PDF, ignore the XML 999981
+      "999981"
+    ]
+  end
+
+  def self.filter_vbms_documents(vbms_documents)
+    ignored = DownloadDocuments.ignored_doc_types
+    vbms_documents.select do |vbms_document|
+      !ignored.include?(vbms_document.doc_type)
+    end
   end
 end
