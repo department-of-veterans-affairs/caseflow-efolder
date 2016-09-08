@@ -1,5 +1,6 @@
 require "fileutils"
 require "zip"
+require "rails_helper"
 
 describe DownloadDocuments do
   before do
@@ -236,6 +237,21 @@ describe DownloadDocuments do
         Zip::File.open(Rails.root + "tmp/files/#{download.id}/#{download.package_filename}") do |zip_file|
           expect(zip_file.glob("00000-keep-stamping.pdf").first).to_not be_nil
         end
+      end
+    end
+
+    context "when some vbms files aren't supported" do
+      let(:vbms_documents) do
+        [
+          VBMS::Responses::Document.new(document_id: "1", doc_type: "352"),
+          VBMS::Responses::Document.new(document_id: "2", doc_type: "999981")
+        ]
+      end
+
+      it "filters unsupported types" do
+        download_documents.create_documents
+        expect(download.documents.count).to eq(1)
+        expect(download.documents[0].document_id).to eq("1")
       end
     end
   end
