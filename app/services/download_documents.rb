@@ -130,12 +130,10 @@ class DownloadDocuments
   end
 
   def self.ignored_doc_types
-    ignored_types = []
-
-    # C&P Exam (DBQ) sent back as both XML and PDF, ignore the XML 999981
-    ignored_types << "999981"
-
-    ignored_types
+    [
+      # C&P Exam (DBQ) sent back as both XML and PDF, ignore the XML 999981
+      "999981"
+    ]
   end
 
   def self.filter_vbms_documents(vbms_documents)
