@@ -46,7 +46,7 @@ RSpec.feature "Downloads" do
     visit "/"
     expect(page).to_not have_content "Recent Searches"
 
-    fill_in "Search for a VBMS eFolder to get started.", with: "1234"
+    fill_in "Search for a Veteran ID number below to get started.", with: "1234"
     click_button "Search"
 
     # Test that Caseflow caches veteran name for a download
@@ -74,7 +74,7 @@ RSpec.feature "Downloads" do
     )
 
     visit "/"
-    fill_in "Search for a VBMS eFolder to get started.", with: "5555"
+    fill_in "Search for a Veteran ID number below to get started.", with: "5555"
     click_button "Search"
 
     expect(page).to have_content "We are gathering the list of files in the eFolder now"
@@ -87,7 +87,7 @@ RSpec.feature "Downloads" do
     )
 
     visit "/"
-    fill_in "Search for a VBMS eFolder to get started.", with: "5555"
+    fill_in "Search for a Veteran ID number below to get started.", with: "5555"
     click_button "Search"
 
     expect(page).to have_content("Success")
@@ -102,7 +102,7 @@ RSpec.feature "Downloads" do
     visit "/"
     expect(page).to_not have_content "Recent Searches"
 
-    fill_in "Search for a VBMS eFolder to get started.", with: " 1234 "
+    fill_in "Search for a Veteran ID number below to get started.", with: " 1234 "
     click_button "Search"
 
     @download = @user_download.last
@@ -114,7 +114,7 @@ RSpec.feature "Downloads" do
   scenario "Requesting non-existent case" do
     visit "/"
 
-    fill_in "Search for a VBMS eFolder to get started.", with: "abcd"
+    fill_in "Search for a Veteran ID number below to get started.", with: "abcd"
     click_button "Search"
 
     expect(page).to have_content "Couldn't find an eFolder with that ID"
@@ -128,7 +128,7 @@ RSpec.feature "Downloads" do
     Fakes::BGSService.sensitive_files = { "8888" => true }
 
     visit "/"
-    fill_in "Search for a VBMS eFolder to get started.", with: "8888"
+    fill_in "Search for a Veteran ID number below to get started.", with: "8888"
     click_button "Search"
     expect(page).to have_current_path("/downloads")
     expect(page).to have_content("contains sensitive information")
@@ -188,7 +188,7 @@ RSpec.feature "Downloads" do
     expect(page).to have_content "Steph Curry (3456)"
     expect(page).to have_content "yawn.pdf 09/06/2015"
     expect(page).to have_content "smiley.pdf 01/19/2015"
-    first(:button, "Prepare for Download").click
+    first(:button, "Start Retrieving eFolder").click
 
     expect(@download.reload).to be_pending_documents
     expect(GetDownloadFilesJob).to have_received(:perform_later)

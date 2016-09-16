@@ -4,7 +4,7 @@
 
     <p>
       eFolder Express allows VA employees to bulk-download VBMS eFolders.<br/>
-      Search for a File Number below to get started.
+      Search for a Veteran ID number below to get started.
     </p>
   </div>
 
@@ -35,7 +35,7 @@
   <div class="ee-search">
     <%= form_for Download.new, method: :post, html: { class: "usa-search usa-search-big cf-form" } do %>
       <div role="search">
-        <%= label_tag(:file_number, "Search for a VBMS eFolder to get started.", class: "usa-sr-only") %>
+        <%= label_tag(:file_number, "Search for a Veteran ID number below to get started.", class: "usa-sr-only") %>
         <%= search_field_tag(:file_number) %>
 
         <button type="submit" class="cf-submit">
@@ -54,7 +54,7 @@
   </div>
 
   <% if recent_downloads.exists? %>
-    <h2 class="ee-recent-searches">Download History</h2>
+    <h2 class="ee-recent-searches">History</h2>
     <table class="usa-table-borderless" summary="List of recent downloads and links to download their contents">
     <thead>
       <tr class="usa-sr-only">
