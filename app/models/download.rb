@@ -10,7 +10,7 @@ class Download < ActiveRecord::Base
   }
 
   TIMEOUT = 10.minutes
-  HOURS_UNTIL_EXPIRY = 24
+  HOURS_UNTIL_EXPIRY = 72
 
   # sort by receipt date; documents with same date ordered as sent by vbms; see
   # https://github.com/department-of-veterans-affairs/caseflow-efolder/issues/213
