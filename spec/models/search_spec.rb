@@ -69,7 +69,7 @@ describe Search do
 
       context "when that download is inactive" do
         before do
-          @existing_download.update_attributes!(created_at: 2.days.ago)
+          @existing_download.update_attributes!(created_at: 4.days.ago)
         end
 
         it "creates a new download" do
