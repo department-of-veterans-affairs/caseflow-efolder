@@ -3,7 +3,7 @@
   window.DownloadStatus.init(<%= @download.id %>, "<%= @download.status %>");
 </script>
 
-<% fetch_button_text = "Prepare for Download" %>
+<% fetch_button_text = "Start Retrieving eFolder" %>
 
 <div class="cf-app-segment cf-app-segment--alt">
   <h1><%= @download.veteran_name %> <span class="ee-subheading">(<%=h @download.file_number %>)</span></h1>
@@ -24,8 +24,9 @@
 
   <% elsif @download.pending_confirmation? %>
     <p>
-      eFolder Express found <%= @download.documents.count %> files in eFolder #<%= @download.file_number %> (<%= @download.veteran_name %>).
-      Click the <%= fetch_button_text %> button below to retrieve files from VBMS.
+      eFolder Express found <%= @download.documents.count %> files in eFolder #<%= @download.file_number %>
+      (<%= @download.veteran_name %>).
+      Verify the ID # and click the <%= fetch_button_text %> button below to retrieve the files from VBMS.
     </p>
 
     <p>
