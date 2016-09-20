@@ -14,7 +14,7 @@ class Download < ActiveRecord::Base
 
   # sort by receipt date; documents with same date ordered as sent by vbms; see
   # https://github.com/department-of-veterans-affairs/caseflow-efolder/issues/213
-  has_many :documents, -> { order(received_at: :desc, id: :desc) }
+  has_many :documents, -> { order(received_at: :desc, id: :asc) }
 
   after_initialize do |download|
     if download.file_number
