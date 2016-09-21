@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons"
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.7.1'
@@ -31,9 +32,6 @@ gem "sentry-raven"
 # SSOI
 gem 'omniauth-saml-va', git: 'https://github.com/department-of-veterans-affairs/omniauth-saml-va', branch: 'paultag/css'
 
-gem 'bourbon'
-gem 'neat'
-
 gem 'puma'
 
 # Use jquery as the JavaScript library
@@ -42,10 +40,6 @@ gem 'jquery-rails'
 gem 'turbolinks'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
-# D3.js for data visualization
-gem 'd3-rails', git: "https://github.com/department-of-veterans-affairs/d3-rails.git"
-# Moment.js for time/date manipulation
-gem 'momentjs-rails'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0', group: :doc
 
