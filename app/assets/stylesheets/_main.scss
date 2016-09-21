@@ -1,8 +1,6 @@
 @import 'caseflow_main';
 @import 'progress-bar';
-@import 'tabs';
 @import 'download';
-@import 'stats';
 
 .cf-logo-image {
   @include retina-image("efolder-express-logo", 32px 32px, $asset-pipeline: true);
@@ -48,6 +46,21 @@
 table th,
 table td {
   border-color: $color-gray-lighter;
+}
+
+.cf-stats-section {
+  &.-activity,
+  &.-searches {
+    svg .bar { fill: $color-primary-alt; }
+  }
+
+  &.-timing {
+    svg .bar { fill: $color-green-light; }
+  }
+
+  &.-errors {
+    svg .bar { fill: $color-secondary; }
+  }
 }
 
 .cf-spacer-icon {
