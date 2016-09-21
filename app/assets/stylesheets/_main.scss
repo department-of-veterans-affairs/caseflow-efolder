@@ -49,20 +49,20 @@ table td {
   border-color: $color-gray-lighter;
 }
 
-.ee-stats {
+.cf-stats {
   margin-top: 20px;
 }
 
-.ee-stats-section {
+.cf-stats-section {
   @include outer-container;
   margin-bottom: 1em;
 }
 
-.ee-stats-table {
+.cf-stats-table {
   margin-top: 0;
 }
 
-.ee-stat-panel {
+.cf-stat-panel {
   @include span-columns(4);
   position: relative;
   border: 1px solid $color-gray-lighter;
@@ -70,19 +70,19 @@ table td {
   padding-bottom: 6em;
   overflow: hidden;
 
-  &.-toggle .ee-stat-option {
+  &.-toggle .cf-stat-option {
     display: none;
     &.active { display: block; }
   }
 }
 
-.ee-stat-title {
+.cf-stat-title {
   color: $color-gray;
   font-weight: 400;
   margin: 0;
 }
 
-.ee-stat-figure {
+.cf-stat-figure {
   font-size: 6rem;
   font-weight: bold;
   color: $color-gray;
@@ -102,7 +102,7 @@ table td {
   svg .bar { fill: $color-secondary; }
 }
 
-.ee-stat-unit {
+.cf-stat-unit {
   font-size: 1.6rem;
   font-weight: normal;
   color: $color-gray;
