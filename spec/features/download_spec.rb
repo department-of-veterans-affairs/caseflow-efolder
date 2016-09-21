@@ -152,7 +152,7 @@ RSpec.feature "Downloads" do
   scenario "Attempting to view expired download fails" do
     expired = @user_download.create!(
       file_number: "78901",
-      created_at: 27.hours.ago,
+      created_at: 77.hours.ago,
       status: :complete_success
     )
 
@@ -284,7 +284,7 @@ RSpec.feature "Downloads" do
   scenario "Recent download list expires old downloads" do
     @user_download.create!(
       file_number: "78901",
-      created_at: 27.hours.ago,
+      created_at: 77.hours.ago,
       status: :complete_success
     )
 
