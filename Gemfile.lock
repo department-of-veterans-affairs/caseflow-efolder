@@ -1,4 +1,16 @@
 GIT
+  remote: https://github.com/department-of-veterans-affairs/caseflow-commons
+  revision: 0e202324d292eddbfb14f5466cfd578957482766
+  specs:
+    caseflow (0.1.0)
+      bourbon
+      d3-rails
+      jquery-rails
+      momentjs-rails
+      neat
+      us_web_design_standards
+
+GIT
   remote: https://github.com/department-of-veterans-affairs/connect_vbms.git
   revision: 6cde66023ccbd09676b851bdb97f5b8ac383960b
   ref: 6cde66023ccbd09676b851bdb97f5b8ac383960b
@@ -10,13 +22,6 @@ GIT
       nokogiri (~> 1.6)
       xmldsig (~> 0.3.1)
       xmlenc (~> 0.5.0)
-
-GIT
-  remote: https://github.com/department-of-veterans-affairs/d3-rails.git
-  revision: 6b11194470d0b39ca0025b4d7f3e768fd985fd91
-  specs:
-    d3-rails (4.2.2)
-      railties (>= 3.1)
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/omniauth-saml-va
@@ -43,15 +48,6 @@ GIT
       poltergeist
       rainbow
       selenium-webdriver
-
-GIT
-  remote: https://github.com/harrisj/us_web_design_standards_gem.git
-  revision: a789c0a7b55d13f378fb3a0da675bcc687079ea3
-  branch: rails-assets-fixes
-  specs:
-    us_web_design_standards (0.0.2)
-      railties
-      sass (~> 3.4)
 
 GEM
   remote: https://rubygems.org/
@@ -142,6 +138,8 @@ GEM
     coffee-script-source (1.10.0)
     concurrent-ruby (1.0.2)
     connection_pool (2.2.0)
+    d3-rails (4.2.4)
+      railties (>= 3.1)
     diff-lcs (1.2.5)
     docile (1.1.5)
     erubis (2.7.0)
@@ -364,6 +362,9 @@ GEM
       tzinfo (>= 1.0.0)
     uglifier (3.0.1)
       execjs (>= 0.3.0, < 3)
+    us_web_design_standards (0.0.2)
+      railties
+      sass (~> 3.4)
     wasabi (3.5.0)
       httpi (~> 2.0)
       nokogiri (>= 1.4.2)
@@ -388,17 +389,14 @@ DEPENDENCIES
   activerecord-jdbcpostgresql-adapter
   aws-sdk (~> 2)
   bgs!
-  bourbon
   brakeman (= 3.1.5)
   bundler-audit
   capybara (= 2.6.2)
+  caseflow!
   coffee-rails (~> 4.1.0)
   connect_vbms!
-  d3-rails!
   jbuilder (~> 2.0)
   jquery-rails
-  momentjs-rails
-  neat
   omniauth-saml-va!
   pg
   pry
@@ -422,7 +420,6 @@ DEPENDENCIES
   turbolinks
   tzinfo-data
   uglifier (>= 1.3.0)
-  us_web_design_standards!
   zaru
 
 BUNDLED WITH

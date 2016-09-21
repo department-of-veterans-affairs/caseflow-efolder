@@ -1,13 +1,11 @@
-@import 'bourbon';
-@import 'neat';
-@import 'us_web_design_standards';
-@import 'fonts';
-@import 'caseflow';
+@import 'caseflow_main';
 @import 'progress-bar';
-@import 'spin';
 @import 'tabs';
 @import 'download';
 
+.cf-logo-image {
+  @include retina-image("efolder-express-logo", 32px 32px, $asset-pipeline: true);
+}
 
 // Candidate for USWDS
 .usa-table-no-header {

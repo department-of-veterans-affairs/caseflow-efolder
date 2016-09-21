@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons"
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.7.1'
@@ -20,19 +21,11 @@ gem 'coffee-rails', '~> 4.1.0'
 gem 'therubyracer', platforms: :ruby
 gem 'therubyrhino', platforms: :jruby
 
-# Style
-gem 'us_web_design_standards', git: 'https://github.com/harrisj/us_web_design_standards_gem.git', branch: 'rails-assets-fixes'
-# TODO: We can remove the git path when this pull request is merged in:
-#       https://github.com/18F/us_web_design_standards_gem/pull/7/commits
-
 # Error reporting to Sentry
 gem "sentry-raven"
 
 # SSOI
 gem 'omniauth-saml-va', git: 'https://github.com/department-of-veterans-affairs/omniauth-saml-va', branch: 'paultag/css'
-
-gem 'bourbon'
-gem 'neat'
 
 gem 'puma'
 
@@ -42,10 +35,6 @@ gem 'jquery-rails'
 gem 'turbolinks'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
-# D3.js for data visualization
-gem 'd3-rails', git: "https://github.com/department-of-veterans-affairs/d3-rails.git"
-# Moment.js for time/date manipulation
-gem 'momentjs-rails'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0', group: :doc
 
