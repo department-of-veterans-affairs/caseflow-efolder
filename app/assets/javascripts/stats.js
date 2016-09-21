@@ -10,10 +10,4 @@
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require d3
-//= require moment
-//= require_tree ./stats
-
-$(function() {
-  window.StatsPanelToggle.bind();
-});
+//= require caseflow_stats

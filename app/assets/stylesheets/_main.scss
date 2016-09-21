@@ -1,13 +1,10 @@
-@import 'bourbon';
-@import 'neat';
-@import 'us_web_design_standards';
-@import 'fonts';
-@import 'caseflow';
+@import 'caseflow_main';
 @import 'progress-bar';
-@import 'spin';
-@import 'tabs';
 @import 'download';
 
+.cf-logo-image {
+  @include retina-image("efolder-express-logo", 32px 32px, $asset-pipeline: true);
+}
 
 // Candidate for USWDS
 .usa-table-no-header {
@@ -51,70 +48,19 @@ table td {
   border-color: $color-gray-lighter;
 }
 
-.ee-stats {
-  margin-top: 20px;
-}
-
-.ee-stats-section {
-  @include outer-container;
-  margin-bottom: 1em;
-}
-
-.ee-stats-table {
-  margin-top: 0;
-}
-
-.ee-stat-panel {
-  @include span-columns(4);
-  position: relative;
-  border: 1px solid $color-gray-lighter;
-  padding: 1em;
-  padding-bottom: 6em;
-  overflow: hidden;
-
-  &.-toggle .ee-stat-option {
-    display: none;
-    &.active { display: block; }
+.cf-stats-section {
+  &.-activity,
+  &.-searches {
+    svg .bar { fill: $color-primary-alt; }
   }
-}
 
-.ee-stat-title {
-  color: $color-gray;
-  font-weight: 400;
-  margin: 0;
-}
+  &.-timing {
+    svg .bar { fill: $color-green-light; }
+  }
 
-.ee-stat-figure {
-  font-size: 6rem;
-  font-weight: bold;
-  color: $color-gray;
-  line-height: .9;
-}
-
-.-activity,
-.-searches {
-  svg .bar { fill: $color-primary-alt; }
-}
-
-.-timing {
-  svg .bar { fill: $color-green-light; }
-}
-
-.-errors {
-  svg .bar { fill: $color-secondary; }
-}
-
-.ee-stat-unit {
-  font-size: 1.6rem;
-  font-weight: normal;
-  color: $color-gray;
-  margin-left: -0.5em;
-}
-
-.data-chart svg {
-  position: absolute;
-  bottom: 0;
-  left: 0;
+  &.-errors {
+    svg .bar { fill: $color-secondary; }
+  }
 }
 
 .cf-spacer-icon {
