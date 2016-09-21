@@ -277,7 +277,7 @@ RSpec.feature "Downloads" do
     expect(page).to have_css ".document-success", text: "roll.pdf"
     expect(page).to have_css ".document-success", text: "tide.pdf"
 
-    first(:link, "Download Zip").click
+    first(:link, "Download eFolder").click
     expect(page.response_headers["Content-Type"]).to eq("application/zip")
   end
 
@@ -325,7 +325,7 @@ RSpec.feature "Downloads" do
     expect(find(complete_with_errors_row)).to have_content("78902")
     expect(find(complete_with_errors_row)).to have_css(".cf-icon-alert")
     within(complete_with_errors_row) { click_on("View Results") }
-    expect(page).to have_content("Download Zip")
+    expect(page).to have_content("Download eFolder")
 
     visit "/"
     pending_documents_row = "#download-#{pending_documents.id}"
