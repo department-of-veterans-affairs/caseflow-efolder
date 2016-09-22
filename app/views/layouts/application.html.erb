@@ -10,8 +10,6 @@
 
   <% if content_for?(:head) %><%= yield :head %><% end %>
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-
 <!--
 
  _   _ ____    ____  _       _ _        _   ____                  _              ____   __     ___
@@ -81,7 +79,7 @@
                 <%= current_user.display_name %>
             </a>
 
-            <ul id="menu" class="cf-dropdown-menu" aria-labeledby="menu-trigger">
+            <ul id="menu" class="cf-dropdown-menu" aria-labelledby="menu-trigger">
               <li><a href="mailto:Caseflow@va.gov">Help</a></li>
               <li>
                 <a href="<%= url_for controller: 'sessions', action: 'destroy'%>">Sign out</a>

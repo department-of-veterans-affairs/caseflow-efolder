@@ -26,7 +26,7 @@
             Click the "Download" button below.
           </p>
           <br/>
-          <%= link_to "Download Zip", download_download_path(@download), {class: "usa-button"} %>
+          <%= link_to "Download eFolder", download_download_path(@download), {class: "usa-button"} %>
         </div>
       </div>
 
@@ -84,7 +84,7 @@
       <table class="usa-table-borderless ee-documents-table" summary="Status of veteran eFolder file downloads">
       <thead>
         <tr>
-          <th scope="col"></th>
+          <th scope="col"><span class="usa-sr-only">Status</span></th>
           <th scope="col">Filename</th>
           <th scope="col">Receipt Date</th>
         </tr>
@@ -108,9 +108,9 @@
 
 <div class="cf-app-segment">
   <% if @download.complete? %>
-    <%= link_to (@download.documents.failed.any? ? "Download Anyway" : "Download Zip"), download_download_path(@download), {class: "usa-button ee-right-button"} %>
+    <%= link_to (@download.documents.failed.any? ? "Download Anyway" : "Download eFolder"), download_download_path(@download), {class: "usa-button ee-right-button"} %>
   <% else %>
-    <button class="usa-button-disabled ee-right-button">Download Zip</button>
+    <button class="usa-button-disabled ee-right-button">Download eFolder</button>
   <% end %>
 
   <span><%= link_to "Search for Another eFolder", root_path %></span>

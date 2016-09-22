@@ -152,7 +152,7 @@ RSpec.feature "Downloads" do
   scenario "Attempting to view expired download fails" do
     expired = @user_download.create!(
       file_number: "78901",
-      created_at: 27.hours.ago,
+      created_at: 77.hours.ago,
       status: :complete_success
     )
 
@@ -277,14 +277,14 @@ RSpec.feature "Downloads" do
     expect(page).to have_css ".document-success", text: "roll.pdf"
     expect(page).to have_css ".document-success", text: "tide.pdf"
 
-    first(:link, "Download Zip").click
+    first(:link, "Download eFolder").click
     expect(page.response_headers["Content-Type"]).to eq("application/zip")
   end
 
   scenario "Recent download list expires old downloads" do
     @user_download.create!(
       file_number: "78901",
-      created_at: 27.hours.ago,
+      created_at: 77.hours.ago,
       status: :complete_success
     )
 
@@ -325,7 +325,7 @@ RSpec.feature "Downloads" do
     expect(find(complete_with_errors_row)).to have_content("78902")
     expect(find(complete_with_errors_row)).to have_css(".cf-icon-alert")
     within(complete_with_errors_row) { click_on("View Results") }
-    expect(page).to have_content("Download Zip")
+    expect(page).to have_content("Download eFolder")
 
     visit "/"
     pending_documents_row = "#download-#{pending_documents.id}"

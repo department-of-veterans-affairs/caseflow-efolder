@@ -84,7 +84,7 @@ group :test do
   #gem 'guard-rspec'
   gem 'simplecov'
   gem 'capybara', '2.6.2'
-  gem 'sniffybara', git: 'https://github.com/department-of-veterans-affairs/sniffybara.git'
+  gem 'sniffybara', git: 'https://github.com/department-of-veterans-affairs/sniffybara.git', branch: 'axe'
 end
 
 group :development do
