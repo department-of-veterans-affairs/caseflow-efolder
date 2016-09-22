@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.feature "Stats Dashboard" do
   before do
-    Timecop.freeze(Time.utc(2015, 1, 1, 12, 0, 0))
+    Timecop.freeze(Time.utc(2015, 1, 1, 17, 0, 0))
 
     Download.delete_all
     Document.delete_all
@@ -68,7 +68,7 @@ RSpec.feature "Stats Dashboard" do
     User.authenticate!(roles: ["System Admin"])
 
     visit "/stats"
-    expect(page).to have_content("Activity for 12:00–12:59 UTC (so far)")
+    expect(page).to have_content("Activity for 12:00–12:59 EST (so far)")
     expect(page).to have_content("Active Users 0")
     expect(page).to have_content("Completed Downloads 0")
     expect(page).to have_content("Documents Retrieved 0")

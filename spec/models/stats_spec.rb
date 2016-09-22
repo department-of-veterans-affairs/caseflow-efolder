@@ -1,6 +1,6 @@
 describe Stats do
   before do
-    Timecop.freeze(Time.utc(2016, 2, 17, 15, 59, 0))
+    Timecop.freeze(Time.utc(2016, 2, 17, 20, 59, 0))
     Download.delete_all
     Rails.cache.clear
   end
@@ -12,7 +12,7 @@ describe Stats do
   let(:prev_weekly_stats) { Rails.cache.read("stats-2016-w06") }
 
   context "#values" do
-    let(:stats) { Stats.new(time: Time.zone.now, interval: "daily") }
+    let(:stats) { Stats.new(time: Stats.now, interval: "daily") }
     subject { stats.values }
 
     context "when cached stat values exist" do

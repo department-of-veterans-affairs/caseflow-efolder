@@ -156,7 +156,7 @@
     </div>
 
     <h3>Most Active Users <span class="data-date"></span></h3>
-    <table class="usa-table-no-header cf-stats-table" id="top-users-table">
+    <table class="usa-table-no-header cf-stats-table data-table" data-key="top_users">
       <% (@stats[0].values[:top_users] || []).each do |user| %>
         <tr>
           <td><%= user[:id] %></td>
