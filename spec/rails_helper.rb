@@ -25,8 +25,8 @@ require "capybara"
 
 Capybara.default_driver = :sniffybara
 Sniffybara::Driver.path_exclusions << /samlva/
-Sniffybara::Driver.issue_id_exceptions += [
-]
+Sniffybara::Driver.configuration_file = File.expand_path("../support/VA-axe-configuration.json", __FILE__)
+Sniffybara::Driver.issue_id_exceptions += []
 
 # Convenience methods for stubbing current user
 module StubbableUser
