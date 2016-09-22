@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons", ref: "90a3d81"
+gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons", ref: "eccc2cb"
 gem "moment_timezone-rails"
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
