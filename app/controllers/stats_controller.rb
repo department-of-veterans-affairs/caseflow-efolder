@@ -9,7 +9,7 @@ class StatsController < ApplicationController
       daily: 0...30,
       weekly: 0...26,
       monthly: 0...24
-    }[interval].map { |i| Stats.offset(time: Time.zone.now, interval: interval, offset: i) }
+    }[interval].map { |i| Stats.offset(time: Stats.now, interval: interval, offset: i) }
   end
 
   private
