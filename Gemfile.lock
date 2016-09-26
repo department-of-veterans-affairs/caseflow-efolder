@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/department-of-veterans-affairs/caseflow-commons
-  revision: eccc2cbb7c8049e2f1d35a5d82d6e896910d0d0d
-  ref: eccc2cb
+  revision: b743c64156efa7298ae81d945833c9f1db93a8cb
+  ref: b743c64
   specs:
-    caseflow (0.1.4)
+    caseflow (0.1.5)
       bourbon
       d3-rails
       jquery-rails
