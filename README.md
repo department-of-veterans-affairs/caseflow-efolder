@@ -3,7 +3,7 @@
 
 ## About
 
-FOIA Requests that give veterans access to their own VA files take **way** too long right now. eFolder Express allows for downloading all of a veteran's case files in a fraction of the time it currently takes. It will also enable attorneys in the appeals process to use best-in-class legal tools to review these documents and so they can provide possible service to America's veterans.
+FOIA Requests that give veterans access to their own VA files take **way** too long right now. eFolder Express allows for downloading all of a veteran's files in a fraction of the time it currently takes. It will also enable attorneys in the appeals process to use best-in-class legal tools to review these documents and so they can provide excellent service to America's veterans.
 
 ## First Time Development Setup
 
