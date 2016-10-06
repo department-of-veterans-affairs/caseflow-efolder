@@ -9,6 +9,17 @@ FOIA Requests that give veterans access to their own VA files take **way** too l
 
 ## First Time Development Setup
 
+You'll need Ruby 2.3.0, Postgres, and Redis if you don't have them.
+
+> $ rbenv install 2.3.0
+> $ brew install postgresql
+> $ brew install redis
+
+Run Postgres and Redis in separate terminal tabs.
+
+> $ postgres -D /usr/local/var/postgres
+> $ redis-server
+
 Install dependencies
 
 > $ bundle install
