@@ -15,10 +15,10 @@ You'll need Ruby 2.3.0, Postgres, and Redis if you don't have them.
 > $ brew install postgresql
 > $ brew install redis
 
-Run Postgres and Redis in separate terminal tabs.
+You may want to have Redis and Postgres run on startup. Let brew tell you how to do that:
 
-> $ postgres -D /usr/local/var/postgres
-> $ redis-server
+> $ brew info redis
+> $ brew info postgresql
 
 Install dependencies
 
