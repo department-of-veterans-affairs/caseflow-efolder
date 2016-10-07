@@ -16,7 +16,7 @@ describe "Download" do
     context "when file number is set" do
       before do
         Download.bgs_service = Fakes::BGSService
-        Fakes::BGSService.veteran_names = { "1234" => "Stan Lee" }
+        Fakes::BGSService.veteran_names = { "1234" => {"first_name" => "Stan", "last_name" => "Lee" } }
       end
 
       it "sets veteran name" do
