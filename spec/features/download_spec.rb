@@ -54,8 +54,7 @@ RSpec.feature "Downloads" do
 
     @download = @user_download.last
     expect(@download).to_not be_nil
-    expect(@download.veteran_info.first_name).to eq("Stan")
-    expect(@download.veteran_info.last_name).to eq("Lee")
+    expect(@download.veteran_name).to eq("Stan Lee")
 
     expect(page).to have_content "Stan Lee (1234)"
     expect(page).to have_content "We are gathering the list of files in the eFolder now"
@@ -125,7 +124,7 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Sensitive download error" do
-    Fakes::BGSService.veteran_names = { "8888" => "Nick Saban" }
+    Fakes::BGSService.veteran_info = { "8888" => { "first_name" => "Nick", "last_name" => "Saban"} }
     Fakes::BGSService.sensitive_files = { "8888" => true }
 
     visit "/"
