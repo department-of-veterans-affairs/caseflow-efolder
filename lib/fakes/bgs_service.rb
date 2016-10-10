@@ -3,6 +3,9 @@ class Fakes::BGSService
   cattr_accessor :sensitive_files
 
   def self.fetch_veteran_info(file_number)
+    if file_number =~ /DEMO/
+      return { "first_name": "Test", "last_name": "User", "last_4_ssn": "1224" }
+    end
     (veteran_info || {})[file_number]
   end
 
