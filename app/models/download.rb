@@ -18,7 +18,10 @@ class Download < ActiveRecord::Base
 
   after_initialize do |download|
     if download.file_number
-      download.veteran_name ||= download.demo? ? "TEST" : Download.bgs_service.fetch_veteran_name(download.file_number)
+      demo_info = veteran_info = { "first_name": "Test", "last_name": "User", "last_4_ssn": "1224" }
+      veteran_info = download.demo? ? demo_info : Download.bgs_service.fetch_veteran_info(download.file_number)
+      veteran_info ||= {}
+      download.veteran_name ||= "#{veteran_info[:first_name]} #{veteran_info[:last_name]}"
     end
   end
 
@@ -57,7 +60,7 @@ class Download < ActiveRecord::Base
   end
 
   def case_exists?
-    !Download.bgs_service.fetch_veteran_name(file_number).nil?
+    !Download.bgs_service.fetch_veteran_info(file_number).nil?
   rescue
     false
   end
