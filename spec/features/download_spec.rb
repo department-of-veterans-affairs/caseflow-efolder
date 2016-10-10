@@ -41,7 +41,7 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Creating a download" do
-    Fakes::BGSService.veteran_info = { "1234" => { "first_name" => "Stan", "last_name" => "Lee", "last_four_ssn" => "2222" } }
+    Fakes::BGSService.veteran_info = { "1234" => { "veteran_first_name" => "Stan", "veteran_last_name" => "Lee", "veteran_last_four_ssn" => "2222" } }
 
     visit "/"
     expect(page).to_not have_content "Recent Searches"
@@ -54,6 +54,7 @@ RSpec.feature "Downloads" do
 
     @download = @user_download.last
     expect(@download).to_not be_nil
+    puts @download.inspect
     expect(@download.veteran_name).to eq("Stan Lee")
 
     expect(page).to have_content "Stan Lee (1234)"
@@ -66,7 +67,7 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Searching for an errored download tries again" do
-    Fakes::BGSService.veteran_info = { "5555" => { "first_name" => "Stan", "last_name" => "Lee", "last_four_ssn" => "2222" } }
+    Fakes::BGSService.veteran_info = { "5555" => { "veteran_first_name" => "Stan", "veteran_last_name" => "Lee", "veteran_last_four_ssn" => "2222" } }
 
     @user_download.create!(
       file_number: "5555",
@@ -97,7 +98,7 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Extraneous spaces in search input" do
-    Fakes::BGSService.veteran_info = { "1234" => { "first_name" => "Stan", "last_name" => "Lee", "last_four_ssn" => "2222" } }
+    Fakes::BGSService.veteran_info = { "1234" => { "veteran_first_name" => "Stan", "veteran_last_name" => "Lee", "veteran_last_four_ssn" => "2222" } }
 
     visit "/"
     expect(page).to_not have_content "Recent Searches"
@@ -124,7 +125,7 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Sensitive download error" do
-    Fakes::BGSService.veteran_info = { "8888" => { "first_name" => "Nick", "last_name" => "Saban"} }
+    Fakes::BGSService.veteran_info = { "8888" => { "veteran_first_name" => "Nick", "veteran_last_name" => "Saban"} }
     Fakes::BGSService.sensitive_files = { "8888" => true }
 
     visit "/"
@@ -171,7 +172,7 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Confirming download" do
-    Fakes::BGSService.veteran_info = { "3456" => {"first_name" => "Steph", "last_name" => "Curry", "last_four_ssn" => "2345"} }
+    Fakes::BGSService.veteran_info = { "3456" => {"veteran_first_name" => "Steph", "veteran_last_name" => "Curry", "veteran_last_four_ssn" => "2345"} }
     @download = @user_download.create(file_number: "3456", status: :fetching_manifest)
 
     visit download_path(@download)
@@ -254,7 +255,7 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Completed download" do
-    Fakes::BGSService.veteran_info = { "12" => { "first_name" => "Stan", "last_name" => "Lee", "last_four_ssn" => "2222" } }
+    Fakes::BGSService.veteran_info = { "12" => { "veteran_first_name" => "Stan", "veteran_last_name" => "Lee", "veteran_last_four_ssn" => "2222" } }
 
     # clean files
     FileUtils.rm_rf(Rails.application.config.download_filepath)

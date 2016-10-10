@@ -25,7 +25,7 @@ describe Search do
     subject { search.perform! }
 
     before do
-      Fakes::BGSService.veteran_info = { "22223333" => {"first_name" => "John", "last_name" => "McJohn" } }
+      Fakes::BGSService.veteran_info = { "22223333" => {"veteran_first_name" => "John", "veteran_last_name" => "McJohn" } }
       Fakes::BGSService.sensitive_files = {}
       Download.bgs_service = Fakes::BGSService
       allow(GetDownloadManifestJob).to receive(:perform_later)
