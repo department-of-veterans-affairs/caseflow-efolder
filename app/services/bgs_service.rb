@@ -8,12 +8,6 @@ class BGSService
     file_number =~ /DEMO/
   end
 
-  def self.fetch_veteran_name(file_number)
-    @client ||= init_client
-    veteran_data = @client.people.find_by_file_number(file_number)
-    "#{veteran_data[:first_nm]} #{veteran_data[:last_nm]}" if veteran_data
-  end
-
   def self.fetch_veteran_info(file_number)
     if demo?(file_number)
       return { "veteran_first_name" => "Test",
