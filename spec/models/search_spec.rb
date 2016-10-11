@@ -27,8 +27,9 @@ describe Search do
     before do
       Fakes::BGSService.veteran_info =
         { "22223333" => {
-          "veteran_first_name" => "John",
-          "veteran_last_name" => "McJohn" }
+            "veteran_first_name" => "John",
+            "veteran_last_name" => "McJohn"
+          }
         }
       Fakes::BGSService.sensitive_files = {}
       Download.bgs_service = Fakes::BGSService
