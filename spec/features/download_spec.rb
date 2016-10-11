@@ -41,8 +41,13 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Creating a download" do
-    Fakes::BGSService.veteran_info =
-      { "1234" => { "veteran_first_name" => "Stan", "veteran_last_name" => "Lee", "veteran_last_four_ssn" => "2222" } }
+    Fakes::BGSService.veteran_info = {
+      "1234" => {
+        "veteran_first_name" => "Stan",
+        "veteran_last_name" => "Lee",
+        "veteran_last_four_ssn" => "2222"
+      }
+    }
 
     visit "/"
     expect(page).to_not have_content "Recent Searches"
@@ -70,8 +75,13 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Searching for an errored download tries again" do
-    Fakes::BGSService.veteran_info =
-      { "5555" => { "veteran_first_name" => "Stan", "veteran_last_name" => "Lee", "veteran_last_four_ssn" => "2222" } }
+    Fakes::BGSService.veteran_info = {
+      "5555" => {
+        "veteran_first_name" => "Stan",
+        "veteran_last_name" => "Lee",
+        "veteran_last_four_ssn" => "2222"
+      }
+    }
 
     @user_download.create!(
       file_number: "5555",
@@ -102,8 +112,13 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Extraneous spaces in search input" do
-    Fakes::BGSService.veteran_info =
-      { "1234" => { "veteran_first_name" => "Stan", "veteran_last_name" => "Lee", "veteran_last_four_ssn" => "2222" } }
+    Fakes::BGSService.veteran_info = {
+      "1234" => {
+        "veteran_first_name" => "Stan",
+        "veteran_last_name" => "Lee",
+        "veteran_last_four_ssn" => "2222"
+      }
+    }
 
     visit "/"
     expect(page).to_not have_content "Recent Searches"
@@ -127,6 +142,22 @@ RSpec.feature "Downloads" do
 
     @search = Search.where(user_id: "123123", file_number: "abcd").first
     expect(@search).to be_veteran_not_found
+  end
+
+  scenario "Using demo mode" do
+    visit "/"
+
+    fill_in "Search for a Veteran ID number below to get started.", with: "DEMO123"
+    click_button "Search"
+
+    @download = @user_download.last
+    expect(@download).to_not be_nil
+    expect(@download.veteran_name).to eq("Test User")
+    expect(@download.veteran_first_name).to eq("Test")
+    expect(@download.veteran_last_name).to eq("User")
+    expect(@download.veteran_last_four_ssn).to eq("1224")
+
+    expect(page).to have_content "Test User (DEMO123)"
   end
 
   scenario "Sensitive download error" do
