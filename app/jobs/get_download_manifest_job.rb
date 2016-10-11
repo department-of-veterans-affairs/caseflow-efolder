@@ -15,7 +15,7 @@ class GetDownloadManifestJob < ActiveJob::Base
     Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
     Raven.capture_exception(e)
     download.update_attributes!(status: :vbms_connection_error)
-  rescue => e
+  rescue
     download.update_attributes!(status: :no_documents)
   end
 
