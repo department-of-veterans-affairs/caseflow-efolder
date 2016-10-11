@@ -30,7 +30,7 @@ class Download < ActiveRecord::Base
   end
 
   def demo?
-    file_number =~ /DEMO/
+    Download.bgs_service.demo?(file_number)
   end
 
   def time_to_fetch_manifest
