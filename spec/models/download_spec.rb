@@ -46,6 +46,11 @@ describe "Download" do
     end
   end
 
+  context "veteran_name" do
+    subject { download.veteran_name }
+    it { is_expected.to eq("Stan Lee") }
+  end
+
   context "#time_to_fetch_manifest" do
     let(:download) do
       Download.create(
