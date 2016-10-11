@@ -56,6 +56,9 @@ RSpec.feature "Downloads" do
     @download = @user_download.last
     expect(@download).to_not be_nil
     expect(@download.veteran_name).to eq("Stan Lee")
+    expect(@download.veteran_first_name).to eq("Stan")
+    expect(@download.veteran_last_name).to eq("Lee")
+    expect(@download.veteran_last_four_ssn).to eq("2222")
 
     expect(page).to have_content "Stan Lee (1234)"
     expect(page).to have_content "We are gathering the list of files in the eFolder now"
@@ -174,13 +177,13 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Confirming download" do
-    Fakes::BGSService.veteran_info =
-      { "3456" => {
+    Fakes::BGSService.veteran_info = {
+      "3456" => {
         "veteran_first_name" => "Steph",
         "veteran_last_name" => "Curry",
         "veteran_last_four_ssn" => "2345"
       }
-      }
+    }
     @download = @user_download.create(file_number: "3456", status: :fetching_manifest)
 
     visit download_path(@download)
@@ -263,9 +266,13 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Completed download" do
-    Fakes::BGSService.veteran_info =
-      { "12" => { "veteran_first_name" => "Stan", "veteran_last_name" => "Lee", "veteran_last_four_ssn" => "2222" } }
-
+    Fakes::BGSService.veteran_info = {
+      "12" => {
+        "veteran_first_name" => "Stan",
+        "veteran_last_name" => "Lee",
+        "veteran_last_four_ssn" => "2222"
+      }
+    }
     # clean files
     FileUtils.rm_rf(Rails.application.config.download_filepath)
 
