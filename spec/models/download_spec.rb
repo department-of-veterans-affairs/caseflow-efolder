@@ -32,6 +32,7 @@ describe "Download" do
       end
 
       it "sets veteran name" do
+        subject.save!
         expect(subject.veteran_name).to eq("Stan Lee")
       end
     end
