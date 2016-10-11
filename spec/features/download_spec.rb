@@ -145,6 +145,8 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Using demo mode" do
+    expect(DemoGetDownloadManifestJob).to receive(:perform_later)
+
     visit "/"
 
     fill_in "Search for a Veteran ID number below to get started.", with: "DEMO123"
