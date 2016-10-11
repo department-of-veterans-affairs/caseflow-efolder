@@ -8,9 +8,11 @@ class Fakes::BGSService
 
   def self.fetch_veteran_info(file_number)
     if demo?(file_number)
-      return { "veteran_first_name" => "Test",
-               "veteran_last_name" => "User",
-               "veteran_last_four_ssn" => "1224" }
+      return {
+        "veteran_first_name" => "Test",
+        "veteran_last_name" => "User",
+        "veteran_last_four_ssn" => "1224"
+      }
     end
     (veteran_info || {})[file_number]
   end
