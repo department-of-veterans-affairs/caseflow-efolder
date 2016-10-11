@@ -17,8 +17,17 @@ class Download < ActiveRecord::Base
   has_many :documents, -> { order(received_at: :desc, id: :asc) }
 
   before_create do |download|
+    # This fake is used in the test suite, but let's
+    # also use it if we're demo-ing eFolder express.
+    #
+    # TODO: (alex) we should maybe be setting the fake
+    # or real bgs service on an instance level, rather
+    # than a class. Refactor the class method `bgs_service`
+    # into an instance one.
+    bgs_service = download.demo? ? Fakes::BGSService : Download.bgs_service
+
     if missing_veteran_info?
-      veteran_info = Download.bgs_service.fetch_veteran_info(download.file_number)
+      veteran_info = bgs_service.fetch_veteran_info(download.file_number)
       if veteran_info
         download.veteran_first_name = veteran_info["veteran_first_name"]
         download.veteran_last_name = veteran_info["veteran_last_name"]
@@ -36,7 +45,7 @@ class Download < ActiveRecord::Base
   end
 
   def demo?
-    Download.bgs_service.demo?(file_number)
+    file_number =~ /DEMO/
   end
 
   def missing_veteran_info?
