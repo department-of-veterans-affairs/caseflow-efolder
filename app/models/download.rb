@@ -17,12 +17,26 @@ class Download < ActiveRecord::Base
   has_many :documents, -> { order(received_at: :desc, id: :asc) }
 
   after_initialize do |download|
-    if download.file_number
+    # TODO(alex): it doesn't appear as though the fake is used except for tests.
+    # is that right?
+    # TODO(alex): when running a migration on the Downloads table, this hook will
+    # be called for every row in the table. kind of hacky but
+    # can we prevent lots of unneccessary requests if we
+    # only call the bgs service for downloads which haven't yet been started?
+    if download.file_number && !download.started_at
       veteran_info = Download.bgs_service.fetch_veteran_info(download.file_number)
       if veteran_info
-        download.veteran_name ||= "#{veteran_info['veteran_first_name']} #{veteran_info['veteran_last_name']}"
+        download.veteran_first_name = veteran_info["veteran_first_name"]
+        download.veteran_last_name = veteran_info["veteran_last_name"]
+        download.veteran_last_four_ssn = veteran_info["veteran_last_four_ssn"]
       end
     end
+  end
+
+  # TODO: (alex) is this confusing to switch this from data to a dynamic method
+  # ...or is it good Ruby?
+  def veteran_name
+    "#{veteran_first_name} #{veteran_last_name}" if veteran_last_name
   end
 
   def self.active
@@ -92,7 +106,10 @@ class Download < ActiveRecord::Base
   end
 
   def package_filename
-    "#{veteran_name.gsub(/\s*/, '').downcase}-#{created_at.to_formatted_s(:filename)}.zip"
+    # TODO: (alex): should we still downcase the names?
+    first_name = veteran_first_name
+    last_name = veteran_last_name
+    "#{last_name}, #{first_name} - #{veteran_last_four_ssn}.zip"
   end
 
   def reset!
