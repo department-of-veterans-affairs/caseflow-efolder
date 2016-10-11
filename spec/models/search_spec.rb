@@ -26,7 +26,8 @@ describe Search do
 
     before do
       Fakes::BGSService.veteran_info =
-        { "22223333" => {
+        { "22223333" =>
+          {
             "veteran_first_name" => "John",
             "veteran_last_name" => "McJohn"
           }
