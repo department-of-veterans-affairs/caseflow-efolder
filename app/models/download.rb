@@ -20,7 +20,7 @@ class Download < ActiveRecord::Base
     if download.file_number
       veteran_info = Download.bgs_service.fetch_veteran_info(download.file_number)
       if veteran_info
-        download.veteran_name ||= "#{veteran_info[:veteran_first_name]} #{veteran_info[:veteran_last_name]}"
+        download.veteran_name ||= "#{veteran_info['veteran_first_name']} #{veteran_info['veteran_last_name']}"
       end
     end
   end

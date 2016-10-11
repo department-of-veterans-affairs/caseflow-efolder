@@ -4,10 +4,6 @@ require "bgs"
 class BGSService
   cattr_accessor :user
 
-  def demo?(file_number)
-    file_number =~ /DEMO/
-  end
-
   def self.fetch_veteran_name(file_number)
     @client ||= init_client
     veteran_data = @client.people.find_by_file_number(file_number)
@@ -16,13 +12,15 @@ class BGSService
 
   def self.fetch_veteran_info(file_number)
     if file_number =~ /DEMO/
-      return { veteran_first_name: "Test", veteran_last_name: "User", veteran_last_four_ssn: "1224" }
+      return { "veteran_first_name" => "Test",
+                "veteran_last_name" => "User",
+                "veteran_last_four_ssn" => "1224" }
     end
     @client ||= init_client
     veteran_data = @client.people.find_by_file_number(file_number)
-    { veteran_first_name: veteran_data[:first_nm],
-      veteran_last_name: veteran_data[:last_nm],
-      veteran_last_four_ssn: veteran_data[:ssn_nbr]
+    { "veteran_first_name" => veteran_data[:first_nm],
+      "veteran_last_name" => veteran_data[:last_nm],
+      "veteran_last_four_ssn" => veteran_data[:ssn_nbr]
     } if veteran_data
   end
 
