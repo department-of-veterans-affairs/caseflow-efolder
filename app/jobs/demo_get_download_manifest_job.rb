@@ -23,6 +23,16 @@ class DemoGetDownloadManifestJob < ActiveJob::Base
       num_docs: 400,
       max_file_load: 4
     },
+    "DEMO_VBMS_ERROR" => {
+      manifest_load: 1,
+      error: true,
+      error_type: 'VBMS'
+    },
+    "DEMO_NO_DOCUMENTS" => {
+      manifest_load: 1,
+      error: true,
+      error_type: 'NO_DOCUMENTS'
+    },
     "DEMODEFAULT" => {
       manifest_load: 4,
       num_docs: 10,
@@ -32,10 +42,19 @@ class DemoGetDownloadManifestJob < ActiveJob::Base
 
   def perform(download)
     demo = DEMOS[download.file_number] || DEMOS["DEMODEFAULT"]
-    sleep(demo[:manifest_load])
-    create_documents(download, demo[:num_docs])
+    sleep(demo[:manifest_load] || 0)
+    create_documents(download, demo[:num_docs] || 0)
+
+    raise VBMS::ClientError if demo[:error] && demo[:error_type] == 'VBMS'
+    raise 'no documents' if demo[:error] && demo[:error_type] == 'NO_DOCUMENTS'
+
+
 
     download.update_attributes!(status: :pending_confirmation)
+  rescue VBMS::ClientError => e
+    download.update_attributes!(status: :vbms_connection_error)
+  rescue => e
+    download.update_attributes!(status: :no_documents)
   end
 
   def create_documents(download, number)
