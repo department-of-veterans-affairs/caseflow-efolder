@@ -6,7 +6,7 @@ class BGSService
 
   def self.parse_veteran_info(veteran_data)
     ssn = veteran_data[:ssn_nbr]
-    last_four_ssn = ssn[ssn.length - 4..ssn.length]
+    last_four_ssn = ssn ? ssn[ssn.length - 4..ssn.length] : nil
     {
       "veteran_first_name" => veteran_data[:first_nm],
       "veteran_last_name" => veteran_data[:last_nm],
