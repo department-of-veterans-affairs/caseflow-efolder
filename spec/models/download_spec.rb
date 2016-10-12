@@ -31,6 +31,13 @@ describe "Download" do
         }
       end
 
+      it "indicates that veteran info is missing if it is" do
+        # veteran names & ssn are fetched right before persistance
+        # to the db, so before save is called, that info won't be
+        # present
+        expect(subject.missing_veteran_info?).to eq(true)
+      end
+
       it "sets veteran name" do
         subject.save!
         expect(subject.veteran_name).to eq("Stan Lee")
