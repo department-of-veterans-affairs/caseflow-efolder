@@ -22,6 +22,17 @@
       </div>
     </div>
 
+  <% elsif @download.vbms_connection_error? %>
+    <div class="usa-alert usa-alert-error" role="alert">
+      <div class="usa-alert-body">
+        <h3 class="usa-alert-heading">Can't connect to VBMS</h3>
+        <p class="usa-alert-text">
+          Please give VBMS a few moments to come back online, then try searching for the eFolder again.
+        </p>
+        <p class="usa-alert-text"><%= link_to "Try Again", root_path %></p>
+      </div>
+    </div>
+
   <% elsif @download.pending_confirmation? %>
     <p>
       eFolder Express found <%= @download.documents.count %> files in eFolder #<%= @download.file_number %>

@@ -19,8 +19,8 @@ describe GetDownloadManifestJob do
         GetDownloadManifestJob.perform_now(download)
       end
 
-      it "saves download status as :no_documents" do
-        expect(download.reload).to be_no_documents
+      it "saves download status as :vbms_connection_error" do
+        expect(download.reload).to be_vbms_connection_error
       end
     end
 
