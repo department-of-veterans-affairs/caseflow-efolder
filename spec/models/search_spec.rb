@@ -95,6 +95,24 @@ describe Search do
       end
     end
 
+    context "when the download has vbms connection error" do
+      before do
+        @existing_download = Download.create!(
+          user_id: "NICKSABAN",
+          user_station_id: "200",
+          file_number: "22223333",
+          status: :vbms_connection_error
+        )
+      end
+
+      it "creates a new download" do
+        expect(@existing_download).to be_truthy
+        expect(subject).to be_truthy
+        expect(search.reload).to be_download_created
+        expect(search.download.id).to_not eq(@existing_download.id)
+      end
+    end
+
     context "when user cannot access file with that file_number" do
       before do
         Fakes::BGSService.sensitive_files = { "22223333" => true }

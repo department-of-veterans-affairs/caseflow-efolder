@@ -209,6 +209,15 @@ RSpec.feature "Downloads" do
     expect(page).to have_current_path(root_path)
   end
 
+  scenario "Download with VBMS connection error" do
+    @download = @user_download.create(status: :vbms_connection_error)
+    visit download_path(@download)
+
+    expect(page).to have_css ".usa-alert-heading", text: "Can't connect to VBMS"
+    click_on "Try Again"
+    expect(page).to have_current_path(root_path)
+  end
+
   scenario "Confirming download" do
     Fakes::BGSService.veteran_info = {
       "3456" => {
