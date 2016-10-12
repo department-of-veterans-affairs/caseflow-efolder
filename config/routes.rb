@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   get 'unauthorized', to: 'sessions#unauthorized'
 
   get 'health-check', to: 'health_checks#show'
+  get 'help', to:'help#show'
 
   resources :downloads, only: [:new, :create, :show] do
     post :start, on: :member
