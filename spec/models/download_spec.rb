@@ -3,7 +3,13 @@ describe "Download" do
     Timecop.freeze(Time.utc(2015, 1, 1, 12, 0, 0))
 
     Download.bgs_service = Fakes::BGSService
-    Fakes::BGSService.veteran_names = { "1234" => "Stan Lee" }
+    Fakes::BGSService.veteran_info = {
+      "1234" => {
+        "veteran_first_name" => "Stan",
+        "veteran_last_name" => "Lee",
+        "veteran_last_four_ssn" => "0987"
+      }
+    }
   end
   after { Timecop.return }
 
@@ -16,10 +22,24 @@ describe "Download" do
     context "when file number is set" do
       before do
         Download.bgs_service = Fakes::BGSService
-        Fakes::BGSService.veteran_names = { "1234" => "Stan Lee" }
+        Fakes::BGSService.veteran_info = {
+          "1234" => {
+            "veteran_first_name" => "Stan",
+            "veteran_last_name" => "Lee",
+            "veteran_last_four_ssn" => "0987"
+          }
+        }
+      end
+
+      it "indicates that veteran info is missing if it is" do
+        # veteran names & ssn are fetched right before persistance
+        # to the db, so before save is called, that info won't be
+        # present
+        expect(subject.missing_veteran_info?).to eq(true)
       end
 
       it "sets veteran name" do
+        subject.save!
         expect(subject.veteran_name).to eq("Stan Lee")
       end
     end
@@ -31,6 +51,11 @@ describe "Download" do
         expect(subject.veteran_name).to be_nil
       end
     end
+  end
+
+  context "veteran_name" do
+    subject { download.veteran_name }
+    it { is_expected.to eq("Stan Lee") }
   end
 
   context "#time_to_fetch_manifest" do
@@ -68,7 +93,7 @@ describe "Download" do
 
   context "package_filename" do
     subject { download.package_filename }
-    it { is_expected.to eq("stanlee-20150101.zip") }
+    it { is_expected.to eq("Lee, Stan - 0987.zip") }
   end
 
   context "#stalled?" do

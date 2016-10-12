@@ -17,10 +17,28 @@ class Download < ActiveRecord::Base
   # https://github.com/department-of-veterans-affairs/caseflow-efolder/issues/213
   has_many :documents, -> { order(received_at: :desc, id: :asc) }
 
-  after_initialize do |download|
-    if download.file_number
-      download.veteran_name ||= download.demo? ? "TEST" : Download.bgs_service.fetch_veteran_name(download.file_number)
+  before_create do |download|
+    # This fake is used in the test suite, but let's
+    # also use it if we're demo-ing eFolder express.
+    #
+    # TODO: (alex) we should maybe be setting the fake
+    # or real bgs service on an instance level, rather
+    # than a class. Refactor the class method `bgs_service`
+    # into an instance one.
+    bgs_service = download.demo? ? Fakes::BGSService : Download.bgs_service
+
+    if missing_veteran_info?
+      veteran_info = bgs_service.fetch_veteran_info(download.file_number)
+      if veteran_info
+        download.veteran_first_name = veteran_info["veteran_first_name"]
+        download.veteran_last_name = veteran_info["veteran_last_name"]
+        download.veteran_last_four_ssn = veteran_info["veteran_last_four_ssn"]
+      end
     end
+  end
+
+  def veteran_name
+    "#{veteran_first_name} #{veteran_last_name}" if veteran_last_name
   end
 
   def self.active
@@ -29,6 +47,10 @@ class Download < ActiveRecord::Base
 
   def demo?
     file_number =~ /DEMO/
+  end
+
+  def missing_veteran_info?
+    file_number && (!veteran_first_name || !veteran_last_name || !veteran_last_four_ssn)
   end
 
   def time_to_fetch_manifest
@@ -58,7 +80,7 @@ class Download < ActiveRecord::Base
   end
 
   def case_exists?
-    !Download.bgs_service.fetch_veteran_name(file_number).nil?
+    !Download.bgs_service.fetch_veteran_info(file_number).nil?
   rescue
     false
   end
@@ -90,7 +112,7 @@ class Download < ActiveRecord::Base
   end
 
   def package_filename
-    "#{veteran_name.gsub(/\s*/, '').downcase}-#{created_at.to_formatted_s(:filename)}.zip"
+    "#{veteran_last_name}, #{veteran_first_name} - #{veteran_last_four_ssn}.zip"
   end
 
   def reset!
