@@ -12,12 +12,15 @@ FOIA Requests that give veterans access to their own VA files take **way** too l
 You'll need Ruby 2.3.0, Postgres, and Redis if you don't have them.
 
 > $ rbenv install 2.3.0
+
 > $ brew install postgresql
+
 > $ brew install redis
 
 You may want to have Redis and Postgres run on startup. Let brew tell you how to do that:
 
 > $ brew info redis
+
 > $ brew info postgresql
 
 Install dependencies
@@ -31,10 +34,6 @@ Create the database
 Load the schema
 
 > $ rake db:schema:load
-
-You'll also need to install `redis`. Follow the post-install instructions to start the redis server.
-
-> $ brew install redis
 
 Now start both the rails server,
 

@@ -11,7 +11,13 @@ describe DownloadDocuments do
     Timecop.freeze(Time.utc(2015, 1, 1, 12, 0, 0))
   end
 
-  let(:download) { Download.create!(file_number: "21012", veteran_name: "George Washington") }
+  let(:download) do
+    Download.create!(
+      file_number: "21012",
+      veteran_first_name: "George",
+      veteran_last_name: "Washington"
+    )
+  end
 
   let(:vbms_documents) do
     [

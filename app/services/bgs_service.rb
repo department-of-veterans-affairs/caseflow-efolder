@@ -4,10 +4,21 @@ require "bgs"
 class BGSService
   cattr_accessor :user
 
-  def self.fetch_veteran_name(file_number)
+  def self.parse_veteran_info(veteran_data)
+    ssn = veteran_data[:ssn_nbr]
+    last_four_ssn = ssn ? ssn[ssn.length - 4..ssn.length] : nil
+    {
+      "veteran_first_name" => veteran_data[:first_nm],
+      "veteran_last_name" => veteran_data[:last_nm],
+      "veteran_last_four_ssn" => last_four_ssn
+    }
+  end
+
+  def self.fetch_veteran_info(file_number)
     @client ||= init_client
     veteran_data = @client.people.find_by_file_number(file_number)
-    "#{veteran_data[:first_nm]} #{veteran_data[:last_nm]}" if veteran_data
+
+    parse_veteran_info(veteran_data) if veteran_data
   end
 
   def self.check_sensitivity(file_number)
