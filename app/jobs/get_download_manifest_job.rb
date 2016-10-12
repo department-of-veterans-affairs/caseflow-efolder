@@ -11,6 +11,10 @@ class GetDownloadManifestJob < ActiveJob::Base
       download_documents.create_documents
       download.update_attributes!(status: :pending_confirmation)
     end
+  rescue VBMS::ClientError => e
+    Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
+    Raven.capture_exception(e)
+    download.update_attributes!(status: :vbms_connection_error)
   rescue
     download.update_attributes!(status: :no_documents)
   end
