@@ -307,6 +307,14 @@ RSpec.feature "Downloads" do
     expect(GetDownloadFilesJob).to have_received(:perform_later)
   end
 
+  scenario "Download non-existing zip" do
+    fake_id = 'non_existing_download_id'
+    expect(Download.where(id: fake_id)).to be_empty
+
+    visit download_download_path(fake_id)
+    expect(page.status_code).to be(404)
+  end
+
   scenario "Completed download" do
     Fakes::BGSService.veteran_info = {
       "12" => {
