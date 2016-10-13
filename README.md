@@ -49,6 +49,24 @@ Visit [http://localhost:3000](),
 Type in a file number with "DEMO" in it. (ie: "DEMO123")
 Watch it download your fake file.
 
+## Running Migrations
+
+If a pending migration exists, you will need to run them against both the development and test database:
+
+> $ rake db:migrate
+
+> $ RAILS_ENV=test rake db:migrate
+
+## Running Tests
+
+In order to run tests, you will first need to globally install phantomJS
+
+> $ (sudo) npm install -g phantomjs
+
+Then to run the test suite:
+
+> $ rake
+
 
 ### Setting up VBMS
 

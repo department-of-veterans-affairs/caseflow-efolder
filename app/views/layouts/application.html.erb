@@ -80,7 +80,7 @@
             </a>
 
             <ul id="menu" class="cf-dropdown-menu" aria-labelledby="menu-trigger">
-              <li><a href="mailto:Caseflow@va.gov">Help</a></li>
+              <li><a href="<%= url_for controller: 'help', action: 'show'%>">Help</a></li>
               <li>
                 <a href="<%= url_for controller: 'sessions', action: 'destroy'%>">Sign out</a>
               </li>
