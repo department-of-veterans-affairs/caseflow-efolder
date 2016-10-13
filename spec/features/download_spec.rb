@@ -308,7 +308,7 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Download non-existing zip" do
-    fake_id = 'non_existing_download_id'
+    fake_id = "non_existing_download_id"
     expect(Download.where(id: fake_id)).to be_empty
 
     visit download_download_path(fake_id)
