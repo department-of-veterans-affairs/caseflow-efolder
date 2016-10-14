@@ -205,7 +205,7 @@ RSpec.feature "Downloads" do
 
     expect(page).to have_css ".usa-alert-error", text: "Couldn't find documents in eFolder"
 
-    click_on "Try Again"
+    click_on "Try again"
     expect(page).to have_current_path(root_path)
   end
 
@@ -214,7 +214,7 @@ RSpec.feature "Downloads" do
     visit download_path(@download)
 
     expect(page).to have_css ".usa-alert-heading", text: "Can't connect to VBMS"
-    click_on "Try Again"
+    click_on "Try again"
     expect(page).to have_current_path(root_path)
   end
 
@@ -242,7 +242,7 @@ RSpec.feature "Downloads" do
     expect(page).to have_content "Steph Curry (3456)"
     expect(page).to have_content "yawn.pdf 09/06/2015"
     expect(page).to have_content "smiley.pdf 01/19/2015"
-    first(:button, "Start Retrieving eFolder").click
+    first(:button, "Start retrieving eFolder").click
 
     expect(@download.reload).to be_pending_documents
     expect(GetDownloadFilesJob).to have_received(:perform_later)
@@ -289,7 +289,7 @@ RSpec.feature "Downloads" do
     expect(page).to have_button "Progress (0)", disabled: true
     expect(page).to have_content "Some files couldn't be added"
 
-    click_on "Search for Another eFolder"
+    click_on "Search for another eFolder"
     expect(page).to have_current_path(root_path)
   end
 
@@ -299,7 +299,7 @@ RSpec.feature "Downloads" do
     @download.documents.create(vbms_filename: "tide.pdf", mime_type: "application/pdf", download_status: :success)
 
     visit download_path(@download)
-    click_on "Try Retrieving eFolder Again"
+    click_on "Try retrieving eFolder again"
 
     expect(page).to have_css ".cf-tab.cf-active", text: "Progress (2)"
     expect(page).to have_content "Completed (0)"
@@ -391,19 +391,19 @@ RSpec.feature "Downloads" do
     complete_with_errors_row = "#download-#{complete_with_errors.id}"
     expect(find(complete_with_errors_row)).to have_content("78902")
     expect(find(complete_with_errors_row)).to have_css(".cf-icon-alert")
-    within(complete_with_errors_row) { click_on("View Results") }
+    within(complete_with_errors_row) { click_on("View results") }
     expect(page).to have_content("Download eFolder")
 
     visit "/"
     pending_documents_row = "#download-#{pending_documents.id}"
     expect(find(pending_documents_row)).to have_content("45678")
-    within(pending_documents_row) { click_on("View Progress") }
+    within(pending_documents_row) { click_on("View progress") }
     expect(page).to have_current_path(download_path(pending_documents))
 
     visit "/"
     complete_row = "#download-#{complete.id}"
     expect(find(complete_row)).to have_content("78901")
-    within(complete_row) { click_on("View Results") }
+    within(complete_row) { click_on("View results") }
     expect(page).to have_current_path(download_path(complete))
   end
 end

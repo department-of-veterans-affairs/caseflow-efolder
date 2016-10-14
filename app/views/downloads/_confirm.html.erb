@@ -3,7 +3,7 @@
   window.DownloadStatus.init(<%= @download.id %>, "<%= @download.status %>");
 </script>
 
-<% fetch_button_text = "Start Retrieving eFolder" %>
+<% fetch_button_text = "Start retrieving eFolder" %>
 
 <div class="cf-app-segment cf-app-segment--alt">
   <h1><%= @download.veteran_name %> <span class="ee-subheading">(<%=h @download.file_number %>)</span></h1>
@@ -18,7 +18,7 @@
         <p class="usa-alert-text">
           eFolder Express could not find any documents in the eFolder with ID <%= @download.file_number %>. It's possible this eFolder does not exist.
         </p>
-        <p class="usa-alert-text"><%= link_to "Try Again", root_path %></p>
+        <p class="usa-alert-text"><%= link_to "Try again", root_path %></p>
       </div>
     </div>
 
@@ -29,7 +29,7 @@
         <p class="usa-alert-text">
           Please give VBMS a few moments to come back online, then try searching for the eFolder again.
         </p>
-        <p class="usa-alert-text"><%= link_to "Try Again", root_path %></p>
+        <p class="usa-alert-text"><%= link_to "Try again", root_path %></p>
       </div>
     </div>
 
