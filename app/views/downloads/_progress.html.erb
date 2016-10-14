@@ -3,16 +3,16 @@
     <% if @download.documents.failed.any? %>
       <div class="usa-alert usa-alert-error" role="alert">
         <div class="usa-alert-body">
-          <h3 class="usa-alert-heading">Some files couldn't be added</h3>
+          <h3 class="usa-alert-heading">Some files couldn't be added to eFolder</h3>
           <p class="usa-alert-text">
-            eFolder Express couldn't fetch some files. Click on the "Errors" tab below.
+            eFolder Express wasn't able to retrieve some files. Click on the 'Errors' tab below to view them
           </p>
           <p>
-            You can still download the rest of the files by clicking the "Download" button below.
+            You can still download the rest of the files by clicking the 'Download Anyway' button below.
           </p>
           <ul class="ee-button-list">
             <li><%= link_to "Download Anyway", download_download_path(@download), {class: "usa-button"} %></li>
-            <li><%= link_to "Retry Download", retry_download_path(@download), {method: :post, class: "usa-button usa-button-gray"} %></li>
+            <li><%= link_to "Try Retrieving eFolder Again", retry_download_path(@download), {method: :post, class: "usa-button usa-button-gray"} %></li>
           </ul>
         </div>
       </div>
