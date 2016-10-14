@@ -86,9 +86,13 @@ class DownloadDocuments
     @s3.fetch_file(document.s3_filename, document.filepath)
   end
 
+  def zip_exists_locally?
+    File.exist?(zip_path)
+  end
+
   def fetch_zip_from_s3
     # if the file exists on the filesystem, skip
-    return if File.exist?(zip_path)
+    return if zip_exists_locally?
 
     @s3.fetch_file(@download.s3_filename, zip_path)
   end
@@ -101,7 +105,7 @@ class DownloadDocuments
     before_package_contents
     @download.update_attributes(status: :packaging_contents)
 
-    File.delete(zip_path) if File.exist?(zip_path)
+    File.delete(zip_path) if zip_exists_locally?
 
     Zip::File.open(zip_path, Zip::File::CREATE) do |zipfile|
       @download.documents.success.each_with_index do |document, index|

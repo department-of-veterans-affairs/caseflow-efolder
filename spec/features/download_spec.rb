@@ -299,12 +299,20 @@ RSpec.feature "Downloads" do
     @download.documents.create(vbms_filename: "tide.pdf", mime_type: "application/pdf", download_status: :success)
 
     visit download_path(@download)
-    click_on "Retry Download"
+    click_on "Try Retrieving eFolder Again"
 
     expect(page).to have_css ".cf-tab.cf-active", text: "Progress (2)"
     expect(page).to have_content "Completed (0)"
     expect(page).to have_content "Errors (0)"
     expect(GetDownloadFilesJob).to have_received(:perform_later)
+  end
+
+  scenario "Download non-existing zip" do
+    fake_id = "non_existing_download_id"
+    expect(Download.where(id: fake_id)).to be_empty
+
+    visit download_download_path(fake_id)
+    expect(page.status_code).to be(404)
   end
 
   scenario "Completed download" do
