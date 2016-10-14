@@ -34,11 +34,12 @@ describe DownloadDocuments do
 
   context "#save_document_file" do
     let(:document) do
-      download.documents.build(document_id: "3", vbms_filename: "happyfile.pdf", mime_type: "application/pdf")
-    end
-
-    let(:malicious_document) do
-      download.documents.build(document_id: "4", vbms_filename: "../../../bin/rake", mime_type: "application/pdf")
+      download.documents.build(
+        document_id: "{3333-3333}",
+        received_at: Time.utc(2015, 9, 6, 1, 0, 0),
+        doc_type: "825",
+        mime_type: "application/pdf"
+      )
     end
 
     before do
@@ -48,14 +49,9 @@ describe DownloadDocuments do
 
     it "creates a file in the correct directory and returns filename" do
       filename = download_documents.save_document_file(document, "hi", 3)
-      expect(File.exist?(Rails.root + "tmp/files/#{download.id}/00030-happyfile.pdf")).to be_truthy
-      expect(filename).to eq((Rails.root + "tmp/files/#{download.id}/00030-happyfile.pdf").to_s)
-    end
-
-    it "sanitizes malicious filenames" do
-      filename = download_documents.save_document_file(malicious_document, "hi", 4)
-      expect(File.exist?(Rails.root + "tmp/files/#{download.id}/00040-file......binrake.pdf")).to be_truthy
-      expect(filename).to eq((Rails.root + "tmp/files/#{download.id}/00040-file......binrake.pdf").to_s)
+      expected_filepath = Rails.root + "tmp/files/#{download.id}/00040-VA 21-0166 VA Letter to Beneficiary-20150906-3333-3333.pdf"
+      expect(File.exist?(expected_filepath)).to be_truthy
+      expect(filename).to eq(expected_filepath.to_s)
     end
   end
 
@@ -69,7 +65,7 @@ describe DownloadDocuments do
 
       document = Document.first
       expect(document.document_id).to eq("1")
-      expect(document.filename).to eq("filename.pdf")
+      expect(document.filename).to eq("VA 21-4185 Report of Income from Property or Business-20150101-1.pdf")
       expect(document.doc_type).to eq("123")
       expect(document.source).to eq("SRC")
       expect(document.mime_type).to eq("application/pdf")
@@ -104,7 +100,7 @@ describe DownloadDocuments do
       it "saves download state for each document" do
         successful_document = Document.first
         expect(successful_document).to be_success
-        expect(successful_document.filepath).to eq((Rails.root + "tmp/files/#{download.id}/00000-filename.pdf").to_s)
+        expect(successful_document.filepath).to eq((Rails.root + "tmp/files/#{download.id}/00010-VA 21-4185 Report of Income from Property or Business-20150101-1.pdf").to_s)
         expect(successful_document.started_at).to eq(Time.zone.now)
         expect(successful_document.completed_at).to eq(Time.zone.now)
 
@@ -132,8 +128,8 @@ describe DownloadDocuments do
           VBMS::Responses::Document.new(document_id: "1", filename: "filename.pdf", doc_type: "123",
                                         source: "SRC", received_at: Time.zone.now,
                                         mime_type: "application/pdf"),
-          VBMS::Responses::Document.new(document_id: "2", filename: "filename.pdf", doc_type: "123",
-                                        source: "SRC", received_at: 1.hour.ago,
+          VBMS::Responses::Document.new(document_id: "1", filename: "filename.pdf", doc_type: "123",
+                                        source: "SRC", received_at: Time.zone.now,
                                         mime_type: "application/pdf")
         ]
       end
@@ -143,7 +139,7 @@ describe DownloadDocuments do
 
         download.documents.each_with_index do |document, i|
           expect(document).to be_success
-          expect(document.filepath).to eq((Rails.root + "tmp/files/#{download.id}/000#{i}0-filename.pdf").to_s)
+          expect(document.filepath).to eq((Rails.root + "tmp/files/#{download.id}/000#{i + 1}0-VA 21-4185 Report of Income from Property or Business-20150101-1.pdf").to_s)
           expect(File.exist?(document.filepath)).to be_truthy
         end
       end
@@ -195,7 +191,7 @@ describe DownloadDocuments do
       download_documents.download_and_package
 
       Zip::File.open(Rails.root + "tmp/files/#{download.id}/#{download.package_filename}") do |zip_file|
-        expect(zip_file.glob("00000-keep-stamping.pdf").first).to_not be_nil
+        expect(zip_file.glob("00010-VA 21-4185 Report of Income from Property or Business-20150101-1.pdf").first).to_not be_nil
       end
 
       expect(download).to be_complete_success
@@ -241,7 +237,7 @@ describe DownloadDocuments do
         download_documents.download_and_package
 
         Zip::File.open(Rails.root + "tmp/files/#{download.id}/#{download.package_filename}") do |zip_file|
-          expect(zip_file.glob("00000-keep-stamping.pdf").first).to_not be_nil
+          expect(zip_file.glob("00010-VA 21-4185 Report of Income from Property or Business-20150101-1.pdf").first).to_not be_nil
         end
       end
     end

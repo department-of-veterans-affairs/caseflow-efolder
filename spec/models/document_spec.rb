@@ -21,9 +21,18 @@ describe Document do
   context "#filename" do
     subject { document.filename }
 
-    context "uses the preferred extension of the mime type" do
-      let(:document) { Document.new(vbms_filename: "purple.txt", mime_type: "application/pdf") }
-      it { is_expected.to eq("purple.pdf") }
+    context "all the components are present" do
+      let(:document) do
+        Document.new(
+          vbms_filename: "purple.txt",
+          received_at: Time.utc(2015, 1, 3, 17, 0, 0),
+          doc_type: "99",
+          document_id: "{ABC123-DEF123-GHI456}",
+          mime_type: "application/pdf"
+        )
+      end
+
+      it { is_expected.to eq("VA 10-1000 Hospital Summary andor the Compensation and Pension Exam Report-20150103-ABC123-DEF123-GHI456.pdf") }
     end
   end
 end
