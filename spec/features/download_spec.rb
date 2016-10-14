@@ -319,8 +319,8 @@ RSpec.feature "Downloads" do
     FileUtils.rm_rf(Rails.application.config.download_filepath)
 
     @download = @user_download.create(file_number: "12", status: :complete_success)
-    @download.documents.create(vbms_filename: "roll.pdf", mime_type: "application/pdf")
-    @download.documents.create(vbms_filename: "tide.pdf", mime_type: "application/pdf")
+    @download.documents.create(received_at: Time.zone.now, doc_type: "102", mime_type: "application/pdf")
+    @download.documents.create(received_at: Time.zone.now, doc_type: "103", mime_type: "application/pdf")
 
     class FakeVBMSService
       def self.fetch_document_file(_document)
@@ -333,8 +333,8 @@ RSpec.feature "Downloads" do
     download_documents.download_and_package
 
     visit download_path(@download)
-    expect(page).to have_css ".document-success", text: "roll.pdf"
-    expect(page).to have_css ".document-success", text: "tide.pdf"
+    expect(page).to have_css ".document-success", text: "VA 119 Report of Contact"
+    expect(page).to have_css ".document-success", text: "VA 5655 Financial Status Report (Submit with Waiver Request)"
 
     first(:link, "Download eFolder").click
     expect(page.response_headers["Content-Type"]).to eq("application/zip")

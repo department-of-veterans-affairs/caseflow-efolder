@@ -55,7 +55,7 @@
       <tbody>
         <% @download.documents.each do |document| %>
           <tr>
-            <td class="ee-filename-row"><%= document.filename %></td>
+            <td class="ee-filename-row"><%= document.type_name %></td>
             <td><%= document.received_at && document.received_at.to_formatted_s(:short_date) %></td>
           </tr>
         <% end %>

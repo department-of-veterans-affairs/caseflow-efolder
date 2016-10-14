@@ -76,7 +76,7 @@ class DownloadDocuments
   end
 
   def unique_filename(document, index)
-    "#{format('%04d', index)}0-#{document.filename}"
+    "#{format('%04d', index + 1)}0-#{document.filename}"
   end
 
   def fetch_from_s3(document)
