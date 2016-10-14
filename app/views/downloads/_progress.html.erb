@@ -8,11 +8,11 @@
             eFolder Express wasn't able to retrieve some files. Click on the 'Errors' tab below to view them
           </p>
           <p>
-            You can still download the rest of the files by clicking the 'Download Anyway' button below.
+            You can still download the rest of the files by clicking the 'Download anyway' button below.
           </p>
           <ul class="ee-button-list">
-            <li><%= link_to "Download Anyway", download_download_path(@download), {class: "usa-button"} %></li>
-            <li><%= link_to "Try Retrieving eFolder Again", retry_download_path(@download), {method: :post, class: "usa-button usa-button-gray"} %></li>
+            <li><%= link_to "Download anyway", download_download_path(@download), {class: "usa-button"} %></li>
+            <li><%= link_to "Try retrieving eFolder again", retry_download_path(@download), {method: :post, class: "usa-button usa-button-gray"} %></li>
           </ul>
         </div>
       </div>
@@ -23,7 +23,7 @@
           <h3 class="usa-alert-heading">Success!</h3>
           <p class="usa-alert-text">
             All of the documents in the VBMS eFolder for #<%= @download.file_number %> are ready to download.
-            Click the "Download" button below.
+            Click the "Download eFolder" button below.
           </p>
           <br/>
           <%= link_to "Download eFolder", download_download_path(@download), {class: "usa-button"} %>
@@ -108,12 +108,12 @@
 
 <div class="cf-app-segment">
   <% if @download.complete? %>
-    <%= link_to (@download.documents.failed.any? ? "Download Anyway" : "Download eFolder"), download_download_path(@download), {class: "usa-button ee-right-button"} %>
+    <%= link_to (@download.documents.failed.any? ? "Download anyway" : "Download eFolder"), download_download_path(@download), {class: "usa-button ee-right-button"} %>
   <% else %>
     <button class="usa-button-disabled ee-right-button">Download eFolder</button>
   <% end %>
 
-  <span><%= link_to "Search for Another eFolder", root_path %></span>
+  <span><%= link_to "Search for another eFolder", root_path %></span>
 </div>
 
 
