@@ -87,7 +87,7 @@ class DownloadDocuments
   end
 
   def zip_exists_locally?
-    File.exists?(zip_path)
+    File.exist?(zip_path)
   end
 
   def fetch_zip_from_s3
