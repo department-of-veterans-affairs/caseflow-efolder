@@ -11,7 +11,7 @@
             You can still download the rest of the files by clicking the 'Download anyway' button below.
           </p>
           <ul class="ee-button-list">
-            <button class="usa-button cf-action-openmodal">Download anyway</button>
+            <li><%= link_to "Download anyway", "#confirm-download-anyway", {class: "usa-button cf-action-openmodal"} %></li>
             <li><%= link_to "Try retrieving eFolder again", retry_download_path(@download), {method: :post, class: "usa-button usa-button-gray"} %></li>
           </ul>
         </div>
@@ -120,7 +120,7 @@
 
 <% if @download.complete? %>
   <script>
+    window.Modal.bind();
     window.DownloadProgress.complete();
-    window.DownloadProgress.showModalOnDownloadAnyway();
   </script>
 <% end %>
