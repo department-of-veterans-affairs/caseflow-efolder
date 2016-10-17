@@ -1,5 +1,8 @@
 describe "Download" do
   before do
+    Download.delete_all
+    Document.delete_all
+    Rails.cache.clear
     Timecop.freeze(Time.utc(2015, 1, 1, 12, 0, 0))
 
     Download.bgs_service = Fakes::BGSService
@@ -147,9 +150,10 @@ describe "Download" do
   end
 
   context "#estimated_to_complete_at" do
-    before { download.documents.create!(started_at: 1.minute.ago) }
+    before { download.documents.create!(started_at: Time.zone.now) }
     subject { download.estimated_to_complete_at }
     let(:document) { download.documents.first }
+    let(:document_class) { Document }
 
     context "when download is fetching manifest" do
       before { download.update_attributes!(status: :fetching_manifest) }
@@ -157,31 +161,31 @@ describe "Download" do
     end
 
     context "when download is pending documents" do
-      before { download.update_attributes!(status: :pending_documents) }
-
-      context "when no documents have been downloaded" do
-        before { document.update_attributes(started_at: Time.zone.now) }
-        it { is_expected.to be_nil }
+      before do
+        download.update_attributes!(status: :pending_documents)
+        document_class.stub(:historical_average_download_rate) { 5.minutes }
       end
 
-      context "when a documents have been downloaded" do
-        before do
-          download.documents.create!(started_at: 3.minutes.ago, completed_at: 1.minute.ago)
-        end
-
-        it "calculates correctly with one download" do
-          expect(subject).to eq(1.minute.from_now)
+      context "when documents have been downloaded" do
+        it "calculates correctly with one download remaining" do
+          expect(subject).to eq(5.minutes.from_now)
         end
 
         it "calculates correctly with two downloads completed" do
           download.documents.create!(started_at: 7.minutes.ago, completed_at: 3.minutes.ago)
-          expect(subject).to eq(2.minutes.from_now)
+          # Still 5 minutes
+          expect(subject).to eq(5.minutes.from_now)
         end
 
         it "calculates corrrectly with two downloads left" do
           download.documents.create!
-          expect(subject).to eq(3.minutes.from_now)
+          expect(subject).to eq(10.minutes.from_now)
         end
+      end
+
+      context "when no historical data exists" do
+        before { document_class.stub(:historical_average_download_rate) { nil } }
+        it { is_expected.to be_nil }
       end
     end
   end
