@@ -55,5 +55,6 @@ window.DownloadProgress = (function($) {
 
       $(document).ready(function() { self.initTabs(); });
     }
+
   };
 })($);

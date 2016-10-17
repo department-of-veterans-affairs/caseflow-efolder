@@ -1,6 +1,6 @@
 <div class="cf-app-segment cf-app-segment--alt">
   <% if @download.complete? %>
-    <% if @download.documents.failed.any? %>
+    <% if true %>
       <div class="usa-alert usa-alert-error" role="alert">
         <div class="usa-alert-body">
           <h3 class="usa-alert-heading">Some files couldn't be added to eFolder</h3>
@@ -11,7 +11,7 @@
             You can still download the rest of the files by clicking the 'Download anyway' button below.
           </p>
           <ul class="ee-button-list">
-            <li><%= link_to "Download anyway", download_download_path(@download), {class: "usa-button"} %></li>
+            <button class="usa-button cf-action-openmodal">Download anyway</button>
             <li><%= link_to "Try retrieving eFolder again", retry_download_path(@download), {method: :post, class: "usa-button usa-button-gray"} %></li>
           </ul>
         </div>
@@ -116,9 +116,11 @@
   <span><%= link_to "Search for another eFolder", root_path %></span>
 </div>
 
+<%= render partial: 'confirm_download_anyway_modal' %>
 
 <% if @download.complete? %>
   <script>
     window.DownloadProgress.complete();
+    window.DownloadProgress.showModalOnDownloadAnyway();
   </script>
 <% end %>
