@@ -68,10 +68,13 @@ class Document < ActiveRecord::Base
     # This takes the time spend downloading all files over the past hour and
     # divides by the total number of files in that period
     def calculate_historical_average_download_rate
-      documents = ordered_by_completed_at.limit(AVERAGE_DOWNLOAD_RATE_LIMIT)
+      documents = ordered_by_completed_at.limit(AVERAGE_DOWNLOAD_RATE_LIMIT).all
+      calculate_average_download_rate(documents)
+    end
 
+    def calculate_average_download_rate(documents)
+      return nil if documents.empty?
       count = documents.count
-      return nil unless count
 
       total_time = documents.inject(0) do |total, document|
         total + (document.completed_at - document.started_at)
