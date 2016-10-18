@@ -40,7 +40,7 @@ describe Document do
     end
   end
 
-  context "calculate_historical_average_download_rate" do
+  context ".historical_average_download_rate" do
     before do
       5.times do
         # 3 minute average
@@ -57,13 +57,13 @@ describe Document do
       end
     end
 
-    context "#calculate_historical_average_download_rate" do
+    context ".calculate_historical_average_download_rate" do
       subject { Document.calculate_historical_average_download_rate }
 
       it { is_expected.to eq(4.minutes.round(2)) }
     end
 
-    context "#calculate_and_save_historical_average_download_rate" do
+    context ".calculate_and_save_historical_average_download_rate!" do
       it "saves values to cache" do
         expect(Rails.cache.read(Document::AVERAGE_DOWNLOAD_RATE_CACHE_KEY)).to be_nil
         Document.calculate_and_save_historical_average_download_rate!
@@ -74,7 +74,7 @@ describe Document do
       end
     end
 
-    context "#historical_average_download_rate" do
+    context ".historical_average_download_rate" do
       subject { Document.historical_average_download_rate }
       let(:rails_cache) { Rails.cache }
       before do
