@@ -3,7 +3,6 @@
 window.Modal = (function($) {
 
   function openModal(e) {
-    debugger;
     e.preventDefault();
     var target = $(e.target).attr("href");
     $(target).addClass("active");
@@ -30,7 +29,6 @@ window.Modal = (function($) {
   // public
   return {
     bind: function() {
-      debugger;
       $('.cf-action-openmodal').on('click', openModal);
       $('.cf-modal').on('click', closeModal);
       $(window).on('keydown', onKeyDown);

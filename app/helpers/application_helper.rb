@@ -41,6 +41,17 @@ module ApplicationHelper
     <span class="cf-spacer-icon"></span>
   HTML
 
+  CLOSE_ICON = <<-HTML.freeze
+    <svg style="pointer-events:none;" width="55" height="55" class="cf-icon-close"
+    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 55 55">
+    <title>close</title>
+    <path d="M52.6 46.9l-6 6c-.8.8-1.9 1.2-3 1.2s-2.2-.4-3-1.2l-13-13-13 13c-.8.8-1.9 1.2-3
+    1.2s-2.2-.4-3-1.2l-6-6c-.8-.8-1.2-1.9-1.2-3s.4-2.2 1.2-3l13-13-13-13c-.8-.8-1.2-1.9-1.2-3s.4-2.2
+    1.2-3l6-6c.8-.8 1.9-1.2 3-1.2s2.2.4 3 1.2l13 13 13-13c.8-.8 1.9-1.2 3-1.2s2.2.4 3 1.2l6 6c.8.8
+    1.2 1.9 1.2 3s-.4 2.2-1.2 3l-13 13 13 13c.8.8 1.2 1.9 1.2 3s-.4 2.2-1.2 3z"/>
+    </svg>
+  HTML
+
   PAGE_LOADING_ICON_FRONT = <<-HTML.freeze
     <svg
       width="200"
@@ -134,6 +145,7 @@ module ApplicationHelper
       spacer: SPACER_ICON,
       success: SUCCESS_ICON,
       failed: FAILED_ICON,
+      close: CLOSE_ICON,
       progress: PROGRESS_ICON,
       page_loading_front: PAGE_LOADING_ICON_FRONT,
       page_loading_back: PAGE_LOADING_ICON_BACK,

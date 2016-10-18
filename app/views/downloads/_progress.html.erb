@@ -108,7 +108,11 @@
 
 <div class="cf-app-segment">
   <% if @download.complete? %>
-    <%= link_to (@download.documents.failed.any? ? "Download anyway" : "Download eFolder"), download_download_path(@download), {class: "usa-button ee-right-button"} %>
+      <% if true %>
+        <li><%= link_to "Download anyway", "#confirm-download-anyway", {class: "usa-button cf-action-openmodal"} %></li>
+      <% else %>
+        <li><%= link_to "Download eFolder", download_download_path(@download), {class: "usa-button ee-right-button"} %></li>
+      <% end %>
   <% else %>
     <button class="usa-button-disabled ee-right-button">Download eFolder</button>
   <% end %>
