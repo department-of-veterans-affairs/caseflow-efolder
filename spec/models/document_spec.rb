@@ -2,8 +2,7 @@ require "rails_helper"
 
 describe Document do
   before do
-    Document.delete_all
-    Rails.cache.clear
+    reset_application!
   end
 
   context ".new" do

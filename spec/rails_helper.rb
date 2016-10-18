@@ -23,6 +23,12 @@ require "rspec/rails"
 # Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 require "capybara"
 
+def reset_application!
+  Document.delete_all
+  Download.delete_all
+  Rails.cache.clear
+end
+
 Capybara.default_driver = :sniffybara
 Sniffybara::Driver.path_exclusions << /samlva/
 Sniffybara::Driver.configuration_file = File.expand_path("../support/VA-axe-configuration.json", __FILE__)
