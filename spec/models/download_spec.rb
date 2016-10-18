@@ -1,8 +1,6 @@
 describe "Download" do
   before do
-    Download.delete_all
-    Document.delete_all
-    Rails.cache.clear
+    reset_application!
     Timecop.freeze(Time.utc(2015, 1, 1, 12, 0, 0))
 
     Download.bgs_service = Fakes::BGSService
