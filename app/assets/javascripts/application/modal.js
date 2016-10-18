@@ -2,10 +2,17 @@
 
 window.Modal = (function($) {
 
+  // set by openModal. focus will be returned to this element
+  // after the modal is closed.
+  // important for a11y, so keyboard users have a sensible flow.
+  var returnEl;
+
   function openModal(e) {
     e.preventDefault();
     var target = $(e.target).attr("href");
     $(target).addClass("active");
+    $('.cf-modal-title').focus();
+    returnEl = e.target;
   }
 
   function closeModal(e) {
@@ -15,6 +22,9 @@ window.Modal = (function($) {
     if ($(e.target).hasClass("cf-modal") || $(e.target).hasClass("cf-action-closemodal")) {
       e.preventDefault();
       $(e.currentTarget).removeClass("active");
+    }
+    if (returnEl) {
+      $(returnEl).focus();
     }
   }
 
