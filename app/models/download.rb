@@ -162,13 +162,11 @@ class Download < ActiveRecord::Base
     current_doc = documents.where(completed_at: nil).where.not(started_at: nil).first
     return nil unless current_doc
 
-    completed_durations = documents.where.not(completed_at: nil).map do |document|
-      document.completed_at - document.started_at
-    end
-    return nil if completed_durations.empty?
-
     documents_left = documents.where(completed_at: nil).count
 
-    current_doc.started_at + (completed_durations.inject(:+) / completed_durations.count * documents_left)
+    historical_rate = Document.historical_average_download_rate
+    return nil unless historical_rate
+
+    current_doc.started_at + (historical_rate * documents_left)
   end
 end
