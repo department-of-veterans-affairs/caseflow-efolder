@@ -27,7 +27,6 @@
  *
  */
 window.Modal = (function($) {
-
   // Focus will be returned to this element
   // after the modal is closed. Important for a11y,
   // so keyboard users have a sensible flow.
