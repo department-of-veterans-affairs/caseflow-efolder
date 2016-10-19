@@ -50,6 +50,7 @@ window.DownloadProgress = (function($) {
 
       id = downloadId;
       intervalID = window.setInterval(function() {
+        console.log('log');
         self.reload(false);
       }, 2000);
 
