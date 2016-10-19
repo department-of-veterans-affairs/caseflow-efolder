@@ -314,7 +314,6 @@ RSpec.feature "Downloads" do
     within first(".usa-alert-body") do
       click_on "Download anyway"
     end
-
     expect(page).to have_content "Download incomplete eFolder?"
     click_on "Go back"
   end
