@@ -31,14 +31,14 @@ window.Modal = (function($) {
   // Focus will be returned to this element
   // after the modal is closed. Important for a11y,
   // so keyboard users have a sensible flow.
-  var returnEl;
+  var lastFocusedEl;
 
   function openModal(e) {
     e.preventDefault();
     var target = $(e.target).attr("href");
     $(target).addClass("active");
+    lastFocusedEl = document.activeElement;
     $('.cf-modal-startfocus').focus();
-    returnEl = e.target;
   }
 
   function closeModal(e) {
@@ -49,14 +49,17 @@ window.Modal = (function($) {
       e.preventDefault();
       $(e.currentTarget).removeClass("active");
     }
-    if (returnEl) {
-      $(returnEl).focus();
+
+    // Return focus to the element that had focus before the modal was opened.
+    if (lastFocusedEl) {
+      lastFocusedEl.focus();
     }
   }
 
   function onKeyDown(e) {
     var escKey = (e.which === 27);
     var tabKey = (e.which === 9);
+    var tabShift = (e.shiftKey && e.keyCode == 9);
 
     if (escKey) {
       $('.cf-modal').trigger('click');
@@ -64,10 +67,15 @@ window.Modal = (function($) {
 
     if (tabKey) {
       if ($('.cf-modal-endfocus').is(':focus')) {
+        // Prevent the user from tabbing out of the modal,
+        // and instead return focus to the top of the modal.
         e.preventDefault();
         $('.cf-modal-startfocus').focus();
       }
-      if ($('.cf-modal-endfocus').is(':focus')) {
+    }
+    if (tabShift) {
+      if ($('.cf-modal-startfocus').is(':focus')) {
+        // Prevent the user fom tabbing backwards out of the modal.
         e.preventDefault();
       }
     }
