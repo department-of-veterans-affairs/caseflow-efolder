@@ -3,14 +3,17 @@
 /**
  * Accessible, reusable modal component.
  *
- * Requires certain class names to function properly:
+ * Certain classnames are used here for functionality:
  * - "cf-modal": the top level modal element
- * - "cf-modal-body": the modal body
  * - "cf-action-openmodal" Placed outside the modal. Triggers modal display.
  * - "cf-action-closemodal": Placed inside the modal. Closes the modal.
  * - "cf-modal-startfocus": the element that receives focus when the modal is opened.
  *      Also used to trap focus inside the modal for a11y.
  * - "cf-modal-endfocus": the last focusable element in the modal
+ *   NOTE: accessibility features won't work if "cf-modal-startfocus"
+ *   and "cf-modal-endfocus" are not used.
+ *
+ * See _confirm_download_anyway_modal.html.erb for an example of the HTML.
  *
  * Accessibility:
  * - When the modal is closed, returns keyboard focus to the element
@@ -20,6 +23,7 @@
  *   is placed on the last focusable element.
  *   TODO(alex): check out a more robust solution if this proves to
  *   be unwieldy, e.g. https://github.com/davidtheclark/focus-trap
+ *
  *
  */
 window.Modal = (function($) {
@@ -58,12 +62,13 @@ window.Modal = (function($) {
       $('.cf-modal').trigger('click');
     }
 
-
     if (tabKey) {
-      debugger;
       if ($('.cf-modal-endfocus').is(':focus')) {
         e.preventDefault();
         $('.cf-modal-startfocus').focus();
+      }
+      if ($('.cf-modal-endfocus').is(':focus')) {
+        e.preventDefault();
       }
     }
   }
