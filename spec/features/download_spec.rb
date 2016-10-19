@@ -310,17 +310,8 @@ RSpec.feature "Downloads" do
       click_on "Download anyway"
     end
 
-    # check that focus is correctly moved to the modal
-    is_focus_on_modal = page.execute_script("return document.activeElement.className").include? "cf-modal-startfocus"
-    expect(is_focus_on_modal).to be true
     expect(page).to have_content "Download incomplete eFolder?"
-
     click_on "Go back"
-
-    # check that focus is correctly moved back to the "Download Anyway" button
-    # after the modal is closed
-    is_focus_on_button = page.execute_script("return document.activeElement.className").include? "cf-action-openmodal"
-    expect(is_focus_on_button).to be true
   end
 
   scenario "Retry failed download" do
