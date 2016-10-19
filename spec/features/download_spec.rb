@@ -253,8 +253,13 @@ RSpec.feature "Downloads" do
   scenario "Download progress shows documents in tabs based on their status" do
     @download = @user_download.create(status: :pending_documents)
     @download.documents.create(vbms_filename: "yawn.pdf", mime_type: "application/pdf", download_status: :pending)
-    @download.documents.create(vbms_filename: "poo.pdf", mime_type: "application/pdf", download_status: :failed)
     @download.documents.create(vbms_filename: "smiley.pdf", mime_type: "application/pdf", download_status: :success)
+    @download.documents.create(
+      doc_type: "129",
+      document_id: "{1234-1234-1234-5555}",
+      mime_type: "application/pdf",
+      download_status: :failed
+    )
 
     visit download_path(@download)
     expect(page).to have_css ".cf-tab.cf-active", text: "Progress (1)"
@@ -270,7 +275,7 @@ RSpec.feature "Downloads" do
 
     click_on "Errors"
     expect(page).to have_css ".cf-tab.cf-active", text: "Errors (1)"
-    expect(page).to have_css ".document-failed", text: "poo.pdf"
+    expect(page).to have_css ".document-failed", text: "VA 21-509 Statement of Dependency of Parents 1234-1234-1234-5555"
     expect(page).to_not have_css ".document-success", text: "smiley.pdf"
     expect(page).to_not have_css ".document-pending", text: "yawn.pdf"
   end

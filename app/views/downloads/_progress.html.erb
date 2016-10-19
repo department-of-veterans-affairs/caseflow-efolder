@@ -50,7 +50,7 @@
         <div class="usa-alert-body">
           <h3 class="usa-alert-heading">You can close this page at any time.</h3>
           <p class="usa-alert-text">
-            eFolder Express will still continue gathering the files from the VBMS. Go to the home screen: <a href="/">http://efolder.cf.ds.va</a> to open the documents once they've been retrieved.
+            You can close this page at any time and eFolder Express will continue retrieving files in the background. View progress and download eFolders from the History on the <a href="/">eFolder Express home page.</a>
           </p>
           <p>
             Note: eFolders remain in your History for <%= Download::HOURS_UNTIL_EXPIRY %> hours.
@@ -86,6 +86,9 @@
         <tr>
           <th scope="col"><span class="usa-sr-only">Status</span></th>
           <th scope="col">Filename</th>
+          <% if current_tab == "errored" %>
+            <th scope="col">Document ID</th>
+          <% end %>
           <th scope="col">Receipt Date</th>
         </tr>
       </thead>
@@ -97,6 +100,9 @@
               <%= svg_icon(document.download_status_icon) %>
             </td>
             <td class="ee-filename-row"><%= document.type_name %></td>
+            <% if current_tab == "errored" %>
+              <td class="ee-doc-id-row"><%= document.filename_doc_id %></td>
+            <% end %>
             <td><%= document.received_at && document.received_at.to_formatted_s(:short_date) %></td>
           </tr>
         <% end %>

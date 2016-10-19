@@ -15,6 +15,10 @@
   width: 80%;
 }
 
+.ee-doc-id-row {
+  white-space: nowrap;
+}
+
 .ee-right-button {
   float: right;
   margin-right: 0;
@@ -28,6 +32,11 @@
 .ee-recent-searches {
   border-top: 1px solid $color-gray-lighter;
   padding-top: 45px;
+  margin-bottom: 0;
+}
+
+.ee-recent-searches-note {
+  margin-top: 5px;
 }
 
 .ee-actions-cell {
