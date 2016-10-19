@@ -293,6 +293,36 @@ RSpec.feature "Downloads" do
     expect(page).to have_current_path(root_path)
   end
 
+  scenario "Downloading anyway with at least one failed document download" do
+    @download = @user_download.create(file_number: "12", status: :pending_documents)
+    @download.documents.create(vbms_filename: "roll.pdf", mime_type: "application/pdf", download_status: :failed)
+    @download.documents.create(vbms_filename: "tide.pdf", mime_type: "application/pdf", download_status: :success)
+
+    visit download_path(@download)
+    expect(page).to have_css ".cf-tab.cf-active", text: "Progress (0)"
+
+    @download.update_attributes(status: :complete_with_errors)
+    page.execute_script("window.Modal.bind();")
+    expect(page).to have_content "Download anyway"
+    expect(page).to have_no_content "Download incomplete eFolder?"
+
+    within first(".usa-alert-body") do
+      click_on "Download anyway"
+    end
+
+    # check that focus is correctly moved to the modal
+    is_focus_on_modal = page.evaluate_script("document.activeElement.className").include? "cf-modal-startfocus"
+    expect(is_focus_on_modal).to be true
+    expect(page).to have_content "Download incomplete eFolder?"
+
+    click_on "Go back"
+
+    # check that focus is correctly moved back to the "Download Anyway" button
+    # after the modal is closed
+    is_focus_on_button = page.evaluate_script("document.activeElement.className").include? "cf-action-openmodal"
+    expect(is_focus_on_button).to be true
+  end
+
   scenario "Retry failed download" do
     @download = @user_download.create(file_number: "12", status: :complete_with_errors)
     @download.documents.create(vbms_filename: "roll.pdf", mime_type: "application/pdf", download_status: :failed)
