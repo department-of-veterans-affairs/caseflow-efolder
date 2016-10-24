@@ -7,6 +7,7 @@ window.DownloadProgress = (function($) {
     completed: false,
 
     initTabs: function() {
+      console.log("init tabs");
       var self = this;
       $(".cf-tab").click(function() {
         self.changeTabs($(this).attr("data-tab"));
@@ -15,8 +16,11 @@ window.DownloadProgress = (function($) {
 
     reload: function(changingTabs) {
       var self = this;
+      console.log("reload");
+      console.log("id: " + id);
 
       if (id) {
+        console.log("currentTab" + this.currentTab);
         $.get("/downloads/" + id + "/progress?current_tab=" + this.currentTab).then(function(fragment) {
           var scrollTop = $(".cf-tab-content")[0].scrollTop;
           $("#download-progress").html(fragment);
@@ -47,10 +51,10 @@ window.DownloadProgress = (function($) {
 
     init: function(downloadId) {
       var self = this;
-
+      console.log("init downloadprogress");
       id = downloadId;
       intervalID = window.setInterval(function() {
-        console.log('log');
+        console.log("interval firing");
         self.reload(false);
       }, 2000);
 
