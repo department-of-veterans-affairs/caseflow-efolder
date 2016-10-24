@@ -310,6 +310,8 @@ RSpec.feature "Downloads" do
 
     @download.update_attributes(status: :complete_with_errors)
     page.execute_script("window.DownloadProgress.reload();")
+
+    expect(page).to have_content "tide.pdf"
     expect(page).to have_content "Download anyway"
     expect(page).to have_no_content "Download incomplete eFolder?"
 
