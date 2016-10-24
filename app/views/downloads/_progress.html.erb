@@ -32,19 +32,6 @@
 
     <% end %>
   <% else %>
-    <h1 class="cf-txt-c">Retrieving Files ...</h1>
-    <p class="ee-fetching-files">
-      <% if @download.estimated_to_complete_at %>
-        Estimated time left: <%= distance_of_time_in_words(@download.estimated_to_complete_at, Time.zone.now, include_seconds: true) %>
-      <% end %>
-    </p>
-
-    <div class="progress-bar">
-      <span style="width: <%= @download.progress_percentage %>%;">
-        Progress: <%= @download.progress_percentage %>%
-      </span>
-    </div>
-
     <p>
       <div class="usa-alert usa-alert-info" role="alert">
         <div class="usa-alert-body">
@@ -58,6 +45,20 @@
         </div>
       </div>
     </p>
+
+    <h1 class="cf-txt-c">Retrieving Files ...</h1>
+    <p class="ee-fetching-files">
+      <% if @download.estimated_to_complete_at %>
+        Estimated time left: <%= distance_of_time_in_words(@download.estimated_to_complete_at, Time.zone.now, include_seconds: true) %>
+        (<%=@download.calculate_remaining_documents%> of <%=@download.number_of_documents%> files remaining)
+      <% end %>
+    </p>
+
+    <div class="progress-bar">
+      <span style="width: <%= @download.progress_percentage %>%;">
+        Progress: <%= @download.progress_percentage %>%
+      </span>
+    </div>
   <% end %>
 
   <div class="cf-tab-navigation">
