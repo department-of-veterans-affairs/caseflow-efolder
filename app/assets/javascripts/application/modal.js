@@ -33,16 +33,13 @@ window.Modal = (function($) {
   var lastFocusedEl;
 
   function openModal(e) {
-    console.log("open modal");
     var target = $(e.target).attr("href");
-    console.log("target: " + target);
     $(target).addClass("active");
     lastFocusedEl = document.activeElement;
     $('.cf-modal-startfocus').focus();
   }
 
   function closeModal(e) {
-    console.log("close modal");
     e.stopPropagation();
     e.stopImmediatePropagation();
 

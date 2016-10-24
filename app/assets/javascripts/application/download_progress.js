@@ -7,7 +7,6 @@ window.DownloadProgress = (function($) {
     completed: false,
 
     initTabs: function() {
-      console.log("init tabs");
       var self = this;
       $(".cf-tab").click(function() {
         self.changeTabs($(this).attr("data-tab"));
@@ -16,8 +15,6 @@ window.DownloadProgress = (function($) {
 
     reload: function(changingTabs) {
       var self = this;
-      console.log("reload");
-      console.log("id: " + id);
 
       if (id) {
         console.log("currentTab" + this.currentTab);
@@ -51,7 +48,6 @@ window.DownloadProgress = (function($) {
 
     init: function(downloadId) {
       var self = this;
-      console.log("init downloadprogress");
       id = downloadId;
       intervalID = window.setInterval(function() {
         console.log("interval firing");

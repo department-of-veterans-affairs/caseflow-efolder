@@ -300,7 +300,7 @@ RSpec.feature "Downloads" do
     expect(page).to have_current_path(root_path)
   end
 
-  scenario "Downloading anyway with at least one failed document download", focus: true do
+  scenario "Downloading anyway with at least one failed document download" do
     @download = @user_download.create(file_number: "12", status: :pending_documents)
     @download.documents.create(vbms_filename: "roll.pdf", mime_type: "application/pdf", download_status: :failed)
     @download.documents.create(vbms_filename: "tide.pdf", mime_type: "application/pdf", download_status: :success)
