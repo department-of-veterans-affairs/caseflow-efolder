@@ -1,7 +1,9 @@
-<script>
-  // Set up automatic download status updates
-  window.DownloadStatus.init(<%= @download.id %>, "<%= @download.status %>");
-</script>
+<% if @download.fetching_manifest? %>
+  <script>
+    // Set up automatic download status updates
+    window.DownloadStatus.init(<%= @download.id %>, "<%= @download.status %>");
+  </script>
+<% end %>
 
 <% fetch_button_text = "Start retrieving eFolder" %>
 

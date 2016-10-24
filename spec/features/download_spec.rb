@@ -68,6 +68,7 @@ RSpec.feature "Downloads" do
     expect(page).to have_content "Stan Lee (1234)"
     expect(page).to have_content "We are gathering the list of files in the eFolder now"
     expect(page).to have_current_path(download_path(@download))
+    expect(page.evaluate_script("window.DownloadStatus.intervalID")).to be_truthy
     expect(GetDownloadManifestJob).to have_received(:perform_later)
 
     @search = Search.where(user_id: "123123", file_number: "1234").first
@@ -242,6 +243,7 @@ RSpec.feature "Downloads" do
     expect(page).to have_content "Steph Curry (3456)"
     expect(page).to have_content "yawn.pdf 09/06/2015"
     expect(page).to have_content "smiley.pdf 01/19/2015"
+    expect(page.evaluate_script("window.DownloadStatus.intervalID")).to be_falsey
     first(:button, "Start retrieving eFolder").click
 
     expect(@download.reload).to be_pending_documents

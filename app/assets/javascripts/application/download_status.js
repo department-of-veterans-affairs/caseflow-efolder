@@ -3,6 +3,7 @@ window.DownloadStatus = (function($) {
 
   // public
   return {
+    intervalID: null,
     recheck: function() {
       if (id) {
         $.getJSON("/downloads/" + id).then(function(download) {
@@ -15,7 +16,7 @@ window.DownloadStatus = (function($) {
       id = downloadId;
       currentStatus = downloadStatus;
 
-      window.setInterval(this.recheck, 1000);
+      this.intervalID = window.setInterval(this.recheck, 1000);
     }
   };
 })($);
