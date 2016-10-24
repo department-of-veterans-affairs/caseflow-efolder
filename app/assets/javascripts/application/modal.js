@@ -33,6 +33,7 @@ window.Modal = (function($) {
   var lastFocusedEl;
 
   function openModal(e) {
+    console.log("open modal");
     e.preventDefault();
     var target = $(e.target).attr("href");
     $(target).addClass("active");
@@ -41,6 +42,7 @@ window.Modal = (function($) {
   }
 
   function closeModal(e) {
+    console.log("close modal");
     e.stopPropagation();
     e.stopImmediatePropagation();
 
@@ -83,6 +85,7 @@ window.Modal = (function($) {
   // public
   return {
     bind: function() {
+      console.log("bind modal");
       $('.cf-action-openmodal').on('click', openModal);
       $('.cf-modal').on('click', closeModal);
       $(window).on('keydown', onKeyDown);
