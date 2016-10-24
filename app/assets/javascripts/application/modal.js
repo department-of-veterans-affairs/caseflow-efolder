@@ -82,7 +82,6 @@ window.Modal = (function($) {
   // public
   return {
     bind: function() {
-      console.log("bind modal");
       $('.cf-action-openmodal').on('click', openModal);
       $('.cf-modal').on('click', closeModal);
       $(window).on('keydown', onKeyDown);

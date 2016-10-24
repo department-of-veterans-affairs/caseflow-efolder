@@ -17,7 +17,6 @@ window.DownloadProgress = (function($) {
       var self = this;
 
       if (id) {
-        console.log("currentTab" + this.currentTab);
         $.get("/downloads/" + id + "/progress?current_tab=" + this.currentTab).then(function(fragment) {
           var scrollTop = $(".cf-tab-content")[0].scrollTop;
           $("#download-progress").html(fragment);
@@ -50,7 +49,6 @@ window.DownloadProgress = (function($) {
       var self = this;
       id = downloadId;
       intervalID = window.setInterval(function() {
-        console.log("interval firing");
         self.reload(false);
       }, 2000);
 

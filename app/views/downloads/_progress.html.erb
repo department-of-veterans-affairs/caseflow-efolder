@@ -1,6 +1,6 @@
 <div class="cf-app-segment cf-app-segment--alt">
   <% if @download.complete? %>
-    <% if true %>
+    <% if @download.documents.failed.any? %>
       <div class="usa-alert usa-alert-error" role="alert">
         <div class="usa-alert-body">
           <h3 class="usa-alert-heading">Some files couldn't be added to eFolder</h3>
