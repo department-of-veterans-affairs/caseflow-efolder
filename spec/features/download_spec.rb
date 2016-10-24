@@ -316,10 +316,8 @@ RSpec.feature "Downloads" do
     within first(".usa-alert-body") do
       click_on "Download anyway"
     end
-    using_wait_time 10 do
-      expect(page).to have_selector('#confirm-download-anyway', visible: true)
-      expect(page).to have_content "Download incomplete eFolder?"
-    end
+    expect(page).to have_selector('#confirm-download-anyway')
+
     click_on "Go back"
   end
 
