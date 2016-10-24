@@ -24,6 +24,9 @@
           <p class="usa-alert-text">
             All of the documents in the VBMS eFolder for #<%= @download.file_number %> are ready to download.
             Click the "Download eFolder" button below.
+            <br/>
+            <br/>
+            (Remember that Virtual VA documents are not included in this download)
           </p>
           <br/>
           <%= link_to "Download eFolder", download_download_path(@download), {class: "usa-button"} %>
