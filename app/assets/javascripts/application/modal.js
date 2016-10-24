@@ -34,9 +34,8 @@ window.Modal = (function($) {
 
   function openModal(e) {
     console.log("open modal");
-    console.log(e.target);
     var target = $(e.target).attr("href");
-    console.log(target);
+    console.log("target: " + target);
     $(target).addClass("active");
     lastFocusedEl = document.activeElement;
     $('.cf-modal-startfocus').focus();
