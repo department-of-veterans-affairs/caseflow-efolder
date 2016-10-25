@@ -50,7 +50,7 @@
     <p class="ee-fetching-files">
       <% if @download.estimated_to_complete_at %>
         Estimated time left: <%= distance_of_time_in_words(@download.estimated_to_complete_at, Time.zone.now, include_seconds: true) %>
-        (<%=@download.calculate_remaining_documents%> of <%=@download.number_of_documents%> files remaining)
+        (<%= @download.calculate_remaining_documents %> of <%= @download.number_of_documents %> files remaining)
       <% end %>
     </p>
 
