@@ -30,13 +30,18 @@ window.Modal = (function($) {
   // Focus will be returned to this element
   // after the modal is closed. Important for a11y,
   // so keyboard users have a sensible flow.
-  var lastFocusedEl;
+  var $lastFocused;
+  // The currently active modal element, used to
+  // scope later actions.
+  var $activeModal;
+
 
   function openModal(e) {
     var target = $(e.target).attr("href");
-    $(target).addClass("active");
-    lastFocusedEl = document.activeElement;
-    $('.cf-modal-startfocus').focus();
+    $activeModal = $(target);
+    $activeModal.addClass("active");
+    $lastFocused = document.activeElement;
+    $activeModal.find('.cf-modal-startfocus').focus();
   }
 
   function closeModal(e) {
@@ -49,8 +54,8 @@ window.Modal = (function($) {
     }
 
     // Return focus to the element that had focus before the modal was opened.
-    if (lastFocusedEl) {
-      lastFocusedEl.focus();
+    if ($lastFocused) {
+      $lastFocused.focus();
     }
   }
 
@@ -64,15 +69,15 @@ window.Modal = (function($) {
     }
 
     if (tabKey) {
-      if ($('.cf-modal-endfocus').is(':focus')) {
+      if ($activeModal.find('.cf-modal-endfocus').is(':focus')) {
         // Prevent the user from tabbing out of the modal,
         // and instead return focus to the top of the modal.
         e.preventDefault();
-        $('.cf-modal-startfocus').focus();
+        $activeModal.find('.cf-modal-startfocus').focus();
       }
     }
     if (tabShift) {
-      if ($('.cf-modal-startfocus').is(':focus')) {
+      if ($activeModal.find('.cf-modal-startfocus').is(':focus')) {
         // Prevent the user fom tabbing backwards out of the modal.
         e.preventDefault();
       }
