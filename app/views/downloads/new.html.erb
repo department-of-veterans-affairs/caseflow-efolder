@@ -67,7 +67,12 @@
         <tr id="download-<%= download.id %>">
           <td>
             <%= download.veteran_name %>
-            <span class="cf-subtext">(<%= download.file_number %>) - (Expries on <%= download.expriation_day %>)</span>
+            <span class="cf-subtext cf-file-info">
+              (<%= download.file_number %>)
+              <% if download.expriation_day %>
+                 - Expries on <%= download.expriation_day %>
+              <% end %>
+             </span>
           </td>
           <td class="ee-actions-cell">
             <% if download.complete_with_errors? %>

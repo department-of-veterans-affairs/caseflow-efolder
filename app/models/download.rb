@@ -134,7 +134,7 @@ class Download < ActiveRecord::Base
   end
 
   def expriation_day
-    (completed_at + HOURS_UNTIL_EXPIRY.hours).strftime("%m/%d")
+    started_at ? (started_at + HOURS_UNTIL_EXPIRY.hours).strftime("%m/%d") : nil
   end
 
 
