@@ -133,6 +133,11 @@ class Download < ActiveRecord::Base
     "#{user_id} (Station #{user_station_id})"
   end
 
+  def expriation_day
+    (completed_at + HOURS_UNTIL_EXPIRY.hours).strftime("%m/%d")
+  end
+
+
   def self.downloads_by_user(downloads:)
     downloads.each_with_object({}) do |download, result|
       result[download.user_id_string] ||= 0
