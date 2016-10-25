@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   force_ssl if: :ssl_enabled?
   before_action :authenticate
-  before_action :set_raven_user_context
+  before_action :set_raven_user
   before_action :configure_bgs
   before_action :strict_transport_security
 
@@ -16,12 +16,15 @@ class ApplicationController < ActionController::Base
   end
 
   def set_raven_user
-    Raven.user_context(
-      id: current_user.id,
-      email: current_user.email,
-      ip_address: current_user.ip_address,
-      station_id: station_id
-    )
+    if ENV['SENTRY_DSN']
+      # Raven sends error info to Sentry.
+      Raven.user_context(
+        id: current_user.id,
+        email: current_user.email,
+        ip_address: current_user.ip_address,
+        station_id: station_id
+      )
+    end
   end
 
   def authorize_system_admin
