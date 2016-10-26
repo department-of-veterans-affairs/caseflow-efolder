@@ -22,7 +22,7 @@ class ApplicationController < ActionController::Base
         id: current_user.id,
         email: current_user.email,
         ip_address: current_user.ip_address,
-        station_id: station_id
+        station_id: current_user.station_id
       )
     end
   end
