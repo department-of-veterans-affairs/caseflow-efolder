@@ -47,7 +47,6 @@ window.DownloadProgress = (function($) {
 
     init: function(downloadId) {
       var self = this;
-
       id = downloadId;
       intervalID = window.setInterval(function() {
         self.reload(false);

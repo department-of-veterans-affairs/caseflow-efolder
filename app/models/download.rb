@@ -137,6 +137,14 @@ class Download < ActiveRecord::Base
     started_at ? (started_at + HOURS_UNTIL_EXPIRY.hours).strftime("%m/%d") : nil
   end
 
+  def calculate_remaining_documents
+    documents.where(completed_at: nil).count
+  end
+
+  def number_of_documents
+    documents.count
+  end
+
   def self.downloads_by_user(downloads:)
     downloads.each_with_object({}) do |download, result|
       result[download.user_id_string] ||= 0

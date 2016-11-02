@@ -11,7 +11,7 @@
             You can still download the rest of the files by clicking the 'Download anyway' button below.
           </p>
           <ul class="ee-button-list">
-            <li><%= link_to "Download anyway", download_download_path(@download), {class: "usa-button"} %></li>
+            <li><%= link_to "Download anyway", "#confirm-download-anyway", {class: "usa-button cf-action-openmodal"} %></li>
             <li><%= link_to "Try retrieving eFolder again", retry_download_path(@download), {method: :post, class: "usa-button usa-button-gray"} %></li>
           </ul>
         </div>
@@ -35,19 +35,6 @@
 
     <% end %>
   <% else %>
-    <h1 class="cf-txt-c">Retrieving Files ...</h1>
-    <p class="ee-fetching-files">
-      <% if @download.estimated_to_complete_at %>
-        Estimated time left: <%= distance_of_time_in_words(@download.estimated_to_complete_at, Time.zone.now, include_seconds: true) %>
-      <% end %>
-    </p>
-
-    <div class="progress-bar">
-      <span style="width: <%= @download.progress_percentage %>%;">
-        Progress: <%= @download.progress_percentage %>%
-      </span>
-    </div>
-
     <p>
       <div class="usa-alert usa-alert-info" role="alert">
         <div class="usa-alert-body">
@@ -61,6 +48,20 @@
         </div>
       </div>
     </p>
+
+    <h1 class="cf-txt-c">Retrieving Files ...</h1>
+    <p class="ee-fetching-files">
+      <% if @download.estimated_to_complete_at %>
+        Estimated time left: <%= distance_of_time_in_words(@download.estimated_to_complete_at, Time.zone.now, include_seconds: true) %>
+        (<%= @download.calculate_remaining_documents %> of <%= @download.number_of_documents %> files remaining)
+      <% end %>
+    </p>
+
+    <div class="progress-bar">
+      <span style="width: <%= @download.progress_percentage %>%;">
+        Progress: <%= @download.progress_percentage %>%
+      </span>
+    </div>
   <% end %>
 
   <div class="cf-tab-navigation">
@@ -117,17 +118,22 @@
 
 <div class="cf-app-segment">
   <% if @download.complete? %>
-    <%= link_to (@download.documents.failed.any? ? "Download anyway" : "Download eFolder"), download_download_path(@download), {class: "usa-button ee-right-button"} %>
+      <% if @download.documents.failed.any? %>
+        <%= link_to "Download anyway", "#confirm-download-anyway", {class: "usa-button cf-action-openmodal"} %>
+      <% else %>
+        <%= link_to "Download eFolder", download_download_path(@download), {class: "usa-button ee-right-button"} %>
+      <% end %>
   <% else %>
     <button class="usa-button-disabled ee-right-button">Download eFolder</button>
   <% end %>
-
   <span><%= link_to "Search for another eFolder", root_path %></span>
 </div>
 
+<%= render partial: 'confirm_download_anyway_modal' %>
 
 <% if @download.complete? %>
   <script>
+    window.Modal.bind();
     window.DownloadProgress.complete();
   </script>
 <% end %>

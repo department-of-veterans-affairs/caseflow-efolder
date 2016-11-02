@@ -1,0 +1,25 @@
+<!-- This modal is displayed to make sure the user knows that the zip she's downloading does not contain all of the records for a veteran due to errors.
+See modal.js for more on this. -->
+
+<%
+  modal_id = "confirm-download-anyway"
+%>
+<section class="cf-modal" id="<%= modal_id %>" role="alertdialog" aria-labelledby="<%= modal_id %>-title" aria-describedby="<%= modal_id %>-desc">
+
+  <div class="cf-modal-body">
+    <!-- Modal box messaging -->
+    <button type="button" aria-label="Close modal" class="cf-modal-close cf-action-closemodal cf-modal-startfocus">
+      <%= svg_icon(:close) %>
+    </button>
+    <h1 class="cf-modal-title" id="<%= modal_id %>-title">Download incomplete eFolder?</h1>
+    <p class="cf-modal-text" id="<%= modal_id %>-desc">
+      We encountered errors when retrieving some documents and they won’t be included in the eFolder download. If you elect to "Download anyway" you may want to retrieve these files individually from VBMS.
+    </p>
+
+    <div class="cf-push-row cf-modal-controls">
+      <button type="button" class="usa-button-outline cf-action-closemodal cf-push-left" data-controls="#<%= modal_id%>">Go back</button>
+      <a href="<%= download_download_path(@download) %>" class="cf-push-right usa-button usa-button-secondary cf-modal-endfocus">Download anyway</a>
+    </div>
+    <!-- /modal box messaging -->
+  </div>
+</section>
