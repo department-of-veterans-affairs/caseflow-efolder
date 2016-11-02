@@ -133,6 +133,10 @@ class Download < ActiveRecord::Base
     "#{user_id} (Station #{user_station_id})"
   end
 
+  def expiration_day
+    started_at ? (started_at + HOURS_UNTIL_EXPIRY.hours).strftime("%m/%d") : nil
+  end
+
   def calculate_remaining_documents
     documents.where(completed_at: nil).count
   end
