@@ -36,6 +36,36 @@ RSpec.feature "Stats Dashboard" do
         manifest_fetched_at: 4.hours.ago,
         started_at: 4.hours.ago,
         completed_at: 3.hours.ago
+      ),
+
+      Download.create(
+        user_id: "CREED",
+        user_station_id: "204",
+        status: :complete_success,
+        created_at: 4.hours.ago - 16.37,
+        manifest_fetched_at: 4.hours.ago,
+        started_at: 4.hours.ago,
+        completed_at: 3.hours.ago
+      ),
+
+      Download.create(
+        user_id: "DRAGO",
+        user_station_id: "205",
+        status: :complete_success,
+        created_at: 4.hours.ago - 20.37,
+        manifest_fetched_at: 4.hours.ago,
+        started_at: 4.hours.ago,
+        completed_at: 3.hours.ago
+      ),
+
+      Download.create(
+        user_id: "THUNDERLIPS",
+        user_station_id: "206",
+        status: :complete_success,
+        created_at: 4.hours.ago - 30.37,
+        manifest_fetched_at: 4.hours.ago,
+        started_at: 4.hours.ago,
+        completed_at: 3.hours.ago
       )
     ]
 
@@ -75,10 +105,11 @@ RSpec.feature "Stats Dashboard" do
 
     click_on "Daily"
     expect(page).to have_content("Activity for January 1 (so far)")
-    expect(page).to have_content("Active Users 1")
-    expect(page).to have_content("Completed Downloads 3")
-    expect(page).to have_content("Documents Retrieved 6")
-    expect(page).to have_content("Time to Manifest (median) 12.37 sec")
+    expect(page).to have_content("Active Users 4")
+    expect(page).to have_content("Completed Downloads 6")
+    expect(page).to have_content("Documents Retrieved 12")
+    expect(page).to have_content("Document Errors 6")
+    expect(page).to have_content("Time to Manifest (median) 16.37 sec")
     expect(page).to have_content("Time to Files (median) 60.00 min")
 
     expect(page).to have_content("ROCKY (Station 203) 3 Downloads")
@@ -91,9 +122,9 @@ RSpec.feature "Stats Dashboard" do
     click_on "Daily"
 
     find('*[role="button"]', text: "Time to Manifest").trigger("click")
-    expect(page).to have_content("Time to Manifest (95th percentile) 14.37 sec")
+    expect(page).to have_content("Time to Manifest (95th percentile) 30.37 sec")
     find('*[role="button"]', text: "Time to Manifest").trigger("click")
-    expect(page).to have_content("Time to Manifest (median) 12.37 sec")
+    expect(page).to have_content("Time to Manifest (median) 16.37 sec")
   end
 
   scenario "Navigate to past periods with arrow keys" do
