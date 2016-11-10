@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/department-of-veterans-affairs/caseflow-commons
-  revision: b3838185c8d1c1741ae99595be4c6323a11f12cc
-  ref: b383818
+  revision: 3b13049edc8ac7c1f5d9ca6e3ceb6cd6f5f36077
+  ref: 3b13049
   specs:
     caseflow (0.1.5)
       bourbon
