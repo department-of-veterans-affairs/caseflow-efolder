@@ -1,4 +1,8 @@
-source 'https://rubygems.org'
+if ENV['GEM_SERVER_URL'] == nil
+  source 'https://rubygems.org'
+else
+  source ENV['GEM_SERVER_URL']
+end
 
 gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons", ref: "3b13049"
 gem "moment_timezone-rails"
