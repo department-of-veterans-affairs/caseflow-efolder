@@ -3,6 +3,9 @@ source ENV['GEM_SERVER_URL'] || 'https://rubygems.org'
 gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons", ref: "3b13049"
 gem "moment_timezone-rails"
 
+# Use sqlite3 as the database for Active Record
+gem 'sqlite3', platforms: [:ruby,:mswin,:mingw, :mswin, :x64_mingw]
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.7.1'
 
