@@ -53,4 +53,15 @@ class ApplicationController < ActionController::Base
   def configure_bgs
     BGSService.user = current_user
   end
+
+  def feedback_url
+    unless ENV["CASEFLOW_FEEDBACK_URL"]
+      return "https://vaww.vaco.portal.va.gov/sites/BVA/olkm/DigitalService/Lists/Feedback/NewForm.aspx"
+    end
+
+    param_object = { redirect: request.original_url, subject: "eFolder Express" }
+
+    ENV["CASEFLOW_FEEDBACK_URL"] + "?" + param_object.to_param
+  end
+  helper_method :feedback_url
 end

@@ -42,4 +42,8 @@ Rails.application.configure do
   config.s3_bucket_name = "efolder-express-staging"
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+
+  # URL for feedback app. If not present, link points to Sharepoint.
+  # This can also be in Jenkins.
+  ENV["CASEFLOW_FEEDBACK_URL"] = "https://dsva-appeals-feedback-demo-1748368704.us-gov-west-1.elb.amazonaws.com/"
 end
