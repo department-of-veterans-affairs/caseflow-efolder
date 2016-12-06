@@ -415,7 +415,7 @@ RSpec.feature "Downloads" do
 
     visit "/"
 
-    expect(page).to_not have_content(pending_confirmation.file_number)
+    expect(page).to have_content(pending_confirmation.file_number)
     expect(page).to_not have_content(another_user.file_number)
 
     complete_with_errors_row = "#download-#{complete_with_errors.id}"
