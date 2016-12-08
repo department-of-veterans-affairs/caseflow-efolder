@@ -1,6 +1,4 @@
 class Download < ActiveRecord::Base
-  cattr_accessor :bgs_service
-
   enum status: {
     fetching_manifest: 0,
     no_documents: 1,
@@ -158,6 +156,24 @@ class Download < ActiveRecord::Base
     users = downloads_by_user(downloads: downloads)
     sorted = users.sort_by { |_k, v| -v }
     sorted.map { |values| { id: values[0], count: values[1] } }.first(3)
+  end
+
+  class << self
+    def bgs_service=(service)
+      if Rails.env.test?
+        @bgs_service = service
+      else
+        Thread.current[:download_bgs_service] = service
+      end
+    end
+
+    def bgs_service
+      if Rails.env.test?
+        @bgs_service
+      else
+        Thread.current[:download_bgs_service]
+      end
+    end
   end
 
   private
