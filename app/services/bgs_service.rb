@@ -2,9 +2,11 @@ require "bgs"
 
 # Thin interface to all things BGS
 class BGSService
-  cattr_accessor :user
+  include ActiveModel::Model
 
-  def self.parse_veteran_info(veteran_data)
+  attr_accessor :user
+
+  def parse_veteran_info(veteran_data)
     ssn = veteran_data[:ssn_nbr]
     last_four_ssn = ssn ? ssn[ssn.length - 4..ssn.length] : nil
     {
@@ -14,19 +16,21 @@ class BGSService
     }
   end
 
-  def self.fetch_veteran_info(file_number)
+  def fetch_veteran_info(file_number)
     @client ||= init_client
     veteran_data = @client.people.find_by_file_number(file_number)
 
     parse_veteran_info(veteran_data) if veteran_data
   end
 
-  def self.check_sensitivity(file_number)
+  def check_sensitivity(file_number)
     @client ||= init_client
     @client.can_access? file_number
   end
 
-  def self.init_client
+  private
+
+  def init_client
     BGS::Services.new(
       env: Rails.application.config.bgs_environment,
       application: "CASEFLOW",

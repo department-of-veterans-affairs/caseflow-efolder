@@ -51,7 +51,7 @@ class ApplicationController < ActionController::Base
   end
 
   def configure_bgs
-    BGSService.user = current_user
+    Download.bgs_service = BGSService.new(user: current_user) unless Rails.env.test?
   end
 
   def feedback_url
