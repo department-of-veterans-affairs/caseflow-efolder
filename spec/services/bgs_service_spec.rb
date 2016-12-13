@@ -1,4 +1,6 @@
 describe BGSService do
+  let(:bgs_service) { BGSService.new(user: nil) }
+
   context "#parse_veteran_info" do
     before do
       @veteran_info = {
@@ -9,7 +11,7 @@ describe BGSService do
     end
 
     context "if bgs service returns a string ssn" do
-      subject { BGSService.parse_veteran_info(@veteran_info)["veteran_last_four_ssn"] }
+      subject { bgs_service.parse_veteran_info(@veteran_info)["veteran_last_four_ssn"] }
       it { is_expected.to eq("1111") }
     end
 
@@ -17,17 +19,17 @@ describe BGSService do
       veteran_info = {
         ssn_nbr: nil
       }
-      subject { BGSService.parse_veteran_info(veteran_info)["veteran_last_four_ssn"] }
+      subject { bgs_service.parse_veteran_info(veteran_info)["veteran_last_four_ssn"] }
       it { is_expected.to eq(nil) }
     end
 
     context "if bgs service returns last name" do
-      subject { BGSService.parse_veteran_info(@veteran_info)["veteran_last_name"] }
+      subject { bgs_service.parse_veteran_info(@veteran_info)["veteran_last_name"] }
       it { is_expected.to eq("LastName") }
     end
 
     context "if bgs service returns first name" do
-      subject { BGSService.parse_veteran_info(@veteran_info)["veteran_first_name"] }
+      subject { bgs_service.parse_veteran_info(@veteran_info)["veteran_first_name"] }
       it { is_expected.to eq("FirstName") }
     end
   end

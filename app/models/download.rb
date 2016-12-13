@@ -159,10 +159,20 @@ class Download < ActiveRecord::Base
   end
 
   class << self
-    attr_writer :bgs_service
+    def bgs_service=(service)
+      if Rails.env.test?
+        @bgs_service = service
+      else
+        Thread.current[:download_bgs_service] = service
+      end
+    end
 
     def bgs_service
-      @bgs_service ||= BGSService
+      if Rails.env.test?
+        @bgs_service
+      else
+        Thread.current[:download_bgs_service]
+      end
     end
   end
 

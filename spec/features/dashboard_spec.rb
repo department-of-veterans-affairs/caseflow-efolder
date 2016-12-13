@@ -91,7 +91,7 @@ RSpec.feature "Stats Dashboard" do
     User.authenticate!
 
     visit "/stats"
-    expect(page).to have_content("Unauthorized")
+    expect(page).to have_content("authorized")
   end
 
   scenario "Switching tab intervals" do
