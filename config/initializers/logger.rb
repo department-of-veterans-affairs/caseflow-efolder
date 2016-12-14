@@ -13,6 +13,11 @@ log_tags << lambda { |req|
 # :nocov:
 config = Rails.application.config
 
+# don't mix worker and RAILS http logs
+if !ENV["IS_WORKER"].blank?
+  log_tags << "jobs-worker"
+end
+
 config.log_tags = log_tags
 
 # log sidekiq to application logger (defaults to stdout)
