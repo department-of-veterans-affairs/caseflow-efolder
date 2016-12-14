@@ -16,7 +16,11 @@ class GetDownloadManifestJob < ActiveJob::Base
     Raven.capture_exception(e)
     download.update_attributes!(status: :vbms_connection_error)
   rescue
-    download.update_attributes!(status: :no_documents)
+    if (download.record_not_found?)
+      download.update_attributes!(status: :download_not_found)
+    else
+      download.update_attributes!(status: :no_documents)
+    end
   end
 
   def max_attempts

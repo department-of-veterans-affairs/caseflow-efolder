@@ -182,22 +182,22 @@ RSpec.feature "Downloads" do
       user_station_id: "222",
       user_id: "123123",
       file_number: "22222",
-      status: :complete_success
+      status: :download_not_found
     )
 
     visit download_path(another_user)
-    expect(page).to have_content("Not Found")
+    expect(page).to have_content(another_user.file_number)
   end
 
   scenario "Attempting to view expired download fails" do
     expired = @user_download.create!(
       file_number: "78901",
       created_at: 77.hours.ago,
-      status: :complete_success
+      status: :download_not_found
     )
 
     visit download_path(expired)
-    expect(page).to have_content("Not Found")
+    expect(page).to have_content(expired.file_number)
   end
 
   scenario "Download with no documents" do
@@ -206,7 +206,7 @@ RSpec.feature "Downloads" do
 
     expect(page).to have_css ".usa-alert-error", text: "Couldn't find documents in eFolder"
 
-    click_on "Try again"
+    click_on "Search again"
     expect(page).to have_current_path(root_path)
   end
 

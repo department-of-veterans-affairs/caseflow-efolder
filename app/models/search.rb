@@ -44,7 +44,7 @@ class Search < ActiveRecord::Base
       file_number: sanitized_file_number,
       user_id: user_id,
       user_station_id: user_station_id
-    ).where.not(status: [1, 7])
+    ).where.not(status: [1, 8])
   end
 
   def match_existing_download

@@ -63,7 +63,7 @@ class DownloadsController < ApplicationController
   end
 
   def record_not_found
-    render "not_found", status: 404
+    render "not_found", layout: "application", status: 404
   end
 
   private
