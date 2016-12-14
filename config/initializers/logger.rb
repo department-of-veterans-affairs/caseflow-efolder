@@ -15,24 +15,10 @@ config = Rails.application.config
 
 # don't mix worker and RAILS http logs
 if !ENV["IS_WORKER"].blank?
-  config.paths["log"] = "log/efolder-express-worker.log"
   log_tags << "jobs-worker"
 end
 
 config.log_tags = log_tags
-
-# roll logger over every 1MB, retain 10
-unless Rails.env.development?
-  logger_path = config.paths["log"].first
-  rollover_logger = Logger.new(logger_path, 10, 1.megabyte)
-  Rails.logger = rollover_logger
-
-  # set the format again in case it was overwritten
-  Rails.logger.formatter = config.log_formatter if config.log_formatter
-
-  # recreate the logger with Tagged support which Rails expects
-  Rails.logger = ActiveSupport::TaggedLogging.new(Rails.logger)
-end
 
 # log sidekiq to application logger (defaults to stdout)
 Sidekiq::Logging.logger = Rails.logger
