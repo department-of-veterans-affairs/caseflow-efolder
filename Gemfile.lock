@@ -248,6 +248,7 @@ GEM
       rails-deprecated_sanitizer (>= 1.0.1)
     rails-html-sanitizer (1.0.3)
       loofah (~> 2.0)
+    rails_stdout_logging (0.0.5)
     railties (4.2.7.1)
       actionpack (= 4.2.7.1)
       activesupport (= 4.2.7.1)
@@ -413,6 +414,7 @@ DEPENDENCIES
   pry
   puma
   rails (= 4.2.7.1)
+  rails_stdout_logging
   rspec
   rspec-rails
   rubocop (~> 0.36.0)
@@ -436,4 +438,4 @@ DEPENDENCIES
   zaru
 
 BUNDLED WITH
-   1.13.4
+   1.13.6
