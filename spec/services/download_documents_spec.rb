@@ -4,8 +4,6 @@ require "rails_helper"
 
 describe DownloadDocuments do
   before do
-    Download.delete_all
-    Document.delete_all
     Download.bgs_service = Fakes::BGSService
 
     Timecop.freeze(Time.utc(2015, 1, 1, 12, 0, 0))

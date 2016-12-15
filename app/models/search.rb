@@ -35,6 +35,7 @@ class Search < ActiveRecord::Base
   def user=(user)
     self.user_id = user.id
     self.user_station_id = user.station_id
+    self.email = user.email
   end
 
   private

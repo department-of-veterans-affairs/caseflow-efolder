@@ -2,8 +2,8 @@ require "rails_helper"
 
 describe Document do
   before do
+    Rails.cache.clear
     Timecop.freeze(Time.utc(2015, 1, 1, 17, 0, 0))
-    reset_application!
   end
 
   context ".new" do
