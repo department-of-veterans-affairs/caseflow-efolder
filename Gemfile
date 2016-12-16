@@ -14,8 +14,6 @@ gem 'activerecord-jdbcpostgresql-adapter', platforms: :jruby
 
 gem 'aws-sdk', '~> 2'
 
-gem 'rails_stdout_logging'
-
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
@@ -68,6 +66,10 @@ gem 'bgs', git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git"
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
+
+group :development, :production, :staging do
+  gem 'rails_stdout_logging'
+end
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
