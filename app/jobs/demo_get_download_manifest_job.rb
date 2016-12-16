@@ -61,17 +61,18 @@ class DemoGetDownloadManifestJob < ActiveJob::Base
     Raven.capture_exception(e)
     download.update_attributes!(status: :vbms_connection_error)
   rescue
-    if (demo[:error_type] == "NOT_FOUND")
+    if demo[:error_type] == "NOT_FOUND"
       download.update_attributes!(status: :download_not_found)
-    elsif (demo[:error_type] == "NO_DOCUMENTS")
+    elsif demo[:error_type] == "NO_DOCUMENTS"
       download.update_attributes!(status: :no_documents)
     end
   end
 
   def check_and_raise_errors(demo)
-    fail VBMS::ClientError if demo[:error] && demo[:error_type] == "VBMS"
-    fail "no documents" if demo[:error] && demo[:error_type] == "NO_DOCUMENTS"
-    fail "not found" if demo[:error] && demo[:error_type] == "NOT_FOUND"
+    return unless demo[:error]
+    fail VBMS::ClientError if demo[:error_type] == "VBMS"
+    fail "no documents" if demo[:error_type] == "NO_DOCUMENTS"
+    fail "not found" if demo[:error_type] == "NOT_FOUND"
   end
 
   def sleep_manifest_load(wait)
