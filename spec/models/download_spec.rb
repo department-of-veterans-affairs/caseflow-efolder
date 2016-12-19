@@ -1,6 +1,7 @@
+require "rails_helper"
+
 describe "Download" do
   before do
-    reset_application!
     Timecop.freeze(Time.utc(2015, 1, 1, 12, 0, 0))
 
     Download.bgs_service = Fakes::BGSService
@@ -189,20 +190,30 @@ describe "Download" do
   end
 
   context ".top_users" do
-    let(:downloads) do
-      (0..1).map { Download.new(user_id: "RADIOHEAD", user_station_id: "203") } +
-        (0..9).map  { Download.new(user_id: "ARCADE_FIRE", user_station_id: "102") } +
-        (0..11).map { Download.new(user_id: "QUEEN", user_station_id: "103") }
+    before do
+      2.times do
+        download = Download.create(user_id: "RADIOHEAD", user_station_id: "203")
+        download.searches.create(email: nil, user_id: download.user_id)
+      end
+      10.times do
+        download = Download.create(user_id: "ARCADE_FIRE", user_station_id: "102")
+        download.searches.create(email: "archade_fire@example.com", user_id: download.user_id)
+      end
+      12.times do
+        download = Download.create(user_id: "QUEEN", user_station_id: "103")
+        download.searches.create(email: nil, user_id: download.user_id)
+      end
+      Search.last.update(email: "queen@example.com")
     end
 
-    subject { Download.top_users(downloads: downloads) }
+    subject { Download.top_users(downloads: Download.all) }
 
     it "finds the top 3 users by number of downloads" do
-      expect(subject[0][:id]).to eq("QUEEN (Station 103)")
+      expect(subject[0][:id]).to eq("queen@example.com (QUEEN - Station 103)")
       expect(subject[0][:count]).to eq(12)
-      expect(subject[1][:id]).to eq("ARCADE_FIRE (Station 102)")
+      expect(subject[1][:id]).to eq("archade_fire@example.com (ARCADE_FIRE - Station 102)")
       expect(subject[1][:count]).to eq(10)
-      expect(subject[2][:id]).to eq("RADIOHEAD (Station 203)")
+      expect(subject[2][:id]).to eq("No Email Recorded (RADIOHEAD - Station 203)")
       expect(subject[2][:count]).to eq(2)
     end
   end
