@@ -6,9 +6,6 @@ RSpec.feature "Downloads" do
       user_station_id: "116",
       user_id: "123123"
     )
-    Download.delete_all
-    Document.delete_all
-    Search.delete_all
     allow(GetDownloadManifestJob).to receive(:perform_later)
     allow(GetDownloadFilesJob).to receive(:perform_later)
 

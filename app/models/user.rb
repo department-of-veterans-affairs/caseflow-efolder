@@ -1,5 +1,8 @@
+# frozen_string_literal: true
 class User
   include ActiveModel::Model
+
+  NO_EMAIL = "No Email Recorded".freeze
 
   attr_accessor :id, :email, :name, :roles, :station_id, :ip_address
 

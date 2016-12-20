@@ -4,9 +4,6 @@ RSpec.feature "Stats Dashboard" do
   before do
     Timecop.freeze(Time.utc(2015, 1, 1, 17, 0, 0))
 
-    Download.delete_all
-    Document.delete_all
-
     @downloads = [
       Download.create(
         user_id: "ROCKY",
@@ -69,6 +66,8 @@ RSpec.feature "Stats Dashboard" do
       )
     ]
 
+    @downloads.last.searches.create(email: "thunderlips@example.com", user_id: "THUNDERLIPS")
+
     @downloads.each do |download|
       download.documents.create(
         download_status: :success,
@@ -111,8 +110,9 @@ RSpec.feature "Stats Dashboard" do
     expect(page).to have_content("Document Errors 6")
     expect(page).to have_content("Time to Manifest (median) 16.37 sec")
     expect(page).to have_content("Time to Files (median) 60.00 min")
-
-    expect(page).to have_content("ROCKY (Station 203) 3 Downloads")
+    expect(page).to have_content("No Email Recorded (ROCKY - Station 203) 3 Downloads")
+    expect(page).to have_content("thunderlips@example.com (THUNDERLIPS - Station 206) 1 Download")
+    expect(page).to have_content("No Email Recorded (DRAGO - Station 205) 1 Download")
   end
 
   scenario "Toggle median to 95th percentile" do

@@ -67,6 +67,10 @@ gem 'bgs', git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git"
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
+group :development, :production, :staging do
+  gem 'rails_stdout_logging'
+end
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   # gem 'byebug'
@@ -88,6 +92,9 @@ group :test do
   gem 'simplecov'
   gem 'capybara', '2.6.2'
   gem 'sniffybara', git: 'https://github.com/department-of-veterans-affairs/sniffybara.git', branch: 'axe'
+  # to save and open specific page in capybara tests
+  gem 'launchy'
+  gem 'database_cleaner'
 end
 
 group :development do
