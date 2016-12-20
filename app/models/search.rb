@@ -34,6 +34,7 @@ class Search < ActiveRecord::Base
 
   def user=(user)
     self.user_id = user.id
+    self.css_id = user.id
     self.user_station_id = user.station_id
     self.email = user.email
   end
@@ -44,6 +45,7 @@ class Search < ActiveRecord::Base
     Download.active.where(
       file_number: sanitized_file_number,
       user_id: user_id,
+      css_id: css_id,
       user_station_id: user_station_id
     ).where.not(status: [1, 7])
   end
