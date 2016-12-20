@@ -63,7 +63,8 @@ describe Search do
         @existing_download = Download.create!(
           user_id: "NICKSABAN",
           user_station_id: "200",
-          file_number: "22223333"
+          file_number: "22223333",
+          css_id: "NICKSABAN"
         )
       end
 

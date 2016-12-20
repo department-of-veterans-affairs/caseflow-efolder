@@ -4,7 +4,8 @@ RSpec.feature "Downloads" do
   before do
     @user_download = Download.where(
       user_station_id: "116",
-      user_id: "123123"
+      user_id: "123123",
+      css_id: "123123"
     )
     allow(GetDownloadManifestJob).to receive(:perform_later)
     allow(GetDownloadFilesJob).to receive(:perform_later)
