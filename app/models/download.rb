@@ -17,6 +17,7 @@ class Download < ActiveRecord::Base
   # sort by receipt date; documents with same date ordered as sent by vbms; see
   # https://github.com/department-of-veterans-affairs/caseflow-efolder/issues/213
   has_many :documents, -> { order(received_at: :desc, id: :asc) }
+  has_many :searches
 
   before_create do |download|
     # This fake is used in the test suite, but let's
@@ -131,7 +132,13 @@ class Download < ActiveRecord::Base
   end
 
   def user_id_string
-    "#{user_id} (Station #{user_station_id})"
+    "(#{user_id} - Station #{user_station_id})"
+  end
+
+  def email
+    Search.where.not(email: nil)
+          .find_by(user_id: user_id)
+          .try(:email)
   end
 
   def expiration_day
@@ -148,15 +155,17 @@ class Download < ActiveRecord::Base
 
   def self.downloads_by_user(downloads:)
     downloads.each_with_object({}) do |download, result|
-      result[download.user_id_string] ||= 0
-      result[download.user_id_string] += 1
+      result[download.user_id_string] ||= {}
+      result[download.user_id_string][:email] ||= download.email || User::NO_EMAIL
+      result[download.user_id_string][:count] ||= 0
+      result[download.user_id_string][:count] += 1
     end
   end
 
   def self.top_users(downloads:)
     users = downloads_by_user(downloads: downloads)
-    sorted = users.sort_by { |_k, v| -v }
-    sorted.map { |values| { id: values[0], count: values[1] } }.first(3)
+    sorted = users.sort_by { |_k, v| -v[:count] }
+    sorted.map { |values| { id: values[1][:email] + " " + values[0], count: values[1][:count] } }.first(3)
   end
 
   class << self
