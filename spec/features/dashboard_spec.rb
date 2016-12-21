@@ -6,7 +6,7 @@ RSpec.feature "Stats Dashboard" do
 
     @downloads = [
       Download.create(
-        user_id: "ROCKY",
+        css_id: "ROCKY",
         user_station_id: "203",
         status: :complete_with_errors,
         created_at: 6.hours.ago - 10.37,
@@ -16,7 +16,7 @@ RSpec.feature "Stats Dashboard" do
       ),
 
       Download.create(
-        user_id: "ROCKY",
+        css_id: "ROCKY",
         user_station_id: "203",
         status: :complete_success,
         created_at: 5.hours.ago - 12.37,
@@ -26,7 +26,7 @@ RSpec.feature "Stats Dashboard" do
       ),
 
       Download.create(
-        user_id: "ROCKY",
+        css_id: "ROCKY",
         user_station_id: "203",
         status: :complete_success,
         created_at: 4.hours.ago - 14.37,
@@ -36,7 +36,7 @@ RSpec.feature "Stats Dashboard" do
       ),
 
       Download.create(
-        user_id: "CREED",
+        css_id: "CREED",
         user_station_id: "204",
         status: :complete_success,
         created_at: 4.hours.ago - 16.37,
@@ -46,7 +46,7 @@ RSpec.feature "Stats Dashboard" do
       ),
 
       Download.create(
-        user_id: "DRAGO",
+        css_id: "DRAGO",
         user_station_id: "205",
         status: :complete_success,
         created_at: 4.hours.ago - 20.37,
@@ -56,7 +56,7 @@ RSpec.feature "Stats Dashboard" do
       ),
 
       Download.create(
-        user_id: "THUNDERLIPS",
+        css_id: "THUNDERLIPS",
         user_station_id: "206",
         status: :complete_success,
         created_at: 4.hours.ago - 30.37,
@@ -66,7 +66,7 @@ RSpec.feature "Stats Dashboard" do
       )
     ]
 
-    @downloads.last.searches.create(email: "thunderlips@example.com", user_id: "THUNDERLIPS")
+    @downloads.last.searches.create(email: "thunderlips@example.com", css_id: "THUNDERLIPS")
 
     @downloads.each do |download|
       download.documents.create(

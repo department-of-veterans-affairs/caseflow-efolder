@@ -4,7 +4,7 @@ class User
 
   NO_EMAIL = "No Email Recorded".freeze
 
-  attr_accessor :id, :email, :name, :roles, :station_id, :ip_address
+  attr_accessor :css_id, :email, :name, :roles, :station_id, :ip_address
 
   def display_name
     return "Unknown" if name.nil?
@@ -29,7 +29,7 @@ class User
       last_name = raw_css_response["http://vba.va.gov/css/common/lName"]
 
       User.new(
-        id: auth_hash.uid,
+        css_id: auth_hash.uid,
         email: raw_css_response["http://vba.va.gov/css/common/emailAddress"],
         name: "#{first_name} #{last_name}",
         roles: raw_css_response.attributes["http://vba.va.gov/css/caseflow/role"],

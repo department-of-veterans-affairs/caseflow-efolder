@@ -130,13 +130,13 @@ class Download < ActiveRecord::Base
     )
   end
 
-  def user_id_string
-    "(#{user_id} - Station #{user_station_id})"
+  def css_id_string
+    "(#{css_id} - Station #{user_station_id})"
   end
 
   def email
     Search.where.not(email: nil)
-          .find_by(user_id: user_id)
+          .find_by(css_id: css_id)
           .try(:email)
   end
 
@@ -154,10 +154,10 @@ class Download < ActiveRecord::Base
 
   def self.downloads_by_user(downloads:)
     downloads.each_with_object({}) do |download, result|
-      result[download.user_id_string] ||= {}
-      result[download.user_id_string][:email] ||= download.email || User::NO_EMAIL
-      result[download.user_id_string][:count] ||= 0
-      result[download.user_id_string][:count] += 1
+      result[download.css_id_string] ||= {}
+      result[download.css_id_string][:email] ||= download.email || User::NO_EMAIL
+      result[download.css_id_string][:count] ||= 0
+      result[download.css_id_string][:count] += 1
     end
   end
 
