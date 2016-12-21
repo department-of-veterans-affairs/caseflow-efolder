@@ -184,7 +184,7 @@ RSpec.feature "Downloads" do
     )
 
     visit download_path(another_user)
-    expect(page).to have_content(another_user.id)
+    expect(page).to have_content("search again")
   end
 
   scenario "Attempting to view expired download fails" do
@@ -195,7 +195,7 @@ RSpec.feature "Downloads" do
     )
 
     visit download_path(expired)
-    expect(page).to have_content(expired.id)
+    expect(page).to have_content("search again")
   end
 
   scenario "Download with no documents" do
