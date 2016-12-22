@@ -1,5 +1,5 @@
 describe Search do
-  let(:user) { User.new(id: "NICKSABAN", station_id: "200") }
+  let(:user) { User.new(css_id: "NICKSABAN", station_id: "200") }
   let(:file_number) { "12341234" }
   let(:status) { nil }
   let(:search) do
@@ -42,7 +42,7 @@ describe Search do
     it "creates a download" do
       expect(subject).to be_truthy
       expect(search.download.file_number).to eq("22223333")
-      expect(search.download.user_id).to eq("NICKSABAN")
+      expect(search.download.css_id).to eq("NICKSABAN")
       expect(search.download.user_station_id).to eq("200")
     end
 
@@ -54,14 +54,13 @@ describe Search do
     it "saves its status as download_created" do
       expect(subject).to be_truthy
       expect(search.reload).to be_download_created
-      expect(search.user_id).to eq("NICKSABAN")
+      expect(search.css_id).to eq("NICKSABAN")
       expect(search.user_station_id).to eq("200")
     end
 
     context "a download already exists for that user and file_number" do
       before do
         @existing_download = Download.create!(
-          user_id: "NICKSABAN",
           user_station_id: "200",
           file_number: "22223333",
           css_id: "NICKSABAN"
@@ -99,7 +98,7 @@ describe Search do
     context "when the download has vbms connection error" do
       before do
         @existing_download = Download.create!(
-          user_id: "NICKSABAN",
+          css_id: "NICKSABAN",
           user_station_id: "200",
           file_number: "22223333",
           status: :vbms_connection_error

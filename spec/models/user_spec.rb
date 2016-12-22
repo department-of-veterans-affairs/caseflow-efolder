@@ -2,7 +2,7 @@ describe User do
   let(:name) { "Billy Bob Thorton" }
   let(:roles) { ["Download eFolder"] }
   let(:user) do
-    User.new(id: "123", email: "email@va.gov", name: name,
+    User.new(css_id: "123", email: "email@va.gov", name: name,
              roles: roles, station_id: "213", ip_address: "12.12.12.12")
   end
 
@@ -82,7 +82,7 @@ describe User do
     subject { User.from_css_auth_hash(auth_hash) }
 
     it "returns a user with the correct attributes" do
-      expect(subject.id).to eq("UID")
+      expect(subject.css_id).to eq("UID")
       expect(subject.name).to eq("Kanye West")
       expect(subject.email).to eq("kanye@va.gov")
       expect(subject.roles).to eq(["Download eFolder"])

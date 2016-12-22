@@ -17,8 +17,6 @@ class Search < ActiveRecord::Base
     return true if match_existing_download
 
     self.download = download_scope.new
-    # set css_id if it is a new download
-    download.css_id = css_id
 
     return false unless validate!
 
@@ -35,8 +33,7 @@ class Search < ActiveRecord::Base
   end
 
   def user=(user)
-    self.user_id = user.id
-    self.css_id = user.id
+    self.css_id = user.css_id
     self.user_station_id = user.station_id
     self.email = user.email
   end
@@ -46,7 +43,7 @@ class Search < ActiveRecord::Base
   def download_scope
     Download.active.where(
       file_number: sanitized_file_number,
-      user_id: user_id,
+      css_id: css_id,
       user_station_id: user_station_id
     ).where.not(status: [1, 7])
   end

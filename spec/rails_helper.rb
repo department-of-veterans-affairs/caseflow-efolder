@@ -40,7 +40,7 @@ module StubbableUser
 
     def authenticate!(options = {})
       self.stub = User.new(
-        id: "123123",
+        css_id: "123123",
         name: "first last",
         email: "test@gmail.com",
         roles: options[:roles] || ["Download eFolder"],
