@@ -36,6 +36,7 @@ class User < ActiveRecord::Base
       last_name = raw_css_response["http://vba.va.gov/css/common/lName"]
 
       {
+        id: auth_hash.uid,
         css_id: auth_hash.uid,
         email: raw_css_response["http://vba.va.gov/css/common/emailAddress"],
         name: "#{first_name} #{last_name}",
