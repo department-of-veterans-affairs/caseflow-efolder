@@ -17,6 +17,7 @@ class Download < ActiveRecord::Base
   # https://github.com/department-of-veterans-affairs/caseflow-efolder/issues/213
   has_many :documents, -> { order(received_at: :desc, id: :asc) }
   has_many :searches
+  belongs_to :user
 
   before_create do |download|
     # This fake is used in the test suite, but let's
