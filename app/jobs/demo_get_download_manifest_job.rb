@@ -61,8 +61,8 @@ class DemoGetDownloadManifestJob < ActiveJob::Base
     Raven.capture_exception(e)
     download.update_attributes!(status: :vbms_connection_error)
   rescue
-    if demo[:error_type] == "NOT_FOUND"
-      download.update_attributes!(status: :download_not_found)
+    if demo[:error_type] == "ID_NOT_FOUND"
+      download.update_attributes!(status: :veteran_id_not_found)
     elsif demo[:error_type] == "NO_DOCUMENTS"
       download.update_attributes!(status: :no_documents)
     end

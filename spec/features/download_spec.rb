@@ -196,6 +196,13 @@ RSpec.feature "Downloads" do
     expect(page).to have_content("search again")
   end
 
+  scenario "Download with veteran ID not found" do
+    @download = @user_download.create(status: :veteran_id_not_found)
+    visit download_path(@download)
+
+    expect(page).to have_content(@download.file_number)
+  end
+
   scenario "Download with no documents" do
     @download = @user_download.create(status: :no_documents)
     visit download_path(@download)
