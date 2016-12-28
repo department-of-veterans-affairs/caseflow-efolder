@@ -16,10 +16,10 @@ describe "Download" do
   after { Timecop.return }
 
   let(:file_number) { "1234" }
-  let(:download) { Download.create(file_number: file_number) }
+  let(:download) { create(:download, file_number: file_number) }
 
   context ".new" do
-    subject { Download.new(file_number: file_number) }
+    subject { build(:download, file_number: file_number) }
 
     context "when file number is set" do
       before do
@@ -62,11 +62,11 @@ describe "Download" do
 
   context "#time_to_fetch_manifest" do
     let(:download) do
-      Download.create(
-        file_number: file_number,
-        created_at: 4.hours.ago,
-        manifest_fetched_at: 1.hour.ago
-      )
+      create(:download,
+             file_number: file_number,
+             created_at: 4.hours.ago,
+             manifest_fetched_at: 1.hour.ago
+            )
     end
 
     subject { download.time_to_fetch_manifest }
@@ -76,11 +76,11 @@ describe "Download" do
 
   context "#time_to_fetch_files" do
     let(:download) do
-      Download.create(
-        file_number: file_number,
-        started_at: 10.hours.ago,
-        completed_at: 3.hours.ago
-      )
+      create(:download,
+             file_number: file_number,
+             started_at: 10.hours.ago,
+             completed_at: 3.hours.ago
+            )
     end
 
     subject { download.time_to_fetch_files }
@@ -191,19 +191,12 @@ describe "Download" do
 
   context ".top_users" do
     before do
-      2.times do
-        download = Download.create(css_id: "RADIOHEAD", user_station_id: "203")
-        download.searches.create(email: nil, css_id: download.css_id)
-      end
-      10.times do
-        download = Download.create(css_id: "ARCADE_FIRE", user_station_id: "102")
-        download.searches.create(email: "archade_fire@example.com", css_id: download.css_id)
-      end
-      12.times do
-        download = Download.create(css_id: "QUEEN", user_station_id: "103")
-        download.searches.create(email: nil, css_id: download.css_id)
-      end
-      Search.last.update(email: "queen@example.com")
+      user1 = create(:user, css_id: "RADIOHEAD", station_id: "203")
+      user2 = create(:user, css_id: "ARCADE_FIRE", station_id: "102", email: "archade_fire@example.com")
+      user3 = create(:user, css_id: "QUEEN", station_id: "103", email: "queen@example.com")
+      2.times { create(:download, user: user1) }
+      10.times { create(:download, user: user2) }
+      12.times { create(:download, user: user3) }
     end
 
     subject { Download.top_users(downloads: Download.all) }

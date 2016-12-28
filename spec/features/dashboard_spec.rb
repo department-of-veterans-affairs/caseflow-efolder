@@ -4,10 +4,14 @@ RSpec.feature "Stats Dashboard" do
   before do
     Timecop.freeze(Time.utc(2015, 1, 1, 17, 0, 0))
 
+    user1 = create(:user, css_id: "ROCKY", station_id: "203")
+    user2 = create(:user, css_id: "CREED", station_id: "204")
+    user3 = create(:user, css_id: "DRAGO", station_id: "205")
+    user4 = create(:user, css_id: "THUNDERLIPS", station_id: "206", email: "thunderlips@example.com")
+
     @downloads = [
       Download.create(
-        css_id: "ROCKY",
-        user_station_id: "203",
+        user: user1,
         status: :complete_with_errors,
         created_at: 6.hours.ago - 10.37,
         manifest_fetched_at: 6.hours.ago,
@@ -16,8 +20,7 @@ RSpec.feature "Stats Dashboard" do
       ),
 
       Download.create(
-        css_id: "ROCKY",
-        user_station_id: "203",
+        user: user1,
         status: :complete_success,
         created_at: 5.hours.ago - 12.37,
         manifest_fetched_at: 5.hours.ago,
@@ -26,8 +29,7 @@ RSpec.feature "Stats Dashboard" do
       ),
 
       Download.create(
-        css_id: "ROCKY",
-        user_station_id: "203",
+        user: user1,
         status: :complete_success,
         created_at: 4.hours.ago - 14.37,
         manifest_fetched_at: 4.hours.ago,
@@ -36,8 +38,7 @@ RSpec.feature "Stats Dashboard" do
       ),
 
       Download.create(
-        css_id: "CREED",
-        user_station_id: "204",
+        user: user2,
         status: :complete_success,
         created_at: 4.hours.ago - 16.37,
         manifest_fetched_at: 4.hours.ago,
@@ -46,8 +47,7 @@ RSpec.feature "Stats Dashboard" do
       ),
 
       Download.create(
-        css_id: "DRAGO",
-        user_station_id: "205",
+        user: user3,
         status: :complete_success,
         created_at: 4.hours.ago - 20.37,
         manifest_fetched_at: 4.hours.ago,
@@ -56,8 +56,7 @@ RSpec.feature "Stats Dashboard" do
       ),
 
       Download.create(
-        css_id: "THUNDERLIPS",
-        user_station_id: "206",
+        user: user4,
         status: :complete_success,
         created_at: 4.hours.ago - 30.37,
         manifest_fetched_at: 4.hours.ago,
@@ -65,8 +64,6 @@ RSpec.feature "Stats Dashboard" do
         completed_at: 3.hours.ago
       )
     ]
-
-    @downloads.last.searches.create(email: "thunderlips@example.com", css_id: "THUNDERLIPS")
 
     @downloads.each do |download|
       download.documents.create(

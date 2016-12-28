@@ -1,5 +1,7 @@
+require "rails_helper"
+
 describe Search do
-  let(:user) { User.new(css_id: "NICKSABAN", station_id: "200") }
+  let(:user) { create(:user, css_id: "NICKSABAN", station_id: "200") }
   let(:file_number) { "12341234" }
   let(:status) { nil }
   let(:search) do
@@ -42,8 +44,8 @@ describe Search do
     it "creates a download" do
       expect(subject).to be_truthy
       expect(search.download.file_number).to eq("22223333")
-      expect(search.download.css_id).to eq("NICKSABAN")
-      expect(search.download.user_station_id).to eq("200")
+      expect(search.download.user.css_id).to eq("NICKSABAN")
+      expect(search.download.user.station_id).to eq("200")
     end
 
     it "creates a job to fetch the download manifest" do
@@ -54,17 +56,13 @@ describe Search do
     it "saves its status as download_created" do
       expect(subject).to be_truthy
       expect(search.reload).to be_download_created
-      expect(search.css_id).to eq("NICKSABAN")
-      expect(search.user_station_id).to eq("200")
+      expect(search.user.css_id).to eq("NICKSABAN")
+      expect(search.user.station_id).to eq("200")
     end
 
     context "a download already exists for that user and file_number" do
       before do
-        @existing_download = Download.create!(
-          user_station_id: "200",
-          file_number: "22223333",
-          css_id: "NICKSABAN"
-        )
+        @existing_download = create(:download, file_number: "22223333", user: user)
       end
 
       it "uses that download" do
@@ -97,12 +95,10 @@ describe Search do
 
     context "when the download has vbms connection error" do
       before do
-        @existing_download = Download.create!(
-          css_id: "NICKSABAN",
-          user_station_id: "200",
-          file_number: "22223333",
-          status: :vbms_connection_error
-        )
+        @existing_download = create(:download,
+                                    file_number: "22223333",
+                                    status: :vbms_connection_error
+                                   )
       end
 
       it "creates a new download" do

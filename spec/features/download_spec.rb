@@ -2,10 +2,8 @@ require "rails_helper"
 
 RSpec.feature "Downloads" do
   before do
-    @user_download = Download.where(
-      user_station_id: "116",
-      css_id: "123123"
-    )
+    @user = create(:user, css_id: "123123", station_id: "116")
+    @user_download = Download.where(user: @user)
     allow(GetDownloadManifestJob).to receive(:perform_later)
     allow(GetDownloadFilesJob).to receive(:perform_later)
     User.authenticate!
@@ -67,7 +65,7 @@ RSpec.feature "Downloads" do
     expect(page.evaluate_script("window.DownloadStatus.intervalID")).to be_truthy
     expect(GetDownloadManifestJob).to have_received(:perform_later)
 
-    @search = Search.where(css_id: "123123", file_number: "1234").first
+    @search = Search.where(user: @user).first
     expect(@search).to be_download_created
   end
 
@@ -104,7 +102,7 @@ RSpec.feature "Downloads" do
 
     expect(page).to have_content("Success")
 
-    @search = Search.where(css_id: "123123", file_number: "5555").first
+    @search = Search.where(user: @user).first
     expect(@search).to be_download_found
   end
 
@@ -137,7 +135,7 @@ RSpec.feature "Downloads" do
 
     expect(page).to have_content "Couldn't find an eFolder with that ID"
 
-    @search = Search.where(css_id: "123123", file_number: "abcd").first
+    @search = Search.where(user: @user).first
     expect(@search).to be_veteran_not_found
   end
 
@@ -169,14 +167,14 @@ RSpec.feature "Downloads" do
     expect(page).to have_current_path("/downloads")
     expect(page).to have_content("contains sensitive information")
 
-    @search = Search.where(css_id: "123123", file_number: "8888").first
+    @search = Search.where(user: @user).first
     expect(@search).to be_access_denied
   end
 
   scenario "Attempting to view download created by another user" do
+    user = create(:user, css_id: "123123", station_id: "222")
     another_user = Download.create!(
-      user_station_id: "222",
-      css_id: "123123",
+      user: user,
       file_number: "22222",
       status: :complete_success
     )
@@ -403,8 +401,7 @@ RSpec.feature "Downloads" do
       status: :complete_with_errors
     )
     another_user = Download.create!(
-      user_station_id: "222",
-      css_id: "123123",
+      user: create(:user, css_id: "456", station_id: "45673"),
       file_number: "22222",
       status: :complete_success
     )

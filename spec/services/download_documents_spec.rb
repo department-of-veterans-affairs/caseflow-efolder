@@ -10,11 +10,11 @@ describe DownloadDocuments do
   end
 
   let(:download) do
-    Download.create!(
-      file_number: "21012",
-      veteran_first_name: "George",
-      veteran_last_name: "Washington"
-    )
+    create(:download,
+           file_number: "21012",
+           veteran_first_name: "George",
+           veteran_last_name: "Washington"
+          )
   end
 
   let(:vbms_documents) do

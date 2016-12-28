@@ -79,10 +79,7 @@ class DownloadsController < ApplicationController
   end
 
   def downloads
-    Download.active.where(
-      css_id: current_user.css_id,
-      user_station_id: current_user.station_id
-    )
+    Download.active.where(user: current_user)
   end
 
   def recent_downloads
