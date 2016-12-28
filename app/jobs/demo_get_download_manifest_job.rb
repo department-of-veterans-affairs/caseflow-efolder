@@ -39,7 +39,7 @@ class DemoGetDownloadManifestJob < ActiveJob::Base
       manifest_load: 1,
       num_docs: 6,
       error: true,
-      error_type: "NOT_FOUND"
+      error_type: "ID_NOT_FOUND"
     },
     "DEMODEFAULT" => {
       manifest_load: 4,
@@ -72,7 +72,7 @@ class DemoGetDownloadManifestJob < ActiveJob::Base
     return unless demo[:error]
     fail VBMS::ClientError if demo[:error_type] == "VBMS"
     fail "no documents" if demo[:error_type] == "NO_DOCUMENTS"
-    fail "not found" if demo[:error_type] == "NOT_FOUND"
+    fail "not found" if demo[:error_type] == "ID_NOT_FOUND"
   end
 
   def sleep_manifest_load(wait)

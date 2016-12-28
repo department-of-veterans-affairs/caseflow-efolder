@@ -179,7 +179,7 @@ RSpec.feature "Downloads" do
       user_station_id: "222",
       css_id: "123123",
       file_number: "22222",
-      status: :download_not_found
+      status: :veteran_id_not_found
     )
 
     visit download_path(another_user)
@@ -190,7 +190,7 @@ RSpec.feature "Downloads" do
     expired = @user_download.create!(
       file_number: "78901",
       created_at: 77.hours.ago,
-      status: :download_not_found
+      status: :veteran_id_not_found
     )
 
     visit download_path(expired)

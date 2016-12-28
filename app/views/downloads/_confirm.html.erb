@@ -25,7 +25,7 @@
       </div>
     </div>
 
-  <% elsif @download.download_not_found? %>
+  <% elsif @download.veteran_id_not_found? %>
   <div class="cf-app-msg-screen">
     <h1 class="cf-msg-screen-heading">Veteran ID Not Found</h1>
     <h2 class="cf-msg-screen-deck">We weren't able to locate Veteran ID <%= @download.file_number %></h2>
