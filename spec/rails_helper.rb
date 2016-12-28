@@ -39,13 +39,12 @@ module StubbableUser
     end
 
     def authenticate!(options = {})
-      self.stub = User.new(
-        css_id: "123123",
-        name: "first last",
-        email: "test@gmail.com",
-        roles: options[:roles] || ["Download eFolder"],
-        station_id: "116"
-      )
+      self.stub = find_or_create_by(css_id: "123123", station_id: "116").tap do |u|
+        u.name = "first last"
+        u.email = "test@gmail.com"
+        u.roles = options[:roles] || ["Download eFolder"]
+        u.save
+      end
     end
 
     def unauthenticate!

@@ -5,6 +5,7 @@
 #
 class Search < ActiveRecord::Base
   belongs_to :download
+  belongs_to :user
 
   enum status: {
     download_created: 0,
@@ -17,6 +18,7 @@ class Search < ActiveRecord::Base
     return true if match_existing_download
 
     self.download = download_scope.new
+    download.user = user
 
     return false unless validate!
 
@@ -36,6 +38,7 @@ class Search < ActiveRecord::Base
     self.css_id = user.css_id
     self.user_station_id = user.station_id
     self.email = user.email
+    self.user_id = user.id
   end
 
   private

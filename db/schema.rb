@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161221143629) do
+ActiveRecord::Schema.define(version: 20161222194523) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -67,9 +67,11 @@ ActiveRecord::Schema.define(version: 20161221143629) do
     t.string   "veteran_first_name"
     t.string   "veteran_last_four_ssn"
     t.string   "css_id"
+    t.integer  "user_id"
   end
 
   add_index "downloads", ["completed_at"], name: "downloads_completed_at", using: :btree
+  add_index "downloads", ["user_id"], name: "index_downloads_on_user_id", using: :btree
 
   create_table "searches", force: :cascade do |t|
     t.integer  "download_id"
@@ -79,10 +81,24 @@ ActiveRecord::Schema.define(version: 20161221143629) do
     t.datetime "created_at"
     t.string   "email",           limit: 191
     t.string   "css_id"
+    t.integer  "user_id"
   end
 
   add_index "searches", ["created_at"], name: "searches_created_at", using: :btree
   add_index "searches", ["download_id"], name: "index_searches_on_download_id", using: :btree
   add_index "searches", ["status", "created_at"], name: "searches_status_created_at", using: :btree
+  add_index "searches", ["user_id"], name: "index_searches_on_user_id", using: :btree
 
+  create_table "users", force: :cascade do |t|
+    t.string   "css_id",     null: false
+    t.string   "station_id", null: false
+    t.string   "email"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "users", ["css_id", "station_id"], name: "index_users_on_css_id_and_station_id", using: :btree
+
+  add_foreign_key "downloads", "users"
+  add_foreign_key "searches", "users"
 end
