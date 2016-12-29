@@ -178,7 +178,7 @@ RSpec.feature "Downloads" do
       user_station_id: "222",
       css_id: "123123",
       file_number: "22222",
-      status: :veteran_id_not_found
+      status: :complete_success
     )
 
     visit download_path(another_user)
@@ -189,18 +189,11 @@ RSpec.feature "Downloads" do
     expired = @user_download.create!(
       file_number: "78901",
       created_at: 77.hours.ago,
-      status: :veteran_id_not_found
+      status: :complete_success
     )
 
     visit download_path(expired)
     expect(page).to have_content("search again")
-  end
-
-  scenario "Download with veteran ID not found" do
-    @download = @user_download.create(status: :veteran_id_not_found)
-    visit download_path(@download)
-
-    expect(page).to have_content(@download.file_number)
   end
 
   scenario "Download with no documents" do

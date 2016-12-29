@@ -7,8 +7,7 @@ class Download < ActiveRecord::Base
     packaging_contents: 4,
     complete_success: 5,
     complete_with_errors: 6,
-    vbms_connection_error: 7,
-    veteran_id_not_found: 8
+    vbms_connection_error: 7
   }
 
   TIMEOUT = 10.minutes
