@@ -8,23 +8,25 @@
 <% fetch_button_text = "Start retrieving eFolder" %>
 
 <div class="cf-app-segment cf-app-segment--alt">
-  <h1><%= @download.veteran_name %> <span class="ee-subheading">(<%=h @download.file_number %>)</span></h1>
 
   <% if @download.fetching_manifest? %>
+    <%= render "user_header" %>
     <%= page_loading_indicator "We are gathering the list of files in the eFolder now..." %>
 
   <% elsif @download.no_documents? %>
+    <%= render "user_header" %>
     <div class="usa-alert usa-alert-error" role="alert">
       <div class="usa-alert-body">
         <h3 class="usa-alert-heading">Couldn't find documents in eFolder</h3>
         <p class="usa-alert-text">
           eFolder Express could not find any documents in the eFolder with ID <%= @download.file_number %>. It's possible this eFolder does not exist.
         </p>
-        <p class="usa-alert-text"><%= link_to "Try again", root_path %></p>
+        <p class="usa-alert-text"><%= link_to "Search again", root_path %>.</p>
       </div>
     </div>
 
   <% elsif @download.vbms_connection_error? %>
+    <%= render "user_header" %>
     <div class="usa-alert usa-alert-error" role="alert">
       <div class="usa-alert-body">
         <h3 class="usa-alert-heading">Can't connect to VBMS</h3>
@@ -36,6 +38,7 @@
     </div>
 
   <% elsif @download.pending_confirmation? %>
+    <%= render "user_header" %>
     <p>
       eFolder Express found <%= @download.documents.count %> files in eFolder #<%= @download.file_number %>
       (<%= @download.veteran_name %>).
@@ -74,4 +77,3 @@
 
   <%= link_to "Start over", root_path %>
 </div>
-

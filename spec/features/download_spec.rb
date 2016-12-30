@@ -182,7 +182,7 @@ RSpec.feature "Downloads" do
     )
 
     visit download_path(another_user)
-    expect(page).to have_content("not found")
+    expect(page).to have_content("search again")
   end
 
   scenario "Attempting to view expired download fails" do
@@ -193,7 +193,7 @@ RSpec.feature "Downloads" do
     )
 
     visit download_path(expired)
-    expect(page).to have_content("not found")
+    expect(page).to have_content("search again")
   end
 
   scenario "Download with no documents" do
@@ -202,7 +202,7 @@ RSpec.feature "Downloads" do
 
     expect(page).to have_css ".usa-alert-error", text: "Couldn't find documents in eFolder"
 
-    click_on "Try again"
+    click_on "Search again"
     expect(page).to have_current_path(root_path)
   end
 
