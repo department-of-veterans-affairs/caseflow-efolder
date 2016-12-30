@@ -65,8 +65,8 @@ RSpec.feature "Downloads" do
     expect(page.evaluate_script("window.DownloadStatus.intervalID")).to be_truthy
     expect(GetDownloadManifestJob).to have_received(:perform_later)
 
-    @search = Search.where(user: @user).first
-    expect(@search).to be_download_created
+    search = Search.where(user: @user).first
+    expect(search).to be_download_created
   end
 
   scenario "Searching for an errored download tries again" do
@@ -102,8 +102,8 @@ RSpec.feature "Downloads" do
 
     expect(page).to have_content("Success")
 
-    @search = Search.where(user: @user).first
-    expect(@search).to be_download_found
+    search = Search.where(user: @user).first
+    expect(search).to be_download_found
   end
 
   scenario "Extraneous spaces in search input" do
@@ -121,8 +121,8 @@ RSpec.feature "Downloads" do
     fill_in "Search for a Veteran ID number below to get started.", with: " 1234 "
     click_button "Search"
 
-    @download = @user_download.last
-    expect(@download).to_not be_nil
+    download = @user_download.last
+    expect(download).to_not be_nil
 
     expect(page).to have_content "Stan Lee (1234)"
   end
@@ -135,8 +135,8 @@ RSpec.feature "Downloads" do
 
     expect(page).to have_content "Couldn't find an eFolder with that ID"
 
-    @search = Search.where(user: @user).first
-    expect(@search).to be_veteran_not_found
+    search = Search.where(user: @user).first
+    expect(search).to be_veteran_not_found
   end
 
   scenario "Using demo mode" do
@@ -147,12 +147,12 @@ RSpec.feature "Downloads" do
     fill_in "Search for a Veteran ID number below to get started.", with: "DEMO123"
     click_button "Search"
 
-    @download = @user_download.last
-    expect(@download).to_not be_nil
-    expect(@download.veteran_name).to eq("Test User")
-    expect(@download.veteran_first_name).to eq("Test")
-    expect(@download.veteran_last_name).to eq("User")
-    expect(@download.veteran_last_four_ssn).to eq("1224")
+    download = @user_download.last
+    expect(download).to_not be_nil
+    expect(download.veteran_name).to eq("Test User")
+    expect(download.veteran_first_name).to eq("Test")
+    expect(download.veteran_last_name).to eq("User")
+    expect(download.veteran_last_four_ssn).to eq("1224")
 
     expect(page).to have_content "Test User (DEMO123)"
   end
@@ -167,8 +167,8 @@ RSpec.feature "Downloads" do
     expect(page).to have_current_path("/downloads")
     expect(page).to have_content("contains sensitive information")
 
-    @search = Search.where(user: @user).first
-    expect(@search).to be_access_denied
+    search = Search.where(user: @user).first
+    expect(search).to be_access_denied
   end
 
   scenario "Attempting to view download created by another user" do
@@ -195,8 +195,8 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Download with no documents" do
-    @download = @user_download.create(status: :no_documents)
-    visit download_path(@download)
+    download = @user_download.create(status: :no_documents)
+    visit download_path(download)
 
     expect(page).to have_css ".usa-alert-error", text: "Couldn't find documents in eFolder"
 
@@ -205,8 +205,8 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Download with VBMS connection error" do
-    @download = @user_download.create(status: :vbms_connection_error)
-    visit download_path(@download)
+    download = @user_download.create(status: :vbms_connection_error)
+    visit download_path(download)
 
     expect(page).to have_css ".usa-alert-heading", text: "Can't connect to VBMS"
     click_on "Try again"
@@ -221,16 +221,16 @@ RSpec.feature "Downloads" do
         "veteran_last_four_ssn" => "2345"
       }
     }
-    @download = @user_download.create(file_number: "3456", status: :fetching_manifest)
+    download = @user_download.create(file_number: "3456", status: :fetching_manifest)
 
-    visit download_path(@download)
+    visit download_path(download)
     expect(page).to have_content "We are gathering the list of files in the eFolder now..."
 
-    @download.update_attributes!(status: :pending_confirmation)
-    @download.documents.create(vbms_filename: "yawn.pdf", mime_type: "application/pdf",
-                               received_at: Time.zone.local(2015, 9, 6), download_status: :pending)
-    @download.documents.create(vbms_filename: "smiley.pdf", mime_type: "application/pdf",
-                               received_at: Time.zone.local(2015, 1, 19), download_status: :pending)
+    download.update_attributes!(status: :pending_confirmation)
+    download.documents.create(vbms_filename: "yawn.pdf", mime_type: "application/pdf",
+                              received_at: Time.zone.local(2015, 9, 6), download_status: :pending)
+    download.documents.create(vbms_filename: "smiley.pdf", mime_type: "application/pdf",
+                              received_at: Time.zone.local(2015, 1, 19), download_status: :pending)
     page.execute_script("window.DownloadStatus.recheck();")
 
     expect(page).to have_content "eFolder Express found 2 files in eFolder #3456"
@@ -240,24 +240,24 @@ RSpec.feature "Downloads" do
     expect(page.evaluate_script("window.DownloadStatus.intervalID")).to be_falsey
     first(:button, "Start retrieving eFolder").click
 
-    expect(@download.reload).to be_pending_documents
+    expect(download.reload).to be_pending_documents
     expect(GetDownloadFilesJob).to have_received(:perform_later)
 
     expect(page).to have_content("Retrieving Files ...")
   end
 
   scenario "Download progress shows documents in tabs based on their status" do
-    @download = @user_download.create(status: :pending_documents)
-    @download.documents.create(vbms_filename: "yawn.pdf", mime_type: "application/pdf", download_status: :pending)
-    @download.documents.create(vbms_filename: "smiley.pdf", mime_type: "application/pdf", download_status: :success)
-    @download.documents.create(
+    download = @user_download.create(status: :pending_documents)
+    download.documents.create(vbms_filename: "yawn.pdf", mime_type: "application/pdf", download_status: :pending)
+    download.documents.create(vbms_filename: "smiley.pdf", mime_type: "application/pdf", download_status: :success)
+    download.documents.create(
       doc_type: "129",
       document_id: "{1234-1234-1234-5555}",
       mime_type: "application/pdf",
       download_status: :failed
     )
 
-    visit download_path(@download)
+    visit download_path(download)
     expect(page).to have_css ".cf-tab.cf-active", text: "Progress (1)"
     expect(page).to have_css ".document-pending", text: "yawn.pdf"
     expect(page).to_not have_css ".document-success", text: "smiley.pdf"
@@ -277,14 +277,14 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Completed with at least one failed document download" do
-    @download = @user_download.create(file_number: "12", status: :pending_documents)
-    @download.documents.create(vbms_filename: "roll.pdf", mime_type: "application/pdf", download_status: :failed)
-    @download.documents.create(vbms_filename: "tide.pdf", mime_type: "application/pdf", download_status: :success)
+    download = @user_download.create(file_number: "12", status: :pending_documents)
+    download.documents.create(vbms_filename: "roll.pdf", mime_type: "application/pdf", download_status: :failed)
+    download.documents.create(vbms_filename: "tide.pdf", mime_type: "application/pdf", download_status: :success)
 
-    visit download_path(@download)
+    visit download_path(download)
     expect(page).to have_css ".cf-tab.cf-active", text: "Progress (0)"
 
-    @download.update_attributes(status: :complete_with_errors)
+    download.update_attributes(status: :complete_with_errors)
     page.execute_script("window.DownloadProgress.reload();")
     expect(page).to have_css ".cf-tab.cf-active", text: "Completed (1)"
     expect(page).to have_button "Progress (0)", disabled: true
@@ -295,14 +295,14 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Downloading anyway with at least one failed document download" do
-    @download = @user_download.create(file_number: "12", status: :pending_documents)
-    @download.documents.create(vbms_filename: "roll.pdf", mime_type: "application/pdf", download_status: :failed)
-    @download.documents.create(vbms_filename: "tide.pdf", mime_type: "application/pdf", download_status: :success)
+    download = @user_download.create(file_number: "12", status: :pending_documents)
+    download.documents.create(vbms_filename: "roll.pdf", mime_type: "application/pdf", download_status: :failed)
+    download.documents.create(vbms_filename: "tide.pdf", mime_type: "application/pdf", download_status: :success)
 
-    visit download_path(@download)
+    visit download_path(download)
     expect(page).to have_css ".cf-tab.cf-active", text: "Progress (0)"
 
-    @download.update_attributes(status: :complete_with_errors)
+    download.update_attributes(status: :complete_with_errors)
     page.execute_script("window.DownloadProgress.reload();")
 
     expect(page).to have_content "tide.pdf"
@@ -318,11 +318,11 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Retry failed download" do
-    @download = @user_download.create(file_number: "12", status: :complete_with_errors)
-    @download.documents.create(vbms_filename: "roll.pdf", mime_type: "application/pdf", download_status: :failed)
-    @download.documents.create(vbms_filename: "tide.pdf", mime_type: "application/pdf", download_status: :success)
+    download = @user_download.create(file_number: "12", status: :complete_with_errors)
+    download.documents.create(vbms_filename: "roll.pdf", mime_type: "application/pdf", download_status: :failed)
+    download.documents.create(vbms_filename: "tide.pdf", mime_type: "application/pdf", download_status: :success)
 
-    visit download_path(@download)
+    visit download_path(download)
     click_on "Try retrieving eFolder again"
 
     expect(page).to have_css ".cf-tab.cf-active", text: "Progress (2)"

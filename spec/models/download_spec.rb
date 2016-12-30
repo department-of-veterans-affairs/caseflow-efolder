@@ -63,10 +63,10 @@ describe "Download" do
   context "#time_to_fetch_manifest" do
     let(:download) do
       Download.create(
-             file_number: file_number,
-             created_at: 4.hours.ago,
-             manifest_fetched_at: 1.hour.ago
-            )
+        file_number: file_number,
+        created_at: 4.hours.ago,
+        manifest_fetched_at: 1.hour.ago
+      )
     end
 
     subject { download.time_to_fetch_manifest }
@@ -77,10 +77,10 @@ describe "Download" do
   context "#time_to_fetch_files" do
     let(:download) do
       Download.create(
-             file_number: file_number,
-             started_at: 10.hours.ago,
-             completed_at: 3.hours.ago
-            )
+        file_number: file_number,
+        started_at: 10.hours.ago,
+        completed_at: 3.hours.ago
+      )
     end
 
     subject { download.time_to_fetch_files }

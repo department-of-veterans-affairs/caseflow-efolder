@@ -96,9 +96,9 @@ describe Search do
     context "when the download has vbms connection error" do
       before do
         @existing_download = Download.create(
-                                    file_number: "22223333",
-                                    status: :vbms_connection_error
-                                   )
+          file_number: "22223333",
+          status: :vbms_connection_error
+        )
       end
 
       it "creates a new download" do
