@@ -1,6 +1,6 @@
 describe GetDownloadManifestJob do
   context "#perform" do
-    let(:download) { create(:download) }
+    let(:download) { Download.create }
 
     context "when document list is empty" do
       before do

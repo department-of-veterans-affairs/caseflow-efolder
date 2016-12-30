@@ -1,7 +1,7 @@
 require "rails_helper"
 
 describe Search do
-  let(:user) { create(:user, css_id: "NICKSABAN", station_id: "200") }
+  let(:user) { User.create(css_id: "NICKSABAN", station_id: "200") }
   let(:file_number) { "12341234" }
   let(:status) { nil }
   let(:search) do
@@ -62,7 +62,7 @@ describe Search do
 
     context "a download already exists for that user and file_number" do
       before do
-        @existing_download = create(:download, file_number: "22223333", user: user)
+        @existing_download = Download.create(file_number: "22223333", user: user)
       end
 
       it "uses that download" do
@@ -95,7 +95,7 @@ describe Search do
 
     context "when the download has vbms connection error" do
       before do
-        @existing_download = create(:download,
+        @existing_download = Download.create(
                                     file_number: "22223333",
                                     status: :vbms_connection_error
                                    )

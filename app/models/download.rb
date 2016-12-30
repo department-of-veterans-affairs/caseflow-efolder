@@ -19,8 +19,6 @@ class Download < ActiveRecord::Base
   has_many :searches
   belongs_to :user
 
-  validates :user, presence: :true
-
   before_create do |download|
     # This fake is used in the test suite, but let's
     # also use it if we're demo-ing eFolder express.

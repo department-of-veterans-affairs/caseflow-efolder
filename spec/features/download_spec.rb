@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.feature "Downloads" do
   before do
-    @user = create(:user, css_id: "123123", station_id: "116")
+    @user = User.create(css_id: "123123", station_id: "116")
     @user_download = Download.where(user: @user)
     allow(GetDownloadManifestJob).to receive(:perform_later)
     allow(GetDownloadFilesJob).to receive(:perform_later)
@@ -172,7 +172,7 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Attempting to view download created by another user" do
-    user = create(:user, css_id: "123123", station_id: "222")
+    user = User.create(css_id: "123123", station_id: "222")
     another_user = Download.create!(
       user: user,
       file_number: "22222",
@@ -401,7 +401,7 @@ RSpec.feature "Downloads" do
       status: :complete_with_errors
     )
     another_user = Download.create!(
-      user: create(:user, css_id: "456", station_id: "45673"),
+      user: User.create(css_id: "456", station_id: "45673"),
       file_number: "22222",
       status: :complete_success
     )

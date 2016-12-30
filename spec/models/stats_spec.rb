@@ -9,6 +9,7 @@ describe Stats do
   let(:daily_stats) { Rails.cache.read("stats-2016-2-17") }
   let(:hourly_stats) { Rails.cache.read("stats-2016-2-17-15") }
   let(:prev_weekly_stats) { Rails.cache.read("stats-2016-w06") }
+  let(:user) { User.new(css_id: "ADA", station_id: "203") }
 
   context "#values" do
     let(:stats) { Stats.new(time: Stats.now, interval: "daily") }
@@ -26,7 +27,7 @@ describe Stats do
 
     context "when no cached stat values exist" do
       before do
-        create(:download, status: :complete_success, completed_at: 4.hours.ago)
+        Download.create(status: :complete_success, completed_at: 4.hours.ago, user: user)
       end
 
       it "calculates and caches values" do
@@ -37,11 +38,11 @@ describe Stats do
 
   context ".calculate_all!" do
     it "calculates and saves all calculated stats" do
-      create(:download, status: :complete_success, completed_at: 40.days.ago)
-      create(:download, status: :complete_success, completed_at: 7.days.ago)
-      create(:download, status: :complete_success, completed_at: 2.days.ago)
-      create(:download, status: :complete_success, completed_at: 4.hours.ago)
-      create(:download, status: :complete_success, completed_at: 30.minutes.ago)
+      Download.create(status: :complete_success, completed_at: 40.days.ago, user: user)
+      Download.create(status: :complete_success, completed_at: 7.days.ago, user: user)
+      Download.create(status: :complete_success, completed_at: 2.days.ago, user: user)
+      Download.create(status: :complete_success, completed_at: 4.hours.ago, user: user)
+      Download.create(status: :complete_success, completed_at: 30.minutes.ago, user: user)
 
       Stats.calculate_all!
 
@@ -53,18 +54,18 @@ describe Stats do
     end
 
     it "overwrites incomplete periods" do
-      create(:download, status: :complete_success, completed_at: 30.minutes.ago)
+      Download.create(status: :complete_success, completed_at: 30.minutes.ago, user: user)
       Stats.calculate_all!
-      create(:download, status: :complete_success, completed_at: 1.minute.ago)
+      Download.create(status: :complete_success, completed_at: 1.minute.ago, user: user)
       Stats.calculate_all!
 
       expect(hourly_stats[:completed_download_count]).to eq(2)
     end
 
     it "does not recalculate complete periods" do
-      create(:download, status: :complete_success, completed_at: 7.days.ago)
+      Download.create(status: :complete_success, completed_at: 7.days.ago, user: user)
       Stats.calculate_all!
-      create(:download, status: :complete_success, completed_at: 7.days.ago)
+      Download.create(status: :complete_success, completed_at: 7.days.ago, user: user)
       Stats.calculate_all!
 
       expect(prev_weekly_stats[:completed_download_count]).to eq(1)

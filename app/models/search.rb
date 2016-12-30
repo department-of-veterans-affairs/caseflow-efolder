@@ -7,8 +7,6 @@ class Search < ActiveRecord::Base
   belongs_to :download
   belongs_to :user
 
-  validates :user, presence: :true
-
   enum status: {
     download_created: 0,
     download_found: 1,

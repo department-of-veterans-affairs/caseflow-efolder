@@ -16,10 +16,10 @@ describe "Download" do
   after { Timecop.return }
 
   let(:file_number) { "1234" }
-  let(:download) { create(:download, file_number: file_number) }
+  let(:download) { Download.create(file_number: file_number) }
 
   context ".new" do
-    subject { build(:download, file_number: file_number) }
+    subject { Download.new(file_number: file_number) }
 
     context "when file number is set" do
       before do
@@ -62,7 +62,7 @@ describe "Download" do
 
   context "#time_to_fetch_manifest" do
     let(:download) do
-      create(:download,
+      Download.create(
              file_number: file_number,
              created_at: 4.hours.ago,
              manifest_fetched_at: 1.hour.ago
@@ -76,7 +76,7 @@ describe "Download" do
 
   context "#time_to_fetch_files" do
     let(:download) do
-      create(:download,
+      Download.create(
              file_number: file_number,
              started_at: 10.hours.ago,
              completed_at: 3.hours.ago
@@ -191,12 +191,12 @@ describe "Download" do
 
   context ".top_users" do
     before do
-      user1 = create(:user, css_id: "RADIOHEAD", station_id: "203")
-      user2 = create(:user, css_id: "ARCADE_FIRE", station_id: "102", email: "archade_fire@example.com")
-      user3 = create(:user, css_id: "QUEEN", station_id: "103", email: "queen@example.com")
-      2.times { create(:download, user: user1) }
-      10.times { create(:download, user: user2) }
-      12.times { create(:download, user: user3) }
+      user1 = User.new(css_id: "RADIOHEAD", station_id: "203")
+      user2 = User.new(css_id: "ARCADE_FIRE", station_id: "102", email: "archade_fire@example.com")
+      user3 = User.new(css_id: "QUEEN", station_id: "103", email: "queen@example.com")
+      2.times { Download.create(user: user1) }
+      10.times { Download.create(user: user2) }
+      12.times { Download.create(user: user3) }
     end
 
     subject { Download.top_users(downloads: Download.all) }

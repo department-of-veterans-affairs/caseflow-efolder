@@ -4,10 +4,10 @@ RSpec.feature "Stats Dashboard" do
   before do
     Timecop.freeze(Time.utc(2015, 1, 1, 17, 0, 0))
 
-    user1 = create(:user, css_id: "ROCKY", station_id: "203")
-    user2 = create(:user, css_id: "CREED", station_id: "204")
-    user3 = create(:user, css_id: "DRAGO", station_id: "205")
-    user4 = create(:user, css_id: "THUNDERLIPS", station_id: "206", email: "thunderlips@example.com")
+    user1 = User.create(css_id: "ROCKY", station_id: "203")
+    user2 = User.create(css_id: "CREED", station_id: "204")
+    user3 = User.create(css_id: "DRAGO", station_id: "205")
+    user4 = User.create(css_id: "THUNDERLIPS", station_id: "206", email: "thunderlips@example.com")
 
     @downloads = [
       Download.create(
