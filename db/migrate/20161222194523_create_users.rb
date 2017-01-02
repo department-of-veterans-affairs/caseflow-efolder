@@ -12,7 +12,7 @@ class CreateUsers < ActiveRecord::Migration
     add_belongs_to :downloads, :user, index: true, foreign_key: true
 
     (Search.all + Download.all).each do |record|
-      return unless record.css_id
+      next unless record.css_id
 
       user = User.find_or_create_by(css_id: record.css_id, station_id: record.user_station_id)
       user.update(email: record.email) if record.email
