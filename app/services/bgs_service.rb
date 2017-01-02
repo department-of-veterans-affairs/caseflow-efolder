@@ -36,7 +36,7 @@ class BGSService
       application: "CASEFLOW",
       client_ip: user.ip_address,
       client_station_id: user.station_id,
-      client_username: user.id,
+      client_username: user.css_id,
       ssl_cert_key_file: ENV["BGS_KEY_LOCATION"],
       ssl_cert_file: ENV["BGS_CERT_LOCATION"],
       ssl_ca_cert: ENV["BGS_CA_CERT_LOCATION"],

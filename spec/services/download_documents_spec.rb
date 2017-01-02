@@ -10,7 +10,7 @@ describe DownloadDocuments do
   end
 
   let(:download) do
-    Download.create!(
+    Download.create(
       file_number: "21012",
       veteran_first_name: "George",
       veteran_last_name: "Washington"

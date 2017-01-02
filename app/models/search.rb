@@ -18,7 +18,6 @@ class Search < ActiveRecord::Base
     return true if match_existing_download
 
     self.download = download_scope.new
-    download.user = user
 
     return false unless validate!
 
@@ -34,20 +33,12 @@ class Search < ActiveRecord::Base
     (file_number || "").strip
   end
 
-  def user=(user)
-    self.css_id = user.css_id
-    self.user_station_id = user.station_id
-    self.email = user.email
-    self.user_id = user.id
-  end
-
   private
 
   def download_scope
     Download.active.where(
       file_number: sanitized_file_number,
-      css_id: css_id,
-      user_station_id: user_station_id
+      user: user
     ).where.not(status: [1, 7])
   end
 

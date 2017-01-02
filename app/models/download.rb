@@ -132,13 +132,7 @@ class Download < ActiveRecord::Base
   end
 
   def css_id_string
-    "(#{css_id} - Station #{user_station_id})"
-  end
-
-  def email
-    Search.where.not(email: nil)
-          .find_by(css_id: css_id)
-          .try(:email)
+    "(#{user.css_id} - Station #{user.station_id})"
   end
 
   def expiration_day
@@ -156,7 +150,7 @@ class Download < ActiveRecord::Base
   def self.downloads_by_user(downloads:)
     downloads.each_with_object({}) do |download, result|
       result[download.css_id_string] ||= {}
-      result[download.css_id_string][:email] ||= download.email || User::NO_EMAIL
+      result[download.css_id_string][:email] ||= download.user.email || User::NO_EMAIL
       result[download.css_id_string][:count] ||= 0
       result[download.css_id_string][:count] += 1
     end

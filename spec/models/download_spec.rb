@@ -191,19 +191,12 @@ describe "Download" do
 
   context ".top_users" do
     before do
-      2.times do
-        download = Download.create(css_id: "RADIOHEAD", user_station_id: "203")
-        download.searches.create(email: nil, css_id: download.css_id)
-      end
-      10.times do
-        download = Download.create(css_id: "ARCADE_FIRE", user_station_id: "102")
-        download.searches.create(email: "archade_fire@example.com", css_id: download.css_id)
-      end
-      12.times do
-        download = Download.create(css_id: "QUEEN", user_station_id: "103")
-        download.searches.create(email: nil, css_id: download.css_id)
-      end
-      Search.last.update(email: "queen@example.com")
+      user1 = User.new(css_id: "RADIOHEAD", station_id: "203")
+      user2 = User.new(css_id: "ARCADE_FIRE", station_id: "102", email: "archade_fire@example.com")
+      user3 = User.new(css_id: "QUEEN", station_id: "103", email: "queen@example.com")
+      2.times { Download.create(user: user1) }
+      10.times { Download.create(user: user2) }
+      12.times { Download.create(user: user3) }
     end
 
     subject { Download.top_users(downloads: Download.all) }
