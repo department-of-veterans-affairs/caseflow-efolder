@@ -197,6 +197,8 @@ describe "Download" do
       2.times { Download.create(user: user1) }
       10.times { Download.create(user: user2) }
       12.times { Download.create(user: user3) }
+      # should ignore downloads that have nil user values
+      4.times { Download.create }
     end
 
     subject { Download.top_users(downloads: Download.all) }
