@@ -16,7 +16,7 @@ class CreateUsers < ActiveRecord::Migration
 
       user = User.find_or_create_by(css_id: record.css_id, station_id: record.user_station_id)
 
-      email = record.is_a?(Download) ? record.searches.last.email : record.email
+      email = record.is_a?(Download) ? record.searches.last.try(:email) : record.email
       user.update(email: email) if email
 
       record.update(user: user)
