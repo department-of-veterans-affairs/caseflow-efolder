@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161222194523) do
+ActiveRecord::Schema.define(version: 20170103161212) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -58,7 +58,6 @@ ActiveRecord::Schema.define(version: 20161222194523) do
     t.integer  "status",                default: 0
     t.datetime "created_at",                        null: false
     t.datetime "updated_at",                        null: false
-    t.string   "user_station_id"
     t.integer  "lock_version"
     t.datetime "manifest_fetched_at"
     t.datetime "started_at"
@@ -66,7 +65,6 @@ ActiveRecord::Schema.define(version: 20161222194523) do
     t.string   "veteran_last_name"
     t.string   "veteran_first_name"
     t.string   "veteran_last_four_ssn"
-    t.string   "css_id"
     t.integer  "user_id"
   end
 
@@ -76,11 +74,8 @@ ActiveRecord::Schema.define(version: 20161222194523) do
   create_table "searches", force: :cascade do |t|
     t.integer  "download_id"
     t.string   "file_number"
-    t.integer  "status",                      default: 0
-    t.string   "user_station_id"
+    t.integer  "status",      default: 0
     t.datetime "created_at"
-    t.string   "email",           limit: 191
-    t.string   "css_id"
     t.integer  "user_id"
   end
 
