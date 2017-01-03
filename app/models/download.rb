@@ -160,6 +160,7 @@ class Download < ActiveRecord::Base
 
   def self.top_users(downloads:)
     users = downloads_by_user(downloads: downloads)
+    binding.pry
     sorted = users.sort_by { |_k, v| -v[:count] }
     sorted.map { |values| { id: values[1][:email] + " " + values[0], count: values[1][:count] } }.first(3)
   end
