@@ -132,6 +132,7 @@ class Download < ActiveRecord::Base
   end
 
   def css_id_string
+    return "Unknown" unless user
     "(#{user.css_id} - Station #{user.station_id})"
   end
 
