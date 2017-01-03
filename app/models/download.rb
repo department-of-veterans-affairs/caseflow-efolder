@@ -150,6 +150,7 @@ class Download < ActiveRecord::Base
 
   def self.downloads_by_user(downloads:)
     downloads.each_with_object({}) do |download, result|
+      next unless download.user
       result[download.css_id_string] ||= {}
       result[download.css_id_string][:email] ||= download.user.email || User::NO_EMAIL
       result[download.css_id_string][:count] ||= 0
