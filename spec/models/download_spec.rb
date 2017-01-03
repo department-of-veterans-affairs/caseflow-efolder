@@ -211,6 +211,21 @@ describe "Download" do
     end
   end
 
+  context "#css_id_string" do
+    subject { download.css_id_string }
+    let(:download) { Download.new(user: user) }
+
+    context "when user is set" do
+      let(:user) { User.new(css_id: "WALTER", station_id: "123") }
+      it { is_expected.to eq("(WALTER - Station 123)") }
+    end
+
+    context "when user is nil" do
+      let(:user) { nil }
+      it { is_expected.to eq("Unknown") }
+    end
+  end
+
   context "#progress_percentage" do
     subject { download.progress_percentage }
 
