@@ -83,7 +83,7 @@
               <%= link_to "View progress", download_path(download) %>
             <% else %>
 		<%= link_to "View results", download_path(download) %>
-		<% if current_user && current_user.email == ENV['TEST_USER_ACCOUNT']%>
+		<% if current_user && current_user.email == ENV['TEST_USER_EMAIL']%>
 		    <%= link_to "Delete Cache", delete_download_path(download), method: :post %>
 		<% end %>
             <% end %>

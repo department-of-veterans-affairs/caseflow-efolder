@@ -429,4 +429,17 @@ RSpec.feature "Downloads" do
     within(complete_row) { click_on("View results") }
     expect(page).to have_current_path(download_path(complete))
   end
+
+
+  let(:current_user) { User.create(css_id: "123123", station_id: "116", email: "artem") }
+  
+  scenario 'non-test unable to access delete endpoint' do
+    @user_download = Download.where(user: @user)
+    complete = @user_download.create!(
+      file_number: "78901",
+      status: :complete_success
+    )
+    expect(:delete => "/downloads/1").to be_routable
+    #expect(page).not_to have_content("Delete Cache")
+  end
 end

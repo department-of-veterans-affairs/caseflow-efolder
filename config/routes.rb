@@ -17,7 +17,7 @@ Rails.application.routes.draw do
     get :progress, on: :member
 
     # test user download delete route
-    if ENV['TEST_USER_ACCOUNT']
+    if ENV['TEST_USER_EMAIL']
       post :delete, on: :member
     end
   end
