@@ -68,7 +68,7 @@ class DownloadsController < ApplicationController
 
   # test user delete download method
   def delete
-    if current_user.email == ENV['TEST_USER_EMAIL']
+    if current_user.css_id == ENV['TEST_USER_ID']
       downloads.where(id: params[:id]).delete
     end
     redirect_to '/'
