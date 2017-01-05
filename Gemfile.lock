@@ -1,9 +1,10 @@
 GIT
   remote: https://github.com/department-of-veterans-affairs/caseflow-commons
-  revision: 3b13049edc8ac7c1f5d9ca6e3ceb6cd6f5f36077
-  ref: 3b13049
+  revision: 40bdd3ce915522f0dfdc13b7a3f351243e21285f
+  ref: 40bdd3c
   specs:
-    caseflow (0.1.5)
+    caseflow (0.1.6)
+      aws-sdk (~> 2)
       bourbon
       d3-rails
       jquery-rails
@@ -443,4 +444,4 @@ DEPENDENCIES
   zaru
 
 BUNDLED WITH
-   1.13.6
+   1.13.7
