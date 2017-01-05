@@ -430,6 +430,7 @@ RSpec.feature "Downloads" do
     expect(page).to have_current_path(download_path(complete))
   end
 
+  # route should only be available to test user anyway
   scenario 'unable to access delete download cache' do
     non_deletable_download = @user_download.create!(
       user: @user,
