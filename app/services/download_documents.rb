@@ -66,10 +66,23 @@ class DownloadDocuments
     @download_dir
   end
 
+  def pdf_attributes(document)
+    {
+      "Document Type" => document.type_name,
+      "Receipt Date" => document.received_at ? document.received_at.iso8601 : "",
+      "Document ID" => document.document_id
+    }
+  end
+
   def save_document_file(document, content, index)
     filename = File.join(download_dir, unique_filename(document, index))
-    File.open(filename, "wb") do |f|
-      f.write(content)
+
+    if document.preferred_extension == "pdf"
+      DownloadDocuments.pdf_service.write(filename, content, pdf_attributes(document))
+    else
+      File.open(filename, "wb") do |f|
+        f.write(content)
+      end
     end
 
     filename
@@ -144,6 +157,14 @@ class DownloadDocuments
     ignored = DownloadDocuments.ignored_doc_types
     vbms_documents.select do |vbms_document|
       !ignored.include?(vbms_document.doc_type)
+    end
+  end
+
+  class << self
+    attr_writer :pdf_service
+
+    def pdf_service
+      @pdf_service ||= PdfService
     end
   end
 end

@@ -356,7 +356,7 @@ RSpec.feature "Downloads" do
 
     class FakeVBMSService
       def self.fetch_document_file(_document)
-        "this is some document, woah!"
+        IO.binread(Rails.root + "spec/support/test.pdf")
       end
     end
 
