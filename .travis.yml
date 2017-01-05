@@ -19,6 +19,7 @@ before_install:
 before_script:
   - RAILS_ENV=test bundle exec rake db:create
   - RAILS_ENV=test bundle exec rake db:schema:load
+  - sudo apt-get install pdftk
 
 script:
   - bundle exec rake

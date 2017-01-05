@@ -50,7 +50,10 @@ class Document < ActiveRecord::Base
     calculate_and_save_historical_average_download_rate!
   end
 
-  private
+  def preferred_extension
+    mime = MIME::Types[mime_type].first
+    mime ? mime.preferred_extension : ""
+  end
 
   class << self
     def calculate_and_save_historical_average_download_rate!
@@ -82,10 +85,5 @@ class Document < ActiveRecord::Base
 
       (total_time / count).round(2)
     end
-  end
-
-  def preferred_extension
-    mime = MIME::Types[mime_type].first
-    mime ? mime.preferred_extension : ""
   end
 end
