@@ -66,6 +66,14 @@ class DownloadsController < ApplicationController
     render "not_found", locals: { id: params[:id] }, layout: "application", status: 404
   end
 
+  # test user delete download method
+  def delete
+    if current_user.email == ENV['TEST_USER_ACCOUNT']
+      Download.destroy_all(id: params[:id], user_id: current_user.id)
+    end
+    redirect_to '/'
+  end
+
   private
 
   def start_download_files
