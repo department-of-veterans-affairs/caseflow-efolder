@@ -43,9 +43,11 @@ class DownloadDocuments
           filepath: filepath,
           download_status: :success
         )
+        @download.touch
 
       rescue VBMS::ClientError
         document.update_attributes!(download_status: :failed)
+        @download.touch
 
       rescue ActiveRecord::StaleObjectError
         Rails.logger.info "Duplicate download detected. Document ID: #{document.id}"
