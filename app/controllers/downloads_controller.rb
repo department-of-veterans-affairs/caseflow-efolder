@@ -66,12 +66,11 @@ class DownloadsController < ApplicationController
     render "not_found", locals: { id: params[:id] }, layout: "application", status: 404
   end
 
-  # test user delete download method
   def delete
     if current_user.css_id == ENV['TEST_USER_ID']
       downloads.find(params[:id]).delete
     end
-    redirect_to '/'
+    redirect_to "/"
   end
 
   private

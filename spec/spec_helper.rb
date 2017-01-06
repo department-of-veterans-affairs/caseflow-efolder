@@ -107,5 +107,5 @@ RSpec.configure do |config|
   #   Kernel.srand config.seed
 
   # Test User ID set for repeated download testing:
-  ENV['TEST_USER_ID'] = '321321'
+  ENV["TEST_USER_ID"] = "321321"
 end
