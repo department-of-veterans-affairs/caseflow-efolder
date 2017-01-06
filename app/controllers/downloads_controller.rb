@@ -62,7 +62,7 @@ class DownloadsController < ApplicationController
     file_exists = @download_documents.zip_exists_locally?
     return record_not_found unless file_exists
 
-    response.headers['Content-Length'] = (download.zipfile_size || File.size(@download_documents.zip_path)).to_s
+    response.headers["Content-Length"] = (download.zipfile_size || File.size(@download_documents.zip_path)).to_s
     send_file @download_documents.zip_path
   end
 
