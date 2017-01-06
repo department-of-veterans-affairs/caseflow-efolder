@@ -3,9 +3,10 @@
     <p>
       <div class="usa-alert usa-alert-error" role="alert">
         <div class="usa-alert-body">
-          <h3 class="usa-alert-heading">Couldn't find an eFolder with that ID</h3>
+          <h3 class="usa-alert-heading">Could not find an eFolder with that Veteran ID</h3>
           <p class="usa-alert-text">
-            It looks like there's no folder with this ID. Check to make sure you entered the ID correctly and try again.
+            eFolder Express could not find an eFolder with the Veteran ID #<%= @search.file_number %>.<br />
+            Check to make sure you entered the ID correctly and try again.
           </p>
         </div>
       </div>
@@ -22,7 +23,7 @@
       </div>
     </p>
   <% end %>
-  
+
   <div class="ee-heading">
     <h1>Welcome to eFolder Express!</h1>
 

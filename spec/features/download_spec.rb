@@ -133,10 +133,9 @@ RSpec.feature "Downloads" do
     fill_in "Search for a Veteran ID number below to get started.", with: "abcd"
     click_button "Search"
 
-    expect(page).to have_content "Couldn't find an eFolder with that ID"
-
     search = Search.where(user: @user).first
     expect(search).to be_veteran_not_found
+    expect(page).to have_content(search.file_number)
   end
 
   scenario "Using demo mode" do
@@ -198,9 +197,10 @@ RSpec.feature "Downloads" do
     download = @user_download.create(status: :no_documents)
     visit download_path(download)
 
-    expect(page).to have_css ".usa-alert-error", text: "Couldn't find documents in eFolder"
+    expect(page).to have_css ".cf-app-msg-screen", text: "No Documents in eFolder"
+    expect(page).to have_content download.file_number
 
-    click_on "Search again"
+    click_on "search again"
     expect(page).to have_current_path(root_path)
   end
 
