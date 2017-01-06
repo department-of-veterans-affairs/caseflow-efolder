@@ -48,7 +48,7 @@ module StubbableUser
     end
 
     def tester!(options = {})
-      self.stub = find_or_create_by(css_id: ENV['TEST_USER_ID'], station_id: "116").tap do |u|
+      self.stub = find_or_create_by(css_id: ENV["TEST_USER_ID"], station_id: "116").tap do |u|
         u.name = "first last"
         u.email = "test@gmail.com"
         u.roles = options[:roles] || ["Download eFolder"]
