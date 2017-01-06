@@ -203,13 +203,14 @@ describe DownloadDocuments do
       download_documents.create_documents
       download_documents.download_and_package
 
-      Zip::File.open(Rails.root + "tmp/files/#{download.id}/#{download.package_filename}") do |zip_file|
+      zip_path = Rails.root + "tmp/files/#{download.id}/#{download.package_filename}"
+      Zip::File.open(zip_path) do |zip_file|
         expect(zip_file.glob("00010-VA 21-4185 Report of Income from Property or Business-20150101-1.pdf").first).to_not be_nil
       end
-
       expect(download).to be_complete_success
       expect(download.started_at).to eq(Time.zone.now)
       expect(download.completed_at).to eq(Time.zone.now)
+      expect(download.zipfile_size).to eq(File.size(zip_path))
     end
 
     it "works even if zip exists" do

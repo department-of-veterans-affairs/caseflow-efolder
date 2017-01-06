@@ -55,11 +55,15 @@ class DownloadsController < ApplicationController
   end
 
   def download
-    @download_documents = DownloadDocuments.new(download: downloads.find(params[:id]))
+    download = downloads.find(params[:id])
+    @download_documents = DownloadDocuments.new(download: download)
     @download_documents.fetch_zip_from_s3
 
     file_exists = @download_documents.zip_exists_locally?
-    file_exists ? send_file(@download_documents.zip_path) : record_not_found
+    return record_not_found unless file_exists
+
+    response.headers['Content-Length'] = (download.zipfile_size || File.size(@download_documents.zip_path)).to_s
+    send_file @download_documents.zip_path
   end
 
   def record_not_found
