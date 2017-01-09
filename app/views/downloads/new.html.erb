@@ -83,7 +83,10 @@
             <% if download.pending_documents? %>
               <%= link_to "View progress", download_path(download) %>
             <% else %>
-              <%= link_to "View results", download_path(download) %>
+		<%= link_to "View results", download_path(download) %>
+		<% if current_user && current_user.css_id == ENV['TEST_USER_ID']%>
+		    <%= link_to "Delete Cache", delete_download_path(download), method: :post %>
+		<% end %>
             <% end %>
           </td>
         </tr>

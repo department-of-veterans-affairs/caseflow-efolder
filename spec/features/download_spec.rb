@@ -4,6 +4,7 @@ RSpec.feature "Downloads" do
   before do
     @user = User.create(css_id: "123123", station_id: "116")
     @user_download = Download.where(user: @user)
+
     allow(GetDownloadManifestJob).to receive(:perform_later)
     allow(GetDownloadFilesJob).to receive(:perform_later)
     User.authenticate!
@@ -429,5 +430,33 @@ RSpec.feature "Downloads" do
     expect(find(complete_row)).to have_content("78901")
     within(complete_row) { click_on("View results") }
     expect(page).to have_current_path(download_path(complete))
+  end
+
+  # route should only be available to test user anyway
+  scenario "unable to access delete download cache" do
+    Download.create!(
+      user: @user,
+      file_number: "321321",
+      status: :complete_success
+    )
+
+    visit "/"
+    expect(page).to have_content("View results")
+    expect(page).not_to have_content("Delete Cache")
+  end
+
+  scenario "test user able to access delete download cache" do
+    Download.create!(
+      user: User.create(css_id: ENV["TEST_USER_ID"], station_id: "116"),
+      file_number: "321321",
+      status: :complete_success
+    )
+    User.tester!
+
+    visit "/"
+    expect(page).to have_content("View results")
+    expect(page).to have_content("Delete Cache")
+    click_on("Delete Cache")
+    expect(page).not_to have_content("View results")
   end
 end

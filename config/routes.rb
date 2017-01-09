@@ -15,6 +15,11 @@ Rails.application.routes.draw do
     post :retry, on: :member
     get :download, on: :member
     get :progress, on: :member
+
+    # test user download delete route
+    if ENV['TEST_USER_ID']
+      post :delete, on: :member
+    end
   end
 
   get '/stats(/:interval)', to: 'stats#show', as: 'stats'
