@@ -371,6 +371,7 @@ RSpec.feature "Downloads" do
 
     first(:link, "Download eFolder").click
     expect(page.response_headers["Content-Type"]).to eq("application/zip")
+    expect(page.response_headers["Content-Length"]).to eq(File.size(download_documents.zip_path).to_s)
   end
 
   scenario "Recent download list expires old downloads" do

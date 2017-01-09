@@ -124,8 +124,9 @@ class Download < ActiveRecord::Base
     end
   end
 
-  def complete!
+  def complete!(zipfile_size)
     update_attributes(
+      zipfile_size: zipfile_size,
       completed_at: Time.zone.now,
       status: errors? ? :complete_with_errors : :complete_success
     )

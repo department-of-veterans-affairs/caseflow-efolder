@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170103161212) do
+ActiveRecord::Schema.define(version: 20170106143608) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -66,9 +66,11 @@ ActiveRecord::Schema.define(version: 20170103161212) do
     t.string   "veteran_first_name"
     t.string   "veteran_last_four_ssn"
     t.integer  "user_id"
+    t.integer  "zipfile_size",          limit: 8
   end
 
   add_index "downloads", ["completed_at"], name: "downloads_completed_at", using: :btree
+  add_index "downloads", ["manifest_fetched_at"], name: "downloads_manifest_fetched_at", using: :btree
   add_index "downloads", ["user_id"], name: "index_downloads_on_user_id", using: :btree
 
   create_table "searches", force: :cascade do |t|
