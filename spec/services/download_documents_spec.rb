@@ -189,8 +189,8 @@ describe DownloadDocuments do
       expect(File.exist?(Rails.root + "tmp/files/#{download.id}/#{download.package_filename}")).to be_falsey
     end
 
-    it "exits on stale record error when packaging" do
-      expect(download_documents).to receive(:before_document_download) do |_|
+    it "exits on download stale record error when packaging" do
+      expect(download_documents).to receive(:before_package_contents) do |_|
         Download.find(download.id).update_attributes!(status: :packaging_contents)
       end
 

@@ -7,23 +7,17 @@
 
 <% fetch_button_text = "Start retrieving eFolder" %>
 
-<div class="cf-app-segment cf-app-segment--alt">
+<div class="<%= 'cf-app-msg-screen' if @download.no_documents? %> cf-app-segment cf-app-segment--alt">
 
   <% if @download.fetching_manifest? %>
     <%= render "user_header" %>
     <%= page_loading_indicator "We are gathering the list of files in the eFolder now..." %>
 
   <% elsif @download.no_documents? %>
-    <%= render "user_header" %>
-    <div class="usa-alert usa-alert-error" role="alert">
-      <div class="usa-alert-body">
-        <h3 class="usa-alert-heading">Couldn't find documents in eFolder</h3>
-        <p class="usa-alert-text">
-          eFolder Express could not find any documents in the eFolder with ID <%= @download.file_number %>. It's possible this eFolder does not exist.
-        </p>
-        <p class="usa-alert-text"><%= link_to "Search again", root_path %>.</p>
-      </div>
-    </div>
+      <h1 class="cf-msg-screen-heading">No Documents in eFolder</h1>
+      <h2 class="cf-msg-screen-deck">eFolder Express could not find any documents in the eFolder with Veteran ID #<%= @download.file_number %>.
+        It's possible this eFolder does not exist. </h2>
+      <p class="cf-msg-screen-text">Please check the Veteran ID number and <%= link_to "search again", root_path %>.</p>
 
   <% elsif @download.vbms_connection_error? %>
     <%= render "user_header" %>
