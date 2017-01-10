@@ -12,9 +12,9 @@ calculate_stats_job:
   queue: default
   active_job: true
 
-# Every night at midnight
+# Every night at 3am
 clean_download_files_job:
-  cron: "0 0 * * * America/New_York"
+  cron: "0 3 * * * America/New_York"
   class: "CleanDownloadFilesJob"
   queue: default
   active_job: true
