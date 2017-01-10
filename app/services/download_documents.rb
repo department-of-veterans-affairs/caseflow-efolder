@@ -136,6 +136,7 @@ class DownloadDocuments
     @s3.store_file(@download.s3_filename, zip_path, :filepath)
     @download.complete!(File.size(zip_path))
 
+    cleanup!
   rescue ActiveRecord::StaleObjectError
     Rails.logger.info "Duplicate packaging detected. Download ID: #{@download.id}"
   end
@@ -172,5 +173,15 @@ class DownloadDocuments
     def pdf_service
       @pdf_service ||= PdfService
     end
+  end
+
+  private
+
+  def cleanup!
+    files = Dir["#{download_dir}/*"].select do |filepath|
+      !filepath.end_with?(@download.package_filename)
+    end
+
+    FileUtils.rm files
   end
 end
