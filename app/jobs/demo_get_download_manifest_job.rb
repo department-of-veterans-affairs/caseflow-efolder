@@ -59,8 +59,9 @@ class DemoGetDownloadManifestJob < ActiveJob::Base
   end
 
   def check_and_raise_errors(demo)
-    fail VBMS::ClientError if demo[:error] && demo[:error_type] == "VBMS"
-    fail "no documents" if demo[:error] && demo[:error_type] == "NO_DOCUMENTS"
+    return unless demo[:error]
+    fail VBMS::ClientError if demo[:error_type] == "VBMS"
+    fail "no documents" if demo[:error_type] == "NO_DOCUMENTS"
   end
 
   def sleep_manifest_load(wait)

@@ -10,7 +10,7 @@ describe DownloadDocuments do
   end
 
   let(:download) do
-    Download.create!(
+    Download.create(
       file_number: "21012",
       veteran_first_name: "George",
       veteran_last_name: "Washington"
@@ -40,16 +40,31 @@ describe DownloadDocuments do
       )
     end
 
+    let(:txt_document) do
+      download.documents.build(
+        document_id: "{4444-4444}",
+        received_at: Time.utc(2016, 2, 2, 1, 0, 0),
+        doc_type: "825",
+        mime_type: "text/plain"
+      )
+    end
+
     before do
       # clean files
       FileUtils.rm_rf(Rails.application.config.download_filepath)
     end
 
     it "creates a file in the correct directory and returns filename" do
-      filename = download_documents.save_document_file(document, "hi", 3)
+      file_contents = IO.binread(Rails.root + "spec/support/test.pdf")
+      filename = download_documents.save_document_file(document, file_contents, 3)
       expected_filepath = Rails.root + "tmp/files/#{download.id}/00040-VA 21-0166 VA Letter to Beneficiary-20150906-3333-3333.pdf"
       expect(File.exist?(expected_filepath)).to be_truthy
       expect(filename).to eq(expected_filepath.to_s)
+    end
+
+    it "handles non-pdf files correctly" do
+      filename = download_documents.save_document_file(txt_document, "Howdy", 3)
+      expect(IO.read(filename)).to eq("Howdy")
     end
   end
 
@@ -74,7 +89,7 @@ describe DownloadDocuments do
   end
 
   context "#download_contents" do
-    let(:file) { "file content" }
+    let(:file) { IO.binread(Rails.root + "spec/support/test.pdf") }
 
     before do
       # clean files
@@ -110,7 +125,7 @@ describe DownloadDocuments do
       it "stores successful document in s3" do
         successful_document = Document.first
         s3 = Fakes::S3Service
-        expect(s3.files[successful_document.s3_filename]).to eq("file content")
+        expect(s3.files[successful_document.s3_filename]).to eq(IO.binread(Rails.root + "spec/support/test.pdf"))
       end
     end
 
@@ -145,7 +160,7 @@ describe DownloadDocuments do
   end
 
   context "#download_and_package" do
-    let(:file) { "file content" }
+    let(:file) { IO.binread(Rails.root + "spec/support/test.pdf") }
     let(:vbms_documents) do
       [
         VBMS::Responses::Document.new(document_id: "1", filename: "keep-stamping.pdf", doc_type: "123",
@@ -174,8 +189,8 @@ describe DownloadDocuments do
       expect(File.exist?(Rails.root + "tmp/files/#{download.id}/#{download.package_filename}")).to be_falsey
     end
 
-    it "exits on stale record error when packaging" do
-      expect(download_documents).to receive(:before_document_download) do |_|
+    it "exits on download stale record error when packaging" do
+      expect(download_documents).to receive(:before_package_contents) do |_|
         Download.find(download.id).update_attributes!(status: :packaging_contents)
       end
 
@@ -188,13 +203,14 @@ describe DownloadDocuments do
       download_documents.create_documents
       download_documents.download_and_package
 
-      Zip::File.open(Rails.root + "tmp/files/#{download.id}/#{download.package_filename}") do |zip_file|
+      zip_path = Rails.root + "tmp/files/#{download.id}/#{download.package_filename}"
+      Zip::File.open(zip_path) do |zip_file|
         expect(zip_file.glob("00010-VA 21-4185 Report of Income from Property or Business-20150101-1.pdf").first).to_not be_nil
       end
-
       expect(download).to be_complete_success
       expect(download.started_at).to eq(Time.zone.now)
       expect(download.completed_at).to eq(Time.zone.now)
+      expect(download.zipfile_size).to eq(File.size(zip_path))
     end
 
     it "works even if zip exists" do

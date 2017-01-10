@@ -26,26 +26,32 @@ class DownloadDocuments
     end
   end
 
+  def fetch_document(document, index)
+    document.update_attributes!(started_at: Time.zone.now)
+
+    content = @vbms_service.fetch_document_file(document)
+
+    @s3.store_file(document.s3_filename, content)
+    filepath = save_document_file(document, content, index)
+    document.update_attributes!(
+      completed_at: Time.zone.now,
+      filepath: filepath,
+      download_status: :success
+    )
+  end
+
   def download_contents
     @download.update_attributes!(started_at: Time.zone.now)
-    @download.documents.where(download_status: 0).each_with_index do |document, i|
+    @download.documents.where(download_status: 0).each_with_index do |document, index|
       before_document_download(document)
 
       begin
-        document.update_attributes!(started_at: Time.zone.now)
-
-        content = @vbms_service.fetch_document_file(document)
-
-        @s3.store_file(document.s3_filename, content)
-        filepath = save_document_file(document, content, i)
-        document.update_attributes!(
-          completed_at: Time.zone.now,
-          filepath: filepath,
-          download_status: :success
-        )
+        fetch_document(document, index)
+        @download.touch
 
       rescue VBMS::ClientError
         document.update_attributes!(download_status: :failed)
+        @download.touch
 
       rescue ActiveRecord::StaleObjectError
         Rails.logger.info "Duplicate download detected. Document ID: #{document.id}"
@@ -66,10 +72,23 @@ class DownloadDocuments
     @download_dir
   end
 
+  def pdf_attributes(document)
+    {
+      "Document Type" => document.type_name,
+      "Receipt Date" => document.received_at ? document.received_at.iso8601 : "",
+      "Document ID" => document.document_id
+    }
+  end
+
   def save_document_file(document, content, index)
     filename = File.join(download_dir, unique_filename(document, index))
-    File.open(filename, "wb") do |f|
-      f.write(content)
+
+    if document.preferred_extension == "pdf"
+      DownloadDocuments.pdf_service.write(filename, content, pdf_attributes(document))
+    else
+      File.open(filename, "wb") do |f|
+        f.write(content)
+      end
     end
 
     filename
@@ -115,7 +134,7 @@ class DownloadDocuments
     end
 
     @s3.store_file(@download.s3_filename, zip_path, :filepath)
-    @download.complete!
+    @download.complete!(File.size(zip_path))
 
   rescue ActiveRecord::StaleObjectError
     Rails.logger.info "Duplicate packaging detected. Download ID: #{@download.id}"
@@ -144,6 +163,14 @@ class DownloadDocuments
     ignored = DownloadDocuments.ignored_doc_types
     vbms_documents.select do |vbms_document|
       !ignored.include?(vbms_document.doc_type)
+    end
+  end
+
+  class << self
+    attr_writer :pdf_service
+
+    def pdf_service
+      @pdf_service ||= PdfService
     end
   end
 end

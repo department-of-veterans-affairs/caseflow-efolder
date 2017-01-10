@@ -191,19 +191,14 @@ describe "Download" do
 
   context ".top_users" do
     before do
-      2.times do
-        download = Download.create(user_id: "RADIOHEAD", user_station_id: "203")
-        download.searches.create(email: nil, user_id: download.user_id)
-      end
-      10.times do
-        download = Download.create(user_id: "ARCADE_FIRE", user_station_id: "102")
-        download.searches.create(email: "archade_fire@example.com", user_id: download.user_id)
-      end
-      12.times do
-        download = Download.create(user_id: "QUEEN", user_station_id: "103")
-        download.searches.create(email: nil, user_id: download.user_id)
-      end
-      Search.last.update(email: "queen@example.com")
+      user1 = User.new(css_id: "RADIOHEAD", station_id: "203")
+      user2 = User.new(css_id: "ARCADE_FIRE", station_id: "102", email: "archade_fire@example.com")
+      user3 = User.new(css_id: "QUEEN", station_id: "103", email: "queen@example.com")
+      2.times { Download.create(user: user1) }
+      10.times { Download.create(user: user2) }
+      12.times { Download.create(user: user3) }
+      # should ignore downloads that have nil user values
+      4.times { Download.create }
     end
 
     subject { Download.top_users(downloads: Download.all) }
@@ -215,6 +210,21 @@ describe "Download" do
       expect(subject[1][:count]).to eq(10)
       expect(subject[2][:id]).to eq("No Email Recorded (RADIOHEAD - Station 203)")
       expect(subject[2][:count]).to eq(2)
+    end
+  end
+
+  context "#css_id_string" do
+    subject { download.css_id_string }
+    let(:download) { Download.new(user: user) }
+
+    context "when user is set" do
+      let(:user) { User.new(css_id: "WALTER", station_id: "123") }
+      it { is_expected.to eq("(WALTER - Station 123)") }
+    end
+
+    context "when user is nil" do
+      let(:user) { nil }
+      it { is_expected.to eq("Unknown") }
     end
   end
 

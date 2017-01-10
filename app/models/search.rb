@@ -5,6 +5,7 @@
 #
 class Search < ActiveRecord::Base
   belongs_to :download
+  belongs_to :user
 
   enum status: {
     download_created: 0,
@@ -32,19 +33,12 @@ class Search < ActiveRecord::Base
     (file_number || "").strip
   end
 
-  def user=(user)
-    self.user_id = user.id
-    self.user_station_id = user.station_id
-    self.email = user.email
-  end
-
   private
 
   def download_scope
     Download.active.where(
       file_number: sanitized_file_number,
-      user_id: user_id,
-      user_station_id: user_station_id
+      user: user
     ).where.not(status: [1, 7])
   end
 

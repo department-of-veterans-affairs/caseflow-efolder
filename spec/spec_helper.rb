@@ -105,4 +105,7 @@ RSpec.configure do |config|
   #   # test failures related to randomization by passing the same `--seed` value
   #   # as the one that triggered the failure.
   #   Kernel.srand config.seed
+
+  # Test User ID set for repeated download testing:
+  ENV["TEST_USER_ID"] = "321321"
 end

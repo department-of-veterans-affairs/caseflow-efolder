@@ -1,6 +1,6 @@
 source ENV['GEM_SERVER_URL'] || 'https://rubygems.org'
 
-gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons", ref: "3b13049"
+gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons", ref: "40bdd3c"
 gem "moment_timezone-rails"
 
 # Use sqlite3 as the database for Active Record
@@ -55,7 +55,7 @@ gem 'rubyzip'
 gem 'zaru'
 
 gem 'connect_vbms', git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "6cde66023ccbd09676b851bdb97f5b8ac383960b"
-gem 'bgs', git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", :branch => 'ssl'
+gem 'bgs', git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", :branch => 'master'
 #gem 'connect_vbms', git: 'https://github.com/department-of-veterans-affairs/connect_vbms.git'
 
 # Use ActiveModel has_secure_password
@@ -104,4 +104,3 @@ group :development do
   # For windows
   gem 'tzinfo-data'
 end
-

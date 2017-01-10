@@ -17,6 +17,7 @@ class Download < ActiveRecord::Base
   # https://github.com/department-of-veterans-affairs/caseflow-efolder/issues/213
   has_many :documents, -> { order(received_at: :desc, id: :asc) }
   has_many :searches
+  belongs_to :user
 
   before_create do |download|
     # This fake is used in the test suite, but let's
@@ -123,21 +124,17 @@ class Download < ActiveRecord::Base
     end
   end
 
-  def complete!
+  def complete!(zipfile_size)
     update_attributes(
+      zipfile_size: zipfile_size,
       completed_at: Time.zone.now,
       status: errors? ? :complete_with_errors : :complete_success
     )
   end
 
-  def user_id_string
-    "(#{user_id} - Station #{user_station_id})"
-  end
-
-  def email
-    Search.where.not(email: nil)
-          .find_by(user_id: user_id)
-          .try(:email)
+  def css_id_string
+    return "Unknown" unless user
+    "(#{user.css_id} - Station #{user.station_id})"
   end
 
   def expiration_day
@@ -154,10 +151,11 @@ class Download < ActiveRecord::Base
 
   def self.downloads_by_user(downloads:)
     downloads.each_with_object({}) do |download, result|
-      result[download.user_id_string] ||= {}
-      result[download.user_id_string][:email] ||= download.email || User::NO_EMAIL
-      result[download.user_id_string][:count] ||= 0
-      result[download.user_id_string][:count] += 1
+      next unless download.user
+      result[download.css_id_string] ||= {}
+      result[download.css_id_string][:email] ||= download.user.email || User::NO_EMAIL
+      result[download.css_id_string][:count] ||= 0
+      result[download.css_id_string][:count] += 1
     end
   end
 

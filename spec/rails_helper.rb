@@ -29,6 +29,8 @@ Sniffybara::Driver.path_exclusions << /samlva/
 Sniffybara::Driver.configuration_file = File.expand_path("../support/VA-axe-configuration.json", __FILE__)
 Sniffybara::Driver.issue_id_exceptions += []
 
+ActiveRecord::Migration.maintain_test_schema!
+
 # Convenience methods for stubbing current user
 module StubbableUser
   module ClassMethods
@@ -37,13 +39,21 @@ module StubbableUser
     end
 
     def authenticate!(options = {})
-      self.stub = User.new(
-        id: "123123",
-        name: "first last",
-        email: "test@gmail.com",
-        roles: options[:roles] || ["Download eFolder"],
-        station_id: "116"
-      )
+      self.stub = find_or_create_by(css_id: "123123", station_id: "116").tap do |u|
+        u.name = "first last"
+        u.email = "test@gmail.com"
+        u.roles = options[:roles] || ["Download eFolder"]
+        u.save
+      end
+    end
+
+    def tester!(options = {})
+      self.stub = find_or_create_by(css_id: ENV["TEST_USER_ID"], station_id: "116").tap do |u|
+        u.name = "first last"
+        u.email = "test@gmail.com"
+        u.roles = options[:roles] || ["Download eFolder"]
+        u.save
+      end
     end
 
     def unauthenticate!
