@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/department-of-veterans-affairs/caseflow-commons
-  revision: 40bdd3ce915522f0dfdc13b7a3f351243e21285f
-  ref: 40bdd3c
+  revision: 6a0cb8e42025beb46f0d80f4e35af52191042bc3
+  ref: 6a0cb8e
   specs:
     caseflow (0.1.6)
       aws-sdk (~> 2)
@@ -10,6 +10,7 @@ GIT
       jquery-rails
       momentjs-rails
       neat
+      rails (~> 4.2)
       us_web_design_standards
 
 GIT
@@ -200,7 +201,7 @@ GEM
     mini_portile2 (2.1.0)
     minitest (5.10.1)
     moment_timezone-rails (0.5.0)
-    momentjs-rails (2.15.1)
+    momentjs-rails (2.17.1)
       railties (>= 3.1)
     multi_json (1.12.1)
     multipart-post (2.0.0)
