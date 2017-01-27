@@ -141,10 +141,6 @@ class Download < ActiveRecord::Base
     started_at ? (started_at + HOURS_UNTIL_EXPIRY.hours).strftime("%m/%d") : nil
   end
 
-  def calculate_remaining_documents
-    documents.where(completed_at: nil).count
-  end
-
   def number_of_documents
     documents.count
   end

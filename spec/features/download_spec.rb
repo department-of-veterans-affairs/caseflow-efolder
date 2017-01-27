@@ -277,6 +277,36 @@ RSpec.feature "Downloads" do
     expect(page).to_not have_css ".document-pending", text: "yawn.pdf"
   end
 
+  scenario "Progress bar shows correct information" do
+    download = @user_download.create(status: :pending_documents)
+    download.documents.create(
+      vbms_filename: "yawn.pdf",
+      mime_type: "application/pdf",
+      started_at: 1.minute.ago,
+      download_status: :pending)
+    download.documents.create(
+      vbms_filename: "yawn.pdf",
+      mime_type: "application/pdf",
+      started_at: 1.minute.ago,
+      download_status: :pending)
+    download.documents.create(
+      vbms_filename: "smiley.pdf",
+      mime_type: "application/pdf",
+      started_at: 2.minutes.ago,
+      completed_at: 1.minute.ago,
+      download_status: :success)
+    download.documents.create(
+      doc_type: "129",
+      document_id: "{1234-1234-1234-5555}",
+      mime_type: "application/pdf",
+      started_at: 2.minutes.ago,
+      download_status: :failed
+    )
+
+    visit download_path(download)
+    expect(page).to have_content "2 of 4 files remaining"
+  end
+
   scenario "Completed with at least one failed document download" do
     download = @user_download.create(file_number: "12", status: :pending_documents)
     download.documents.create(vbms_filename: "roll.pdf", mime_type: "application/pdf", download_status: :failed)
