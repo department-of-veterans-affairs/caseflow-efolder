@@ -55,9 +55,9 @@ ActiveRecord::Schema.define(version: 20170106143608) do
   create_table "downloads", force: :cascade do |t|
     t.string   "request_id"
     t.string   "file_number"
-    t.integer  "status",                default: 0
-    t.datetime "created_at",                        null: false
-    t.datetime "updated_at",                        null: false
+    t.integer  "status",                          default: 0
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
     t.integer  "lock_version"
     t.datetime "manifest_fetched_at"
     t.datetime "started_at"
@@ -70,7 +70,6 @@ ActiveRecord::Schema.define(version: 20170106143608) do
   end
 
   add_index "downloads", ["completed_at"], name: "downloads_completed_at", using: :btree
-  add_index "downloads", ["manifest_fetched_at"], name: "downloads_manifest_fetched_at", using: :btree
   add_index "downloads", ["user_id"], name: "index_downloads_on_user_id", using: :btree
 
   create_table "searches", force: :cascade do |t|
