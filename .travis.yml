@@ -24,7 +24,7 @@ before_script:
 script:
   - bundle exec rake
 
-bundler_args: "--without development"
+bundler_args: "--deployment --without development"
 cache:
   - bundler
 
