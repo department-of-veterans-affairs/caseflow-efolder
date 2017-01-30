@@ -120,7 +120,7 @@ class Download < ActiveRecord::Base
   def reset!
     Download.transaction do
       update_attributes!(status: :pending_documents)
-      documents.update_all(filepath: nil, download_status: 0)
+      documents.update_all(filepath: nil, download_status: 0, completed_at: nil)
     end
   end
 
