@@ -1,6 +1,6 @@
 <div class="cf-app-segment cf-app-segment--alt">
   <% if @download.complete? %>
-    <% if @download.documents.failed.any? %>
+    <% if failed_documents.any? %>
       <div class="usa-alert usa-alert-error" role="alert">
         <div class="usa-alert-body">
           <h3 class="usa-alert-heading">Some files couldn't be added to eFolder</h3>
@@ -52,7 +52,7 @@
     <p class="ee-fetching-files">
       <% if @download.estimated_to_complete_at %>
         Estimated time left: <%= distance_of_time_in_words(@download.estimated_to_complete_at, Time.zone.now, include_seconds: true) %>
-        (<%= @download.calculate_remaining_documents %> of <%= @download.number_of_documents %> files remaining)
+        (<%= documents_in_progress.count %> of <%= @download.number_of_documents %> files remaining)
       <% end %>
     </p>
 
@@ -65,16 +65,16 @@
 
   <div class="cf-tab-navigation">
     <button class="cf-tab <% if current_tab == "progress" %>cf-active<% end %>" data-tab="progress"
-      <% if @download.documents.where(download_status: 0).empty? %>disabled<% end %>>
-      <%= svg_icon(:progress) %> Progress (<%= @download.documents.where(download_status: 0).count %>)
+      <% if documents_in_progress.empty? %>disabled<% end %>>
+      <%= svg_icon(:progress) %> Progress (<%= documents_in_progress.count %>)
     </button>
     <button class="cf-tab <% if current_tab == "completed" %>cf-active<% end %>" data-tab="completed"
-      <% if @download.documents.where(download_status: 1).empty? %>disabled<% end %>>
-      <%= svg_icon(:success) %> Completed (<%= @download.documents.where(download_status: 1).count %>)
+      <% if completed_documents.empty? %>disabled<% end %>>
+      <%= svg_icon(:success) %> Completed (<%= completed_documents.count %>)
     </button>
     <button class="cf-tab <% if current_tab == "errored" %>cf-active<% end %>" data-tab="errored"
-      <% if @download.documents.where(download_status: 2).empty? %>disabled<% end %>>
-     <%= svg_icon(:failed) %> Errors (<%= @download.documents.where(download_status: 2).count %>)
+      <% if failed_documents.empty? %>disabled<% end %>>
+     <%= svg_icon(:failed) %> Errors (<%= failed_documents.count %>)
     </button>
   </div>
 

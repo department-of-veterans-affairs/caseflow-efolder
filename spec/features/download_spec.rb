@@ -247,19 +247,34 @@ RSpec.feature "Downloads" do
     expect(page).to have_content("Retrieving Files ...")
   end
 
-  scenario "Download progress shows documents in tabs based on their status" do
+  scenario "Download progress shows correct information" do
     download = @user_download.create(status: :pending_documents)
-    download.documents.create(vbms_filename: "yawn.pdf", mime_type: "application/pdf", download_status: :pending)
-    download.documents.create(vbms_filename: "smiley.pdf", mime_type: "application/pdf", download_status: :success)
+    download.documents.create(
+      vbms_filename: "yawn.pdf",
+      mime_type: "application/pdf",
+      started_at: 1.minute.ago,
+      download_status: :pending)
+    download.documents.create(
+      vbms_filename: "yawn.pdf",
+      mime_type: "application/pdf",
+      started_at: 1.minute.ago,
+      download_status: :pending)
+    download.documents.create(
+      vbms_filename: "smiley.pdf",
+      mime_type: "application/pdf",
+      started_at: 2.minutes.ago,
+      completed_at: 1.minute.ago,
+      download_status: :success)
     download.documents.create(
       doc_type: "129",
       document_id: "{1234-1234-1234-5555}",
       mime_type: "application/pdf",
+      started_at: 2.minutes.ago,
       download_status: :failed
     )
 
     visit download_path(download)
-    expect(page).to have_css ".cf-tab.cf-active", text: "Progress (1)"
+    expect(page).to have_css ".cf-tab.cf-active", text: "Progress (2)"
     expect(page).to have_css ".document-pending", text: "yawn.pdf"
     expect(page).to_not have_css ".document-success", text: "smiley.pdf"
     expect(page).to_not have_css ".document-failed", text: "poo.pdf"
@@ -275,6 +290,8 @@ RSpec.feature "Downloads" do
     expect(page).to have_css ".document-failed", text: "VA 21-509 Statement of Dependency of Parents 1234-1234-1234-5555"
     expect(page).to_not have_css ".document-success", text: "smiley.pdf"
     expect(page).to_not have_css ".document-pending", text: "yawn.pdf"
+
+    expect(page).to have_content "2 of 4 files remaining"
   end
 
   scenario "Completed with at least one failed document download" do

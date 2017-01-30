@@ -98,6 +98,21 @@ class DownloadsController < ApplicationController
   end
   helper_method :recent_downloads
 
+  def documents_in_progress
+    @download.documents.pending
+  end
+  helper_method :documents_in_progress
+
+  def completed_documents
+    @download.documents.success
+  end
+  helper_method :completed_documents
+
+  def failed_documents
+    @download.documents.failed
+  end
+  helper_method :failed_documents
+
   def current_tab
     params[:current_tab] || (@download.complete? ? "completed" : "progress")
   end
