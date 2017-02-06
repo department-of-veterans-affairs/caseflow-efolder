@@ -1,5 +1,4 @@
 GIT
-  remote: https://github.com/department-of-veterans-affairs/caseflow-commons
   revision: 3e086a994f534090550fee93afaa2966373da80d
   ref: 3e086a9
   specs:
