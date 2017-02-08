@@ -52,7 +52,6 @@ describe Document do
       end
 
       it { is_expected.to eq("VA 27-0820b Report of Nursing Home or Assisted Living Information-20150103-ABC123-DEF123-GHI456A.pdf") }
-
     end
 
     context "when filename length is greater than 100 (101)" do
@@ -67,9 +66,7 @@ describe Document do
       end
 
       it { is_expected.to eq("VA 27-0820b Report of Nursing Home or Assisted Living Informatio-20150103-ABC123-DEF123-GHI456AB.pdf") }
-
     end
-
   end
 
   context ".average_download_rate" do

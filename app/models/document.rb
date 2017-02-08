@@ -22,8 +22,8 @@ class Document < ActiveRecord::Base
   # Since Windows has the maximum length for a path, we crop type_name if the filename is longer than set maximum (issue #371)
   def cropped_type_name
     over_limit = (Zaru.sanitize! "#{type_name}-#{filename_date}-#{filename_doc_id}.#{preferred_extension}").size - MAXIMUM_FILENAME_LENGTH
-    (over_limit <= 0) ? end_index = -1 : end_index = -1-over_limit
-    return type_name[0..end_index]
+    end_index = (over_limit <= 0) ? -1 : -1 - over_limit
+    type_name[0..end_index]
   end
 
   def filename_date
