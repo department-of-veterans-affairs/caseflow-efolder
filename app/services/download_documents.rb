@@ -6,7 +6,7 @@ class DownloadDocuments
     @download = opts[:download]
     @vbms_documents = DownloadDocuments.filter_vbms_documents(opts[:vbms_documents] || [])
     @vbms_service = opts[:vbms_service] || VBMSService
-    @s3 = opts[:s3] || (Rails.application.config.s3_enabled ? S3Service : Fakes::S3Service)
+    @s3 = opts[:s3] || (Rails.application.config.s3_enabled ? Caseflow::S3Service : Caseflow::Fakes::S3Service)
   end
 
   def create_documents

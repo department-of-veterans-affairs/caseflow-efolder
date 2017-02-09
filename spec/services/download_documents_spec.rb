@@ -27,7 +27,7 @@ describe DownloadDocuments do
   end
 
   let(:download_documents) do
-    DownloadDocuments.new(download: download, vbms_documents: vbms_documents, s3: Fakes::S3Service)
+    DownloadDocuments.new(download: download, vbms_documents: vbms_documents, s3: Caseflow::Fakes::S3Service)
   end
 
   context "#save_document_file" do
@@ -124,7 +124,7 @@ describe DownloadDocuments do
 
       it "stores successful document in s3" do
         successful_document = Document.first
-        s3 = Fakes::S3Service
+        s3 = Caseflow::Fakes::S3Service
         expect(s3.files[successful_document.s3_filename]).to eq(IO.binread(Rails.root + "spec/support/test.pdf"))
       end
     end
