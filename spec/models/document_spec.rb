@@ -31,13 +31,41 @@ describe Document do
         Document.new(
           vbms_filename: "purple.txt",
           received_at: Time.utc(2015, 1, 3, 17, 0, 0),
-          doc_type: "99",
+          doc_type: "89",
           document_id: "{ABC123-DEF123-GHI456}",
           mime_type: "application/pdf"
         )
       end
 
-      it { is_expected.to eq("VA 10-1000 Hospital Summary andor the Compensation and Pension Exam Report-20150103-ABC123-DEF123-GHI456.pdf") }
+      it { is_expected.to eq("STR-20150103-ABC123-DEF123-GHI456.pdf") }
+    end
+
+    context "when filename length equals 100" do
+      let(:document) do
+        Document.new(
+          vbms_filename: "purple.txt",
+          received_at: Time.utc(2015, 1, 3, 17, 0, 0),
+          doc_type: "497",
+          document_id: "{ABC123-DEF123-GHI456A}",
+          mime_type: "application/pdf"
+        )
+      end
+
+      it { is_expected.to eq("VA 27-0820b Report of Nursing Home or Assisted Living Information-20150103-ABC123-DEF123-GHI456A.pdf") }
+    end
+
+    context "when filename length is greater than 100 (101)" do
+      let(:document) do
+        Document.new(
+          vbms_filename: "purple.txt",
+          received_at: Time.utc(2015, 1, 3, 17, 0, 0),
+          doc_type: "497",
+          document_id: "{ABC123-DEF123-GHI456AB}",
+          mime_type: "application/pdf"
+        )
+      end
+
+      it { is_expected.to eq("VA 27-0820b Report of Nursing Home or Assisted Living Informatio-20150103-ABC123-DEF123-GHI456AB.pdf") }
     end
   end
 

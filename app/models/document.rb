@@ -5,6 +5,7 @@ class Document < ActiveRecord::Base
   AVERAGE_DOWNLOAD_RATE_LIMIT = 100
   AVERAGE_DOWNLOAD_RATE_CACHE_EXPIRATION = 30.seconds
   AVERAGE_DOWNLOAD_RATE_CACHE_KEY = "historical-average-download-rate".freeze
+  MAXIMUM_FILENAME_LENGTH = 100
 
   enum download_status: { pending: 0, success: 1, failed: 2 }
 
@@ -15,7 +16,14 @@ class Document < ActiveRecord::Base
   end
 
   def filename
-    Zaru.sanitize! "#{type_name}-#{filename_date}-#{filename_doc_id}.#{preferred_extension}"
+    Zaru.sanitize! "#{cropped_type_name}-#{filename_date}-#{filename_doc_id}.#{preferred_extension}"
+  end
+
+  # Since Windows has the maximum length for a path, we crop type_name if the filename is longer than set maximum (issue #371)
+  def cropped_type_name
+    over_limit = (Zaru.sanitize! "#{type_name}-#{filename_date}-#{filename_doc_id}.#{preferred_extension}").size - MAXIMUM_FILENAME_LENGTH
+    end_index = (over_limit <= 0) ? -1 : -1 - over_limit
+    type_name[0..end_index]
   end
 
   def filename_date
