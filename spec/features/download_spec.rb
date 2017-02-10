@@ -70,6 +70,25 @@ RSpec.feature "Downloads" do
     expect(search).to be_download_created
   end
 
+  scenario ": initial wait" do
+    Fakes::BGSService.veteran_info = {
+      "1234" => {
+        "veteran_first_name" => "Stan",
+        "veteran_last_name" => "Lee",
+        "veteran_last_four_ssn" => "2222"
+      }
+    }
+
+    visit "/"
+
+    # prevent form submission
+    page.execute_script('$("form").attr("onsubmit", "return false;")')
+
+    fill_in "Search for a Veteran ID number below to get started.", with: "1234"
+    click_button "Search"
+    expect(page).to have_css(".cf-loading-indicator .using-logo")
+  end
+
   scenario "Searching for an errored download tries again" do
     Fakes::BGSService.veteran_info = {
       "5555" => {

@@ -1,6 +1,6 @@
 source ENV['GEM_SERVER_URL'] || 'https://rubygems.org'
 
-gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons", ref: "3e086a9"
+gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons", ref: "fa1b297b9"
 gem "moment_timezone-rails"
 
 # Use sqlite3 as the database for Active Record
