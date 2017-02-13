@@ -1,7 +1,14 @@
 GIT
+  remote: https://github.com/18F/uswds-rails-gem.git
+  revision: aa12ddd314209ef9e75bb2f2bfcf1454336df049
+  specs:
+    uswds-rails (1.0.0)
+      sass
+
+GIT
   remote: https://github.com/department-of-veterans-affairs/caseflow-commons
-  revision: 887bbc838ab1f6bf3e40e44727ffdbc9437cba17
-  ref: 887bbc838ab1f6bf3e40e44727ffdbc9437cba17
+  revision: 35af3ad8ef1f860d81e71a67b3b491ea778d807f
+  ref: 35af3ad8e
   specs:
     caseflow (0.1.6)
       aws-sdk (~> 2)
@@ -11,7 +18,6 @@ GIT
       momentjs-rails
       neat
       rails (~> 4.2)
-      us_web_design_standards
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/connect_vbms.git
@@ -52,15 +58,6 @@ GIT
       poltergeist
       rainbow
       selenium-webdriver
-
-GIT
-  remote: https://github.com/harrisj/us_web_design_standards_gem.git
-  revision: a789c0a7b55d13f378fb3a0da675bcc687079ea3
-  branch: rails-assets-fixes
-  specs:
-    us_web_design_standards (0.0.2)
-      railties
-      sass (~> 3.4)
 
 GEM
   remote: https://rubygems.org/
@@ -445,7 +442,7 @@ DEPENDENCIES
   turbolinks
   tzinfo-data
   uglifier (>= 1.3.0)
-  us_web_design_standards!
+  uswds-rails!
   zaru
 
 BUNDLED WITH
