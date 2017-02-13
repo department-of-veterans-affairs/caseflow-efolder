@@ -1,6 +1,6 @@
 source ENV['GEM_SERVER_URL'] || 'https://rubygems.org'
 
-gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons", ref: "fa1b297b9"
+gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons", ref: "35af3ad8e"
 gem "moment_timezone-rails"
 
 # Use sqlite3 as the database for Active Record
@@ -28,9 +28,7 @@ gem 'therubyracer', platforms: :ruby
 gem 'therubyrhino', platforms: :jruby
 
 # Style
-gem 'us_web_design_standards', git: 'https://github.com/harrisj/us_web_design_standards_gem.git', branch: 'rails-assets-fixes'
-# TODO: We can remove the git path when this pull request is merged in:
-#       https://github.com/18F/us_web_design_standards_gem/pull/7/commits
+gem 'uswds-rails', git: 'https://github.com/18F/uswds-rails-gem.git'
 
 # Error reporting to Sentry
 gem "sentry-raven"
