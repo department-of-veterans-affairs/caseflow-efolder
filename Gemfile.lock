@@ -15,11 +15,11 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/connect_vbms.git
-  revision: 6cde66023ccbd09676b851bdb97f5b8ac383960b
-  ref: 6cde66023ccbd09676b851bdb97f5b8ac383960b
+  revision: b5e43ac1ade8e02cfb6658caf13f159710db8b5c
+  ref: b5e43ac1ade8e02cfb6658caf13f159710db8b5c
   specs:
     connect_vbms (1.0.0)
-      httpclient (~> 2.6.0.1)
+      httpclient (~> 2.8.0)
       httpi (~> 2.4)
       mail
       nokogiri (~> 1.6)
@@ -173,7 +173,7 @@ GEM
       tilt
     hashie (3.4.6)
     highline (1.7.8)
-    httpclient (2.6.0.1)
+    httpclient (2.8.3)
     httpi (2.4.2)
       rack
       socksify
