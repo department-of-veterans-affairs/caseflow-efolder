@@ -209,11 +209,11 @@ module ApplicationHelper
     "<span class='ee-pill-icon-loading-back'>#{svg_icon(:pill_loading_back)}</span><span class='ee-pill-icon-loading-front'>#{svg_icon(:pill_loading_front)}</span>".html_safe
   end
 
-  def loading_pill(options={})
+  def loading_pill(options = {})
     text = options.key?(:text) ? options[:text] : "Loading..."
     icon_class = options[:no_icon] ? false : "with-icon"
     pill = "<span class=\"usa-search-submit-text #{icon_class}\">#{text}</span>".html_safe
-    if icon_class then
+    if icon_class
       pill + loading_pill_icon
     else
       pill

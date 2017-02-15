@@ -1,7 +1,6 @@
 require "rails_helper"
 
 RSpec.describe ApplicationHelper, type: :helper do
-
   describe "#current_ga_path" do
     it "returns route's path without resource ids" do
       helper.request.env["PATH_INFO"] = "/downloads/5/download"
@@ -22,15 +21,14 @@ RSpec.describe ApplicationHelper, type: :helper do
 
     describe "with options[:text]" do
       it "sets the pill's label" do
-        expect(helper.loading_pill({text: "Working..."})).to include "Working..."
+        expect(helper.loading_pill(text: "Working...")).to include "Working..."
       end
     end
 
     describe "with options[:no_icon]" do
       it "omits the spinning icon" do
-        expect(helper.loading_pill({no_icon: true})).not_to have_css(".ee-pill-icon-loading-front")
+        expect(helper.loading_pill(no_icon: true)).not_to have_css(".ee-pill-icon-loading-front")
       end
     end
   end
-
 end
