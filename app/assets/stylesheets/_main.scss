@@ -34,6 +34,7 @@ a {
 
 .cf-loading-indicator {
   display: none !important;
+  position: relative;
 }
 
 .cf-is-loading {
@@ -43,6 +44,15 @@ a {
 
   .cf-loading-indicator {
     display: block !important;
+
+    .usa-search-submit-text {
+      &.with-icon {
+        font-size: 75%;
+        position: absolute;
+        top: 35%;
+        left: 1.25rem;
+      }
+    }
   }
 }
 
@@ -114,6 +124,26 @@ table td {
   position: absolute;
   top: 0;
   left: 0;
+}
+
+.ee-pill-icon-loading-front {
+  position: absolute;
+  top: 1rem;
+  right: 1.25rem;
+
+  svg {
+    @include animation(backwardspin 5s linear infinite);
+  }
+}
+
+.ee-pill-icon-loading-back {
+  position: absolute;
+  top: 1rem;
+  right: 1.25rem;
+
+  svg {
+    @include animation(spin 5s linear infinite);
+  }
 }
 
 .ee-document-list {
