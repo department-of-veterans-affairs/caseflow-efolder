@@ -86,7 +86,7 @@ RSpec.feature "Downloads" do
 
     fill_in "Search for a Veteran ID number below to get started.", with: "1234"
     click_button "Search"
-    expect(page).to have_css(".cf-loading-indicator .using-logo")
+    expect(page).to have_css(".cf-loading-indicator .with-icon")
   end
 
   scenario "Searching for an errored download tries again" do
