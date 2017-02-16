@@ -57,7 +57,7 @@ gem 'rubyzip'
 
 gem 'zaru'
 
-gem 'connect_vbms', git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "6cde66023ccbd09676b851bdb97f5b8ac383960b"
+gem 'connect_vbms', git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "b5e43ac1ade8e02cfb6658caf13f159710db8b5c"
 gem 'bgs', git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", :branch => 'master'
 #gem 'connect_vbms', git: 'https://github.com/department-of-veterans-affairs/connect_vbms.git'
 
