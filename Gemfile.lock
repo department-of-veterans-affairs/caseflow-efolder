@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/department-of-veterans-affairs/caseflow-commons
-  revision: faecda3443f0e0a0abfb0774106bae320b2c3026
-  ref: faecda3443f0e0a0abfb0774106bae320b2c3026
+  revision: 5ed8defaf528a850c25a027109cbc9bb9fa07ac0
+  ref: 5ed8def
   specs:
     caseflow (0.1.6)
       aws-sdk (~> 2)
@@ -205,8 +205,8 @@ GEM
       railties (>= 3.1)
     multi_json (1.12.1)
     multipart-post (2.0.0)
-    neat (1.8.0)
-      sass (>= 3.3)
+    neat (2.0.0)
+      sass (~> 3.4)
       thor (~> 0.19)
     nokogiri (1.6.8.1)
       mini_portile2 (~> 2.1.0)
@@ -449,4 +449,4 @@ DEPENDENCIES
   zaru
 
 BUNDLED WITH
-   1.14.3
+   1.14.4
