@@ -66,15 +66,27 @@
   <div class="cf-tab-navigation">
     <button class="cf-tab <% if current_tab == "progress" %>cf-active<% end %>" data-tab="progress"
       <% if documents_in_progress.empty? %>disabled<% end %>>
-      <%= svg_icon(:progress) %> Progress (<%= documents_in_progress.count %>)
+      <span>
+        <span>
+          <%= svg_icon(:progress) %> Progress (<%= documents_in_progress.count %>)
+        </span>
+      </span>
     </button>
     <button class="cf-tab <% if current_tab == "completed" %>cf-active<% end %>" data-tab="completed"
       <% if completed_documents.empty? %>disabled<% end %>>
-      <%= svg_icon(:success) %> Completed (<%= completed_documents.count %>)
+      <span>
+        <span>
+          <%= svg_icon(:success) %> Completed (<%= completed_documents.count %>)
+        </span>
+      </span>
     </button>
     <button class="cf-tab <% if current_tab == "errored" %>cf-active<% end %>" data-tab="errored"
       <% if failed_documents.empty? %>disabled<% end %>>
-     <%= svg_icon(:failed) %> Errors (<%= failed_documents.count %>)
+      <span>
+        <span>
+          <%= svg_icon(:failed) %> Errors (<%= failed_documents.count %>)
+        </span>
+      </span>
     </button>
   </div>
 
