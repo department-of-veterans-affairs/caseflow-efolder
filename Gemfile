@@ -1,6 +1,6 @@
 source ENV['GEM_SERVER_URL'] || 'https://rubygems.org'
 
-gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons", ref: "5ed8def"
+gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons", ref: "d2498d5917"
 
 gem "moment_timezone-rails"
 
@@ -24,14 +24,13 @@ gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 4.1.0'
 
+# Explicitly adding USWDS gem until it's published and we can
+# include it via commons
+gem "uswds-rails", git: "https://github.com/18F/uswds-rails-gem.git"
+
 # See https://github.com/rails/execjs#readme for more supported runtimes
 gem 'therubyracer', platforms: :ruby
 gem 'therubyrhino', platforms: :jruby
-
-# Style
-gem 'us_web_design_standards', git: 'https://github.com/harrisj/us_web_design_standards_gem.git', branch: 'rails-assets-fixes'
-# TODO: We can remove the git path when this pull request is merged in:
-#       https://github.com/18F/us_web_design_standards_gem/pull/7/commits
 
 # Error reporting to Sentry
 gem "sentry-raven"
