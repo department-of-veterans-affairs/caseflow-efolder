@@ -11,6 +11,7 @@ window.DownloadStatus = (function($) {
           openRequests-- ;
           if (download.status != currentStatus) { location.reload(); }
         }, function(){
+          // error block. decrement openRequests so we send a new one.
           openRequests--;
         });
       }
@@ -22,6 +23,8 @@ window.DownloadStatus = (function($) {
       currentStatus = downloadStatus;
 
       this.intervalID = window.setInterval(function() {
+        // Only keep 2 requests open at a time, so they don't pile up
+        // due to network slowness (e.g. VA VPN)
         if (openRequests <= 2) {
           recheck();
         }
