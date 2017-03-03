@@ -1,5 +1,5 @@
 window.DownloadProgress = (function($) {
-  var id, intervalID;
+  var id, intervalID, openRequests = 0;
 
   // public
   return {
@@ -17,15 +17,20 @@ window.DownloadProgress = (function($) {
       var self = this;
 
       if (id) {
+        openRequests++
         $.get("/downloads/" + id + "/progress?current_tab=" + this.currentTab).then(function(fragment) {
+          openRequests--;
           var scrollTop = $(".cf-tab-content")[0].scrollTop;
           $("#download-progress").html(fragment);
 
-          if(!changingTabs) {
+          if (!changingTabs) {
             $(".cf-tab-content")[0].scrollTop = scrollTop;
           }
 
           self.initTabs();
+        }, function(){
+          // error block. decrement openRequests so we send a new one.
+          openRequests--;
         });
       }
     },
@@ -49,7 +54,11 @@ window.DownloadProgress = (function($) {
       var self = this;
       id = downloadId;
       intervalID = window.setInterval(function() {
-        self.reload(false);
+        // Only keep 2 requests open at a time, so they don't pile up
+        // due to network slowness (e.g. on the VA VPN)
+        if (openRequests <= 2) {
+          self.reload(false);
+        }
       }, 2000);
 
       $(document).ready(function() { self.initTabs(); });
