@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
   force_ssl if: :ssl_enabled?
+  before_action :check_out_of_service
   before_action :authenticate
   before_action :set_raven_user
   before_action :configure_bgs
@@ -36,6 +37,10 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def check_out_of_service
+    render "out_of_service", layout: "application" if Rails.cache.read("out_of_service")
+  end
 
   def current_user
     @current_user ||= User.from_session(session, request)
