@@ -6,6 +6,20 @@ GIT
       sass
 
 GIT
+  remote: https://github.com/department-of-veterans-affairs/caseflow-commons
+  revision: fd406fe2d47e1272933d28b8b0d52e620a00cc13
+  ref: fd406fe
+  specs:
+    caseflow (0.1.6)
+      aws-sdk (~> 2)
+      bourbon (= 4.2.7)
+      d3-rails
+      jquery-rails
+      momentjs-rails
+      neat
+      rails (= 4.2.7.1)
+
+GIT
   remote: https://github.com/department-of-veterans-affairs/connect_vbms.git
   revision: b5e43ac1ade8e02cfb6658caf13f159710db8b5c
   ref: b5e43ac1ade8e02cfb6658caf13f159710db8b5c
@@ -44,18 +58,6 @@ GIT
       poltergeist
       rainbow
       selenium-webdriver
-
-PATH
-  remote: /Users/mdbenjam/Nava/code/caseflow-commons
-  specs:
-    caseflow (0.1.6)
-      aws-sdk (~> 2)
-      bourbon (= 4.2.7)
-      d3-rails
-      jquery-rails
-      momentjs-rails
-      neat
-      rails (= 4.2.7.1)
 
 GEM
   remote: https://rubygems.org/
