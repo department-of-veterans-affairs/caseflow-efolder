@@ -1,4 +1,4 @@
-$(document).ready(function(){
+$(window).ready(function(){
  
  //Check to see if the window is top if not then display button
   $(window).scroll(function(){
