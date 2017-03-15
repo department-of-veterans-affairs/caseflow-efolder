@@ -5,7 +5,11 @@ class VBMSService
   def self.fetch_documents_for(download)
     @client ||= init_client
 
-    request = VBMS::Requests::ListDocuments.new(download.file_number)
+    request = if ENV["USE_VBMS_V5"].to_b
+                VBMS::Requests::FindDocumentSeriesReference.new(download.file_number)
+              else
+                VBMS::Requests::ListDocuments.new(download.file_number)
+              end
     @client.send_request(request)
   rescue => e
     Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
@@ -15,7 +19,11 @@ class VBMSService
   def self.fetch_document_file(document)
     @client ||= init_client
 
-    request = VBMS::Requests::FetchDocumentById.new(document.document_id)
+    request = if ENV["USE_VBMS_V5"].to_b
+                VBMS::Requests::GetDocumentContent.new(document.document_id)
+              else
+                VBMS::Requests::FetchDocumentById.new(document.document_id)
+              end
     result = @client.send_request(request)
     result && result.content
   rescue => e

@@ -2,6 +2,8 @@ require "vbms"
 require "zip"
 
 class DownloadDocuments
+  include DocumentTypes
+
   def initialize(opts = {})
     @download = opts[:download]
     @vbms_documents = DownloadDocuments.filter_vbms_documents(opts[:vbms_documents] || [])
@@ -16,6 +18,7 @@ class DownloadDocuments
           document_id: vbms_document.document_id,
           vbms_filename: vbms_document.filename,
           doc_type: vbms_document.doc_type,
+          type_description: vbms_document.try(:type_description) || TYPES[vbms_document.doc_type.to_i],
           source: vbms_document.source,
           mime_type: vbms_document.mime_type,
           received_at: vbms_document.received_at
