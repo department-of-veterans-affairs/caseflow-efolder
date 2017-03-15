@@ -59,7 +59,7 @@ gem 'rubyzip'
 gem 'zaru'
 
 gem 'connect_vbms', git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "b5e43ac1ade8e02cfb6658caf13f159710db8b5c"
-gem 'bgs', git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", :branch => 'master'
+gem 'bgs', git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", :branch => 'ssl_temppatch'
 #gem 'connect_vbms', git: 'https://github.com/department-of-veterans-affairs/connect_vbms.git'
 
 # Use ActiveModel has_secure_password
