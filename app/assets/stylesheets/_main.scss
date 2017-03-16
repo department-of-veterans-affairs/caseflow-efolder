@@ -172,12 +172,12 @@ table td {
   margin-top: 0;
 }
 
-.training {
+.training-videos {
   width: 285px;
   height: 178.567px;
 }
 
-.text {
+.text-content {
   width: 285px;
   float: left;
   margin: 0 11px 15px 10px;
@@ -190,13 +190,13 @@ table td {
   margin-top: 12px;
 }
 
-.title {
+.horizontal-line {
   border-bottom: 1px solid;
   margin-bottom: 3rem;
   border-bottom-color: $color-gray-light;
 }
 
-.scrollToTop {
+.scroll-to-top {
   position: fixed;
   bottom: 20px;
   right: 20px;
@@ -205,6 +205,9 @@ table td {
   height: 50px;
   display: block;
   border-radius: 5px;
+  text-align:center; 
+  font-weight: bold;
+   text-indent:-9999px;
 }
 
 
