@@ -196,7 +196,7 @@ table td {
   border-bottom-color: $color-gray-light;
 }
 
-.scroll-to-top {
+.scroll-bar {
   position: fixed;
   bottom: 20px;
   right: 20px;
@@ -207,7 +207,7 @@ table td {
   border-radius: 5px;
   text-align:center; 
   font-weight: bold;
-   text-indent:-9999px;
+  text-indent:-9999px;
 }
 
 
