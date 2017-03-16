@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 class Document < ActiveRecord::Base
-  include DocumentTypes
+  include Caseflow::DocumentTypes
 
   AVERAGE_DOWNLOAD_RATE_LIMIT = 100
   AVERAGE_DOWNLOAD_RATE_CACHE_EXPIRATION = 30.seconds

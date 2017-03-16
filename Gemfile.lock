@@ -7,8 +7,8 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/caseflow-commons
-  revision: 3e29aac95420d023f0d5c0f76c4d899f131ee9bb
-  ref: 3e29aac954
+  revision: fd406fe2d47e1272933d28b8b0d52e620a00cc13
+  ref: fd406fe
   specs:
     caseflow (0.1.6)
       aws-sdk (~> 2)
@@ -42,7 +42,7 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/ruby-bgs.git
-  revision: 5be3b56df876ca95bad1d692cf199be5798977c5
+  revision: 68f7431a3e642ed41da5ff6568aa9d45c11e6aca
   branch: master
   specs:
     bgs (0.1)
