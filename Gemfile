@@ -61,6 +61,8 @@ gem 'wannabe_bool'
 
 gem 'zaru'
 
+gem 'redis-namespace'
+
 gem 'connect_vbms', git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "431b529fe06770a70297f4ff1745881100e6cfe1"
 gem 'bgs', git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", :branch => 'master'
 #gem 'connect_vbms', git: 'https://github.com/department-of-veterans-affairs/connect_vbms.git'
