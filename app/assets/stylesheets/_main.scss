@@ -173,40 +173,18 @@ table td {
 }
 
 .training-videos {
-  width: 285px;
+  width: 270px;
   height: 178.567px;
 }
 
-.text-content {
-  width: 285px;
-  float: left;
-  margin: 0 11px 15px 10px;
-}
-
-.text-area {
-  width: 265px;
-  float: left;
-  line-height: 1.25;
-  margin-top: 12px;
-}
-
-.horizontal-line {
+.cf-help-divider {
   border-bottom: 1px solid;
-  margin-bottom: 3rem;
-  border-bottom-color: $color-gray-light;
+  margin: 5px 20px 30px auto;
+  color: $color-gray-lighter;
 }
 
-.scrolltoTop {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: url('Back.png') no-repeat center;
-  width: 50px;
-  height: 50px;
-  display: block;
-  text-align: center;
-  font-weight: bold;
-  text-indent: -9999px;
-}
 
+.cf-push-left {
+  
+}
 
