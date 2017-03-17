@@ -2,7 +2,7 @@ require "vbms"
 require "zip"
 
 class DownloadDocuments
-  include DocumentTypes
+  include Caseflow::DocumentTypes
 
   def initialize(opts = {})
     @download = opts[:download]
