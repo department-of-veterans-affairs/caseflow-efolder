@@ -34,7 +34,7 @@ ActiveRecord::Schema.define(version: 20170316204433) do
 
   create_table "documents", force: :cascade do |t|
     t.integer  "download_id"
-    t.integer  "download_status", default: 0
+    t.integer  "download_status",  default: 0
     t.string   "document_id"
     t.string   "vbms_filename"
     t.string   "filepath"
@@ -42,12 +42,13 @@ ActiveRecord::Schema.define(version: 20170316204433) do
     t.string   "source"
     t.string   "mime_type"
     t.datetime "received_at"
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
     t.datetime "started_at"
     t.datetime "completed_at"
     t.integer  "lock_version"
     t.string   "type_id"
+    t.string   "type_description"
   end
 
   add_index "documents", ["download_id"], name: "index_documents_on_download_id", using: :btree

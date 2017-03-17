@@ -35,7 +35,7 @@ class Document < ActiveRecord::Base
   end
 
   def s3_filename
-    "#{download_id}-#{id}-#{vbms_filename}"
+    "#{download_id}-#{id}.#{preferred_extension}"
   end
 
   def download_status_icon
@@ -46,7 +46,7 @@ class Document < ActiveRecord::Base
   end
 
   def type_name
-    TYPES[doc_type.to_i] || vbms_filename
+    type_description || TYPES[doc_type.to_i] || vbms_filename
   end
 
   def self.historical_average_download_rate

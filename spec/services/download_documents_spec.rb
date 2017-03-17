@@ -19,10 +19,10 @@ describe DownloadDocuments do
 
   let(:vbms_documents) do
     [
-      VBMS::Responses::Document.new(document_id: "1", filename: "filename.pdf", doc_type: "123",
-                                    source: "SRC", received_at: Time.zone.now,
-                                    mime_type: "application/pdf"),
-      VBMS::Responses::Document.new(document_id: "2", received_at: 1.hour.ago)
+      OpenStruct.new(document_id: "1", filename: "filename.pdf", doc_type: "123",
+                     source: "SRC", received_at: Time.zone.now,
+                     mime_type: "application/pdf", type_description: "VA 9 Appeal to Board of Appeals"),
+      OpenStruct.new(document_id: "2", received_at: 1.hour.ago)
     ]
   end
 
@@ -78,10 +78,11 @@ describe DownloadDocuments do
 
       document = Document.first
       expect(document.document_id).to eq("1")
-      expect(document.filename).to eq("VA 21-4185 Report of Income from Property or Business-20150101-1.pdf")
+      expect(document.filename).to eq("VA 9 Appeal to Board of Appeals-20150101-1.pdf")
       expect(document.doc_type).to eq("123")
       expect(document.source).to eq("SRC")
       expect(document.mime_type).to eq("application/pdf")
+      expect(document.type_description).to eq "VA 9 Appeal to Board of Appeals"
       expect(document).to be_pending
 
       expect(download.manifest_fetched_at).to eq(Time.zone.now)
@@ -113,7 +114,7 @@ describe DownloadDocuments do
       it "saves download state for each document" do
         successful_document = Document.first
         expect(successful_document).to be_success
-        expect(successful_document.filepath).to eq((Rails.root + "tmp/files/#{download.id}/00010-VA 21-4185 Report of Income from Property or Business-20150101-1.pdf").to_s)
+        expect(successful_document.filepath).to eq((Rails.root + "tmp/files/#{download.id}/00010-VA 9 Appeal to Board of Appeals-20150101-1.pdf").to_s)
         expect(successful_document.started_at).to eq(Time.zone.now)
         expect(successful_document.completed_at).to eq(Time.zone.now)
 
@@ -138,12 +139,12 @@ describe DownloadDocuments do
 
       let(:vbms_documents) do
         [
-          VBMS::Responses::Document.new(document_id: "1", filename: "filename.pdf", doc_type: "123",
-                                        source: "SRC", received_at: Time.zone.now,
-                                        mime_type: "application/pdf"),
-          VBMS::Responses::Document.new(document_id: "1", filename: "filename.pdf", doc_type: "123",
-                                        source: "SRC", received_at: Time.zone.now,
-                                        mime_type: "application/pdf")
+          OpenStruct.new(document_id: "1", filename: "filename.pdf", doc_type: "123",
+                         source: "SRC", received_at: Time.zone.now,
+                         mime_type: "application/pdf"),
+          OpenStruct.new(document_id: "1", filename: "filename.pdf", doc_type: "123",
+                         source: "SRC", received_at: Time.zone.now,
+                         mime_type: "application/pdf")
         ]
       end
 
@@ -163,9 +164,9 @@ describe DownloadDocuments do
     let(:file) { IO.binread(Rails.root + "spec/support/test.pdf") }
     let(:vbms_documents) do
       [
-        VBMS::Responses::Document.new(document_id: "1", filename: "keep-stamping.pdf", doc_type: "123",
-                                      source: "SRC", received_at: Time.zone.now,
-                                      mime_type: "application/pdf")
+        OpenStruct.new(document_id: "1", filename: "keep-stamping.pdf", doc_type: "123",
+                       source: "SRC", received_at: Time.zone.now,
+                       mime_type: "application/pdf")
       ]
     end
 
@@ -227,10 +228,10 @@ describe DownloadDocuments do
     context "when one document errors" do
       let(:vbms_documents) do
         [
-          VBMS::Responses::Document.new(document_id: "1", filename: "filename.pdf", doc_type: "123",
-                                        source: "SRC", received_at: Time.zone.now,
-                                        mime_type: "application/pdf"),
-          VBMS::Responses::Document.new(document_id: "2")
+          OpenStruct.new(document_id: "1", filename: "filename.pdf", doc_type: "123",
+                         source: "SRC", received_at: Time.zone.now,
+                         mime_type: "application/pdf"),
+          OpenStruct.new(document_id: "2")
         ]
       end
 
@@ -264,8 +265,8 @@ describe DownloadDocuments do
     context "when some vbms files aren't supported" do
       let(:vbms_documents) do
         [
-          VBMS::Responses::Document.new(document_id: "1", doc_type: "352"),
-          VBMS::Responses::Document.new(document_id: "2", doc_type: "999981")
+          OpenStruct.new(document_id: "1", doc_type: "352"),
+          OpenStruct.new(document_id: "2", doc_type: "999981")
         ]
       end
 
