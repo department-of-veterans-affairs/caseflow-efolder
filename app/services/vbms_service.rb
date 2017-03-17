@@ -5,7 +5,7 @@ class VBMSService
   def self.fetch_documents_for(download)
     @client ||= init_client
 
-    request = if ENV["USE_VBMS_V5"].to_b
+    request = if FeatureToggle.enabled?(:vbms_efolder_service_v1)
                 VBMS::Requests::FindDocumentSeriesReference.new(download.file_number)
               else
                 VBMS::Requests::ListDocuments.new(download.file_number)
@@ -19,7 +19,7 @@ class VBMSService
   def self.fetch_document_file(document)
     @client ||= init_client
 
-    request = if ENV["USE_VBMS_V5"].to_b
+    request = if FeatureToggle.enabled?(:vbms_efolder_service_v1)
                 VBMS::Requests::GetDocumentContent.new(document.document_id)
               else
                 VBMS::Requests::FetchDocumentById.new(document.document_id)

@@ -20,7 +20,7 @@ describe Document do
       Document.new(id: 5, mime_type: "application/pdf", download_id: 45)
     end
 
-    it { is_expected.to eq("#{document.download_id}-#{document.id}.pdf") }
+    it { is_expected.to eq("45-5.pdf") }
   end
 
   context "#filename" do
