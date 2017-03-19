@@ -21,14 +21,15 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/connect_vbms.git
-  revision: b5e43ac1ade8e02cfb6658caf13f159710db8b5c
-  ref: b5e43ac1ade8e02cfb6658caf13f159710db8b5c
+  revision: 19eae09d9296c4836689b01360c3d9669778cd53
+  ref: 19eae09d9296c4836689b01360c3d9669778cd53
   specs:
     connect_vbms (1.0.0)
       httpclient (~> 2.8.0)
       httpi (~> 2.4)
       mail
       nokogiri (~> 1.6)
+      nori
       xmldsig (~> 0.3.1)
       xmlenc (~> 0.5.0)
 
@@ -397,6 +398,7 @@ GEM
     uglifier (3.0.4)
       execjs (>= 0.3.0, < 3)
     unicode-display_width (1.1.2)
+    wannabe_bool (0.6.0)
     wasabi (3.5.0)
       httpi (~> 2.0)
       nokogiri (>= 1.4.2)
@@ -439,6 +441,7 @@ DEPENDENCIES
   puma
   rails (= 4.2.7.1)
   rails_stdout_logging
+  redis-namespace
   redis-rails
   rspec
   rspec-rails
@@ -460,6 +463,7 @@ DEPENDENCIES
   tzinfo-data
   uglifier (>= 1.3.0)
   uswds-rails!
+  wannabe_bool
   zaru
 
 BUNDLED WITH

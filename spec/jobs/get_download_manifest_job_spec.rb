@@ -28,8 +28,8 @@ describe GetDownloadManifestJob do
       before do
         allow(VBMSService).to receive(:fetch_documents_for).and_return(
           [
-            VBMS::Responses::Document.new(document_id: "1"),
-            VBMS::Responses::Document.new(document_id: "2")
+            OpenStruct.new(document_id: "1"),
+            OpenStruct.new(document_id: "2")
           ])
 
         GetDownloadManifestJob.perform_now(download)
