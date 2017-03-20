@@ -1,5 +1,3 @@
-source ENV['GEM_SERVER_URL']
-
 gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons", ref: "03a58cbc802f3a29a1e6f8a941fd3babf9eb74f5"
 
 gem "moment_timezone-rails"

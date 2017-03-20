@@ -61,7 +61,6 @@ GIT
       selenium-webdriver
 
 GEM
-  remote: http://internal-dsva-appeals-gemserver-uat-693947887.us-gov-west-1.elb.amazonaws.com/
   specs:
     actionmailer (4.2.7.1)
       actionpack (= 4.2.7.1)
@@ -187,7 +186,7 @@ GEM
     json (1.8.6)
     launchy (2.4.3)
       addressable (~> 2.3)
-    libv8 (3.16.14.19)
+    libv8 (3.16.14.19-x86_64-darwin-15)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
     mail (2.6.4)
