@@ -61,7 +61,7 @@ GIT
       selenium-webdriver
 
 GEM
-  remote: https://rubygems.org/
+  remote: http://internal-dsva-appeals-gemserver-uat-693947887.us-gov-west-1.elb.amazonaws.com/
   specs:
     actionmailer (4.2.7.1)
       actionpack (= 4.2.7.1)
