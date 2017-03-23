@@ -47,8 +47,8 @@ ActiveRecord::Schema.define(version: 20170316204433) do
     t.datetime "started_at"
     t.datetime "completed_at"
     t.integer  "lock_version"
-    t.string   "type_id"
     t.string   "type_description"
+    t.string   "type_id"
   end
 
   add_index "documents", ["download_id"], name: "index_documents_on_download_id", using: :btree
