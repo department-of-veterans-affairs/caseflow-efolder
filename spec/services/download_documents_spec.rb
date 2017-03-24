@@ -80,7 +80,7 @@ describe DownloadDocuments do
       expect(document.document_id).to eq("1")
       expect(document.filename).to eq("VA 9 Appeal to Board of Appeals-20150101-1.pdf")
       expect(document.doc_type).to eq("123")
-      expect(document.type_id).to eq ("123")
+      expect(document.type_id).to eq "123"
       expect(document.source).to eq("SRC")
       expect(document.mime_type).to eq("application/pdf")
       expect(document.type_description).to eq "VA 9 Appeal to Board of Appeals"
