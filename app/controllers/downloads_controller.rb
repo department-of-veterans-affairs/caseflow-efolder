@@ -66,7 +66,8 @@ class DownloadsController < ApplicationController
     send_file @download_documents.zip_path
   end
 
-  def record_not_found
+  def record_not_found(exception)
+    Rails.logger.error("Record not found... Exception #{exception.class}: #{exception.message}")
     render "not_found", locals: { id: params[:id] }, layout: "application", status: 404
   end
 
