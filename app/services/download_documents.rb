@@ -17,7 +17,6 @@ class DownloadDocuments
         @download.documents.create!(
           document_id: vbms_document.document_id,
           vbms_filename: vbms_document.filename,
-          doc_type: vbms_document.doc_type,
           type_id: vbms_document.doc_type,
           type_description: vbms_document.try(:type_description) || TYPES[vbms_document.doc_type.to_i],
           source: vbms_document.source,

@@ -285,7 +285,7 @@ RSpec.feature "Downloads" do
       completed_at: 1.minute.ago,
       download_status: :success)
     download.documents.create(
-      doc_type: "129",
+      type_id: "129",
       document_id: "{1234-1234-1234-5555}",
       mime_type: "application/pdf",
       started_at: 2.minutes.ago,
@@ -388,8 +388,8 @@ RSpec.feature "Downloads" do
     FileUtils.rm_rf(Rails.application.config.download_filepath)
 
     @download = @user_download.create(file_number: "12", status: :complete_success)
-    @download.documents.create(received_at: Time.zone.now, doc_type: "102", mime_type: "application/pdf")
-    @download.documents.create(received_at: Time.zone.now, doc_type: "103", mime_type: "application/pdf")
+    @download.documents.create(received_at: Time.zone.now, type_id: "102", mime_type: "application/pdf")
+    @download.documents.create(received_at: Time.zone.now, type_id: "103", mime_type: "application/pdf")
 
     class FakeVBMSService
       def self.fetch_document_file(_document)
