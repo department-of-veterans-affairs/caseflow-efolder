@@ -20,7 +20,7 @@ describe DownloadDocuments do
   let(:vbms_documents) do
     [
       OpenStruct.new(document_id: "1", filename: "filename.pdf", doc_type: "123",
-                     source: "SRC", received_at: Time.zone.now,
+                     source: "SRC", received_at: Time.zone.now, type_id: "123",
                      mime_type: "application/pdf", type_description: "VA 9 Appeal to Board of Appeals"),
       OpenStruct.new(document_id: "2", received_at: 1.hour.ago)
     ]
@@ -80,6 +80,7 @@ describe DownloadDocuments do
       expect(document.document_id).to eq("1")
       expect(document.filename).to eq("VA 9 Appeal to Board of Appeals-20150101-1.pdf")
       expect(document.doc_type).to eq("123")
+      expect(document.type_id).to eq "123"
       expect(document.source).to eq("SRC")
       expect(document.mime_type).to eq("application/pdf")
       expect(document.type_description).to eq "VA 9 Appeal to Board of Appeals"
