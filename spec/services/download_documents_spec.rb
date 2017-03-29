@@ -267,7 +267,9 @@ describe DownloadDocuments do
       let(:vbms_documents) do
         [
           OpenStruct.new(document_id: "1", doc_type: "352"),
-          OpenStruct.new(document_id: "2", doc_type: "999981")
+          OpenStruct.new(document_id: "2", doc_type: "999981"),
+          OpenStruct.new(document_id: "3", doc_type: "600"),
+          OpenStruct.new(document_id: "4", doc_type: "542")
         ]
       end
 
