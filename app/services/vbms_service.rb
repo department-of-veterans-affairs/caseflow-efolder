@@ -45,7 +45,7 @@ class VBMSService
     return VBMS::Client.from_env_vars(
       logger: RailsVBMSLogger.new,
       env_name: ENV["CONNECT_VBMS_ENV"]
-    ) #if Rails.application.secrets.vbms["env"]
+    ) if Rails.application.secrets.vbms["env"]
 
     VBMS::Client.new(
       vbms_config["url"],
