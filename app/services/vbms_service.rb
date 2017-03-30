@@ -69,7 +69,7 @@ class VBMSService
             "(#{data[:request].class.name}) #{data[:response_body]}"
           )
         else
-          Rails.logger.warn(
+          Rails.logger.info(
             "VBMS Request Sent: #{data[:request].class.name}" \
             "VBMS Reponse Code #{data[:response_code]}"
           )
