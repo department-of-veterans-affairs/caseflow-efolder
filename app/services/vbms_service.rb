@@ -63,7 +63,7 @@ class VBMSService
     def log(event, data)
       case event
       when :request
-        Rails.logger.info("VBMS Request Sent: #{data[:request].pretty_inspect} ")
+        Rails.logger.info("VBMS Request Sent: #{data[:request]} ")
         if data[:response_code] != 200
           Rails.logger.error(
             "VBMS HTTP Error #{data[:response_code]}\n" \
