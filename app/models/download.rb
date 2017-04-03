@@ -191,7 +191,6 @@ class Download < ActiveRecord::Base
 
     historical_rate = Document.historical_average_download_rate
     return nil unless historical_rate
-
     current_doc.started_at + (historical_rate * documents_left)
   end
 end
