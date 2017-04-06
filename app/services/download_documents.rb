@@ -53,9 +53,10 @@ class DownloadDocuments
         fetch_document(document, index)
         @download.touch
 
-      rescue VBMS::ClientError
+      rescue VBMS::ClientError => e
         document.update_attributes!(download_status: :failed)
         @download.touch
+        Raven.capture_exception(e)
 
       rescue ActiveRecord::StaleObjectError
         Rails.logger.info "Duplicate download detected. Document ID: #{document.id}"
