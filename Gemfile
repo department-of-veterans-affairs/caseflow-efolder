@@ -63,8 +63,6 @@ gem 'zaru'
 
 gem 'redis-namespace'
 
-gem "ruby-progressbar"
-
 gem 'connect_vbms', git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "df0adf84d1ffa643195ad68edc91b7d4e4142a95"
 gem 'bgs', git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", :branch => 'master'
 #gem 'connect_vbms', git: 'https://github.com/department-of-veterans-affairs/connect_vbms.git'
