@@ -49,6 +49,7 @@ ActiveRecord::Schema.define(version: 20170407164842) do
     t.integer  "lock_version"
     t.string   "type_description"
     t.string   "type_id"
+    t.text     "error_message"
   end
 
   add_index "documents", ["download_id"], name: "index_documents_on_download_id", using: :btree
