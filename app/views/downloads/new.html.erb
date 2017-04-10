@@ -64,7 +64,7 @@
       </tr>
     </thead>
     <tbody>
-      <% recent_downloads.each do |download| %>
+      <% recent_downloads.sort_by(&:created_at).reverse_each do |download| %>
         <tr id="download-<%= download.id %>">
           <td>
             <%= download.veteran_name %>
