@@ -123,7 +123,7 @@ describe DownloadDocuments do
         errored_document = Document.last
         expect(errored_document).to be_failed
         expect(errored_document.started_at).to eq(Time.zone.now)
-        expect(errored_document.error_message).to_not eq nil
+        expect(errored_document.error_message).to match /Failure/
       end
 
       it "stores successful document in s3" do
