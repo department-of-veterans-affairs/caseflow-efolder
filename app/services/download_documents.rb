@@ -52,8 +52,11 @@ class DownloadDocuments
         fetch_document(document, index)
         @download.touch
 
-      rescue VBMS::ClientError
-        document.update_attributes!(download_status: :failed)
+      rescue VBMS::ClientError => e
+        document.update_attributes!(
+          download_status: :failed,
+          error_message: "VBMS::ClientError::#{e.message}\n#{e.backtrace.join("\n")}"
+        )
         @download.touch
 
       rescue ActiveRecord::StaleObjectError

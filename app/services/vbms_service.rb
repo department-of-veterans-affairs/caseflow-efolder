@@ -13,7 +13,7 @@ class VBMSService
     @client.send_request(request)
   rescue => e
     Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
-    raise VBMS::ClientError
+    raise VBMS::ClientError, e
   end
 
   def self.fetch_document_file(document)
@@ -28,7 +28,7 @@ class VBMSService
     result && result.content
   rescue => e
     Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
-    raise VBMS::ClientError
+    raise VBMS::ClientError, e
   end
 
   def self.vbms_config
