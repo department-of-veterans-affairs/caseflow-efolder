@@ -31,7 +31,7 @@ describe Document do
         Document.new(
           vbms_filename: "purple.txt",
           received_at: Time.utc(2015, 1, 3, 17, 0, 0),
-          doc_type: "89",
+          type_id: "89",
           document_id: "{ABC123-DEF123-GHI456}",
           mime_type: "application/pdf"
         )
@@ -45,7 +45,7 @@ describe Document do
         Document.new(
           vbms_filename: "purple.txt",
           received_at: Time.utc(2015, 1, 3, 17, 0, 0),
-          doc_type: "497",
+          type_id: "497",
           document_id: "{ABC123-DEF123-GHI456A}",
           mime_type: "application/pdf"
         )
@@ -59,7 +59,7 @@ describe Document do
         Document.new(
           vbms_filename: "purple.txt",
           received_at: Time.utc(2015, 1, 3, 17, 0, 0),
-          doc_type: "497",
+          type_id: "497",
           document_id: "{ABC123-DEF123-GHI456AB}",
           mime_type: "application/pdf"
         )

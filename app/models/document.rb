@@ -46,7 +46,7 @@ class Document < ActiveRecord::Base
   end
 
   def type_name
-    type_description || TYPES[doc_type.to_i] || vbms_filename
+    type_description || TYPES[type_id.to_i] || vbms_filename
   end
 
   def self.historical_average_download_rate
