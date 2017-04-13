@@ -103,7 +103,7 @@ describe DownloadDocuments do
     context "when one file errors" do
       before do
         allow(VBMSService).to receive(:fetch_document_file) do |document|
-          fail VBMS::ClientError if document.document_id != "1"
+          fail VBMS::ClientError, "Failure" if document.document_id != "1"
           file
         end
 
@@ -117,10 +117,12 @@ describe DownloadDocuments do
         expect(successful_document.filepath).to eq((Rails.root + "tmp/files/#{download.id}/00010-VA 9 Appeal to Board of Appeals-20150101-1.pdf").to_s)
         expect(successful_document.started_at).to eq(Time.zone.now)
         expect(successful_document.completed_at).to eq(Time.zone.now)
+        expect(successful_document.error_message).to eq nil
 
         errored_document = Document.last
         expect(errored_document).to be_failed
         expect(errored_document.started_at).to eq(Time.zone.now)
+        expect(errored_document.error_message).to match(/Failure/)
       end
 
       it "stores successful document in s3" do
