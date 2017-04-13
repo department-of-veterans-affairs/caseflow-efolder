@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170407164842) do
+ActiveRecord::Schema.define(version: 20170411183040) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,7 +38,6 @@ ActiveRecord::Schema.define(version: 20170407164842) do
     t.string   "document_id"
     t.string   "vbms_filename"
     t.string   "filepath"
-    t.string   "doc_type"
     t.string   "source"
     t.string   "mime_type"
     t.datetime "received_at"
