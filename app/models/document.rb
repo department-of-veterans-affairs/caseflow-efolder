@@ -106,6 +106,6 @@ class Document < ActiveRecord::Base
   private
 
   def adjust_mime_type
-    self.mime_type = "application/pdf" if self.mime_type == "application/octet-stream"
+    self.mime_type = "application/pdf" if mime_type == "application/octet-stream"
   end
 end
