@@ -7,9 +7,28 @@ describe Document do
   end
 
   context ".new" do
-    subject { Document.new }
-    it "defaults vbms_filename to empty string" do
-      expect(subject.vbms_filename).to eq("")
+    context "vbms_filename" do
+      subject { Document.new }
+
+      it "defaults to empty string" do
+        expect(subject.vbms_filename).to eq("")
+      end
+    end
+
+    context "mime_type" do
+      subject { Document.new(mime_type: mime_type).mime_type }
+
+      context "if application/octet-stream" do
+        let(:mime_type) { "application/octet-stream" }
+
+        it { is_expected.to eq("application/pdf") }
+      end
+
+      context "if text/plain" do
+        let(:mime_type) { "text/plain" }
+
+        it { is_expected.to eq("text/plain") }
+      end
     end
   end
 

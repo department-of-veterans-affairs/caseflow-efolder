@@ -11,6 +11,14 @@ class Document < ActiveRecord::Base
 
   after_initialize { |document| document.vbms_filename ||= "" }
 
+  # It is expected that some of the documents may have a MIME type of "application/octet-stream".
+  # However, there is not a guarantee that all documents of this type can be opened as PDFs.
+  # The "application/octet-stream" MIME type could represent arbitrary data, mislabeled PDFs, etc.
+  # and there is no guarantee on file format without investigating the individual document.
+  # Convert mime type to "application/pdf" if it is a binary file
+  # then PDFkit will check if PDF is valid
+  after_initialize :adjust_mime_type
+
   def self.ordered_by_completed_at
     where.not(completed_at: nil).order(completed_at: :desc)
   end
@@ -93,5 +101,11 @@ class Document < ActiveRecord::Base
 
       (total_time / count).round(2)
     end
+  end
+
+  private
+
+  def adjust_mime_type
+    self.mime_type = "application/pdf" if mime_type == "application/octet-stream"
   end
 end
