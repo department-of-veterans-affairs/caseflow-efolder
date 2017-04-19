@@ -17,7 +17,7 @@ class Document < ActiveRecord::Base
   # and there is no guarantee on file format without investigating the individual document.
   # Convert mime type to "application/pdf" if it is a binary file
   # then PDFkit will check if PDF is valid
-  after_initialize :adjust_mime_type
+  before_create :adjust_mime_type
 
   def self.ordered_by_completed_at
     where.not(completed_at: nil).order(completed_at: :desc)
