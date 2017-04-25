@@ -470,6 +470,7 @@ RSpec.feature "Downloads" do
 
   # route should only be available to test user anyway
   scenario "unable to access delete download cache" do
+    ENV["TEST_USER_ID"] = nil
     Download.create!(
       user: @user,
       file_number: "321321",
