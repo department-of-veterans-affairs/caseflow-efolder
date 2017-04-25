@@ -72,7 +72,6 @@ class DemoGetDownloadManifestJob < ActiveJob::Base
     (number || 0).times do |i|
       download.documents.create(
         vbms_filename: "happy-thursday-#{SecureRandom.hex}.txt",
-        doc_type: Document::TYPES.keys.sample,
         type_id: Document::TYPES.keys.sample,
         document_id: "{#{SecureRandom.hex(4).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(6).upcase}}",
         mime_type: "text/plain",
