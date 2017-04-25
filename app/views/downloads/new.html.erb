@@ -84,7 +84,7 @@
 		  <%= link_to "View progress", download_path(download) %>
               <% else %>
 		  <%= link_to "View results »", download_path(download) %>
-		  <% if current_user && current_user.css_id.include?(ENV['TEST_USER_ID'])%>
+		  <% if current_user && ENV["TEST_USER_ID"] %>
 		    <%= link_to "Delete Cache", delete_download_path(download), method: :post %>
 		<% end %>
             <% end %>
