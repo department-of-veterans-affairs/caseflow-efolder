@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170411183040) do
+ActiveRecord::Schema.define(version: 20170425111923) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -51,8 +51,9 @@ ActiveRecord::Schema.define(version: 20170411183040) do
     t.text     "error_message"
   end
 
+  add_index "documents", ["completed_at"], name: "index_documents_on_completed_at", using: :btree
   add_index "documents", ["download_id"], name: "index_documents_on_download_id", using: :btree
-  add_index "documents", ["download_status", "completed_at"], name: "searches_download_status_completed_at", using: :btree
+  add_index "documents", ["download_status"], name: "index_documents_on_download_status", using: :btree
 
   create_table "downloads", force: :cascade do |t|
     t.string   "request_id"
