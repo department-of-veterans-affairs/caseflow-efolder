@@ -48,4 +48,7 @@ Rails.application.configure do
 
   ENV["METRICS_USERNAME"] = "caseflow"
   ENV["METRICS_PASSWORD"] = "caseflow"
+
+  ENV["SIDEKIQ_USERNAME"] ||= "caseflow"
+  ENV["SIDEKIQ_PASSWORD"] ||= "caseflow"
 end
