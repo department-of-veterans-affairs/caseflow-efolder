@@ -1,3 +1,5 @@
+<% content_for :page_title do stats_header end %>
+
 <% content_for :head do %>
   <%= javascript_include_tag 'stats' %>
   <script>
@@ -11,7 +13,7 @@
 <% end %>
 
 <div class="cf-app-segment cf-app-segment--alt">
-  <h1 class="cf-txt-c">eFolder Express Dashboard</h1>
+  <h1>eFolder Express Dashboard</h1>
 
   <ul class="cf-tab-navigation">
     <% Stats::INTERVALS.each do |interval| %>
@@ -158,14 +160,16 @@
       </div>
     </div>
 
-    <h3>Most Active Users <span class="data-date"></span></h3>
-    <table class="usa-table-no-header cf-stats-table data-table" data-key="top_users">
-      <% (@stats[0].values[:top_users] || []).each do |user| %>
-        <tr>
-          <td><%= user[:id] %></td>
-          <td><%= pluralize(user[:count], "Download") %></td>
-        </tr>
-      <% end %>
-    </table>
+    <div class="cf-stats-active-users">
+      <h3>Most Active Users <span class="data-date"></span></h3>
+      <table class="usa-table-no-header cf-stats-table data-table" data-key="top_users">
+        <% (@stats[0].values[:top_users] || []).each do |user| %>
+          <tr>
+            <td><%= user[:id] %></td>
+            <td><%= pluralize(user[:count], "Download") %></td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
   </div>
 </div>
