@@ -239,4 +239,8 @@ module ApplicationHelper
       full_path
     end
   end
+
+  def stats_header
+    "&nbsp &#124; &nbsp ".html_safe + "Dashboard"
+  end
 end

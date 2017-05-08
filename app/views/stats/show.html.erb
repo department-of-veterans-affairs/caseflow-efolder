@@ -1,3 +1,5 @@
+<% content_for :page_title do stats_header end %>
+
 <% content_for :head do %>
   <%= javascript_include_tag 'stats' %>
   <script>
@@ -11,7 +13,7 @@
 <% end %>
 
 <div class="cf-app-segment cf-app-segment--alt">
-  <h1 class="cf-txt-c">eFolder Express Dashboard</h1>
+  <h1>eFolder Express Dashboard</h1>
 
   <ul class="cf-tab-navigation">
     <% Stats::INTERVALS.each do |interval| %>
@@ -108,7 +110,7 @@
         aria-label="Switch between median and 95th percentile statistics">
         <div class="cf-stat-option active data-chart" data-key="median_time_to_fetch_manifest">
           <h4 class="cf-stat-title">
-            Time to Manifest (median)
+            Time to Manifest (median) 
           </h4>
           <div class="cf-stat-figure data-time" data-key="median_time_to_fetch_manifest">
             <%= format_time_duration_stat(@stats[0].values[:median_time_to_fetch_manifest]) %>
@@ -158,14 +160,16 @@
       </div>
     </div>
 
-    <h3>Most Active Users <span class="data-date"></span></h3>
-    <table class="usa-table-no-header cf-stats-table data-table" data-key="top_users">
-      <% (@stats[0].values[:top_users] || []).each do |user| %>
-        <tr>
-          <td><%= user[:id] %></td>
-          <td><%= pluralize(user[:count], "Download") %></td>
-        </tr>
-      <% end %>
-    </table>
+    <div class="cf-stats-active-users">
+      <h3>Most Active Users <span class="data-date"></span></h3>
+      <table class="usa-table-no-header cf-stats-table data-table" data-key="top_users">
+        <% (@stats[0].values[:top_users] || []).each do |user| %>
+          <tr>
+            <td><%= user[:id] %></td>
+            <td><%= pluralize(user[:count], "Download") %></td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
   </div>
 </div>
