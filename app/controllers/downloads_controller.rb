@@ -72,9 +72,8 @@ class DownloadsController < ApplicationController
   end
 
   def delete
-    if current_user.css_id == ENV["TEST_USER_ID"]
-      downloads.find(params[:id]).delete
-    end
+    return if ENV["TEST_USER_ID"].nil?
+    downloads.find(params[:id]).delete
     redirect_to "/"
   end
 
