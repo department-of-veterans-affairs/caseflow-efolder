@@ -112,4 +112,5 @@ group :development do
 
   # For windows
   gem 'tzinfo-data'
+  gem "dotenv-rails"
 end

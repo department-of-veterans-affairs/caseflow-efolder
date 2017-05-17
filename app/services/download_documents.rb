@@ -116,7 +116,8 @@ class DownloadDocuments
   end
 
   def stream_zip_from_s3
-    @s3.stream_content(@download.s3_filename)
+    key = Rails.application.config.s3_enabled ? @download.s3_filename : zip_path
+    @s3.stream_content(key)
   end
 
   def zip_path
