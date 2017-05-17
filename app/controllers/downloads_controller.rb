@@ -57,13 +57,16 @@ class DownloadsController < ApplicationController
   def download
     download = downloads.find(params[:id])
     @download_documents = DownloadDocuments.new(download: download)
-    @download_documents.fetch_zip_from_s3
 
-    file_exists = @download_documents.zip_exists_locally?
-    return record_not_found unless file_exists
+    response.headers["Content-Length"] = download.zipfile_size.to_s
 
-    response.headers["Content-Length"] = (download.zipfile_size || File.size(@download_documents.zip_path)).to_s
-    send_file @download_documents.zip_path
+    if @download_documents.zip_exists_locally?
+      send_file @download_documents.zip_path
+    else
+      set_streaming_headers(download)
+      response.status = 200
+      self.response_body = @download_documents.stream_zip_from_s3
+    end
   end
 
   def record_not_found(exception)
@@ -78,6 +81,15 @@ class DownloadsController < ApplicationController
   end
 
   private
+
+  def set_streaming_headers
+    headers["Content-Type"] = "application/zip"
+    headers["Content-disposition"] = "attachment; filename=\"#{download.package_filename}\""
+
+    # Setting this to "no" will allow unbuffered responses for HTTP streaming applications
+    headers["X-Accel-Buffering"] = "no"
+    headers["Cache-Control"] ||= "no-cache"
+  end
 
   def start_download_files
     @download.touch

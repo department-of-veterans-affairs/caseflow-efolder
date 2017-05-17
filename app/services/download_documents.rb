@@ -115,11 +115,8 @@ class DownloadDocuments
     File.exist?(zip_path)
   end
 
-  def fetch_zip_from_s3
-    # if the file exists on the filesystem, skip
-    return if zip_exists_locally?
-
-    @s3.fetch_file(@download.s3_filename, zip_path)
+  def stream_zip_from_s3
+    @s3.stream_content(@download.s3_filename)
   end
 
   def zip_path
