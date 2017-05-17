@@ -58,7 +58,7 @@ class DownloadsController < ApplicationController
     download = downloads.find(params[:id])
     @download_documents = DownloadDocuments.new(download: download)
 
-    set_streaming_headers(download)
+    streaming_headers(download)
     self.response_body = @download_documents.stream_zip_from_s3
   end
 
@@ -75,7 +75,7 @@ class DownloadsController < ApplicationController
 
   private
 
-  def set_streaming_headers(download)
+  def streaming_headers(download)
     headers["Content-Type"] = "application/zip"
     headers["Content-disposition"] = "attachment; filename=\"#{download.package_filename}\""
     headers["Content-Length"] = download.zipfile_size.to_s
