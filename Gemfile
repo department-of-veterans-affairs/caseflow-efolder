@@ -1,6 +1,6 @@
 source ENV['GEM_SERVER_URL'] || 'https://rubygems.org'
 
-gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons", ref: "a3f9ce572ca9fa944f7147cb05cd8a1b74fcbace"
+gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons", ref: "a9ffc8ea3a169708408363461f764ff959c308c7"
 
 gem "moment_timezone-rails"
 
@@ -112,4 +112,5 @@ group :development do
 
   # For windows
   gem 'tzinfo-data'
+  gem "dotenv-rails"
 end

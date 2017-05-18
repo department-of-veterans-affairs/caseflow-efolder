@@ -7,8 +7,8 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/caseflow-commons
-  revision: a3f9ce572ca9fa944f7147cb05cd8a1b74fcbace
-  ref: a3f9ce572ca9fa944f7147cb05cd8a1b74fcbace
+  revision: a9ffc8ea3a169708408363461f764ff959c308c7
+  ref: a9ffc8ea3a169708408363461f764ff959c308c7
   specs:
     caseflow (0.1.6)
       aws-sdk (~> 2)
@@ -152,11 +152,15 @@ GEM
     coffee-script-source (1.12.2)
     concurrent-ruby (1.0.4)
     connection_pool (2.2.1)
-    d3-rails (4.7.0)
+    d3-rails (4.9.0)
       railties (>= 3.1)
     database_cleaner (1.5.3)
     diff-lcs (1.2.5)
     docile (1.1.5)
+    dotenv (2.2.1)
+    dotenv-rails (2.2.1)
+      dotenv (= 2.2.1)
+      railties (>= 3.2, < 5.2)
     erubis (2.7.0)
     execjs (2.7.0)
     faraday (0.10.1)
@@ -433,6 +437,7 @@ DEPENDENCIES
   coffee-rails (~> 4.1.0)
   connect_vbms!
   database_cleaner
+  dotenv-rails
   jbuilder (~> 2.0)
   jquery-rails
   launchy

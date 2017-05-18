@@ -115,11 +115,12 @@ class DownloadDocuments
     File.exist?(zip_path)
   end
 
-  def fetch_zip_from_s3
-    # if the file exists on the filesystem, skip
-    return if zip_exists_locally?
+  def stream_zip_from_s3
+    @s3.stream_content(streaming_s3_key)
+  end
 
-    @s3.fetch_file(@download.s3_filename, zip_path)
+  def streaming_s3_key
+    Rails.application.config.s3_enabled ? @download.s3_filename : zip_path
   end
 
   def zip_path
