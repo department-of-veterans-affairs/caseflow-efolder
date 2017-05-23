@@ -39,7 +39,7 @@ class Search < ActiveRecord::Base
     Download.active.where(
       file_number: sanitized_file_number,
       user: user
-    ).where.not(status: [1, 7])
+    ).where.not(status: [1, 7, 8])
   end
 
   def match_existing_download

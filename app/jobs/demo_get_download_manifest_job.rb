@@ -29,6 +29,12 @@ class DemoGetDownloadManifestJob < ActiveJob::Base
       error: true,
       error_type: "VBMS"
     },
+    "DEMO_VVA_ERROR" => {
+      manifest_load: 1,
+      num_docs: 8,
+      error: true,
+      error_type: "VVA"
+    },
     "DEMO_NO_DOCUMENTS" => {
       manifest_load: 1,
       num_docs: 0,
@@ -51,16 +57,23 @@ class DemoGetDownloadManifestJob < ActiveJob::Base
 
     download.update_attributes!(status: :pending_confirmation)
   rescue VBMS::ClientError => e
-    Rails.logger.info "#{e.message}\n#{e.backtrace.join("\n")}"
-    Raven.capture_exception(e)
-    download.update_attributes!(status: :vbms_connection_error)
+    capture_error(e, download, :vbms_connection_error)
+  rescue VVA::ClientError => e
+    capture_error(e, download, :vva_connection_error)
   rescue
     download.update_attributes!(status: :no_documents)
+  end
+
+  def capture_error(e, download, status)
+    Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
+    Raven.capture_exception(e)
+    download.update_attributes!(status: status)
   end
 
   def check_and_raise_errors(demo)
     return unless demo[:error]
     fail VBMS::ClientError if demo[:error_type] == "VBMS"
+    fail VVA::ClientError if demo[:error_type] == "VVA"
     fail "no documents" if demo[:error_type] == "NO_DOCUMENTS"
   end
 

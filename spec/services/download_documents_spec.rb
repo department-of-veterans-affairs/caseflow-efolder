@@ -17,17 +17,19 @@ describe DownloadDocuments do
     )
   end
 
-  let(:vbms_documents) do
+  let(:external_documents) do
     [
       OpenStruct.new(document_id: "1", filename: "filename.pdf", doc_type: "123",
                      source: "SRC", received_at: Time.zone.now, type_id: "123",
                      mime_type: "application/pdf", type_description: "VA 9 Appeal to Board of Appeals"),
-      OpenStruct.new(document_id: "2", received_at: 1.hour.ago)
+      OpenStruct.new(document_id: "2", received_at: 1.hour.ago),
+      OpenStruct.new(document_id: "3", received_at: 5.hours.ago, vva: true),
+      OpenStruct.new(document_id: "4", received_at: 3.hours.ago, vva: true)
     ]
   end
 
   let(:download_documents) do
-    DownloadDocuments.new(download: download, vbms_documents: vbms_documents, s3: Caseflow::Fakes::S3Service)
+    DownloadDocuments.new(download: download, external_documents: external_documents, s3: Caseflow::Fakes::S3Service)
   end
 
   context "#save_document_file" do
@@ -74,7 +76,7 @@ describe DownloadDocuments do
     end
 
     it "persists info about each document and sets manifest_fetched_at" do
-      expect(Document.count).to equal(2)
+      expect(Document.count).to equal(4)
 
       document = Document.first
       expect(document.document_id).to eq("1")
@@ -103,7 +105,12 @@ describe DownloadDocuments do
     context "when one file errors" do
       before do
         allow(VBMSService).to receive(:fetch_document_file) do |document|
-          fail VBMS::ClientError, "Failure" if document.document_id != "1"
+          fail VBMS::ClientError, "Failure" if document.document_id == "2"
+          file
+        end
+
+        allow(VVAService).to receive(:fetch_document_file) do |document|
+          fail VVA::ClientError, "Failure" if document.document_id == "3"
           file
         end
 
@@ -119,10 +126,15 @@ describe DownloadDocuments do
         expect(successful_document.completed_at).to eq(Time.zone.now)
         expect(successful_document.error_message).to eq nil
 
-        errored_document = Document.last
-        expect(errored_document).to be_failed
-        expect(errored_document.started_at).to eq(Time.zone.now)
-        expect(errored_document.error_message).to match(/Failure/)
+        vbms_errored_document = Document.second
+        expect(vbms_errored_document).to be_failed
+        expect(vbms_errored_document.started_at).to eq(Time.zone.now)
+        expect(vbms_errored_document.error_message).to match(/VBMS.+Failure/)
+
+        vva_errored_document = Document.third
+        expect(vva_errored_document).to be_failed
+        expect(vva_errored_document.started_at).to eq(Time.zone.now)
+        expect(vva_errored_document.error_message).to match(/VVA.+Failure/)
       end
 
       it "stores successful document in s3" do
@@ -139,7 +151,7 @@ describe DownloadDocuments do
         download_documents.download_contents
       end
 
-      let(:vbms_documents) do
+      let(:external_documents) do
         [
           OpenStruct.new(document_id: "1", filename: "filename.pdf", doc_type: "123",
                          source: "SRC", received_at: Time.zone.now,
@@ -164,7 +176,7 @@ describe DownloadDocuments do
 
   context "#download_and_package" do
     let(:file) { IO.binread(Rails.root + "spec/support/test.pdf") }
-    let(:vbms_documents) do
+    let(:external_documents) do
       [
         OpenStruct.new(document_id: "1", filename: "keep-stamping.pdf", doc_type: "123",
                        source: "SRC", received_at: Time.zone.now,
@@ -228,7 +240,7 @@ describe DownloadDocuments do
     end
 
     context "when one document errors" do
-      let(:vbms_documents) do
+      let(:external_documents) do
         [
           OpenStruct.new(document_id: "1", filename: "filename.pdf", doc_type: "123",
                          source: "SRC", received_at: Time.zone.now,
@@ -265,12 +277,14 @@ describe DownloadDocuments do
     end
 
     context "when some vbms files aren't supported" do
-      let(:vbms_documents) do
+      let(:external_documents) do
         [
           OpenStruct.new(document_id: "1", doc_type: "352"),
           OpenStruct.new(document_id: "2", doc_type: "999981"),
           OpenStruct.new(document_id: "3", doc_type: "600"),
-          OpenStruct.new(document_id: "4", doc_type: "542")
+          OpenStruct.new(document_id: "4", doc_type: "542"),
+          OpenStruct.new(document_id: "5", type_id: "809"),
+          OpenStruct.new(document_id: "5", type_id: "352", restricted: true)
         ]
       end
 

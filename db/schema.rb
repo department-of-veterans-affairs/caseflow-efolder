@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170425111923) do
+ActiveRecord::Schema.define(version: 20170519150253) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,14 +41,17 @@ ActiveRecord::Schema.define(version: 20170425111923) do
     t.string   "source"
     t.string   "mime_type"
     t.datetime "received_at"
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
     t.datetime "started_at"
     t.datetime "completed_at"
     t.integer  "lock_version"
     t.string   "type_description"
     t.string   "type_id"
     t.text     "error_message"
+    t.boolean  "vva",              default: false, null: false
+    t.string   "jro"
+    t.string   "ssn"
   end
 
   add_index "documents", ["completed_at"], name: "index_documents_on_completed_at", using: :btree
