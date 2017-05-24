@@ -23,8 +23,8 @@ describe DownloadDocuments do
                      source: "SRC", received_at: Time.zone.now, type_id: "123",
                      mime_type: "application/pdf", type_description: "VA 9 Appeal to Board of Appeals"),
       OpenStruct.new(document_id: "2", received_at: 1.hour.ago),
-      OpenStruct.new(document_id: "3", received_at: 5.hours.ago, vva: true),
-      OpenStruct.new(document_id: "4", received_at: 3.hours.ago, vva: true)
+      OpenStruct.new(document_id: "3", received_at: 5.hours.ago, downloaded_from: "VVA"),
+      OpenStruct.new(document_id: "4", received_at: 3.hours.ago, downloaded_from: "VVA")
     ]
   end
 
@@ -284,7 +284,7 @@ describe DownloadDocuments do
           OpenStruct.new(document_id: "3", doc_type: "600"),
           OpenStruct.new(document_id: "4", doc_type: "542"),
           OpenStruct.new(document_id: "5", type_id: "809"),
-          OpenStruct.new(document_id: "5", type_id: "352", restricted: true)
+          OpenStruct.new(document_id: "6", type_id: "352", restricted: true)
         ]
       end
 

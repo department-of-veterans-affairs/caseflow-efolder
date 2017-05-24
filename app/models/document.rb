@@ -38,6 +38,14 @@ class Document < ActiveRecord::Base
     received_at ? received_at.to_formatted_s(:filename) : "00000000"
   end
 
+  def from_vva?
+    downloaded_from == "VVA"
+  end
+
+  def from_vbms?
+    downloaded_from == "VBMS"
+  end
+
   def filename_doc_id
     (document_id || "").gsub(/[}{]/, "")
   end
