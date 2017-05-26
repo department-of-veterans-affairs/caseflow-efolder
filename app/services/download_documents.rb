@@ -1,5 +1,4 @@
 require "vbms"
-require "vva"
 require "zip"
 
 class DownloadDocuments

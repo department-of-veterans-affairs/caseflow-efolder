@@ -92,6 +92,7 @@ group :development, :test do
 
   gem 'rubocop', '~> 0.36.0', require: false
   gem 'scss_lint', require: false
+  gem "dotenv-rails"
 end
 
 group :test do
@@ -113,5 +114,4 @@ group :development do
 
   # For windows
   gem 'tzinfo-data'
-  gem "dotenv-rails"
 end
