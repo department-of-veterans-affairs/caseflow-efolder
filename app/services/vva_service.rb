@@ -2,7 +2,6 @@ require "vva"
 
 # Thin interface to talk to Virtual VA
 class VVAService
-
   def self.fetch_documents_for(download)
     @client ||= init_client
     @client.document_list.get_by_claim_number(download.file_number)
