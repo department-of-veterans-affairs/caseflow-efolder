@@ -64,6 +64,7 @@ gem 'zaru'
 gem 'redis-namespace'
 
 gem 'connect_vbms', git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "87d0cab4bb5a87e70d6e2dab81e1da17fc512571"
+gem 'connect_vva', git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "17f81cdbfb3a061cb97792f00fab8e675fecb849"
 gem 'bgs', git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", :branch => 'master'
 #gem 'connect_vbms', git: 'https://github.com/department-of-veterans-affairs/connect_vbms.git'
 
@@ -91,6 +92,7 @@ group :development, :test do
 
   gem 'rubocop', '~> 0.36.0', require: false
   gem 'scss_lint', require: false
+  gem "dotenv-rails"
 end
 
 group :test do
@@ -112,5 +114,4 @@ group :development do
 
   # For windows
   gem 'tzinfo-data'
-  gem "dotenv-rails"
 end

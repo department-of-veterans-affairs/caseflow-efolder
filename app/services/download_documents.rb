@@ -4,24 +4,53 @@ require "zip"
 class DownloadDocuments
   include Caseflow::DocumentTypes
 
+  # C&P Exam (DBQ) sent back as both XML and PDF, ignore the XML 999981
+  IGNORED_DOC_TYPES = %w(999981).freeze
+
+  # documents of type Fiduciary should not be shown
+  FIDUCIARY_DOC_TYPES = %w(
+    552 600 607 601 602 546 603 604 545 605 606
+    608 609 575 543 452 547 610 611 445 574 458
+    535 612 614 442 595 644 615 616 541 540 456
+    403 617 618 620 619 715 621 622 623 624 716
+    625 626 628 629 630 631 443 632 633 634 635
+    636 439 440 438 441 551 550 637 638 639 596
+    640 642 643 511 402 538 645 646 647 648 544
+    649 650 536 539 537 576 457 455 421 422 424
+    594 425 426 169 404 454 128 429 430 431 432
+    433 434 435 436 437 657 651 542 444 548
+    549 ).freeze
+
+  # documents of types IRS/SSA, IVM and Financial Actions should not be shown
+  RESTRICTED_VVA_DOC_TYPES = %w(
+    804 807 808 809 810 811 812 813 814 815 816
+    817 818 819 821 822 823 824 825 826 830 722
+    723 724 725 726 727 728 729 752 753 831 832
+    880 881 ).freeze
+
   def initialize(opts = {})
     @download = opts[:download]
-    @vbms_documents = DownloadDocuments.filter_vbms_documents(opts[:vbms_documents] || [])
+    @external_documents = DownloadDocuments.filter_documents(opts[:external_documents] || [])
     @vbms_service = opts[:vbms_service] || VBMSService
+    @vva_service = opts[:vva_service] || VVAService
     @s3 = opts[:s3] || (Rails.application.config.s3_enabled ? Caseflow::S3Service : Caseflow::Fakes::S3Service)
   end
 
   def create_documents
     Download.transaction do
-      @vbms_documents.each do |vbms_document|
+      @external_documents.each do |external_document|
+        # JRO and SSN are required when searching for a document in VVA
         @download.documents.create!(
-          document_id: vbms_document.document_id,
-          vbms_filename: vbms_document.filename,
-          type_id: vbms_document.doc_type,
-          type_description: vbms_document.try(:type_description) || TYPES[vbms_document.doc_type.to_i],
-          source: vbms_document.source,
-          mime_type: vbms_document.mime_type,
-          received_at: vbms_document.received_at
+          document_id: external_document.document_id,
+          vbms_filename: external_document.filename,
+          type_id: external_document.doc_type || external_document.type_id,
+          type_description: external_document.try(:type_description) || TYPES[external_document.doc_type.to_i],
+          source: external_document.source,
+          mime_type: external_document.mime_type,
+          received_at: external_document.received_at,
+          jro: external_document.try(:jro),
+          ssn: external_document.try(:ssn),
+          downloaded_from: external_document.try(:downloaded_from) || "VBMS"
         )
       end
 
@@ -32,7 +61,7 @@ class DownloadDocuments
   def fetch_document(document, index)
     document.update_attributes!(started_at: Time.zone.now)
 
-    content = @vbms_service.fetch_document_file(document)
+    content = fetch_document_file(document)
 
     @s3.store_file(document.s3_filename, content)
     filepath = save_document_file(document, content, index)
@@ -43,21 +72,23 @@ class DownloadDocuments
     )
   end
 
+  def fetch_document_file(document)
+    service = document.from_vva? ? @vva_service : @vbms_service
+    service.fetch_document_file(document)
+  end
+
   def download_contents
     @download.update_attributes!(started_at: Time.zone.now)
     @download.documents.where(download_status: 0).each_with_index do |document, index|
       before_document_download(document)
-
       begin
         fetch_document(document, index)
         @download.touch
 
       rescue VBMS::ClientError => e
-        document.update_attributes!(
-          download_status: :failed,
-          error_message: "VBMS::ClientError::#{e.message}\n#{e.backtrace.join("\n")}"
-        )
-        @download.touch
+        update_document_with_error(document, "VBMS::ClientError::#{e.message}\n#{e.backtrace.join("\n")}")
+      rescue VVA::ClientError => e
+        update_document_with_error(document, "VVA::ClientError::#{e.message}\n#{e.backtrace.join("\n")}")
 
       rescue ActiveRecord::StaleObjectError
         Rails.logger.info "Duplicate download detected. Document ID: #{document.id}"
@@ -160,31 +191,13 @@ class DownloadDocuments
     # Test hook for testing race conditions
   end
 
-  def self.ignored_doc_types
-    [
-      # C&P Exam (DBQ) sent back as both XML and PDF, ignore the XML 999981
-      "999981"
-    ]
-  end
-
-  # documents of type Fiduciary should not be shown
-  def self.fiduciary_doc_types
-    %w(
-      552 600 607 601 602 546 603 604 545 605 606
-      608 609 575 543 452 547 610 611 445 574 458
-      535 612 614 442 595 644 615 616 541 540 456
-      403 617 618 620 619 715 621 622 623 624 716
-      625 626 628 629 630 631 443 632 633 634 635
-      636 439 440 438 441 551 550 637 638 639 596
-      640 642 643 511 402 538 645 646 647 648 544
-      649 650 536 539 537 576 457 455 421 422 424
-      594 425 426 169 404 454 128 429 430 431 432
-      433 434 435 436 453 437 657 651 542 444 548
-      549 )
-  end
-
-  def self.filter_vbms_documents(vbms_documents)
-    vbms_documents.reject { |document| (ignored_doc_types + fiduciary_doc_types).include?(document.doc_type) }
+  def self.filter_documents(external_documents)
+    types_to_filter = IGNORED_DOC_TYPES + FIDUCIARY_DOC_TYPES + RESTRICTED_VVA_DOC_TYPES
+    external_documents.reject do |document|
+      type_id = document.try(:doc_type) || document.type_id
+      # filter based on the type id and restricted value
+      types_to_filter.include?(type_id) || document.try(:restricted)
+    end
   end
 
   class << self
@@ -196,6 +209,14 @@ class DownloadDocuments
   end
 
   private
+
+  def update_document_with_error(document, error)
+    document.update_attributes!(
+      download_status: :failed,
+      error_message: error
+    )
+    @download.touch
+  end
 
   def cleanup!
     files = Dir["#{download_dir}/*"].select do |filepath|

@@ -75,6 +75,7 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   config.bgs_environment = ENV["BGS_ENVIRONMENT"] || "beplinktest"
+  config.vva_wsdl = ENV["VVA_WSDL"]
 
   config.s3_enabled = true
   config.s3_bucket_name = ENV["AWS_BUCKET_NAME"]

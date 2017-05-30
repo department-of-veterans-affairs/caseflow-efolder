@@ -34,6 +34,14 @@ GIT
       xmlenc
 
 GIT
+  remote: https://github.com/department-of-veterans-affairs/connect_vva.git
+  revision: 17f81cdbfb3a061cb97792f00fab8e675fecb849
+  ref: 17f81cdbfb3a061cb97792f00fab8e675fecb849
+  specs:
+    connect_vva (0.1)
+      savon (~> 2.11, >= 2.11.0)
+
+GIT
   remote: https://github.com/department-of-veterans-affairs/omniauth-saml-va
   revision: 24a515b3cbaf17e543e1351c2846001cc2b40c09
   branch: paultag/css
@@ -436,6 +444,7 @@ DEPENDENCIES
   caseflow!
   coffee-rails (~> 4.1.0)
   connect_vbms!
+  connect_vva!
   database_cleaner
   dotenv-rails
   jbuilder (~> 2.0)

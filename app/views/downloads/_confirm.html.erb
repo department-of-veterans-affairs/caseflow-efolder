@@ -31,6 +31,18 @@
       </div>
     </div>
 
+  <% elsif @download.vva_connection_error? %>
+    <%= render "user_header" %>
+    <div class="usa-alert usa-alert-error" role="alert">
+      <div class="usa-alert-body">
+        <h3 class="usa-alert-heading">Can't connect to Virtual VA</h3>
+        <p class="usa-alert-text">
+          Please give Virtual VA a few moments to come back online, then try searching for the eFolder again.
+        </p>
+        <p class="usa-alert-text"><%= link_to "Try again", root_path %></p>
+      </div>
+    </div>
+
   <% elsif @download.pending_confirmation? %>
     <%= render "user_header" %>
     <p>
