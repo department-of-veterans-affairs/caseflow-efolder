@@ -64,7 +64,7 @@ gem 'zaru'
 gem 'redis-namespace'
 
 gem 'connect_vbms', git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "87d0cab4bb5a87e70d6e2dab81e1da17fc512571"
-gem 'connect_vva', git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "17f81cdbfb3a061cb97792f00fab8e675fecb849"
+gem 'connect_vva', git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "7d9f82dc90313a0ac9f4792701a63f24e6caa509"
 gem 'bgs', git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", :branch => 'master'
 #gem 'connect_vbms', git: 'https://github.com/department-of-veterans-affairs/connect_vbms.git'
 
