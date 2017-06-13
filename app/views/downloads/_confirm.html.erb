@@ -60,6 +60,7 @@
       <thead>
         <tr>
           <th scope="col">Filename</th>
+          <th scope="col">Source</th>
           <th scope="col">Receipt Date</th>
         </tr>
       </thead>
@@ -67,6 +68,7 @@
         <% @download.documents.each do |document| %>
           <tr>
             <td class="ee-filename-row"><%= document.type_name %></td>
+            <td><%= document.downloaded_from %> </td>
             <td><%= document.received_at && document.received_at.to_formatted_s(:short_date) %></td>
           </tr>
         <% end %>

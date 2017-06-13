@@ -25,9 +25,11 @@
             All of the documents in the VBMS eFolder for #<%= @download.file_number %> are ready to download.
             Click the "Download eFolder" button below.
           </p>
-          <p>
-            (Remember that Virtual VA documents are not included in this download)
-          </p>
+          <% unless FeatureToggle.enabled?(:vva_service) %>
+            <p>
+              (Remember that Virtual VA documents are not included in this download)
+            </p>
+          <% end %>
           <%= link_to "Download eFolder", download_download_path(@download), {class: "usa-button"} %>
         </div>
       </div>
@@ -104,6 +106,7 @@
           <% if current_tab == "errored" %>
             <th scope="col">Document ID</th>
           <% end %>
+          <th scope="col">Source</th>
           <th scope="col">Receipt Date</th>
         </tr>
       </thead>
@@ -118,6 +121,7 @@
             <% if current_tab == "errored" %>
               <td class="ee-doc-id-row"><%= document.filename_doc_id %></td>
             <% end %>
+            <td><%= document.downloaded_from %></td>
             <td><%= document.received_at && document.received_at.to_formatted_s(:short_date) %></td>
           </tr>
         <% end %>
