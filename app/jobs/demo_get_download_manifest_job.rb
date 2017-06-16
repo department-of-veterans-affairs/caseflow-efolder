@@ -88,7 +88,8 @@ class DemoGetDownloadManifestJob < ActiveJob::Base
         type_id: Document::TYPES.keys.sample,
         document_id: "{#{SecureRandom.hex(4).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(6).upcase}}",
         mime_type: "text/plain",
-        received_at: (i * 2).days.ago
+        received_at: (i * 2).days.ago,
+        downloaded_from: rand(5) == 3 ? "VVA" : "VBMS"
       )
     end
 
