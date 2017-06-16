@@ -187,11 +187,7 @@ class Download < ActiveRecord::Base
   private
 
   def start_fetch_manifest
-    if demo?
-      DemoGetDownloadManifestJob.perform_later(self)
-    else
-      GetDownloadManifestJob.perform_later(self)
-    end
+    demo? ? DemoGetDownloadManifestJob.perform_later(self) : GetDownloadManifestJob.perform_later(self)
   end
 
   def calculate_estimated_to_complete_at

@@ -48,11 +48,6 @@ describe Search do
       expect(search.download.user.station_id).to eq("200")
     end
 
-    it "creates a job to fetch the download manifest" do
-      expect(subject).to be_truthy
-      expect(GetDownloadManifestJob).to have_received(:perform_later)
-    end
-
     it "saves its status as download_created" do
       expect(subject).to be_truthy
       expect(search.reload).to be_download_created
