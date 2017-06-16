@@ -40,8 +40,8 @@ class Download < ActiveRecord::Base
     end
   end
 
-  # Sidekiq is finding out about the job before the database record has it committed,
-  # so use after_commit on: :create.
+  # Wait for the record to be committed to the DB and only then start the Sidekiq job
+  # Here is the issue: https://github.com/mperham/sidekiq/issues/322
   after_commit :start_fetch_manifest, on: :create
 
   def veteran_name
