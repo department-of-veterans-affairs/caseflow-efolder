@@ -40,6 +40,10 @@ class Download < ActiveRecord::Base
     end
   end
 
+  # Sidekiq is finding out about the job before the database record has it committed,
+  # so use after_commit on: :create.
+  after_commit :start_fetch_manifest, :on => :create
+
   def veteran_name
     "#{veteran_first_name} #{veteran_last_name}" if veteran_last_name
   end
@@ -181,6 +185,14 @@ class Download < ActiveRecord::Base
   end
 
   private
+
+  def start_fetch_manifest
+    if demo?
+      DemoGetDownloadManifestJob.perform_later(self)
+    else
+      GetDownloadManifestJob.perform_later(self)
+    end
+  end
 
   def calculate_estimated_to_complete_at
     return nil unless pending_documents?

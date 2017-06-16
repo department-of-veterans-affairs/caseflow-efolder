@@ -25,7 +25,6 @@ class Search < ActiveRecord::Base
       update_attributes!(status: :download_created)
       download.save!
     end
-    start_fetch_manifest
     true
   end
 
@@ -63,13 +62,5 @@ class Search < ActiveRecord::Base
     end
 
     true
-  end
-
-  def start_fetch_manifest
-    if download.demo?
-      DemoGetDownloadManifestJob.perform_later(download)
-    else
-      GetDownloadManifestJob.perform_later(download)
-    end
   end
 end
