@@ -55,6 +55,19 @@ describe "Download" do
     end
   end
 
+  context ".create" do
+    subject { Download.create(file_number: file_number) }
+
+    before do
+      allow(GetDownloadManifestJob).to receive(:perform_later)
+    end
+
+    it "creates a job to fetch the download manifest" do
+      subject
+      expect(GetDownloadManifestJob).to have_received(:perform_later)
+    end
+  end
+
   context "veteran_name" do
     subject { download.veteran_name }
     it { is_expected.to eq("Stan Lee") }
