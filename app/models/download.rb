@@ -49,7 +49,7 @@ class Download < ActiveRecord::Base
   end
 
   def self.active
-    where(created_at: Download::HOURS_UNTIL_EXPIRY.hours.ago..Time.zone.now)
+    where(created_at: Download::HOURS_UNTIL_EXPIRY.hours.ago..Time.zone.now + 5.seconds)
   end
 
   def demo?
