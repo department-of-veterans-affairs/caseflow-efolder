@@ -2,6 +2,8 @@
 class Document < ActiveRecord::Base
   include Caseflow::DocumentTypes
 
+  belongs_to :download
+
   AVERAGE_DOWNLOAD_RATE_LIMIT = 100
   AVERAGE_DOWNLOAD_RATE_CACHE_EXPIRATION = 30.seconds
   AVERAGE_DOWNLOAD_RATE_CACHE_KEY = "historical-average-download-rate".freeze
@@ -63,6 +65,55 @@ class Document < ActiveRecord::Base
 
   def type_name
     type_description || TYPES[type_id.to_i] || vbms_filename
+  end
+
+  def external_service
+    from_vva? ? VVAService : VBMSService
+  end
+
+  def fetch_and_cache_in_s3
+    content = external_service.fetch_document_file(self)
+    S3Service.store_file(s3_filename, content)
+    content
+  end
+
+  def fetch_content
+    update_attributes!(started_at: Time.zone.now)
+    content = S3Service.fetch_content(s3_filename) || fetch_and_cache_in_s3
+    update_attributes!(
+      completed_at: Time.zone.now,
+      download_status: :success
+    )
+    content
+  end
+
+  def fetch_content_and_save(index = 0)
+    save_locally(fetch_content, index)
+  end
+
+  def save_locally(content, index)
+    filepath = File.join(download.download_dir, unique_filename(index))
+
+    if preferred_extension == "pdf"
+      PdfService.write(filepath, content, pdf_attributes)
+    else
+      File.open(filepath, "wb") do |f|
+        f.write(content)
+      end
+    end
+    update_attributes!(filepath: filepath)
+  end
+
+  def pdf_attributes
+    {
+      "Document Type" => type_name,
+      "Receipt Date" => received_at ? received_at.iso8601 : "",
+      "Document ID" => document_id
+    }
+  end
+
+  def unique_filename(index)
+    "#{format('%04d', index + 1)}0-#{filename}"
   end
 
   def self.historical_average_download_rate

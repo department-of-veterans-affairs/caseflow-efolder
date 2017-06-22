@@ -114,6 +114,18 @@ class Download < ActiveRecord::Base
     end
   end
 
+  def download_dir
+    return @download_dir if @download_dir
+
+    basepath = Rails.application.config.download_filepath
+    Dir.mkdir(basepath) unless File.exist?(basepath)
+
+    @download_dir = File.join(basepath, id.to_s)
+    Dir.mkdir(@download_dir) unless File.exist?(@download_dir)
+
+    @download_dir
+  end
+
   def s3_filename
     "#{id}-download.zip"
   end

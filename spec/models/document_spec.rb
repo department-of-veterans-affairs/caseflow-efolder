@@ -4,6 +4,7 @@ describe Document do
   before do
     Rails.cache.clear
     Timecop.freeze(Time.utc(2015, 1, 1, 17, 0, 0))
+    Download.bgs_service = Fakes::BGSService
   end
 
   context ".new" do
@@ -177,6 +178,91 @@ describe Document do
 
       # Initial call, saving value to cahce
       expect(subject).to eq(3.minutes.round(2))
+    end
+  end
+
+  context "#save_locally" do
+    let(:download) do
+      Download.create(
+        file_number: "21012",
+        veteran_first_name: "George",
+        veteran_last_name: "Washington"
+      )
+    end
+    let(:document) do
+      download.documents.build(
+        document_id: "{3333-3333}",
+        received_at: Time.utc(2015, 9, 6, 1, 0, 0),
+        type_id: "825",
+        mime_type: "application/pdf"
+      )
+    end
+
+    let(:txt_document) do
+      download.documents.build(
+        document_id: "{4444-4444}",
+        received_at: Time.utc(2016, 2, 2, 1, 0, 0),
+        type_id: "825",
+        mime_type: "text/plain"
+      )
+    end
+
+    before do
+      # clean files
+      FileUtils.rm_rf(Rails.application.config.download_filepath)
+    end
+
+    it "creates a file in the correct directory and returns filename" do
+      file_contents = IO.binread(Rails.root + "spec/support/test.pdf")
+      document.save_locally(file_contents, 3)
+      expected_filepath = Rails.root + "tmp/files/#{download.id}/00040-VA 21-0166 VA Letter to Beneficiary-20150906-3333-3333.pdf"
+      expect(File.exist?(expected_filepath)).to be_truthy
+      expect(document.filepath).to eq(expected_filepath.to_s)
+    end
+
+    it "handles non-pdf files correctly" do
+      txt_document.save_locally("Howdy", 3)
+      expect(IO.read(txt_document.filepath)).to eq("Howdy")
+    end
+  end
+
+  context "#fetch_content" do
+    let(:download) do
+      Download.create(
+        file_number: "21012",
+        veteran_first_name: "George",
+        veteran_last_name: "Washington"
+      )
+    end
+    let(:document) do
+      download.documents.build(
+        document_id: "{3333-3333}",
+        received_at: Time.utc(2015, 9, 6, 1, 0, 0),
+        type_id: "825",
+        mime_type: "application/pdf"
+      )
+    end
+
+    subject { document.fetch_content }
+
+    context "when file is in S3" do
+      before do
+        allow(S3Service).to receive(:fetch_content).and_return("hello there")
+      end
+
+      it "should return the content from S3" do
+        expect(subject).to eq "hello there"
+      end
+    end
+
+    context "when file is not in S3" do
+      before do
+        allow(Fakes::DocumentService).to receive(:fetch_document_file).and_return("from VBMS")
+      end
+
+      it "should return the content from VBMS" do
+        expect(subject).to eq "from VBMS"
+      end
     end
   end
 end

@@ -1,4 +1,5 @@
 require "vbms"
+require 'vva'
 require "zip"
 
 class DownloadDocuments
@@ -31,9 +32,6 @@ class DownloadDocuments
   def initialize(opts = {})
     @download = opts[:download]
     @external_documents = DownloadDocuments.filter_documents(opts[:external_documents] || [])
-    @vbms_service = opts[:vbms_service] || VBMSService
-    @vva_service = opts[:vva_service] || VVAService
-    @s3 = opts[:s3] || (Rails.application.config.s3_enabled ? Caseflow::S3Service : Caseflow::Fakes::S3Service)
   end
 
   def create_documents
@@ -58,33 +56,13 @@ class DownloadDocuments
     end
   end
 
-  def fetch_document(document, index)
-    document.update_attributes!(started_at: Time.zone.now)
-
-    content = fetch_document_file(document)
-
-    @s3.store_file(document.s3_filename, content)
-    filepath = save_document_file(document, content, index)
-    document.update_attributes!(
-      completed_at: Time.zone.now,
-      filepath: filepath,
-      download_status: :success
-    )
-  end
-
-  def fetch_document_file(document)
-    service = document.from_vva? ? @vva_service : @vbms_service
-    service.fetch_document_file(document)
-  end
-
   def download_contents
     @download.update_attributes!(started_at: Time.zone.now)
     @download.documents.where(download_status: 0).each_with_index do |document, index|
       before_document_download(document)
       begin
-        fetch_document(document, index)
+        document.fetch_content_and_save(index)
         @download.touch
-
       rescue VBMS::ClientError => e
         update_document_with_error(document, "VBMS::ClientError::#{e.message}\n#{e.backtrace.join("\n")}")
       rescue VVA::ClientError => e
@@ -97,49 +75,11 @@ class DownloadDocuments
     end
   end
 
-  def download_dir
-    return @download_dir if @download_dir
-
-    basepath = Rails.application.config.download_filepath
-    Dir.mkdir(basepath) unless File.exist?(basepath)
-
-    @download_dir = File.join(basepath, @download.id.to_s)
-    Dir.mkdir(@download_dir) unless File.exist?(@download_dir)
-
-    @download_dir
-  end
-
-  def pdf_attributes(document)
-    {
-      "Document Type" => document.type_name,
-      "Receipt Date" => document.received_at ? document.received_at.iso8601 : "",
-      "Document ID" => document.document_id
-    }
-  end
-
-  def save_document_file(document, content, index)
-    filename = File.join(download_dir, unique_filename(document, index))
-
-    if document.preferred_extension == "pdf"
-      DownloadDocuments.pdf_service.write(filename, content, pdf_attributes(document))
-    else
-      File.open(filename, "wb") do |f|
-        f.write(content)
-      end
-    end
-
-    filename
-  end
-
-  def unique_filename(document, index)
-    "#{format('%04d', index + 1)}0-#{document.filename}"
-  end
-
   def fetch_from_s3(document)
     # if the file exists on the filesystem, skip
     return if File.exist?(document.filepath)
 
-    @s3.fetch_file(document.s3_filename, document.filepath)
+    S3Service.fetch_file(document.s3_filename, document.filepath)
   end
 
   def zip_exists_locally?
@@ -147,7 +87,7 @@ class DownloadDocuments
   end
 
   def stream_zip_from_s3
-    @s3.stream_content(streaming_s3_key)
+    S3Service.stream_content(streaming_s3_key)
   end
 
   def streaming_s3_key
@@ -155,7 +95,7 @@ class DownloadDocuments
   end
 
   def zip_path
-    File.join(download_dir, @download.package_filename)
+    File.join(@download.download_dir, @download.package_filename)
   end
 
   def package_contents
@@ -167,11 +107,11 @@ class DownloadDocuments
     Zip::File.open(zip_path, Zip::File::CREATE) do |zipfile|
       @download.documents.success.each_with_index do |document, index|
         fetch_from_s3(document)
-        zipfile.add(unique_filename(document, index), document.filepath)
+        zipfile.add(document.unique_filename(index), document.filepath)
       end
     end
 
-    @s3.store_file(@download.s3_filename, zip_path, :filepath)
+    S3Service.store_file(@download.s3_filename, zip_path, :filepath)
     @download.complete!(File.size(zip_path))
 
     cleanup!
@@ -200,14 +140,6 @@ class DownloadDocuments
     end
   end
 
-  class << self
-    attr_writer :pdf_service
-
-    def pdf_service
-      @pdf_service ||= PdfService
-    end
-  end
-
   private
 
   def update_document_with_error(document, error)
@@ -219,7 +151,7 @@ class DownloadDocuments
   end
 
   def cleanup!
-    files = Dir["#{download_dir}/*"].select do |filepath|
+    files = Dir["#{@download.download_dir}/*"].select do |filepath|
       !filepath.end_with?(@download.package_filename)
     end
 
