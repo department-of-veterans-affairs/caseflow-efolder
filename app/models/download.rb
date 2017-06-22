@@ -40,12 +40,16 @@ class Download < ActiveRecord::Base
     end
   end
 
+  # Wait for the record to be committed to the DB and only then start the Sidekiq job
+  # Here is the issue: https://github.com/mperham/sidekiq/issues/322
+  after_commit :start_fetch_manifest, on: :create
+
   def veteran_name
     "#{veteran_first_name} #{veteran_last_name}" if veteran_last_name
   end
 
   def self.active
-    where(created_at: Download::HOURS_UNTIL_EXPIRY.hours.ago..Time.zone.now)
+    where(created_at: Download::HOURS_UNTIL_EXPIRY.hours.ago..Time.zone.now + 5.seconds)
   end
 
   def demo?
@@ -181,6 +185,10 @@ class Download < ActiveRecord::Base
   end
 
   private
+
+  def start_fetch_manifest
+    demo? ? DemoGetDownloadManifestJob.perform_later(self) : GetDownloadManifestJob.perform_later(self)
+  end
 
   def calculate_estimated_to_complete_at
     return nil unless pending_documents?

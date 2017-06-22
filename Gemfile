@@ -106,6 +106,7 @@ group :test do
   # to save and open specific page in capybara tests
   gem 'launchy'
   gem 'database_cleaner'
+  gem 'test_after_commit'
 end
 
 group :development do

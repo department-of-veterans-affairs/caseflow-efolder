@@ -393,6 +393,8 @@ GEM
     temple (0.7.7)
     terminal-table (1.7.3)
       unicode-display_width (~> 1.1.1)
+    test_after_commit (1.1.0)
+      activerecord (>= 3.2)
     therubyracer (0.12.3)
       libv8 (~> 3.16.14.15)
       ref
@@ -473,6 +475,7 @@ DEPENDENCIES
   simplecov
   sniffybara!
   sqlite3
+  test_after_commit
   therubyracer
   therubyrhino
   timecop
