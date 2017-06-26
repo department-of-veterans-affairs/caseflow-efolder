@@ -77,6 +77,10 @@ class Document < ActiveRecord::Base
     content
   end
 
+  def stream_file
+    S3Service.stream_content(s3_filename) || fetch_and_cache_in_s3
+  end
+
   def fetch_content
     update_attributes!(started_at: Time.zone.now)
     content = S3Service.fetch_content(s3_filename) || fetch_and_cache_in_s3

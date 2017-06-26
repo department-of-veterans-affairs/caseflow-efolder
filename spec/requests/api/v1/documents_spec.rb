@@ -20,7 +20,7 @@ describe "Documents API v1", type: :request do
 
     before do
       Download.bgs_service = Fakes::BGSService
-      allow(S3Service).to receive(:fetch_content).and_return("hello there")
+      allow(S3Service).to receive(:stream_content).and_return("hello there")
       FeatureToggle.enable!(:reader_api)
     end
 

@@ -18,6 +18,15 @@ class Api::V1::ApplicationController < ActionController::Base
 
   private
 
+  def streaming_headers(mime_type, filename)
+    headers["Content-Type"] = mime_type
+    headers["Content-disposition"] = "attachment; filename=\"#{filename}\""
+
+    # Setting this to "no" will allow unbuffered responses for HTTP streaming applications
+    headers["X-Accel-Buffering"] = "no"
+    headers["Cache-Control"] ||= "no-cache"
+  end
+
   def ssl_enabled?
     Rails.env.production?
   end

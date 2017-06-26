@@ -7,6 +7,25 @@ describe Document do
     Download.bgs_service = Fakes::BGSService
   end
 
+  let(:download) { Download.create(file_number: "21012") }
+  let(:document) do
+    download.documents.build(
+      document_id: "{3333-3333}",
+      received_at: Time.utc(2015, 9, 6, 1, 0, 0),
+      type_id: "825",
+      mime_type: "application/pdf"
+    )
+  end
+
+  let(:txt_document) do
+    download.documents.build(
+      document_id: "{4444-4444}",
+      received_at: Time.utc(2016, 2, 2, 1, 0, 0),
+      type_id: "825",
+      mime_type: "text/plain"
+    )
+  end
+
   context ".new" do
     context "vbms_filename" do
       subject { Document.new }
@@ -182,31 +201,6 @@ describe Document do
   end
 
   context "#save_locally" do
-    let(:download) do
-      Download.create(
-        file_number: "21012",
-        veteran_first_name: "George",
-        veteran_last_name: "Washington"
-      )
-    end
-    let(:document) do
-      download.documents.build(
-        document_id: "{3333-3333}",
-        received_at: Time.utc(2015, 9, 6, 1, 0, 0),
-        type_id: "825",
-        mime_type: "application/pdf"
-      )
-    end
-
-    let(:txt_document) do
-      download.documents.build(
-        document_id: "{4444-4444}",
-        received_at: Time.utc(2016, 2, 2, 1, 0, 0),
-        type_id: "825",
-        mime_type: "text/plain"
-      )
-    end
-
     before do
       # clean files
       FileUtils.rm_rf(Rails.application.config.download_filepath)
@@ -227,22 +221,6 @@ describe Document do
   end
 
   context "#fetch_content" do
-    let(:download) do
-      Download.create(
-        file_number: "21012",
-        veteran_first_name: "George",
-        veteran_last_name: "Washington"
-      )
-    end
-    let(:document) do
-      download.documents.build(
-        document_id: "{3333-3333}",
-        received_at: Time.utc(2015, 9, 6, 1, 0, 0),
-        type_id: "825",
-        mime_type: "application/pdf"
-      )
-    end
-
     subject { document.fetch_content }
 
     context "when file is in S3" do
@@ -257,6 +235,32 @@ describe Document do
 
     context "when file is not in S3" do
       before do
+        allow(S3Service).to receive(:fetch_content).and_return(nil)
+        allow(Fakes::DocumentService).to receive(:fetch_document_file).and_return("from VBMS")
+      end
+
+      it "should return the content from VBMS" do
+        expect(subject).to eq "from VBMS"
+      end
+    end
+  end
+
+  context "#stream_file" do
+    subject { document.stream_file }
+
+    context "when file is in S3" do
+      before do
+        allow(S3Service).to receive(:stream_content).and_return("hello there")
+      end
+
+      it "should return the content from S3" do
+        expect(subject).to eq "hello there"
+      end
+    end
+
+    context "when file is not in S3" do
+      before do
+        allow(S3Service).to receive(:stream_content).and_return(nil)
         allow(Fakes::DocumentService).to receive(:fetch_document_file).and_return("from VBMS")
       end
 

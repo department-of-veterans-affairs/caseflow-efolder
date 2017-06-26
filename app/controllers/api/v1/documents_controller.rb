@@ -3,12 +3,8 @@ class Api::V1::DocumentsController < Api::V1::ApplicationController
 
   def show
     document = Document.find(params[:id])
-    document.fetch_content_and_save
-    send_file(
-      document.filepath,
-      type: document.mime_type,
-      disposition: "attachment; filename=#{document.filename}"
-    )
+    streaming_headers(document.mime_type, document.filename)
+    self.response_body = document.stream_file
   rescue ActiveRecord::RecordNotFound
     document_not_found
   end
