@@ -71,12 +71,6 @@ class Document < ActiveRecord::Base
     from_vva? ? VVAService : VBMSService
   end
 
-  def fetch_and_cache_in_s3
-    content = external_service.fetch_document_file(self)
-    S3Service.store_file(s3_filename, content)
-    content
-  end
-
   def stream_file
     S3Service.stream_content(s3_filename) || fetch_and_cache_in_s3
   end
@@ -88,6 +82,12 @@ class Document < ActiveRecord::Base
       completed_at: Time.zone.now,
       download_status: :success
     )
+    content
+  end
+
+   def fetch_and_cache_in_s3
+    content = external_service.fetch_document_file(self)
+    S3Service.store_file(s3_filename, content)
     content
   end
 
