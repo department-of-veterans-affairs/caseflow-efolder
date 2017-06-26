@@ -1,0 +1,44 @@
+describe "Documents API v1", type: :request do
+  context "Document by document ID" do
+
+    let(:download) do
+      Download.create(
+        file_number: "21012",
+        veteran_first_name: "George",
+        veteran_last_name: "Washington"
+      )
+    end
+    let(:document) do
+      download.documents.create(
+        id: 34,
+        document_id: "{3333-3333}",
+        received_at: Time.utc(2015, 9, 6, 1, 0, 0),
+        type_id: "825",
+        mime_type: "application/pdf"
+      )
+    end
+
+    before do
+      Download.bgs_service = Fakes::BGSService
+      allow(S3Service).to receive(:fetch_content).and_return("hello there")
+      FeatureToggle.enable!(:reader_api)
+    end
+
+    it "returns 401 if feature is not enabled" do
+      FeatureToggle.disable!(:reader_api)
+      get "/api/v1/documents/8888"
+      expect(response.code).to eq("401")
+    end
+
+    it "returns 404 if document ID is not found" do
+      get "/api/v1/documents/8888"
+      expect(response.code).to eq("404")
+    end
+
+    it "returns a document" do
+      get "/api/v1/documents/#{document.id}"
+      expect(response.code).to eq("200")
+      expect(response.body).to eq("hello there")
+    end
+  end
+end
