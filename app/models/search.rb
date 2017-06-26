@@ -20,15 +20,16 @@ class Search < ActiveRecord::Base
   end
 
   def perform!
+    if sanitized_file_number.blank?
+      return false
+    end
+
     if invalid_input?
       update_attributes!(status: :invalid_input)
       return false
     end
 
     return true if match_existing_download
-
-    # don't fire off requests for
-
 
     self.download = download_scope.new
 
