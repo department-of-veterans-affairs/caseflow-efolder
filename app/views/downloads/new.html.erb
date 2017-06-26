@@ -11,6 +11,18 @@
         </div>
       </div>
     </p>
+  <% elsif @search.invalid_input? %>
+    <p>
+      <div class="usa-alert usa-alert-error" role="alert">
+        <div class="usa-alert-body">
+          <h3 class="usa-alert-heading">User input was invalid</h3>
+          <p class="usa-alert-text">
+            The Veteran ID you entered was not valid.
+            Check to make sure you entered the ID correctly and try again.
+          </p>
+        </div>
+      </div>
+    </p>
   <% elsif @search.access_denied? %>
     <p>
       <div class="usa-alert usa-alert-error" role="alert">

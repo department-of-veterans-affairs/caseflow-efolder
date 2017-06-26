@@ -11,11 +11,24 @@ class Search < ActiveRecord::Base
     download_created: 0,
     download_found: 1,
     veteran_not_found: 2,
-    access_denied: 3
+    access_denied: 3,
+    invalid_input: 4
   }
 
+  def invalid_input?
+    /\D+/.match(sanitized_file_number)
+  end
+
   def perform!
+    if invalid_input?
+      update_attributes!(status: :invalid_input)
+      return false
+    end
+
     return true if match_existing_download
+
+    # don't fire off requests for
+
 
     self.download = download_scope.new
 
