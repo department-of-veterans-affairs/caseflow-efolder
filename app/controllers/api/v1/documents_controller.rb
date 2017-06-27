@@ -4,7 +4,7 @@ class Api::V1::DocumentsController < Api::V1::ApplicationController
   def show
     document = Document.find(params[:id])
     streaming_headers(document.mime_type, document.filename)
-    self.response_body = document.stream_file
+    self.response_body = document.fetcher.stream
   rescue ActiveRecord::RecordNotFound
     document_not_found
   end

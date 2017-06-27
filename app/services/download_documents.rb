@@ -61,7 +61,7 @@ class DownloadDocuments
     @download.documents.where(download_status: 0).each_with_index do |document, index|
       before_document_download(document)
       begin
-        document.fetch_content_and_save(index)
+        document.save_locally(document.fetcher.content, index)
         @download.touch
       rescue VBMS::ClientError => e
         update_document_with_error(document, "VBMS::ClientError::#{e.message}\n#{e.backtrace.join("\n")}")

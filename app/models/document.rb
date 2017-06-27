@@ -67,32 +67,8 @@ class Document < ActiveRecord::Base
     type_description || TYPES[type_id.to_i] || vbms_filename
   end
 
-  def external_service
-    from_vva? ? VVAService : VBMSService
-  end
-
-  def stream_file
-    S3Service.stream_content(s3_filename) || fetch_and_cache_in_s3
-  end
-
-  def fetch_content
-    update_attributes!(started_at: Time.zone.now)
-    content = S3Service.fetch_content(s3_filename) || fetch_and_cache_in_s3
-    update_attributes!(
-      completed_at: Time.zone.now,
-      download_status: :success
-    )
-    content
-  end
-
-   def fetch_and_cache_in_s3
-    content = external_service.fetch_document_file(self)
-    S3Service.store_file(s3_filename, content)
-    content
-  end
-
-  def fetch_content_and_save(index = 0)
-    save_locally(fetch_content, index)
+  def fetcher
+    @fetcher ||= Fetcher.new(document: self, external_service: external_service)
   end
 
   def save_locally(content, index)
@@ -167,6 +143,10 @@ class Document < ActiveRecord::Base
   end
 
   private
+
+  def external_service
+    from_vva? ? VVAService : VBMSService
+  end
 
   def adjust_mime_type
     self.mime_type = "application/pdf" if mime_type == "application/octet-stream"
