@@ -4,6 +4,9 @@ class Api::V1::DocumentsController < Api::V1::ApplicationController
   def show
     document = Document.find(params[:id])
     streaming_headers(document.mime_type, document.filename)
+    # By setting the response body directly to an enumerator
+    # Rails will use the enumerator to send the data element by element,
+    # calling next on the enumerator to get the next chunk of data.
     self.response_body = document.fetcher.stream
   rescue ActiveRecord::RecordNotFound
     document_not_found
