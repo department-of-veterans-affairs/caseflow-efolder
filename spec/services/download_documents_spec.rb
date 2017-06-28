@@ -67,8 +67,8 @@ describe DownloadDocuments do
     context "when one file errors" do
       before do
         allow(Fakes::DocumentService).to receive(:fetch_document_file) do |document|
-          raise VBMS::ClientError, "Failure" if document.document_id == "2"
-          raise VVA::ClientError, "Failure" if document.document_id == "3"
+          fail VBMS::ClientError, "Failure" if document.document_id == "2"
+          fail VVA::ClientError, "Failure" if document.document_id == "3"
           file
         end
 
