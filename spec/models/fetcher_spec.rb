@@ -61,5 +61,18 @@ describe Fetcher do
         expect(subject).to eq "from VBMS"
       end
     end
+
+    context "when the file is in s3 after it has been cached" do
+      before do
+        allow(S3Service).to receive(:stream_content).and_return(nil)
+        allow(Fakes::DocumentService).to receive(:fetch_document_file).and_return("from VBMS")
+      end
+
+      it "should cache in s3 from VBMS and then serve from s3" do
+        expect(subject).to eq "from VBMS"
+        allow(S3Service).to receive(:stream_content).and_return("from s3")
+        expect(document.fetcher.stream).to eq "from s3"
+      end
+    end
   end
 end
