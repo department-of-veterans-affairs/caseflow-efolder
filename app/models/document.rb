@@ -2,6 +2,8 @@
 class Document < ActiveRecord::Base
   include Caseflow::DocumentTypes
 
+  belongs_to :download
+
   AVERAGE_DOWNLOAD_RATE_LIMIT = 100
   AVERAGE_DOWNLOAD_RATE_CACHE_EXPIRATION = 30.seconds
   AVERAGE_DOWNLOAD_RATE_CACHE_KEY = "historical-average-download-rate".freeze
@@ -65,6 +67,35 @@ class Document < ActiveRecord::Base
     type_description || TYPES[type_id.to_i] || vbms_filename
   end
 
+  def fetcher
+    @fetcher ||= Fetcher.new(document: self, external_service: external_service)
+  end
+
+  def save_locally(content, index)
+    filepath = File.join(download.download_dir, unique_filename(index))
+
+    if preferred_extension == "pdf"
+      PdfService.write(filepath, content, pdf_attributes)
+    else
+      File.open(filepath, "wb") do |f|
+        f.write(content)
+      end
+    end
+    update_attributes!(filepath: filepath)
+  end
+
+  def pdf_attributes
+    {
+      "Document Type" => type_name,
+      "Receipt Date" => received_at ? received_at.iso8601 : "",
+      "Document ID" => document_id
+    }
+  end
+
+  def unique_filename(index)
+    "#{format('%04d', index + 1)}0-#{filename}"
+  end
+
   def self.historical_average_download_rate
     time_floor = TimeUtil.floor(AVERAGE_DOWNLOAD_RATE_CACHE_EXPIRATION)
     cache = Rails.cache.read(AVERAGE_DOWNLOAD_RATE_CACHE_KEY)
@@ -112,6 +143,10 @@ class Document < ActiveRecord::Base
   end
 
   private
+
+  def external_service
+    from_vva? ? VVAService : VBMSService
+  end
 
   def adjust_mime_type
     self.mime_type = "application/pdf" if mime_type == "application/octet-stream"
