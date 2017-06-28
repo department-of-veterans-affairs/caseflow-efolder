@@ -25,12 +25,16 @@
             All of the documents in the VBMS eFolder for #<%= @download.file_number %> are ready to download.
             Click the "Download eFolder" button below.
           </p>
-          <% unless FeatureToggle.enabled?(:vva_service) %>
+          <% if FeatureToggle.enabled?(:vva_service) %>
             <p>
-              (Remember that Virtual VA documents are not included in this download)
+              (Note that Virtual VA documents will be <span id="vva_notice">included in this download</span>)
+            </p>
+          <% else %>
+            <p>
+              (Remember that Virtual VA documents are not <span id="vva_notice">included in this download</span>)
             </p>
           <% end %>
-          <%= link_to "Download eFolder", download_download_path(@download), {class: "usa-button"} %>
+          <%= link_to "Download eFolder", download_download_path(@download), {class: "usa-button", id: "download_efolder_button"} %>
         </div>
       </div>
 
