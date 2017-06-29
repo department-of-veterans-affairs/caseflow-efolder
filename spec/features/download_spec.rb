@@ -37,7 +37,7 @@ RSpec.feature "Downloads" do
 
   scenario "Creating a download" do
     Fakes::BGSService.veteran_info = {
-      "1234" => {
+      "12341234" => {
         "veteran_first_name" => "Stan",
         "veteran_last_name" => "Lee",
         "veteran_last_four_ssn" => "2222"
@@ -99,7 +99,7 @@ RSpec.feature "Downloads" do
     }
 
     @user_download.create!(
-      file_number: "5555",
+      file_number: "55555555",
       status: :no_documents
     )
 
@@ -112,7 +112,7 @@ RSpec.feature "Downloads" do
 
   scenario "Searching for a completed download" do
     @user_download.create!(
-      file_number: "5555",
+      file_number: "55555555",
       status: :complete_success
     )
 
