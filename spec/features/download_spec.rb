@@ -47,7 +47,7 @@ RSpec.feature "Downloads" do
     visit "/"
     expect(page).to_not have_content "Recent Searches"
 
-    fill_in "Search for a Veteran ID number below to get started.", with: "1234"
+    fill_in "Search for a Veteran ID number below to get started.", with: "12341234"
     click_button "Search"
 
     # Test that Caseflow caches veteran name for a download
@@ -104,7 +104,7 @@ RSpec.feature "Downloads" do
     )
 
     visit "/"
-    fill_in "Search for a Veteran ID number below to get started.", with: "5555"
+    fill_in "Search for a Veteran ID number below to get started.", with: "55555555"
     click_button "Search"
 
     expect(page).to have_content "We are gathering the list of files in the eFolder now"
@@ -117,7 +117,7 @@ RSpec.feature "Downloads" do
     )
 
     visit "/"
-    fill_in "Search for a Veteran ID number below to get started.", with: "5555"
+    fill_in "Search for a Veteran ID number below to get started.", with: "55555555"
     click_button "Search"
 
     expect(page).to have_content("Success")
@@ -153,8 +153,6 @@ RSpec.feature "Downloads" do
     fill_in "Search for a Veteran ID number below to get started.", with: "abcd"
     click_button "Search"
 
-    search = Search.where(user: @user).first
-    expect(search.valid_file_number?).to be_falsey
     expect(page).to have_content("not valid")
   end
 
@@ -187,11 +185,11 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Sensitive download error" do
-    Fakes::BGSService.veteran_info = { "8888" => { "veteran_first_name" => "Nick", "veteran_last_name" => "Saban" } }
-    Fakes::BGSService.sensitive_files = { "8888" => true }
+    Fakes::BGSService.veteran_info = { "88888888" => { "veteran_first_name" => "Nick", "veteran_last_name" => "Saban" } }
+    Fakes::BGSService.sensitive_files = { "88888888" => true }
 
     visit "/"
-    fill_in "Search for a Veteran ID number below to get started.", with: "8888"
+    fill_in "Search for a Veteran ID number below to get started.", with: "88888888"
     click_button "Search"
     expect(page).to have_current_path("/downloads")
     expect(page).to have_content("contains sensitive information")
