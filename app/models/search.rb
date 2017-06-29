@@ -15,20 +15,20 @@ class Search < ActiveRecord::Base
     invalid_input: 4
   }
 
-  def invalid_input?
-    /\D+/.match(sanitized_file_number)
+  def valid_file_number?
+    number = sanitized_file_number
+    return true if number =~ /DEMO/
+
+    return false if /\D+/.match(number)
+    # We don't want to render an error message on initial pageload.
+    # We don't pass in user until we actually submit the form,
+    # so only check length if the user attribute is present.
+    return false if user && number.length < 8
+
+    true
   end
 
   def perform!
-    if sanitized_file_number.blank?
-      return false
-    end
-
-    if invalid_input?
-      update_attributes!(status: :invalid_input)
-      return false
-    end
-
     return true if match_existing_download
 
     self.download = download_scope.new
@@ -65,12 +65,23 @@ class Search < ActiveRecord::Base
   def validate!
     if download.demo?
       return true
+    end
 
-    elsif !download.case_exists?
+    if sanitized_file_number.blank?
+      return false
+    end
+
+    if invalid_input?
+      update_attributes!(status: :invalid_input)
+      return false
+    end
+
+    if !download.case_exists?
       update_attributes!(status: :veteran_not_found)
       return false
+    end
 
-    elsif !download.can_access?
+    if !download.can_access?
       update_attributes!(status: :access_denied)
       return false
     end
