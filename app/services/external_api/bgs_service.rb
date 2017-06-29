@@ -1,7 +1,7 @@
 require "bgs"
 
 # Thin interface to all things BGS
-class BGSService
+class ExternalApi::BGSService
   include ActiveModel::Model
 
   attr_accessor :user

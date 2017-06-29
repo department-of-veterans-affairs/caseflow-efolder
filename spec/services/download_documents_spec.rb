@@ -29,45 +29,7 @@ describe DownloadDocuments do
   end
 
   let(:download_documents) do
-    DownloadDocuments.new(download: download, external_documents: external_documents, s3: Caseflow::Fakes::S3Service)
-  end
-
-  context "#save_document_file" do
-    let(:document) do
-      download.documents.build(
-        document_id: "{3333-3333}",
-        received_at: Time.utc(2015, 9, 6, 1, 0, 0),
-        type_id: "825",
-        mime_type: "application/pdf"
-      )
-    end
-
-    let(:txt_document) do
-      download.documents.build(
-        document_id: "{4444-4444}",
-        received_at: Time.utc(2016, 2, 2, 1, 0, 0),
-        type_id: "825",
-        mime_type: "text/plain"
-      )
-    end
-
-    before do
-      # clean files
-      FileUtils.rm_rf(Rails.application.config.download_filepath)
-    end
-
-    it "creates a file in the correct directory and returns filename" do
-      file_contents = IO.binread(Rails.root + "spec/support/test.pdf")
-      filename = download_documents.save_document_file(document, file_contents, 3)
-      expected_filepath = Rails.root + "tmp/files/#{download.id}/00040-VA 21-0166 VA Letter to Beneficiary-20150906-3333-3333.pdf"
-      expect(File.exist?(expected_filepath)).to be_truthy
-      expect(filename).to eq(expected_filepath.to_s)
-    end
-
-    it "handles non-pdf files correctly" do
-      filename = download_documents.save_document_file(txt_document, "Howdy", 3)
-      expect(IO.read(filename)).to eq("Howdy")
-    end
+    DownloadDocuments.new(download: download, external_documents: external_documents)
   end
 
   context "#create_documents" do
@@ -104,12 +66,8 @@ describe DownloadDocuments do
 
     context "when one file errors" do
       before do
-        allow(VBMSService).to receive(:fetch_document_file) do |document|
+        allow(Fakes::DocumentService).to receive(:fetch_document_file) do |document|
           fail VBMS::ClientError, "Failure" if document.document_id == "2"
-          file
-        end
-
-        allow(VVAService).to receive(:fetch_document_file) do |document|
           fail VVA::ClientError, "Failure" if document.document_id == "3"
           file
         end
@@ -139,8 +97,7 @@ describe DownloadDocuments do
 
       it "stores successful document in s3" do
         successful_document = Document.first
-        s3 = Caseflow::Fakes::S3Service
-        expect(s3.files[successful_document.s3_filename]).to eq(IO.binread(Rails.root + "spec/support/test.pdf"))
+        expect(S3Service.files[successful_document.s3_filename]).to eq(IO.binread(Rails.root + "spec/support/test.pdf"))
       end
     end
 

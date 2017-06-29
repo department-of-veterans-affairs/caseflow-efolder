@@ -1,7 +1,7 @@
 require "vbms"
 
 # Thin interface to all things VBMS
-class VBMSService
+class ExternalApi::VBMSService
   def self.fetch_documents_for(download)
     @client ||= init_client
 
