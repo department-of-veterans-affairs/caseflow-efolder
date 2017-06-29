@@ -22,6 +22,12 @@ Rails.application.routes.draw do
     end
   end
 
+  namespace :api do
+    namespace :v1 do
+      resources :documents, only: :show
+    end
+  end
+
   get '/stats(/:interval)', to: 'stats#show', as: 'stats'
 
   require "sidekiq/web"

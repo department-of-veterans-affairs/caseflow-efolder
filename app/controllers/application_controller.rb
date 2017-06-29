@@ -56,7 +56,7 @@ class ApplicationController < ActionController::Base
   end
 
   def configure_bgs
-    Download.bgs_service = BGSService.new(user: current_user) unless Rails.env.test?
+    Download.bgs_service = ExternalApi::BGSService.new(user: current_user) unless Rails.env.test?
   end
 
   def feedback_url
@@ -69,4 +69,10 @@ class ApplicationController < ActionController::Base
     ENV["CASEFLOW_FEEDBACK_URL"] + "?" + param_object.to_param
   end
   helper_method :feedback_url
+
+  class << self
+    def dependencies_faked?
+      Rails.env.development? || Rails.env.test? || Rails.env.demo?
+    end
+  end
 end
