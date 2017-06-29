@@ -147,15 +147,25 @@ RSpec.feature "Downloads" do
     expect(page).to have_content "Stan Lee (1234)"
   end
 
-  scenario "Requesting non-existent case" do
+  scenario "Requesting invalid case number" do
     visit "/"
 
     fill_in "Search for a Veteran ID number below to get started.", with: "abcd"
     click_button "Search"
 
     search = Search.where(user: @user).first
+    expect(search.valid_file_number?).to be_falsey
+    expect(page).to have_content("not valid")
+  end
+
+  scenario "Requesting veteran that does not exist" do
+    visit "/"
+
+    fill_in "Search for a Veteran ID number below to get started.", with: "88888888"
+    click_button "Search"
+
+    search = Search.where(user: @user).first
     expect(search).to be_veteran_not_found
-    expect(page).to have_content(search.file_number)
   end
 
   scenario "Using demo mode" do
