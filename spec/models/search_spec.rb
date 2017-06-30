@@ -22,6 +22,25 @@ describe Search do
     end
   end
 
+  context "#valid_file_number?" do
+    subject { search.valid_file_number? }
+
+    context "when file_number is less than 8 characters long" do
+      let(:file_number) { "1234123" }
+      it { is_expected.to be_falsy }
+    end
+
+    context "when file_number contains letters" do
+      let(:file_number) { "1234123a" }
+      it { is_expected.to be_falsy }
+    end
+
+    context "when file_number is at least 8 characters long and all digits" do
+      let(:file_number) { "12341234" }
+      it { is_expected.to be_truthy }
+    end
+  end
+
   context "#perform!" do
     let(:file_number) { "22223333  " }
     subject { search.perform! }
