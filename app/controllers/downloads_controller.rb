@@ -10,7 +10,7 @@ class DownloadsController < ApplicationController
   def create
     @search = Search.new(user: current_user, file_number: params[:file_number])
 
-    if @search.valid_file_number && @search.perform!
+    if @search.valid_file_number? && @search.perform!
       redirect_to download_url(@search.download)
     else
       render("new")
