@@ -63,21 +63,14 @@ class Search < ActiveRecord::Base
   end
 
   def validate!
-    return true if download.demo?
+    if download.demo?
+      return true
 
-    return false if sanitized_file_number.blank?
-
-    if invalid_input?
-      update_attributes!(status: :invalid_input)
-      return false
-    end
-
-    unless download.case_exists?
+    elsif !download.case_exists?
       update_attributes!(status: :veteran_not_found)
       return false
-    end
 
-    unless download.can_access?
+    elsif !download.can_access?
       update_attributes!(status: :access_denied)
       return false
     end
