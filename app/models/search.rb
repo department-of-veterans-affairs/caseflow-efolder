@@ -11,8 +11,7 @@ class Search < ActiveRecord::Base
     download_created: 0,
     download_found: 1,
     veteran_not_found: 2,
-    access_denied: 3,
-    invalid_input: 4
+    access_denied: 3
   }
 
   def valid_file_number?
