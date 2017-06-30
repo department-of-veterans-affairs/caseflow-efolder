@@ -60,7 +60,7 @@ RSpec.feature "Downloads" do
     expect(@download.veteran_last_name).to eq("Lee")
     expect(@download.veteran_last_four_ssn).to eq("2222")
 
-    expect(page).to have_content "Stan Lee (1234)"
+    expect(page).to have_content "Stan Lee (12341234)"
     expect(page).to have_content "We are gathering the list of files in the eFolder now"
     expect(page).to have_current_path(download_path(@download))
     expect(page.evaluate_script("window.DownloadStatus.intervalID")).to be_truthy
@@ -91,7 +91,7 @@ RSpec.feature "Downloads" do
 
   scenario "Searching for an errored download tries again" do
     Fakes::BGSService.veteran_info = {
-      "5555" => {
+      "55555555" => {
         "veteran_first_name" => "Stan",
         "veteran_last_name" => "Lee",
         "veteran_last_four_ssn" => "2222"
@@ -128,7 +128,7 @@ RSpec.feature "Downloads" do
 
   scenario "Extraneous spaces in search input" do
     Fakes::BGSService.veteran_info = {
-      "1234" => {
+      "12341234" => {
         "veteran_first_name" => "Stan",
         "veteran_last_name" => "Lee",
         "veteran_last_four_ssn" => "2222"
@@ -138,13 +138,13 @@ RSpec.feature "Downloads" do
     visit "/"
     expect(page).to_not have_content "Recent Searches"
 
-    fill_in "Search for a Veteran ID number below to get started.", with: " 1234 "
+    fill_in "Search for a Veteran ID number below to get started.", with: " 12341234 "
     click_button "Search"
 
     download = @user_download.last
     expect(download).to_not be_nil
 
-    expect(page).to have_content "Stan Lee (1234)"
+    expect(page).to have_content "Stan Lee (12341234)"
   end
 
   scenario "Requesting invalid case number" do

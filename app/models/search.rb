@@ -19,7 +19,7 @@ class Search < ActiveRecord::Base
     number = sanitized_file_number
     return true if number =~ /DEMO/
 
-    return false if /\D+/.match(number)
+    return false if /\D+/ =~ number
     # We don't want to render an error message on initial pageload.
     # We don't pass in user until we actually submit the form,
     # so only check length if the user attribute is present.
@@ -63,25 +63,21 @@ class Search < ActiveRecord::Base
   end
 
   def validate!
-    if download.demo?
-      return true
-    end
+    return true if download.demo?
 
-    if sanitized_file_number.blank?
-      return false
-    end
+    return false if sanitized_file_number.blank?
 
     if invalid_input?
       update_attributes!(status: :invalid_input)
       return false
     end
 
-    if !download.case_exists?
+    unless download.case_exists?
       update_attributes!(status: :veteran_not_found)
       return false
     end
 
-    if !download.can_access?
+    unless download.can_access?
       update_attributes!(status: :access_denied)
       return false
     end
