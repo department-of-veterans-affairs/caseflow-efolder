@@ -79,7 +79,7 @@
         <% @download.documents.each do |document| %>
           <tr>
             <td class="ee-filename-row"><%= document.type_name %></td>
-            <td><%= document.downloaded_from %> </td>
+            <td><%= document.from_vva? ? "VVA/LCM" : "VBMS" %></td>
             <td><%= document.received_at && document.received_at.to_formatted_s(:short_date) %></td>
           </tr>
         <% end %>

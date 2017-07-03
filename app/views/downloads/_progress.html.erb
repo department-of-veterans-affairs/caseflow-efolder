@@ -126,7 +126,7 @@
             <% if current_tab == "errored" %>
               <td class="ee-doc-id-row"><%= document.filename_doc_id %></td>
             <% end %>
-            <td><%= document.downloaded_from %></td>
+            <td><%= document.from_vva? ? "VVA/LCM" : "VBMS" %></td>
             <td><%= document.received_at && document.received_at.to_formatted_s(:short_date) %></td>
           </tr>
         <% end %>
