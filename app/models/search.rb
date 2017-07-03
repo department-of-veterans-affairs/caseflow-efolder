@@ -14,6 +14,19 @@ class Search < ActiveRecord::Base
     access_denied: 3
   }
 
+  def valid_file_number?
+    number = sanitized_file_number
+    return true if number =~ /DEMO/
+
+    return false if /\D+/ =~ number
+    # We don't want to render an error message on initial pageload.
+    # We don't pass in user until we actually submit the form,
+    # so only check length if the user attribute is present.
+    return false if user && number.length < 8
+
+    true
+  end
+
   def perform!
     return true if match_existing_download
 

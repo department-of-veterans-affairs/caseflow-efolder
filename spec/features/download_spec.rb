@@ -37,7 +37,7 @@ RSpec.feature "Downloads" do
 
   scenario "Creating a download" do
     Fakes::BGSService.veteran_info = {
-      "1234" => {
+      "12341234" => {
         "veteran_first_name" => "Stan",
         "veteran_last_name" => "Lee",
         "veteran_last_four_ssn" => "2222"
@@ -47,7 +47,7 @@ RSpec.feature "Downloads" do
     visit "/"
     expect(page).to_not have_content "Recent Searches"
 
-    fill_in "Search for a Veteran ID number below to get started.", with: "1234"
+    fill_in "Search for a Veteran ID number below to get started.", with: "12341234"
     click_button "Search"
 
     # Test that Caseflow caches veteran name for a download
@@ -60,7 +60,7 @@ RSpec.feature "Downloads" do
     expect(@download.veteran_last_name).to eq("Lee")
     expect(@download.veteran_last_four_ssn).to eq("2222")
 
-    expect(page).to have_content "Stan Lee (1234)"
+    expect(page).to have_content "Stan Lee (12341234)"
     expect(page).to have_content "We are gathering the list of files in the eFolder now"
     expect(page).to have_current_path(download_path(@download))
     expect(page.evaluate_script("window.DownloadStatus.intervalID")).to be_truthy
@@ -91,7 +91,7 @@ RSpec.feature "Downloads" do
 
   scenario "Searching for an errored download tries again" do
     Fakes::BGSService.veteran_info = {
-      "5555" => {
+      "55555555" => {
         "veteran_first_name" => "Stan",
         "veteran_last_name" => "Lee",
         "veteran_last_four_ssn" => "2222"
@@ -99,12 +99,12 @@ RSpec.feature "Downloads" do
     }
 
     @user_download.create!(
-      file_number: "5555",
+      file_number: "55555555",
       status: :no_documents
     )
 
     visit "/"
-    fill_in "Search for a Veteran ID number below to get started.", with: "5555"
+    fill_in "Search for a Veteran ID number below to get started.", with: "55555555"
     click_button "Search"
 
     expect(page).to have_content "We are gathering the list of files in the eFolder now"
@@ -112,12 +112,12 @@ RSpec.feature "Downloads" do
 
   scenario "Searching for a completed download" do
     @user_download.create!(
-      file_number: "5555",
+      file_number: "55555555",
       status: :complete_success
     )
 
     visit "/"
-    fill_in "Search for a Veteran ID number below to get started.", with: "5555"
+    fill_in "Search for a Veteran ID number below to get started.", with: "55555555"
     click_button "Search"
 
     expect(page).to have_content("Success")
@@ -128,7 +128,7 @@ RSpec.feature "Downloads" do
 
   scenario "Extraneous spaces in search input" do
     Fakes::BGSService.veteran_info = {
-      "1234" => {
+      "12341234" => {
         "veteran_first_name" => "Stan",
         "veteran_last_name" => "Lee",
         "veteran_last_four_ssn" => "2222"
@@ -138,24 +138,32 @@ RSpec.feature "Downloads" do
     visit "/"
     expect(page).to_not have_content "Recent Searches"
 
-    fill_in "Search for a Veteran ID number below to get started.", with: " 1234 "
+    fill_in "Search for a Veteran ID number below to get started.", with: " 12341234 "
     click_button "Search"
 
     download = @user_download.last
     expect(download).to_not be_nil
 
-    expect(page).to have_content "Stan Lee (1234)"
+    expect(page).to have_content "Stan Lee (12341234)"
   end
 
-  scenario "Requesting non-existent case" do
+  scenario "Requesting invalid case number" do
     visit "/"
 
     fill_in "Search for a Veteran ID number below to get started.", with: "abcd"
     click_button "Search"
 
+    expect(page).to have_content("not valid")
+  end
+
+  scenario "Requesting veteran that does not exist" do
+    visit "/"
+
+    fill_in "Search for a Veteran ID number below to get started.", with: "88888888"
+    click_button "Search"
+
     search = Search.where(user: @user).first
     expect(search).to be_veteran_not_found
-    expect(page).to have_content(search.file_number)
   end
 
   scenario "Using demo mode" do
@@ -177,11 +185,11 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Sensitive download error" do
-    Fakes::BGSService.veteran_info = { "8888" => { "veteran_first_name" => "Nick", "veteran_last_name" => "Saban" } }
-    Fakes::BGSService.sensitive_files = { "8888" => true }
+    Fakes::BGSService.veteran_info = { "88888888" => { "veteran_first_name" => "Nick", "veteran_last_name" => "Saban" } }
+    Fakes::BGSService.sensitive_files = { "88888888" => true }
 
     visit "/"
-    fill_in "Search for a Veteran ID number below to get started.", with: "8888"
+    fill_in "Search for a Veteran ID number below to get started.", with: "88888888"
     click_button "Search"
     expect(page).to have_current_path("/downloads")
     expect(page).to have_content("contains sensitive information")
