@@ -36,7 +36,7 @@
   <% end %>
 
   <div class="ee-heading">
-    <h1>Welcome to eFolder Express!</h1>
+    <h1>Welcome to eFolder Express</h1>
 
     <p>
       eFolder Express allows VA employees to bulk-download VBMS eFolders.<br/>
@@ -59,9 +59,13 @@
         </button>
       </div>
     <% end %>
-    <% unless FeatureToggle.enabled?(:vva_service) %>
+    <% if FeatureToggle.enabled?(:vva_service) %>
       <p class="cf-txt-c">
-        <em>Note: eFolder Express does not currently support Virtual VA documents.</em>
+        <i>Note: eFolder Express now includes Virtual VA documents from the Legacy Content Manager Documents tab in VBMS.</i>
+      </p>
+    <% else %>
+      <p class="cf-txt-c">
+        <i>Note: eFolder Express does not currently support Virtual VA documents.</i>
       </p>
     <% end %>
   </div>

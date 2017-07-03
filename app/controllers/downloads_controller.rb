@@ -119,6 +119,16 @@ class DownloadsController < ApplicationController
   end
   helper_method :failed_documents
 
+  def downloaded_from_vbms
+    @download.documents.where(downloaded_from: "VBMS").count
+  end
+  helper_method :downloaded_from_vbms
+
+  def downloaded_from_vva
+    @download.documents.where(downloaded_from: "VVA").count
+  end
+  helper_method :downloaded_from_vva
+
   def current_tab
     params[:current_tab] || (@download.complete? ? "completed" : "progress")
   end
