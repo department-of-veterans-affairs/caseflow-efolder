@@ -45,11 +45,22 @@
 
   <% elsif @download.pending_confirmation? %>
     <%= render "user_header" %>
-    <p>
-      eFolder Express found <%= @download.documents.count %> files in eFolder #<%= @download.file_number %>
-      (<%= @download.veteran_name %>).
-      Verify the ID # and click the <%= fetch_button_text %> <span id="retrieve_documents">button below</span> to retrieve the files from VBMS.
-    </p>
+    <% if FeatureToggle.enabled?(:vva_service) %>
+      <p>
+        eFolder Express found a total of <%= @download.documents.count %> documents
+        (<%= downloaded_from_vbms %> from VBMS and
+        <%= downloaded_from_vva %> from VVA/LCM) for
+        <%= @download.veteran_name %> #<%= @download.file_number %>.
+        Verify the Veteran ID and click the <%= fetch_button_text %>
+        button below to start retrieving the eFolder.
+      </p>
+    <% else %>
+      <p>
+        eFolder Express found <%= @download.documents.count %> files in eFolder #<%= @download.file_number %>
+        (<%= @download.veteran_name %>).
+        Verify the ID # and click the <%= fetch_button_text %> button below to retrieve the files from VBMS.
+      </p>
+    <% end %>
 
     <p>
       <%= button_to fetch_button_text, start_download_path(@download), method: :post, class: "cf-submit" %>
@@ -68,7 +79,7 @@
         <% @download.documents.each do |document| %>
           <tr>
             <td class="ee-filename-row"><%= document.type_name %></td>
-            <td><%= document.downloaded_from %> </td>
+            <td><%= document.from_vva? ? "VVA/LCM" : "VBMS" %></td>
             <td><%= document.received_at && document.received_at.to_formatted_s(:short_date) %></td>
           </tr>
         <% end %>

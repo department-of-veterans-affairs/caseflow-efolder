@@ -27,7 +27,8 @@
           </p>
           <% if FeatureToggle.enabled?(:vva_service) %>
             <p>
-              (Note that Virtual VA documents will be <span id="vva_notice">included in this download</span>)
+              This efolder contains <%= @download.documents.count %> documents:
+              <%= downloaded_from_vbms %> from VBMS and <%= downloaded_from_vva %> from VVA/LCM.
             </p>
           <% else %>
             <p>
@@ -125,7 +126,7 @@
             <% if current_tab == "errored" %>
               <td class="ee-doc-id-row"><%= document.filename_doc_id %></td>
             <% end %>
-            <td><%= document.downloaded_from %></td>
+            <td><%= document.from_vva? ? "VVA/LCM" : "VBMS" %></td>
             <td><%= document.received_at && document.received_at.to_formatted_s(:short_date) %></td>
           </tr>
         <% end %>

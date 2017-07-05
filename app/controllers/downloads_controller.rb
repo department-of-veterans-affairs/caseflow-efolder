@@ -10,7 +10,7 @@ class DownloadsController < ApplicationController
   def create
     @search = Search.new(user: current_user, file_number: params[:file_number])
 
-    if @search.perform!
+    if @search.valid_file_number? && @search.perform!
       redirect_to download_url(@search.download)
     else
       render("new")
@@ -88,7 +88,7 @@ class DownloadsController < ApplicationController
   def start_download_files
     @download.touch
 
-    if @download.file_number =~ /DEMO/
+    if @download.demo?
       DemoGetDownloadFilesJob.perform_later(@download)
     else
       GetDownloadFilesJob.perform_later(@download)
@@ -118,6 +118,16 @@ class DownloadsController < ApplicationController
     @download.documents.failed
   end
   helper_method :failed_documents
+
+  def downloaded_from_vbms
+    @download.documents.where(downloaded_from: "VBMS").count
+  end
+  helper_method :downloaded_from_vbms
+
+  def downloaded_from_vva
+    @download.documents.where(downloaded_from: "VVA").count
+  end
+  helper_method :downloaded_from_vva
 
   def current_tab
     params[:current_tab] || (@download.complete? ? "completed" : "progress")

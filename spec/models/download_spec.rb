@@ -165,6 +165,14 @@ describe "Download" do
     end
   end
 
+  context "#download_dir" do
+    subject { download.download_dir }
+
+    it "returns a download directory" do
+      expect(subject).to eq File.join(Rails.application.config.download_filepath, download.id.to_s)
+    end
+  end
+
   context "#estimated_to_complete_at" do
     before { download.documents.create!(started_at: Time.zone.now) }
     subject { download.estimated_to_complete_at }

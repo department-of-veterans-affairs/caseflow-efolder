@@ -5,10 +5,9 @@ SimpleCov.start do
   add_filter "lib/fakes"
   add_filter "config/initializers"
   add_filter "spec/support"
-  add_filter "app/services/vbms_service.rb"
-  add_filter "app/services/bgs_service.rb"
-  add_filter "app/services/s3_service.rb"
-  add_filter "app/services/vva_service.rb"
+  add_filter "app/services/external_api/vbms_service.rb"
+  add_filter "app/services/external_api/bgs_service.rb"
+  add_filter "app/services/external_api/vva_service.rb"
   add_filter "app/jobs"
 
   SimpleCov.minimum_coverage_by_file 90
