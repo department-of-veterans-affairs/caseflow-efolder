@@ -25,7 +25,12 @@
             All of the documents in the VBMS eFolder for #<%= @download.file_number %> are ready to download.
             Click the "Download eFolder" button below.
           </p>
-          <% unless FeatureToggle.enabled?(:vva_service) %>
+          <% if FeatureToggle.enabled?(:vva_service) %>
+            <p>
+              This efolder contains <%= @download.documents.count %> documents:
+              <%= downloaded_from_vbms %> from VBMS and <%= downloaded_from_vva %> from VVA/LCM.
+            </p>
+          <% else %>
             <p>
               (Remember that Virtual VA documents are not included in this download)
             </p>
@@ -121,7 +126,7 @@
             <% if current_tab == "errored" %>
               <td class="ee-doc-id-row"><%= document.filename_doc_id %></td>
             <% end %>
-            <td><%= document.downloaded_from %></td>
+            <td><%= document.from_vva? ? "VVA/LCM" : "VBMS" %></td>
             <td><%= document.received_at && document.received_at.to_formatted_s(:short_date) %></td>
           </tr>
         <% end %>
