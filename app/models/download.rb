@@ -196,6 +196,15 @@ class Download < ActiveRecord::Base
     end
   end
 
+  # are we looking things up twice because of the after_commit hook?
+  def force_fetch_manifest
+    demo? ? DemoGetDownloadManifestJob.perform_now(self) : GetDownloadManifestJob.perform_now(self)
+  end
+
+  def start_cache_documents
+    CacheFilesJob.perform_later(self)
+  end
+
   private
 
   def start_fetch_manifest

@@ -2,17 +2,40 @@ class Api::V1::FilesController < Api::V1::ApplicationController
   before_action :verify_feature_enabled
 
   def show
-    documents = Download.where(user_id: current_user, file_number: params[:id]).documents
-    streaming_headers(document.mime_type, document.filename)
-    # By setting the response body directly to an enumerator
-    # Rails will use the enumerator to send the data element by element,
-    # calling next on the enumerator to get the next chunk of data.
-    self.response_body = document.fetcher.stream
+    render json: json_files
   rescue ActiveRecord::RecordNotFound
     file_not_found
   end
 
   private
+
+  def json_files
+    download.force_fetch_manifest if (!download.manifest_fetched_at || download.manifest_fetched_at < 1.second.ago)
+
+    download.start_cache_documents if download?
+
+    ActiveModelSerializers::SerializableResource.new(
+      download,
+      each_serializer: Serializers::V1::DownloadSerializer
+    ).as_json
+  end
+
+  def download
+    @download ||= Download.includes(:documents).where(user_id: user_id, file_number: id).last ||
+      Download.create(user_id: user_id, file_number: id)
+  end
+
+  def user_id
+    params.require(:user_id)
+  end
+
+  def id
+    params[:id]
+  end
+
+  def download?
+    params[:download]
+  end
 
   def file_not_found
     render json: {
