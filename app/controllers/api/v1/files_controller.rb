@@ -10,7 +10,7 @@ class Api::V1::FilesController < Api::V1::ApplicationController
   private
 
   def json_files
-    download.force_fetch_manifest if (!download.manifest_fetched_at || download.manifest_fetched_at < 1.second.ago)
+    download.force_fetch_manifest if (!download.manifest_fetched_at || download.manifest_fetched_at < 3.hours.ago)
 
     download.start_cache_documents if download?
 
