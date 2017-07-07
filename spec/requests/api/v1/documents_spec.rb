@@ -19,7 +19,7 @@ describe "Documents API v1", type: :request do
 
     before do
       Download.bgs_service = Fakes::BGSService
-      allow(S3Service).to receive(:stream_content).and_return("hello there")
+      allow(S3Service).to receive(:fetch_content).and_return("hello there")
       FeatureToggle.enable!(:reader_api)
     end
 
@@ -38,10 +38,11 @@ describe "Documents API v1", type: :request do
       get "/api/v1/documents/#{document.id}"
       expect(response.code).to eq("200")
       expect(response.body).to eq("hello there")
+      expect(response.headers["Cache-Control"]).to match(/2592000/)
     end
 
     it "returns 500 on any other error" do
-      allow_any_instance_of(Fetcher).to receive(:stream).and_raise("Much random error")
+      allow_any_instance_of(Fetcher).to receive(:content).and_raise("Much random error")
       expect(Raven).to receive(:capture_exception)
       expect(Raven).to receive(:last_event_id).and_return("a1b2c3")
 

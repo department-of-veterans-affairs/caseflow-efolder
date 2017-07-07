@@ -2,10 +2,6 @@ class Fetcher
   include ActiveModel::Model
   attr_accessor :document, :external_service
 
-  def stream
-    S3Service.stream_content(document.s3_filename) || cache_in_s3
-  end
-
   def content
     document.update_attributes!(started_at: Time.zone.now)
     result = S3Service.fetch_content(document.s3_filename) || cache_in_s3
