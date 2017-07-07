@@ -20,6 +20,8 @@ class Download < ActiveRecord::Base
   has_many :searches
   belongs_to :user
 
+  attr_accessor :no_fetch
+
   before_create do |download|
     # This fake is used in the test suite, but let's
     # also use it if we're demo-ing eFolder express.
@@ -208,7 +210,7 @@ class Download < ActiveRecord::Base
   private
 
   def start_fetch_manifest
-    demo? ? DemoGetDownloadManifestJob.perform_later(self) : GetDownloadManifestJob.perform_later(self)
+    (demo? ? DemoGetDownloadManifestJob.perform_later(self) : GetDownloadManifestJob.perform_later(self)) if !no_fetch
   end
 
   def calculate_estimated_to_complete_at

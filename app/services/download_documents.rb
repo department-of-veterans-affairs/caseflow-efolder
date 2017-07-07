@@ -38,7 +38,7 @@ class DownloadDocuments
     Download.transaction do
       @external_documents.each do |external_document|
         # JRO and SSN are required when searching for a document in VVA
-        @download.documents.find_or_initialize!(document_id: external_document.document_id).tap do |t|
+        @download.documents.find_or_initialize_by(document_id: external_document.document_id).tap do |t|
           t.assign_attributes(
             vbms_filename: external_document.filename,
             type_id: external_document.doc_type || external_document.type_id,

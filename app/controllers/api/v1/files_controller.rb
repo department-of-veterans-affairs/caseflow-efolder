@@ -22,7 +22,7 @@ class Api::V1::FilesController < Api::V1::ApplicationController
 
   def download
     @download ||= Download.includes(:documents).where(user_id: user_id, file_number: id).last ||
-      Download.create(user_id: user_id, file_number: id)
+      Download.create(user_id: user_id, file_number: id, no_fetch: true)
   end
 
   def user_id

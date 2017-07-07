@@ -113,7 +113,7 @@ describe DownloadDocuments do
           OpenStruct.new(document_id: "1", filename: "filename.pdf", doc_type: "123",
                          source: "SRC", received_at: Time.zone.now,
                          mime_type: "application/pdf"),
-          OpenStruct.new(document_id: "1", filename: "filename.pdf", doc_type: "123",
+          OpenStruct.new(document_id: "2", filename: "filename.pdf", doc_type: "123",
                          source: "SRC", received_at: Time.zone.now,
                          mime_type: "application/pdf")
         ]
@@ -124,7 +124,7 @@ describe DownloadDocuments do
 
         download.documents.each_with_index do |document, i|
           expect(document).to be_success
-          expect(document.filepath).to eq((Rails.root + "tmp/files/#{download.id}/000#{i + 1}0-VA 21-4185 Report of Income from Property or Business-20150101-1.pdf").to_s)
+          expect(document.filepath).to eq((Rails.root + "tmp/files/#{download.id}/000#{i + 1}0-VA 21-4185 Report of Income from Property or Business-20150101-#{i + 1}.pdf").to_s)
           expect(File.exist?(document.filepath)).to be_truthy
         end
       end
