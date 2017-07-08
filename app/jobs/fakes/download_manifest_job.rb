@@ -1,4 +1,4 @@
-class DemoGetDownloadManifestJob < ActiveJob::Base
+class Fakes::DownloadManifestJob < ActiveJob::Base
   queue_as :default
 
   DEMOS = {

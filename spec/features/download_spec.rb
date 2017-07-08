@@ -5,8 +5,8 @@ RSpec.feature "Downloads" do
     @user = User.create(css_id: "123123", station_id: "116")
     @user_download = Download.where(user: @user)
 
-    allow(GetDownloadManifestJob).to receive(:perform_later)
-    allow(GetDownloadFilesJob).to receive(:perform_later)
+    allow(DownloadManifestJob).to receive(:perform_later)
+    allow(DownloadFilesJob).to receive(:perform_later)
     User.authenticate!
     Download.bgs_service = Fakes::BGSService
   end
@@ -64,7 +64,7 @@ RSpec.feature "Downloads" do
     expect(page).to have_content "We are gathering the list of files in the eFolder now"
     expect(page).to have_current_path(download_path(@download))
     expect(page.evaluate_script("window.DownloadStatus.intervalID")).to be_truthy
-    expect(GetDownloadManifestJob).to have_received(:perform_later)
+    expect(DownloadManifestJob).to have_received(:perform_later)
 
     search = Search.where(user: @user).first
     expect(search).to be_download_created
@@ -167,7 +167,7 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Using demo mode" do
-    expect(DemoGetDownloadManifestJob).to receive(:perform_later)
+    expect(Fakes::DownloadManifestJob).to receive(:perform_later)
 
     visit "/"
 
@@ -278,7 +278,7 @@ RSpec.feature "Downloads" do
     first(:button, "Start retrieving eFolder").click
 
     expect(download.reload).to be_pending_documents
-    expect(GetDownloadFilesJob).to have_received(:perform_later)
+    expect(DownloadFilesJob).to have_received(:perform_later)
 
     expect(page).to have_content("Retrieving Files ...")
   end
@@ -382,7 +382,7 @@ RSpec.feature "Downloads" do
     expect(page).to have_css ".cf-tab.cf-active", text: "Progress (2)"
     expect(page).to have_content "Completed (0)"
     expect(page).to have_content "Errors (0)"
-    expect(GetDownloadFilesJob).to have_received(:perform_later)
+    expect(DownloadFilesJob).to have_received(:perform_later)
   end
 
   scenario "Download non-existing zip" do
