@@ -10,11 +10,11 @@ class Api::V1::FilesController < Api::V1::ApplicationController
   private
 
   def json_files
-    download.force_fetch_manifest if (!download.manifest_fetched_at || download.manifest_fetched_at < 3.hours.ago)
+    download.force_fetch_manifest if !download.manifest_fetched_at || download.manifest_fetched_at < 3.hours.ago
 
     download.start_cache_documents if download?
 
-    raise ActiveRecord::RecordNotFound if download.documents.empty?
+    fail ActiveRecord::RecordNotFound if download.documents.empty?
 
     ActiveModelSerializers::SerializableResource.new(
       download,
@@ -40,8 +40,6 @@ class Api::V1::FilesController < Api::V1::ApplicationController
     # TODO: scope this to a current user
     unauthorized unless FeatureToggle.enabled?(:reader_api)
   end
-
-  private
 
   def user_id
     params.require(:user_id)

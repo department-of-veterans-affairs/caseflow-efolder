@@ -51,6 +51,30 @@ describe DownloadDocuments do
 
       expect(download.manifest_fetched_at).to eq(Time.zone.now)
     end
+
+    context "When document exists" do
+      let(:external_documents2) do
+        [
+          OpenStruct.new(document_id: "1", filename: "filename.pdf", doc_type: "124",
+                         source: "SRC", received_at: Time.zone.now, type_id: "124",
+                         mime_type: "application/pdf", type_description: "VA 9 Appeal to Board of Appeals"),
+          OpenStruct.new(document_id: "5", received_at: 1.hour.ago)
+        ]
+      end
+
+      let(:download_documents2) do
+        DownloadDocuments.new(download: download, external_documents: external_documents2)
+      end
+
+      before do
+        download_documents2.create_documents
+      end
+
+      it "updates the metadata and adds new documents" do
+        expect(Document.count).to equal(5)
+        expect(Document.first.type_id).to eq("124")
+      end
+    end
   end
 
   context "#download_contents" do
@@ -98,6 +122,20 @@ describe DownloadDocuments do
       it "stores successful document in s3" do
         successful_document = Document.first
         expect(S3Service.files[successful_document.s3_filename]).to eq(IO.binread(Rails.root + "spec/support/test.pdf"))
+      end
+    end
+
+    context "when only_cache is true" do
+      before do
+        download_documents.create_documents
+      end
+
+      it "files are cached and not saved" do
+        allow(S3Service).to receive(:store_file).and_return(nil)
+        download_documents.download_contents(only_cache: true)
+
+        expect(Dir[Rails.root + "tmp/files/#{download.id}/*"].size).to eq(0)
+        expect(S3Service).to have_received(:store_file).exactly(4).times
       end
     end
 

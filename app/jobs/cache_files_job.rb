@@ -4,7 +4,7 @@ class CacheFilesJob < ActiveJob::Base
   def perform(download)
     download_documents = DownloadDocuments.new(download: download)
 
-    download_documents.cache_contents_in_s3
+    download_documents.cache_contents_in_s3(only_cache: true)
   end
 
   def max_attempts

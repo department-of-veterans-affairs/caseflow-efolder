@@ -100,7 +100,7 @@ describe "File API v1", type: :request do
 
         it "returns existing files" do
           get "/api/v1/files/#{download.file_number}?user_id=#{user.id}"
-          
+
           expect(response.code).to eq("200")
           files = JSON.parse(response.body)["data"]["attributes"]["documents"]
 
@@ -118,7 +118,7 @@ describe "File API v1", type: :request do
 
         it "returns existing files" do
           get "/api/v1/files/#{download.file_number}?user_id=#{user.id}"
-          
+
           expect(response.code).to eq("200")
           files = JSON.parse(response.body)["data"]["attributes"]["documents"]
 

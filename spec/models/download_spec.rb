@@ -310,4 +310,20 @@ describe "Download" do
       it { is_expected.to eq(100) }
     end
   end
+
+  context "#force_fetch_manifest" do
+    it "starts the manifest job" do
+      allow(GetDownloadManifestJob).to receive(:perform_now)
+      download.force_fetch_manifest
+      expect(GetDownloadManifestJob).to have_received(:perform_now)
+    end
+  end
+
+  context "#start_cache_documents" do
+    it "starts the manifest job" do
+      allow(CacheFilesJob).to receive(:perform_later)
+      download.start_cache_documents
+      expect(CacheFilesJob).to have_received(:perform_later)
+    end
+  end
 end
