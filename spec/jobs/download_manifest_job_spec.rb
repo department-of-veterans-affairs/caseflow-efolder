@@ -1,11 +1,11 @@
-describe GetDownloadManifestJob do
+describe DownloadManifestJob do
   context "#perform" do
     let(:download) { Download.create }
 
     context "when document list is empty" do
       before do
         allow(VBMSService).to receive(:fetch_documents_for).and_return([])
-        GetDownloadManifestJob.perform_now(download)
+        DownloadManifestJob.perform_now(download)
       end
 
       it "saves download status as :no_documents" do
@@ -16,7 +16,7 @@ describe GetDownloadManifestJob do
     context "when VBMS client fails" do
       before do
         allow(VBMSService).to receive(:fetch_documents_for).and_raise(VBMS::ClientError)
-        GetDownloadManifestJob.perform_now(download)
+        DownloadManifestJob.perform_now(download)
       end
 
       it "saves download status as :vbms_connection_error" do
@@ -32,7 +32,7 @@ describe GetDownloadManifestJob do
             OpenStruct.new(document_id: "2")
           ])
 
-        GetDownloadManifestJob.perform_now(download)
+        DownloadManifestJob.perform_now(download)
       end
 
       it "saves download status as pending confirmation and creates documents" do

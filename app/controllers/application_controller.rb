@@ -1,13 +1,11 @@
-class ApplicationController < ActionController::Base
+class ApplicationController < BaseController
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
-  force_ssl if: :ssl_enabled?
   before_action :check_out_of_service
   before_action :authenticate
   before_action :set_raven_user
   before_action :configure_bgs
-  before_action :strict_transport_security
 
   def authenticate
     return true unless current_user.nil?
@@ -47,14 +45,6 @@ class ApplicationController < ActionController::Base
   end
   helper_method :current_user
 
-  def ssl_enabled?
-    Rails.env.production? && !(request.path =~ /health-check/)
-  end
-
-  def strict_transport_security
-    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains" if request.ssl?
-  end
-
   def configure_bgs
     Download.bgs_service = ExternalApi::BGSService.new(user: current_user) unless Rails.env.test?
   end
@@ -69,10 +59,4 @@ class ApplicationController < ActionController::Base
     ENV["CASEFLOW_FEEDBACK_URL"] + "?" + param_object.to_param
   end
   helper_method :feedback_url
-
-  class << self
-    def dependencies_faked?
-      Rails.env.development? || Rails.env.test? || Rails.env.demo?
-    end
-  end
 end

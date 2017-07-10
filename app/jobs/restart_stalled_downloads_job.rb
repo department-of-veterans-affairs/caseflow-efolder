@@ -15,9 +15,9 @@ class RestartStalledDownloadsJob < ActiveJob::Base
     download.touch
 
     if download.file_number =~ /DEMO/
-      DemoGetDownloadFilesJob.perform_later(download)
+      Fakes::DownloadFilesJob.perform_later(download)
     else
-      GetDownloadFilesJob.perform_later(download)
+      DownloadFilesJob.perform_later(download)
     end
   end
 end
