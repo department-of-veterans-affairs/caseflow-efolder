@@ -1,4 +1,4 @@
-describe "File API v1", type: :request do
+describe "File API v1", focus: true, type: :request do
   let(:user) do
     User.create(
       css_id: "TEST_USER",
@@ -24,13 +24,6 @@ describe "File API v1", type: :request do
   end
 
   before do
-    Fakes::BGSService.veteran_info = {
-      "21011" => {
-        "veteran_first_name" => "Stan",
-        "veteran_last_name" => "Lee",
-        "veteran_last_four_ssn" => "2222"
-      }
-    }
     Download.bgs_service = Fakes::BGSService
     # Force the creation of document after BGS has been initialized
     document
@@ -116,7 +109,7 @@ describe "File API v1", type: :request do
           download.update_attributes!(manifest_fetched_at: Time.zone.now - 4.hours)
         end
 
-        it "returns existing files" do
+        it "returns existing and new files" do
           get "/api/v1/files/#{download.file_number}?user_id=#{user.id}"
 
           expect(response.code).to eq("200")

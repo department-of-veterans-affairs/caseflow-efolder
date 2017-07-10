@@ -203,7 +203,6 @@ class Download < ActiveRecord::Base
     end
   end
 
-  # are we looking things up twice because of the after_commit hook?
   def force_fetch_manifest
     demo? ? DemoGetDownloadManifestJob.perform_now(self) : GetDownloadManifestJob.perform_now(self)
   end
@@ -214,6 +213,9 @@ class Download < ActiveRecord::Base
 
   private
 
+  # Do not fetch the manifest on the after_create hook if no_fetch is true. This value is
+  # set to true when we create our record through find_or_create_by_user_and_file, since
+  # in that case we want to call force_fetch_manifest to do it synchronously.
   def start_fetch_manifest
     (demo? ? DemoGetDownloadManifestJob.perform_later(self) : GetDownloadManifestJob.perform_later(self)) unless no_fetch
   end
