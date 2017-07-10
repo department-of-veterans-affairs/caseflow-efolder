@@ -238,6 +238,27 @@ describe "Download" do
     end
   end
 
+  context ".find_or_create_by_user_and_file" do
+    subject { Download.find_or_create_by_user_and_file(user.id, file_number) }
+    let(:user) { User.create(css_id: "WALTER", station_id: "123") }
+    let(:file_number) { "123" }
+
+    context "retrieves most recent existing record" do
+      let!(:old_download) { Download.create(user: user, file_number: file_number) }
+      let!(:new_download) { Download.create(user: user, file_number: file_number) }
+
+      it { is_expected.to eq(new_download) }
+    end
+
+    context "creates new download when no one exists" do
+      it do
+        expect(subject.no_fetch).to be_truthy
+        expect(subject.user_id).to eq(user.id)
+        expect(subject.file_number).to eq(file_number)
+      end
+    end
+  end
+
   context "#css_id_string" do
     subject { download.css_id_string }
     let(:download) { Download.new(user: user) }

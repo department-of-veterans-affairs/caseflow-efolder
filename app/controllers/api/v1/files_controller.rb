@@ -14,23 +14,12 @@ class Api::V1::FilesController < Api::V1::ApplicationController
 
     download.start_cache_documents if download?
 
+    raise ActiveRecord::RecordNotFound if download.documents.empty?
+
     ActiveModelSerializers::SerializableResource.new(
       download,
       each_serializer: Serializers::V1::DownloadSerializer
     ).as_json
-  end
-
-  def download
-    @download ||= Download.includes(:documents).where(user_id: user_id, file_number: id).last ||
-      Download.create(user_id: user_id, file_number: id, no_fetch: true)
-  end
-
-  def user_id
-    params.require(:user_id)
-  end
-
-  def id
-    params[:id]
   end
 
   def download?
@@ -50,5 +39,19 @@ class Api::V1::FilesController < Api::V1::ApplicationController
   def verify_feature_enabled
     # TODO: scope this to a current user
     unauthorized unless FeatureToggle.enabled?(:reader_api)
+  end
+
+  private
+
+  def user_id
+    params.require(:user_id)
+  end
+
+  def id
+    params[:id]
+  end
+
+  def download
+    @download ||= Download.find_or_create_by_user_and_file(user_id, id)
   end
 end

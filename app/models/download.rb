@@ -196,6 +196,11 @@ class Download < ActiveRecord::Base
         Thread.current[:download_bgs_service]
       end
     end
+
+    def find_or_create_by_user_and_file(user_id, file_id)
+      Download.includes(:documents).where(user_id: user_id, file_number: file_id).last ||
+        Download.create(user_id: user_id, file_number: file_id, no_fetch: true)
+    end
   end
 
   # are we looking things up twice because of the after_commit hook?
