@@ -204,7 +204,7 @@ class Download < ActiveRecord::Base
   end
 
   def force_fetch_manifest
-    demo? ? DemoGetDownloadManifestJob.perform_now(self) : GetDownloadManifestJob.perform_now(self)
+    demo? ? Fakes::DownloadManifestJob.perform_now(self) : DownloadManifestJob.perform_now(self)
   end
 
   def start_cache_documents
@@ -217,7 +217,7 @@ class Download < ActiveRecord::Base
   # set to true when we create our record through find_or_create_by_user_and_file, since
   # in that case we want to call force_fetch_manifest to do it synchronously.
   def start_fetch_manifest
-    (demo? ? DemoGetDownloadManifestJob.perform_later(self) : GetDownloadManifestJob.perform_later(self)) unless no_fetch
+    (demo? ? Fakes::DownloadManifestJob.perform_later(self) : DownloadManifestJob.perform_later(self)) unless no_fetch
   end
 
   def calculate_estimated_to_complete_at

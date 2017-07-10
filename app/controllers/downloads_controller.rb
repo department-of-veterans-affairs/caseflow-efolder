@@ -89,9 +89,9 @@ class DownloadsController < ApplicationController
     @download.touch
 
     if @download.demo?
-      DemoGetDownloadFilesJob.perform_later(@download)
+      Fakes::DownloadFilesJob.perform_later(@download)
     else
-      GetDownloadFilesJob.perform_later(@download)
+      DownloadFilesJob.perform_later(@download)
     end
   end
 

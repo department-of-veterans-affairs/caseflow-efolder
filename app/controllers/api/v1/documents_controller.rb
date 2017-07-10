@@ -3,11 +3,15 @@ class Api::V1::DocumentsController < Api::V1::ApplicationController
 
   def show
     document = Document.find(params[:id])
-    streaming_headers(document.mime_type, document.filename)
-    # By setting the response body directly to an enumerator
-    # Rails will use the enumerator to send the data element by element,
-    # calling next on the enumerator to get the next chunk of data.
-    self.response_body = document.fetcher.stream
+    # The line below enables document caching for a month.
+    expires_in 30.days, public: true
+
+    send_data(
+      document.fetcher.content,
+      type: document.mime_type,
+      disposition: "attachment",
+      filename: document.filename
+    )
   rescue ActiveRecord::RecordNotFound
     document_not_found
   end

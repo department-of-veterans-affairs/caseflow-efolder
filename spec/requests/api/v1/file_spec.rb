@@ -1,4 +1,4 @@
-describe "File API v1", focus: true, type: :request do
+describe "File API v1", type: :request do
   let(:user) do
     User.create(
       css_id: "TEST_USER",
@@ -140,7 +140,7 @@ describe "File API v1", focus: true, type: :request do
   end
 
   it "returns 500 on any other error" do
-    allow(GetDownloadManifestJob).to receive(:perform_now).and_raise("Example Error")
+    allow(DownloadManifestJob).to receive(:perform_now).and_raise("Example Error")
     expect(Raven).to receive(:capture_exception)
     expect(Raven).to receive(:last_event_id).and_return("a1b2c3")
 

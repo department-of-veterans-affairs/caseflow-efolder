@@ -1,4 +1,4 @@
-describe GetDownloadManifestJob do
+describe DownloadManifestJob do
   context "#perform" do
     let(:user) do
       User.create(
