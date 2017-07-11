@@ -203,8 +203,9 @@ class Download < ActiveRecord::Base
     end
   end
 
-  def force_fetch_manifest
-    demo? ? Fakes::DownloadManifestJob.perform_now(self) : DownloadManifestJob.perform_now(self)
+  def force_fetch_manifest_if_expired
+    (demo? ? Fakes::DownloadManifestJob.perform_now(self) : DownloadManifestJob.perform_now(self)) if
+      !manifest_fetched_at || manifest_fetched_at < 3.hours.ago
   end
 
   def start_save_files_in_s3

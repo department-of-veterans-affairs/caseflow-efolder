@@ -250,7 +250,7 @@ describe "Download" do
       it { is_expected.to eq(new_download) }
     end
 
-    context "creates new download when no one exists" do
+    context "creates a new download when no one exists" do
       it do
         expect(subject.no_fetch).to be_truthy
         expect(subject.user_id).to eq(user.id)
@@ -311,11 +311,37 @@ describe "Download" do
     end
   end
 
-  context "#force_fetch_manifest" do
-    it "starts the manifest job" do
-      allow(DownloadManifestJob).to receive(:perform_now)
-      download.force_fetch_manifest
-      expect(DownloadManifestJob).to have_received(:perform_now)
+  context "#force_fetch_manifest_if_expired" do
+    context "when the manifest has never been fetched" do
+      it "starts the manifest job" do
+        allow(DownloadManifestJob).to receive(:perform_now)
+        download.force_fetch_manifest_if_expired
+        expect(DownloadManifestJob).to have_received(:perform_now)
+      end
+    end
+
+    context "when the manifest was fetched more than 3 hours ago" do
+      before do
+        download.update_attributes!(manifest_fetched_at: Time.zone.now - 4.hours)
+      end
+
+      it "starts the manifest job" do
+        allow(DownloadManifestJob).to receive(:perform_now)
+        download.force_fetch_manifest_if_expired
+        expect(DownloadManifestJob).to have_received(:perform_now)
+      end
+    end
+
+    context "when the manifest was fetched less than 3 hours ago" do
+      before do
+        download.update_attributes!(manifest_fetched_at: Time.zone.now - 2.hours)
+      end
+
+      it "does not start the manifest job" do
+        allow(DownloadManifestJob).to receive(:perform_now)
+        download.force_fetch_manifest_if_expired
+        expect(DownloadManifestJob).to_not have_received(:perform_now)
+      end
     end
   end
 

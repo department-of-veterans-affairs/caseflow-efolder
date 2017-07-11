@@ -1,4 +1,4 @@
-describe DownloadManifestJob do
+describe SaveFilesInS3Job do
   context "#perform" do
     let(:user) do
       User.create(
@@ -37,7 +37,7 @@ describe DownloadManifestJob do
       document
     end
 
-    it "caches documents" do
+    it "saves files in S3" do
       allow(S3Service).to receive(:store_file).and_return(nil)
       SaveFilesInS3Job.perform_now(download)
 

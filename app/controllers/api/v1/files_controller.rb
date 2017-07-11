@@ -8,9 +8,9 @@ class Api::V1::FilesController < Api::V1::ApplicationController
   private
 
   def json_files
-    download.force_fetch_manifest if !download.manifest_fetched_at || download.manifest_fetched_at < 3.hours.ago
-    fail ActiveRecord::RecordNotFound if download.documents.empty?
+    download.force_fetch_manifest_if_expired
 
+    fail ActiveRecord::RecordNotFound if download.documents.empty?
     download.start_save_files_in_s3 if download?
 
     ActiveModelSerializers::SerializableResource.new(

@@ -52,8 +52,8 @@ describe DownloadDocuments do
       expect(download.manifest_fetched_at).to eq(Time.zone.now)
     end
 
-    context "When document exists" do
-      let(:external_documents2) do
+    context "when an external document has already been saved" do
+      let(:updated_external_documents) do
         [
           OpenStruct.new(document_id: "1", filename: "filename.pdf", doc_type: "124",
                          source: "SRC", received_at: Time.zone.now, type_id: "124",
@@ -62,16 +62,16 @@ describe DownloadDocuments do
         ]
       end
 
-      let(:download_documents2) do
-        DownloadDocuments.new(download: download, external_documents: external_documents2)
+      let(:updated_download_documents) do
+        DownloadDocuments.new(download: download, external_documents: updated_external_documents)
       end
 
       before do
-        download_documents2.create_documents
+        updated_download_documents.create_documents
       end
 
-      it "updates the metadata and adds new documents" do
-        expect(Document.count).to equal(5)
+      it "updates the metadata of old documents and adds any new documents" do
+        expect(Document.count).to eq(5)
         expect(Document.first.type_id).to eq("124")
       end
     end
@@ -130,7 +130,7 @@ describe DownloadDocuments do
         download_documents.create_documents
       end
 
-      it "files are cached and not saved" do
+      it "caches files to s3 but does not save them" do
         allow(S3Service).to receive(:store_file).and_return(nil)
         download_documents.download_contents(save_locally: false)
 
