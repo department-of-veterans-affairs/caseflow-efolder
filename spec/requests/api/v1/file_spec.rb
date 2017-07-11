@@ -130,11 +130,11 @@ describe "File API v1", type: :request do
 
     context "when the download flag is passed" do
       it "the download job is started" do
-        allow(CacheFilesJob).to receive(:perform_later)
+        allow(SaveFilesInS3Job).to receive(:perform_later)
 
         get "/api/v1/files/#{download.file_number}?user_id=#{user.id}&download=true"
 
-        expect(CacheFilesJob).to have_received(:perform_later)
+        expect(SaveFilesInS3Job).to have_received(:perform_later)
       end
     end
   end

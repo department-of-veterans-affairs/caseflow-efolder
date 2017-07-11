@@ -319,11 +319,11 @@ describe "Download" do
     end
   end
 
-  context "#start_cache_documents" do
+  context "#start_save_files_in_s3" do
     it "starts the manifest job" do
-      allow(CacheFilesJob).to receive(:perform_later)
-      download.start_cache_documents
-      expect(CacheFilesJob).to have_received(:perform_later)
+      allow(SaveFilesInS3Job).to receive(:perform_later)
+      download.start_save_files_in_s3
+      expect(SaveFilesInS3Job).to have_received(:perform_later)
     end
   end
 end

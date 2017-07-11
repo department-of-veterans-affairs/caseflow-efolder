@@ -125,14 +125,14 @@ describe DownloadDocuments do
       end
     end
 
-    context "when only_cache is true" do
+    context "when save_locally is false" do
       before do
         download_documents.create_documents
       end
 
       it "files are cached and not saved" do
         allow(S3Service).to receive(:store_file).and_return(nil)
-        download_documents.download_contents(only_cache: true)
+        download_documents.download_contents(save_locally: false)
 
         expect(Dir[Rails.root + "tmp/files/#{download.id}/*"].size).to eq(0)
         expect(S3Service).to have_received(:store_file).exactly(4).times

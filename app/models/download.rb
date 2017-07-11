@@ -207,8 +207,8 @@ class Download < ActiveRecord::Base
     demo? ? Fakes::DownloadManifestJob.perform_now(self) : DownloadManifestJob.perform_now(self)
   end
 
-  def start_cache_documents
-    CacheFilesJob.perform_later(self)
+  def start_save_files_in_s3
+    SaveFilesInS3Job.perform_later(self)
   end
 
   private

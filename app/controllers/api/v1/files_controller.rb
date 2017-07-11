@@ -1,6 +1,4 @@
 class Api::V1::FilesController < Api::V1::ApplicationController
-  before_action :verify_feature_enabled
-
   def show
     render json: json_files
   rescue ActiveRecord::RecordNotFound
@@ -13,7 +11,7 @@ class Api::V1::FilesController < Api::V1::ApplicationController
     download.force_fetch_manifest if !download.manifest_fetched_at || download.manifest_fetched_at < 3.hours.ago
     fail ActiveRecord::RecordNotFound if download.documents.empty?
 
-    download.start_cache_documents if download?
+    download.start_save_files_in_s3 if download?
 
     ActiveModelSerializers::SerializableResource.new(
       download,
@@ -33,11 +31,6 @@ class Api::V1::FilesController < Api::V1::ApplicationController
         "detail": "A case file with that ID was not found in our system."
       ]
     }, status: 404
-  end
-
-  def verify_feature_enabled
-    # TODO: scope this to a current user
-    unauthorized unless FeatureToggle.enabled?(:reader_api)
   end
 
   def user_id

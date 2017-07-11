@@ -58,17 +58,14 @@ class DownloadDocuments
     end
   end
 
-  def download_contents(only_cache: false)
+  def download_contents(save_locally: true)
     @download.update_attributes!(started_at: Time.zone.now)
     @download.documents.where(download_status: 0).each_with_index do |document, index|
       before_document_download(document)
       begin
-        if only_cache
-          document.fetcher.content
-        else
-          document.save_locally(document.fetcher.content, index)
-          @download.touch
-        end
+        content = document.fetcher.content
+        document.save_locally(content, index) if save_locally
+        @download.touch
       rescue VBMS::ClientError => e
         update_document_with_error(document, "VBMS::ClientError::#{e.message}\n#{e.backtrace.join("\n")}")
       rescue VVA::ClientError => e

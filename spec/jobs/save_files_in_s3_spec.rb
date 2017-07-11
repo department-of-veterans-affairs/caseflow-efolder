@@ -39,7 +39,7 @@ describe DownloadManifestJob do
 
     it "caches documents" do
       allow(S3Service).to receive(:store_file).and_return(nil)
-      CacheFilesJob.perform_now(download)
+      SaveFilesInS3Job.perform_now(download)
 
       expect(S3Service).to have_received(:store_file).with(document.s3_filename, anything)
     end
