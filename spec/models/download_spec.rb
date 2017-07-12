@@ -55,16 +55,10 @@ describe "Download" do
     end
   end
 
-  context ".create" do
-    subject { Download.create(file_number: file_number) }
-
-    before do
-      allow(DownloadManifestJob).to receive(:perform_later)
-    end
-
+  context ".start_fetch_manifest" do
     it "creates a job to fetch the download manifest" do
-      subject
-      expect(DownloadManifestJob).to have_received(:perform_later)
+      expect(DownloadManifestJob).to receive(:perform_later)
+      download.start_fetch_manifest
     end
   end
 

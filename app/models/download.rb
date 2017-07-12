@@ -40,12 +40,6 @@ class Download < ActiveRecord::Base
     end
   end
 
-  # Wait for the record to be committed to the DB and only then start the Sidekiq job
-  # Here is the issue: https://github.com/mperham/sidekiq/issues/322
-  after_commit :start_fetch_manifest, on: :create
-
-  attr_accessor :no_fetch
-
   def veteran_name
     "#{veteran_first_name} #{veteran_last_name}" if veteran_last_name
   end
@@ -215,17 +209,14 @@ class Download < ActiveRecord::Base
     start_save_files_in_s3 if start_download
   end
 
+  def start_fetch_manifest
+    demo? ? Fakes::DownloadManifestJob.perform_later(self) : DownloadManifestJob.perform_later(self)
+  end
+
   private
 
   def start_save_files_in_s3
     SaveFilesInS3Job.perform_later(self)
-  end
-
-  # Do not fetch the manifest on the after_create hook if no_fetch is true. This value is
-  # set to true when we create our record through find_or_create_by_user_and_file, since
-  # in that case we want to call force_fetch_manifest to do it synchronously.
-  def start_fetch_manifest
-    (demo? ? Fakes::DownloadManifestJob.perform_later(self) : DownloadManifestJob.perform_later(self)) unless no_fetch
   end
 
   def calculate_estimated_to_complete_at
