@@ -80,7 +80,7 @@ describe "File API v1", type: :request do
         "\"124\",\"received_at\":\"2017-04-03T00:00:00.000Z\"}]}}}"
       end
 
-      it "returns existing and new files", focus: true do
+      it "returns existing and new files" do
         get "/api/v1/files/#{download.file_number}?user_id=#{user.id}"
 
         expect(response.code).to eq("200")

@@ -345,7 +345,7 @@ describe "Download" do
     end
   end
 
-  context "#prepare_files_for_api!", focus: true do
+  context "#prepare_files_for_api!" do
     before do
       allow(VBMSService).to receive(:fetch_documents_for).and_return(vbms_documents)
     end
