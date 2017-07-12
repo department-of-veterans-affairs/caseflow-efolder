@@ -246,7 +246,6 @@ describe "Download" do
 
     context "creates a new download when no one exists" do
       it do
-        expect(subject.no_fetch).to be_truthy
         expect(subject.user_id).to eq(user.id)
         expect(subject.file_number).to eq(file_number)
       end
@@ -376,7 +375,7 @@ describe "Download" do
       let(:vbms_documents) { [] }
 
       it "raises an error" do
-        expect{ download.prepare_files_for_api!(start_download: true) }.to raise_error(ActiveRecord::RecordNotFound)
+        expect { download.prepare_files_for_api!(start_download: true) }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
   end

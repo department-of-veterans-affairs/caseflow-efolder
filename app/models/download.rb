@@ -193,13 +193,13 @@ class Download < ActiveRecord::Base
 
     def find_or_create_by_user_and_file(user_id, file_id)
       Download.includes(:documents).where(user_id: user_id, file_number: file_id).last ||
-        Download.create(user_id: user_id, file_number: file_id, no_fetch: true)
+        Download.create(user_id: user_id, file_number: file_id)
     end
   end
 
   def force_fetch_manifest_if_expired!
-    (demo? ? Fakes::DownloadManifestJob.perform_now(self) : DownloadManifestJob.perform_now(self)) if
-      !manifest_fetched_at || manifest_fetched_at < 3.hours.ago
+    return if manifest_fetched_at && manifest_fetched_at > 3.hours.ago
+    demo? ? Fakes::DownloadManifestJob.perform_now(self) : DownloadManifestJob.perform_now(self)
   end
 
   def prepare_files_for_api!(start_download: false)
