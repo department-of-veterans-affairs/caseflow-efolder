@@ -20,8 +20,6 @@ class Download < ActiveRecord::Base
   has_many :searches
   belongs_to :user
 
-  attr_accessor :no_fetch
-
   before_create do |download|
     # This fake is used in the test suite, but let's
     # also use it if we're demo-ing eFolder express.
@@ -45,6 +43,8 @@ class Download < ActiveRecord::Base
   # Wait for the record to be committed to the DB and only then start the Sidekiq job
   # Here is the issue: https://github.com/mperham/sidekiq/issues/322
   after_commit :start_fetch_manifest, on: :create
+
+  attr_accessor :no_fetch
 
   def veteran_name
     "#{veteran_first_name} #{veteran_last_name}" if veteran_last_name
@@ -203,16 +203,23 @@ class Download < ActiveRecord::Base
     end
   end
 
-  def force_fetch_manifest_if_expired
+  def force_fetch_manifest_if_expired!
     (demo? ? Fakes::DownloadManifestJob.perform_now(self) : DownloadManifestJob.perform_now(self)) if
       !manifest_fetched_at || manifest_fetched_at < 3.hours.ago
   end
 
-  def start_save_files_in_s3
-    SaveFilesInS3Job.perform_later(self)
+  def prepare_files_for_api!(start_download: false)
+    force_fetch_manifest_if_expired!
+
+    fail ActiveRecord::RecordNotFound if documents.empty?
+    start_save_files_in_s3 if start_download
   end
 
   private
+
+  def start_save_files_in_s3
+    SaveFilesInS3Job.perform_later(self)
+  end
 
   # Do not fetch the manifest on the after_create hook if no_fetch is true. This value is
   # set to true when we create our record through find_or_create_by_user_and_file, since

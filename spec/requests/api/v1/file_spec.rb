@@ -66,24 +66,25 @@ describe "File API v1", type: :request do
 
     context "retrieve the documents" do
       before do
+        Timecop.freeze(Time.utc(2015, 1, 1, 17, 0, 0))
         download.update_attributes!(manifest_fetched_at: Time.zone.now - 4.hours)
       end
 
-      it "returns existing and new files" do
+      let(:response_body) do
+        "{\"data\":{\"id\":\"4\",\"type\":\"file\",\"attributes\":"\
+        "{\"manifest_fetched_at\":\"2015-01-01T17:00:00.000Z\","\
+        "\"documents\":[{\"document_id\":\"{3333-3333}\",\"type_id\":"\
+        "\"825\",\"received_at\":\"2015-09-06T01:00:00.000Z\"},"\
+        "{\"document_id\":\"1\",\"type_id\":\"123\",\"received_at\":"\
+        "\"2017-02-01T00:00:00.000Z\"},{\"document_id\":\"2\",\"type_id\":"\
+        "\"124\",\"received_at\":\"2017-04-03T00:00:00.000Z\"}]}}}"
+      end
+
+      it "returns existing and new files", focus: true do
         get "/api/v1/files/#{download.file_number}?user_id=#{user.id}"
 
         expect(response.code).to eq("200")
-        files = JSON.parse(response.body)["data"]["attributes"]["documents"]
-
-        expect(files.size).to eq(3)
-
-        expect(files[0]["document_id"]).to eq(document.document_id)
-        expect(files[0]["type_id"]).to eq(document.type_id)
-        expect(files[0]["received_at"].to_datetime).to eq(document.received_at)
-
-        expect(files[1]["document_id"]).to eq(vbms_documents[0].document_id)
-        expect(files[1]["type_id"]).to eq(vbms_documents[0].type_id)
-        expect(files[1]["received_at"].to_datetime).to eq(vbms_documents[0].received_at.to_datetime)
+        expect(response.body).to eq(response_body)
       end
     end
 

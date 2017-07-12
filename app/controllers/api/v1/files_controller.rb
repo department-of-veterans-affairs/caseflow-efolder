@@ -8,10 +8,7 @@ class Api::V1::FilesController < Api::V1::ApplicationController
   private
 
   def json_files
-    download.force_fetch_manifest_if_expired
-
-    fail ActiveRecord::RecordNotFound if download.documents.empty?
-    download.start_save_files_in_s3 if download?
+    download.prepare_files_for_api!(start_download: download?)
 
     ActiveModelSerializers::SerializableResource.new(
       download,
@@ -19,6 +16,9 @@ class Api::V1::FilesController < Api::V1::ApplicationController
     ).as_json
   end
 
+  # A caller can pass a download parameter in the url: `?download=true`.
+  # If it is present, then we return true from download? to signal
+  # that we want to download the content of the files from VBMS to S3.
   def download?
     params[:download]
   end
