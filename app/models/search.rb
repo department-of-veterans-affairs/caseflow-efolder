@@ -38,6 +38,8 @@ class Search < ActiveRecord::Base
       update_attributes!(status: :download_created)
       download.save!
     end
+
+    download.start_fetch_manifest
     true
   end
 

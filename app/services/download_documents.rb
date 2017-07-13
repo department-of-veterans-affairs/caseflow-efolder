@@ -38,30 +38,33 @@ class DownloadDocuments
     Download.transaction do
       @external_documents.each do |external_document|
         # JRO and SSN are required when searching for a document in VVA
-        @download.documents.create!(
-          document_id: external_document.document_id,
-          vbms_filename: external_document.filename,
-          type_id: external_document.doc_type || external_document.type_id,
-          type_description: external_document.try(:type_description) || TYPES[external_document.doc_type.to_i],
-          source: external_document.source,
-          mime_type: external_document.mime_type,
-          received_at: external_document.received_at,
-          jro: external_document.try(:jro),
-          ssn: external_document.try(:ssn),
-          downloaded_from: external_document.try(:downloaded_from) || "VBMS"
-        )
+        @download.documents.find_or_initialize_by(document_id: external_document.document_id).tap do |t|
+          t.assign_attributes(
+            vbms_filename: external_document.filename,
+            type_id: external_document.doc_type || external_document.type_id,
+            type_description: external_document.try(:type_description) || TYPES[external_document.doc_type.to_i],
+            source: external_document.source,
+            mime_type: external_document.mime_type,
+            received_at: external_document.received_at,
+            jro: external_document.try(:jro),
+            ssn: external_document.try(:ssn),
+            downloaded_from: external_document.try(:downloaded_from) || "VBMS"
+          )
+          t.save!
+        end
       end
 
       @download.update_attributes!(manifest_fetched_at: Time.zone.now)
     end
   end
 
-  def download_contents
+  def download_contents(save_locally: true)
     @download.update_attributes!(started_at: Time.zone.now)
     @download.documents.where(download_status: 0).each_with_index do |document, index|
       before_document_download(document)
       begin
-        document.save_locally(document.fetcher.content, index)
+        content = document.fetcher.content
+        document.save_locally(content, index) if save_locally
         @download.touch
       rescue VBMS::ClientError => e
         update_document_with_error(document, "VBMS::ClientError::#{e.message}\n#{e.backtrace.join("\n")}")

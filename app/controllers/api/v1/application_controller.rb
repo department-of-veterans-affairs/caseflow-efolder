@@ -1,5 +1,6 @@
 class Api::V1::ApplicationController < BaseController
   protect_from_forgery with: :null_session
+  before_action :verify_reader_api_enabled
 
   rescue_from StandardError do |error|
     Raven.capture_exception(error)
@@ -17,5 +18,10 @@ class Api::V1::ApplicationController < BaseController
 
   def unauthorized
     render json: { status: "unauthorized" }, status: 401
+  end
+
+  def verify_reader_api_enabled
+    # TODO: scope this to a current user
+    unauthorized unless FeatureToggle.enabled?(:reader_api)
   end
 end
