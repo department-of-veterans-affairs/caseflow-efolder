@@ -1,0 +1,59 @@
+@import 'caseflow_main';
+
+.hopscotch-bubble-content,
+.hopscotch-bubble-container {
+  background-color: $color-cool-blue-lightest;
+}
+
+.hopscotch-bubble-container {
+  box-shadow: 1px 1px 5px $color-gray-medium;
+}
+
+div.hopscotch-bubble {
+  border: 0;
+
+  .hopscotch-bubble-arrow-container {
+    &.up {
+      .hopscotch-bubble-arrow-border {
+        border-left: 0;
+        border-right: 0;
+        border-bottom: 17px solid $color-base;
+      }
+
+      .hopscotch-bubble-arrow {
+        border-bottom: 17px solid $color-cool-blue-lightest;
+      }
+    }
+    &.down {
+      .hopscotch-bubble-arrow-border {
+        border-left: 0;
+        border-right: 0;
+        border-bottom: 0;
+      }
+
+      .hopscotch-bubble-arrow {
+        border-top: 17px solid $color-cool-blue-lightest;
+      }
+    }
+    &.left {
+      .hopscotch-bubble-arrow {
+        border-right: 17px solid $color-cool-blue-lightest;
+      }
+    }
+    &.right {
+      .hopscotch-bubble-arrow-border {
+        border-left: 0;
+      }
+
+      .hopscotch-bubble-arrow {
+        border-left: 17px solid $color-cool-blue-lightest;
+      }
+    }
+  }
+}
+
+div.hopscotch-bubble-content {
+  .hopscotch-content {
+    font-size: 19px;
+  }
+}
