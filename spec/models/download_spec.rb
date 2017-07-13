@@ -305,9 +305,12 @@ describe "Download" do
   end
 
   context "#force_fetch_manifest_if_expired!" do
+    before do
+      allow(DownloadManifestJob).to receive(:perform_now)
+    end
+
     context "when the manifest has never been fetched" do
       it "starts the manifest job" do
-        allow(DownloadManifestJob).to receive(:perform_now)
         download.force_fetch_manifest_if_expired!
         expect(DownloadManifestJob).to have_received(:perform_now)
       end
@@ -319,7 +322,6 @@ describe "Download" do
       end
 
       it "starts the manifest job" do
-        allow(DownloadManifestJob).to receive(:perform_now)
         download.force_fetch_manifest_if_expired!
         expect(DownloadManifestJob).to have_received(:perform_now)
       end
@@ -331,7 +333,6 @@ describe "Download" do
       end
 
       it "does not start the manifest job" do
-        allow(DownloadManifestJob).to receive(:perform_now)
         download.force_fetch_manifest_if_expired!
         expect(DownloadManifestJob).to_not have_received(:perform_now)
       end
