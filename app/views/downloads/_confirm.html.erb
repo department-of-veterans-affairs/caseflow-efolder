@@ -48,8 +48,8 @@
     <% if FeatureToggle.enabled?(:vva_service) %>
       <p>
         eFolder Express found a total of <%= @download.documents.count %> documents
-        (<%= downloaded_from_vbms %> from VBMS and
-        <%= downloaded_from_vva %> from VVA/LCM) for
+        <span id="vva-tour-2">(<%= downloaded_from_vbms %> from VBMS and
+        <%= downloaded_from_vva %> from VVA/LCM)</span> for
         <%= @download.veteran_name %> #<%= @download.file_number %>.
         Verify the Veteran ID and click the <%= fetch_button_text %>
         button below to start retrieving the eFolder.
@@ -71,7 +71,7 @@
       <thead>
         <tr>
           <th scope="col">Filename</th>
-          <th scope="col">Source</th>
+          <th scope="col" id="vva-tour-3">Source</th>
           <th scope="col">Receipt Date</th>
         </tr>
       </thead>

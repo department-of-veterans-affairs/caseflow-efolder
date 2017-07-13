@@ -1,6 +1,7 @@
 @import 'caseflow_main';
 @import 'progress-bar';
 @import 'download';
+@import 'coachmarks';
 
 .cf-logo-image {
   @include retina-image("efolder-express-logo", 32px 32px, $asset-pipeline: true);

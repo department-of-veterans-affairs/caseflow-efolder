@@ -18,5 +18,6 @@
 $(function() {
   window.Dropdown.bind();
   window.LoadingIndicator.bind();
+  window.VVAIntro.bind();
   window.VVATour.bind();
 });
