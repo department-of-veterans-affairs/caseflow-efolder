@@ -270,7 +270,7 @@ RSpec.feature "Downloads" do
                               received_at: Time.zone.local(2015, 1, 19), download_status: :pending)
     page.execute_script("window.DownloadStatus.recheck();")
 
-    expect(page).to have_content "eFolder Express found 2 files in eFolder #3456"
+    expect(page).to have_content "found a total of 2 documents"
     expect(page).to have_content "Steph Curry (3456)"
     expect(page).to have_content "yawn.pdf VBMS 09/06/2015"
     expect(page).to have_content "smiley.pdf VBMS 01/19/2015"
