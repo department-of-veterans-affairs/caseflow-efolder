@@ -24,6 +24,7 @@ div.hopscotch-bubble {
         border-bottom: 17px solid $color-cool-blue-lightest;
       }
     }
+
     &.down {
       .hopscotch-bubble-arrow-border {
         border-left: 0;
@@ -35,11 +36,13 @@ div.hopscotch-bubble {
         border-top: 17px solid $color-cool-blue-lightest;
       }
     }
+
     &.left {
       .hopscotch-bubble-arrow {
         border-right: 17px solid $color-cool-blue-lightest;
       }
     }
+
     &.right {
       .hopscotch-bubble-arrow-border {
         border-left: 0;
@@ -56,7 +59,7 @@ div.hopscotch-bubble {
   }
 }
 
-div.hopscotch-bubble-content {
+.hopscotch-bubble-content {
   .hopscotch-content {
     font-size: 19px;
   }

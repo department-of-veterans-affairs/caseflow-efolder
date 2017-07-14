@@ -155,6 +155,13 @@
   <script>
     window.Modal.bind();
     window.DownloadProgress.complete();
-    window.VVAFinal.bind();
+  </script>
+<% end %>
+
+<% if @download.complete_success? %>
+  <script>
+    if (document.getElementsByClassName('hopscotch-bubble').length == 0) {
+      window.VVAFinal.bind();
+    }
   </script>
 <% end %>
