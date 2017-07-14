@@ -40,10 +40,6 @@ class Download < ActiveRecord::Base
     end
   end
 
-  # Wait for the record to be committed to the DB and only then start the Sidekiq job
-  # Here is the issue: https://github.com/mperham/sidekiq/issues/322
-  after_commit :start_fetch_manifest, on: :create
-
   def veteran_name
     "#{veteran_first_name} #{veteran_last_name}" if veteran_last_name
   end
@@ -194,12 +190,33 @@ class Download < ActiveRecord::Base
         Thread.current[:download_bgs_service]
       end
     end
+
+    def find_or_create_by_user_and_file(user_id, file_id)
+      Download.includes(:documents).where(user_id: user_id, file_number: file_id).last ||
+        Download.create(user_id: user_id, file_number: file_id)
+    end
+  end
+
+  def force_fetch_manifest_if_expired!
+    return if manifest_fetched_at && manifest_fetched_at > 3.hours.ago
+    demo? ? Fakes::DownloadManifestJob.perform_now(self) : DownloadManifestJob.perform_now(self)
+  end
+
+  def prepare_files_for_api!(start_download: false)
+    force_fetch_manifest_if_expired!
+
+    fail ActiveRecord::RecordNotFound if documents.empty?
+    start_save_files_in_s3 if start_download
+  end
+
+  def start_fetch_manifest
+    demo? ? Fakes::DownloadManifestJob.perform_later(self) : DownloadManifestJob.perform_later(self)
   end
 
   private
 
-  def start_fetch_manifest
-    demo? ? Fakes::DownloadManifestJob.perform_later(self) : DownloadManifestJob.perform_later(self)
+  def start_save_files_in_s3
+    SaveFilesInS3Job.perform_later(self)
   end
 
   def calculate_estimated_to_complete_at

@@ -55,16 +55,10 @@ describe "Download" do
     end
   end
 
-  context ".create" do
-    subject { Download.create(file_number: file_number) }
-
-    before do
-      allow(DownloadManifestJob).to receive(:perform_later)
-    end
-
+  context ".start_fetch_manifest" do
     it "creates a job to fetch the download manifest" do
-      subject
-      expect(DownloadManifestJob).to have_received(:perform_later)
+      expect(DownloadManifestJob).to receive(:perform_later)
+      download.start_fetch_manifest
     end
   end
 
@@ -238,6 +232,26 @@ describe "Download" do
     end
   end
 
+  context ".find_or_create_by_user_and_file" do
+    subject { Download.find_or_create_by_user_and_file(user.id, file_number) }
+    let(:user) { User.create(css_id: "WALTER", station_id: "123") }
+    let(:file_number) { "123" }
+
+    context "retrieves most recent existing record" do
+      let!(:old_download) { Download.create(user: user, file_number: file_number, created_at: 2.seconds.ago) }
+      let!(:new_download) { Download.create(user: user, file_number: file_number, created_at: 1.second.ago) }
+
+      it { is_expected.to eq(new_download) }
+    end
+
+    context "creates a new download when no one exists" do
+      it do
+        expect(subject.user_id).to eq(user.id)
+        expect(subject.file_number).to eq(file_number)
+      end
+    end
+  end
+
   context "#css_id_string" do
     subject { download.css_id_string }
     let(:download) { Download.new(user: user) }
@@ -287,6 +301,83 @@ describe "Download" do
     context "when no_documents" do
       before { download.status = :no_documents }
       it { is_expected.to eq(100) }
+    end
+  end
+
+  context "#force_fetch_manifest_if_expired!" do
+    before do
+      allow(DownloadManifestJob).to receive(:perform_now)
+    end
+
+    context "when the manifest has never been fetched" do
+      it "starts the manifest job" do
+        download.force_fetch_manifest_if_expired!
+        expect(DownloadManifestJob).to have_received(:perform_now)
+      end
+    end
+
+    context "when the manifest was fetched more than 3 hours ago" do
+      before do
+        download.update_attributes!(manifest_fetched_at: Time.zone.now - 4.hours)
+      end
+
+      it "starts the manifest job" do
+        download.force_fetch_manifest_if_expired!
+        expect(DownloadManifestJob).to have_received(:perform_now)
+      end
+    end
+
+    context "when the manifest was fetched less than 3 hours ago" do
+      before do
+        download.update_attributes!(manifest_fetched_at: Time.zone.now - 2.hours)
+      end
+
+      it "does not start the manifest job" do
+        download.force_fetch_manifest_if_expired!
+        expect(DownloadManifestJob).to_not have_received(:perform_now)
+      end
+    end
+  end
+
+  context "#prepare_files_for_api!" do
+    before do
+      allow(VBMSService).to receive(:fetch_documents_for).and_return(vbms_documents)
+    end
+
+    context "when VBMS returns documents" do
+      let(:vbms_documents) do
+        [
+          OpenStruct.new(
+            document_id: "1",
+            received_at: "1/2/2017",
+            type_id: "123"
+          )
+        ]
+      end
+
+      it "saves documents to DB" do
+        download.prepare_files_for_api!
+
+        expect(download.documents.size).to eq(1)
+        expect(download.documents[0].document_id).to eq(vbms_documents[0].document_id)
+        expect(download.documents[0].received_at).to eq(vbms_documents[0].received_at.to_datetime)
+        expect(download.documents[0].type_id).to eq(vbms_documents[0].type_id)
+      end
+
+      context "when start_download is true" do
+        it "starts the download job" do
+          expect(SaveFilesInS3Job).to receive(:perform_later)
+          download.prepare_files_for_api!(start_download: true)
+        end
+      end
+    end
+
+    context "when VBMS returns no documents" do
+      let(:vbms_documents) { [] }
+
+      it "raises an error" do
+        expect { download.prepare_files_for_api!(start_download: true) }.to raise_error(ActiveRecord::RecordNotFound)
+      end
     end
   end
 end

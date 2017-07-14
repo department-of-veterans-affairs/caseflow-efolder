@@ -61,6 +61,8 @@ gem 'wannabe_bool'
 
 gem 'zaru'
 
+gem 'active_model_serializers'
+
 gem 'redis-namespace'
 
 gem 'connect_vbms', git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "87d0cab4bb5a87e70d6e2dab81e1da17fc512571"

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170519150253) do
+ActiveRecord::Schema.define(version: 20170707025718) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -76,6 +76,7 @@ ActiveRecord::Schema.define(version: 20170519150253) do
   end
 
   add_index "downloads", ["completed_at"], name: "downloads_completed_at", using: :btree
+  add_index "downloads", ["file_number", "user_id"], name: "index_downloads_on_file_number_and_user_id", using: :btree
   add_index "downloads", ["manifest_fetched_at"], name: "downloads_manifest_fetched_at", using: :btree
   add_index "downloads", ["user_id"], name: "index_downloads_on_user_id", using: :btree
 
