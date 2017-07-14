@@ -9,7 +9,9 @@
   box-shadow: 1px 1px 5px $color-gray-medium;
 }
 
+// scss-lint:disable QualifyingElement
 div.hopscotch-bubble {
+// scss-lint:enable QualifyingElement
   border: 0;
 
   .hopscotch-bubble-arrow-container {
