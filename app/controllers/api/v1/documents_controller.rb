@@ -1,6 +1,4 @@
 class Api::V1::DocumentsController < Api::V1::ApplicationController
-  before_action :verify_feature_enabled
-
   def show
     document = Document.find(params[:id])
     # The line below enables document caching for a month.
@@ -26,10 +24,5 @@ class Api::V1::DocumentsController < Api::V1::ApplicationController
         "detail": "A document with that ID was not found in our systems."
       ]
     }, status: 404
-  end
-
-  def verify_feature_enabled
-    # TODO: scope this to a current user
-    unauthorized unless FeatureToggle.enabled?(:reader_api)
   end
 end

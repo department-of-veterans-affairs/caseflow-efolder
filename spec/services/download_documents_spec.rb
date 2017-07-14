@@ -51,6 +51,30 @@ describe DownloadDocuments do
 
       expect(download.manifest_fetched_at).to eq(Time.zone.now)
     end
+
+    context "when an external document has already been saved" do
+      let(:updated_external_documents) do
+        [
+          OpenStruct.new(document_id: "1", filename: "filename.pdf", doc_type: "124",
+                         source: "SRC", received_at: Time.zone.now, type_id: "124",
+                         mime_type: "application/pdf", type_description: "VA 9 Appeal to Board of Appeals"),
+          OpenStruct.new(document_id: "5", received_at: 1.hour.ago)
+        ]
+      end
+
+      let(:updated_download_documents) do
+        DownloadDocuments.new(download: download, external_documents: updated_external_documents)
+      end
+
+      before do
+        updated_download_documents.create_documents
+      end
+
+      it "updates the metadata of old documents and adds any new documents" do
+        expect(Document.count).to eq(5)
+        expect(Document.first.type_id).to eq("124")
+      end
+    end
   end
 
   context "#download_contents" do
@@ -101,6 +125,20 @@ describe DownloadDocuments do
       end
     end
 
+    context "when save_locally is false" do
+      before do
+        download_documents.create_documents
+      end
+
+      it "caches files to s3 but does not save them" do
+        allow(S3Service).to receive(:store_file).and_return(nil)
+        download_documents.download_contents(save_locally: false)
+
+        expect(Dir[Rails.root + "tmp/files/#{download.id}/*"].size).to eq(0)
+        expect(S3Service).to have_received(:store_file).exactly(4).times
+      end
+    end
+
     context "when two files have the same name" do
       before do
         allow(VBMSService).to receive(:fetch_document_file) { |_document| file }
@@ -113,7 +151,7 @@ describe DownloadDocuments do
           OpenStruct.new(document_id: "1", filename: "filename.pdf", doc_type: "123",
                          source: "SRC", received_at: Time.zone.now,
                          mime_type: "application/pdf"),
-          OpenStruct.new(document_id: "1", filename: "filename.pdf", doc_type: "123",
+          OpenStruct.new(document_id: "2", filename: "filename.pdf", doc_type: "123",
                          source: "SRC", received_at: Time.zone.now,
                          mime_type: "application/pdf")
         ]
@@ -124,7 +162,7 @@ describe DownloadDocuments do
 
         download.documents.each_with_index do |document, i|
           expect(document).to be_success
-          expect(document.filepath).to eq((Rails.root + "tmp/files/#{download.id}/000#{i + 1}0-VA 21-4185 Report of Income from Property or Business-20150101-1.pdf").to_s)
+          expect(document.filepath).to eq((Rails.root + "tmp/files/#{download.id}/000#{i + 1}0-VA 21-4185 Report of Income from Property or Business-20150101-#{i + 1}.pdf").to_s)
           expect(File.exist?(document.filepath)).to be_truthy
         end
       end
