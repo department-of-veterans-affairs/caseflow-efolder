@@ -25,7 +25,7 @@
             All of the documents in the VBMS eFolder for #<%= @download.file_number %> are ready to download.
             Click the "Download eFolder" button below.
           </p>
-          <% if FeatureToggle.enabled?(:vva_service) %>
+          <% if vva_feature_enabled? %>
             <p>
               This efolder contains <%= @download.documents.count %> documents:
               <span id="vva-tour-4"><%= downloaded_from_vbms %> from VBMS and <%= downloaded_from_vva %> from VVA/LCM.</span>

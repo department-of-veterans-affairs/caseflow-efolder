@@ -4,7 +4,7 @@ class DownloadManifestJob < ActiveJob::Base
   def perform(download)
     external_documents = VBMSService.fetch_documents_for(download)
 
-    if FeatureToggle.enabled?(:vva_service)
+    if FeatureToggle.enabled?(:vva_service, user: download.user)
       external_documents += VVAService.fetch_documents_for(download)
     end
 

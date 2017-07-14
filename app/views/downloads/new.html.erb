@@ -59,7 +59,7 @@
         </button>
       </div>
     <% end %>
-    <% if FeatureToggle.enabled?(:vva_service) %>
+    <% if vva_feature_enabled? %>
       <p class="cf-txt-c">
         <i>Note: eFolder Express now includes Virtual VA documents from the <span id="vva-tour-1">Legacy Content Manager</span> Documents tab in VBMS.</i>
       </p>

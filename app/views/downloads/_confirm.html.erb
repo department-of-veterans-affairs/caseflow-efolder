@@ -45,7 +45,7 @@
 
   <% elsif @download.pending_confirmation? %>
     <%= render "user_header" %>
-    <% if FeatureToggle.enabled?(:vva_service) %>
+    <% if vva_feature_enabled? %>
       <p>
         eFolder Express found a total of <%= @download.documents.count %> documents
         <span id="vva-tour-2">(<%= downloaded_from_vbms %> from VBMS and
