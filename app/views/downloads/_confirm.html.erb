@@ -95,11 +95,7 @@
   <% end %>
 
   <%= link_to "Start over", root_path %>
-</div>
-
-<% if @download.pending_confirmation? %>
   <script>
-    window.VVATour.bind();
     window.VVALink.bind();
   </script>
-<% end %>
+</div>
