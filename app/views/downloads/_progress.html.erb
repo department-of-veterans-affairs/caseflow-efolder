@@ -32,10 +32,10 @@
             </p>
           <% else %>
             <p>
-              (Remember that Virtual VA documents are not <span id="vva_notice">included in this download</span>)
+              (Remember that Virtual VA documents are not included in this download)
             </p>
           <% end %>
-          <%= link_to "Download eFolder", download_download_path(@download), {class: "usa-button", id: "download_efolder_button"} %>
+          <%= link_to "Download eFolder", download_download_path(@download), {class: "usa-button"} %>
         </div>
       </div>
 
@@ -158,7 +158,7 @@
   </script>
 <% end %>
 
-<% if @download.complete_success? %>
+<% if @download.complete_success? && vva_feature_enabled? %>
   <script>
     if (document.getElementsByClassName('hopscotch-bubble').length == 0) {
       window.VVALink.bind();

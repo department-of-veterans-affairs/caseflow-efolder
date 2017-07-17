@@ -95,7 +95,9 @@
   <% end %>
 
   <%= link_to "Start over", root_path %>
-  <script>
-    window.VVALink.bind();
-  </script>
+  <% if vva_feature_enabled? %>
+    <script>
+      window.VVALink.bind();
+    </script>
+  <% end %>
 </div>

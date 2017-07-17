@@ -51,7 +51,7 @@
         <%= search_field_tag(:file_number) %>
 
         <button type="submit" class="cf-submit">
-          <span class='usa-search-submit-text' id='submit-ee-search'>Search</span>
+          <span class='usa-search-submit-text'>Search</span>
         </button>
 
         <button disabled type="submit" class="cf-loading-indicator">
@@ -112,6 +112,8 @@
   <% end %>
 </div>
 
-<script>
-  window.VVALink.bind();
-</script>
+<% if vva_feature_enabled? %>
+  <script>
+    window.VVALink.bind();
+  </script>
+<% end %>
