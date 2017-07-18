@@ -6,7 +6,7 @@ class Serializers::V1::DownloadSerializer < ActiveModel::Serializer
   attribute :documents do
     object.documents.map do |document|
       {
-        document_id: document.document_id,
+        id: document.id,
         type_id: document.type_id,
         received_at: document.received_at
       }

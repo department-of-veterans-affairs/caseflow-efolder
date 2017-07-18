@@ -263,7 +263,7 @@ RSpec.feature "Downloads" do
     visit download_path(download)
     expect(page).to have_content "We are gathering the list of files in the eFolder now..."
 
-    download.update_attributes!(status: :pending_confirmation)
+    download.reload.update_attributes!(status: :pending_confirmation)
     download.documents.create(vbms_filename: "yawn.pdf", mime_type: "application/pdf",
                               received_at: Time.zone.local(2015, 9, 6), download_status: :pending)
     download.documents.create(vbms_filename: "smiley.pdf", mime_type: "application/pdf",

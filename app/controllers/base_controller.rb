@@ -14,7 +14,6 @@ class BaseController < ActionController::Base
 
   class << self
     def dependencies_faked?
-      return false
       Rails.env.development? || Rails.env.test? || Rails.env.demo?
     end
   end
