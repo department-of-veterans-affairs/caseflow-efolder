@@ -37,7 +37,7 @@ window.VVATour = (function($){
       return function() {
         for (var callout in callouts){
           if (calloutMgr.getCallout(callouts[callout].id)) {
-            calloutMgr.removeAllCallouts();
+            calloutMgr.removeCallout(callouts[callout].id);
           }
           else {
             calloutMgr.createCallout(callouts[callout]);
