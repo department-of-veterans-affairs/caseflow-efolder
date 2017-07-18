@@ -26,17 +26,17 @@ class Download < ActiveRecord::Base
   # api doesn't need this information and can avoid calling BGS.
   def veteran_last_name
     fetch_veteran_info
-    self.read_attribute(:veteran_last_name)
+    self[:veteran_last_name]
   end
 
   def veteran_first_name
     fetch_veteran_info
-    self.read_attribute(:veteran_first_name)
+    self[:veteran_first_name]
   end
 
   def veteran_last_four_ssn
     fetch_veteran_info
-    self.read_attribute(:veteran_last_four_ssn)
+    self[:veteran_last_four_ssn]
   end
 
   def veteran_name
@@ -52,9 +52,9 @@ class Download < ActiveRecord::Base
   end
 
   def missing_veteran_info?
-    file_number && (!self.read_attribute(:veteran_last_four_ssn) ||
-                    !self.read_attribute(:veteran_last_name) ||
-                    !self.read_attribute(:veteran_first_name))
+    file_number && (!self[:veteran_last_four_ssn] ||
+                    !self[:veteran_last_name] ||
+                    !self[:veteran_first_name])
   end
 
   def fetch_veteran_info
@@ -70,7 +70,7 @@ class Download < ActiveRecord::Base
 
       veteran_info = bgs_service.fetch_veteran_info(file_number)
 
-      self.reload.update_attributes!(
+      reload.update_attributes!(
         veteran_first_name: veteran_info["veteran_first_name"],
         veteran_last_name: veteran_info["veteran_last_name"],
         veteran_last_four_ssn: veteran_info["veteran_last_four_ssn"]
