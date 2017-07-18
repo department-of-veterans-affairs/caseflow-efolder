@@ -20,8 +20,10 @@ class Download < ActiveRecord::Base
   has_many :searches
   belongs_to :user
 
-  # We alias the veteran info methods so that we can trigger a call to BGS if they are
-  # not already saved in our DB.
+  # We override the getters for veteran info so that we can fetch the values
+  # from BGS if we do not have them. This lazy load allows us to avoid calling
+  # any BGS endpoints if we don't need the veteran name. Specifically, the files
+  # api doesn't need this information and can avoid calling BGS.
   def veteran_last_name
     fetch_veteran_info
     self.read_attribute(:veteran_last_name)
@@ -35,6 +37,18 @@ class Download < ActiveRecord::Base
   def veteran_last_four_ssn
     fetch_veteran_info
     self.read_attribute(:veteran_last_four_ssn)
+  end
+
+  def veteran_name
+    "#{veteran_first_name} #{veteran_last_name}" if veteran_last_name
+  end
+
+  def self.active
+    where(created_at: Download::HOURS_UNTIL_EXPIRY.hours.ago..Time.zone.now + 5.seconds)
+  end
+
+  def demo?
+    file_number =~ /DEMO/
   end
 
   def missing_veteran_info?
@@ -62,18 +76,6 @@ class Download < ActiveRecord::Base
         veteran_last_four_ssn: veteran_info["veteran_last_four_ssn"]
       ) if veteran_info
     end
-  end
-
-  def veteran_name
-    "#{veteran_first_name} #{veteran_last_name}" if veteran_last_name
-  end
-
-  def self.active
-    where(created_at: Download::HOURS_UNTIL_EXPIRY.hours.ago..Time.zone.now + 5.seconds)
-  end
-
-  def demo?
-    file_number =~ /DEMO/
   end
 
   def time_to_fetch_manifest
