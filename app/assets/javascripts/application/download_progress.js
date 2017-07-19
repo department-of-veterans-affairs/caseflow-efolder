@@ -21,6 +21,7 @@ window.DownloadProgress = (function($) {
         $.get("/downloads/" + id + "/progress?current_tab=" + this.currentTab).then(function(fragment) {
           openRequests--;
           var scrollTop = $(".cf-tab-content")[0].scrollTop;
+          window.VVATour.closeExistingCallouts();
           $("#download-progress").html(fragment);
 
           if (!changingTabs) {

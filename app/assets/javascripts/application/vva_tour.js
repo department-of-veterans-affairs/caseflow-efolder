@@ -31,23 +31,31 @@ window.VVATour = (function($){
   };
 
   return {
+    closeExistingCallouts: function() {
+      calloutMgr.removeAllCallouts();
+    },
     bind: function() {
       var callouts = [];
       function verifyElementExists(coachmarkID) {
         return document.getElementById(coachmarkID);
       }
+
+      function ensureCalloutExists(calloutId) {
+        return calloutMgr.getCallout(calloutId) || calloutMgr.createCallout(calloutId);
+      }
+
       if (verifyElementExists('vva-tour-1')) {
-        calloutMgr.createCallout(vvaCallout1);
+        ensureCalloutExists(vvaCallout1);
         callouts = [vvaCallout1];
       }
       // The confirming downloads page has 2 coachmarks, hence they're in the same conditional
       else if (verifyElementExists('vva-tour-2')){
-        calloutMgr.createCallout(vvaCallout2);
-        calloutMgr.createCallout(vvaCallout3);
+        ensureCalloutExists(vvaCallout2);
+        ensureCalloutExists(vvaCallout3);
         callouts = [vvaCallout2, vvaCallout3];
       }
       else if (verifyElementExists('vva-tour-4')){
-        calloutMgr.createCallout(vvaCallout4);
+        ensureCalloutExists(vvaCallout4);
         callouts = [vvaCallout4];
       }
       $('#cf-view-coachmarks-link').on('click', function() {
@@ -57,7 +65,7 @@ window.VVATour = (function($){
             $('#cf-view-coachmarks-link').text('Show tutorial');
           }
           else {
-            calloutMgr.createCallout(callout);
+            ensureCalloutExists(callout);
             $('#cf-view-coachmarks-link').text('Hide tutorial');
           }
         })

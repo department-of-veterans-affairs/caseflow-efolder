@@ -160,8 +160,6 @@
 
 <% if @download.complete_success? && vva_feature_enabled? %>
   <script>
-    if (!document.getElementsByClassName('hopscotch-bubble').length) {
-      window.VVATour.bind();
-    }
+    window.VVATour.bind();
   </script>
 <% end %>
