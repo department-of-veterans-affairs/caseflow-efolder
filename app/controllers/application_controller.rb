@@ -61,7 +61,7 @@ class ApplicationController < BaseController
   helper_method :feedback_url
 
   def vva_feature_enabled?
-    BaseController.dependencies_faked? ? true : FeatureToggle.enabled?(:vva_service, user: current_user)
+    BaseController.dependencies_faked? || FeatureToggle.enabled?(:vva_service, user: current_user)
   end
   helper_method :vva_feature_enabled?
 end

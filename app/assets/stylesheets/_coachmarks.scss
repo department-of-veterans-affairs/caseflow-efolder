@@ -1,5 +1,7 @@
 @import 'caseflow_main';
 
+$arrow-style: 17px solid $color-cool-blue-lightest;
+
 .hopscotch-bubble-content,
 .hopscotch-bubble-container {
   background-color: $color-cool-blue-lightest;
@@ -23,7 +25,7 @@ div.hopscotch-bubble {
       }
 
       .hopscotch-bubble-arrow {
-        border-bottom: 17px solid $color-cool-blue-lightest;
+        border-bottom: $arrow-style;
       }
     }
 
@@ -35,13 +37,13 @@ div.hopscotch-bubble {
       }
 
       .hopscotch-bubble-arrow {
-        border-top: 17px solid $color-cool-blue-lightest;
+        border-top: $arrow-style;
       }
     }
 
     &.left {
       .hopscotch-bubble-arrow {
-        border-right: 17px solid $color-cool-blue-lightest;
+        border-right: $arrow-style;
       }
     }
 
@@ -51,7 +53,7 @@ div.hopscotch-bubble {
       }
 
       .hopscotch-bubble-arrow {
-        border-left: 17px solid $color-cool-blue-lightest;
+        border-left: $arrow-style;
       }
     }
   }
