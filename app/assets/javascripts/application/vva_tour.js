@@ -1,6 +1,5 @@
 window.VVATour = (function($){
   var calloutMgr = hopscotch.getCalloutManager();
-  var vvaLink = document.getElementById('cf-view-coachmarks-link');
   var calloutArgs;
 
   var vvaCallout1 = {

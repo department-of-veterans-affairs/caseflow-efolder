@@ -138,9 +138,4 @@ class DownloadsController < ApplicationController
     { "progress": 0, "completed": 1, "errored": 2 }[current_tab.to_sym]
   end
   helper_method :current_document_status
-
-  def vva_feature_enabled?
-    BaseController.dependencies_faked? ? true : FeatureToggle.enabled?(:vva_service, user: current_user)
-  end
-  helper_method :vva_feature_enabled?
 end
