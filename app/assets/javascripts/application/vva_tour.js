@@ -57,7 +57,7 @@ window.VVATour = (function($){
             $('#cf-view-coachmarks-link').text('Show tutorial');
           }
           else {
-            calloutMgr.createCallout(calloutIndex);
+            calloutMgr.createCallout(callout);
             $('#cf-view-coachmarks-link').text('Hide tutorial');
           }
         })
