@@ -1,4 +1,6 @@
 class Api::V1::FilesController < Api::V1::ApplicationController
+  before_action :verify_authentication_token
+
   def show
     render json: json_files
   rescue ActiveRecord::RecordNotFound
@@ -33,15 +35,31 @@ class Api::V1::FilesController < Api::V1::ApplicationController
     }, status: 404
   end
 
-  def user_id
-    params.require(:user_id)
+  def verify_authentication_token
+    return unauthorized unless api_key
+  end
+
+  def api_key
+    @api_key ||= authenticate_with_http_token { |token, _options| token == ENV["FILES_ENDPOINT_TOKEN"] }
+  end
+
+  def station_id
+    params[:station_id]
+  end
+
+  def css_id
+    params[:css_id]
   end
 
   def id
     params[:id]
   end
 
+  def current_user
+    @current_user ||= User.find_or_create_by(css_id: css_id, station_id: station_id)
+  end
+
   def download
-    @download ||= Download.find_or_create_by_user_and_file(user_id, id)
+    @download ||= Download.find_or_create_by_user_and_file(current_user, id)
   end
 end
