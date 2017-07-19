@@ -38,9 +38,11 @@ window.VVATour = (function($){
         for (var callout in callouts){
           if (calloutMgr.getCallout(callouts[callout].id)) {
             calloutMgr.removeCallout(callouts[callout].id);
+            $('#cf-view-coachmarks-link').text("Show tutorial");
           }
           else {
             calloutMgr.createCallout(callouts[callout]);
+            $('#cf-view-coachmarks-link').text("Hide tutorial");
           }
         }
       }
