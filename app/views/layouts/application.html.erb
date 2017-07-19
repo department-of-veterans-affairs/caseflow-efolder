@@ -73,7 +73,9 @@
 
           <% if !current_user.nil? %>
             <div class="cf-dropdown cf-nav-dropdown">
+              <% if vva_feature_enabled? %>
               <a href="#" id="cf-view-coachmarks-link">Hide tutorial</a>
+              <% end %>
               <a href="#menu" class="cf-dropdown-trigger" id="menu-trigger">
                   <%= current_user.display_name %>
               </a>
