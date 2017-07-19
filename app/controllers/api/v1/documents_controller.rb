@@ -18,6 +18,10 @@ class Api::V1::DocumentsController < Api::V1::ApplicationController
 
   private
 
+  def authorize
+    unauthorized unless current_user.can? "Reader"
+  end
+
   def document_not_found
     render json: {
       "errors": [

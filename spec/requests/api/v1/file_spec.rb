@@ -5,10 +5,11 @@ describe "File API v1", type: :request do
       station_id: 283
     )
   end
+  let(:veteran_id) { "21012" }
   let(:download) do
     Download.create(
       user_id: user.id,
-      file_number: "21012",
+      file_number: veteran_id,
       veteran_first_name: "George",
       veteran_last_name: "Washington"
     )
@@ -20,6 +21,17 @@ describe "File API v1", type: :request do
       type_id: "825",
       mime_type: "application/pdf"
     )
+  end
+  let(:token) do
+    "token"
+  end
+  let(:headers) do
+    {
+      "HTTP_VETERAN_ID" => veteran_id,
+      "HTTP_CSS_ID" => user.css_id,
+      "HTTP_STATION_ID" => user.station_id,
+      "HTTP_AUTHORIZATION" => "Token token=#{token}"
+    }
   end
 
   before do
@@ -36,9 +48,21 @@ describe "File API v1", type: :request do
       allow(VVAService).to receive(:fetch_documents_for).and_return([])
     end
 
+    let(:veteran_id) { "21011" }
+    let(:document) {}
+
     it "returns 404 if file ID is not found" do
-      get "/api/v1/files/21011?user_id=#{user.id}"
+      get "/api/v1/files", nil, headers
       expect(response.code).to eq("404")
+    end
+  end
+
+  context "When the incorrect token is passed" do
+    let(:token) { "bad token" }
+
+    it "returns 401" do
+      get "/api/v1/files", nil, headers
+      expect(response.code).to eq("401")
     end
   end
 
@@ -110,7 +134,7 @@ describe "File API v1", type: :request do
       end
 
       it "returns existing and new files" do
-        get "/api/v1/files/#{download.file_number}?user_id=#{user.id}"
+        get "/api/v1/files", nil, headers
 
         expect(response.code).to eq("200")
         expect(response.body).to eq(response_body)
@@ -121,7 +145,7 @@ describe "File API v1", type: :request do
       it "starts the download job" do
         allow(SaveFilesInS3Job).to receive(:perform_later)
 
-        get "/api/v1/files/#{download.file_number}?user_id=#{user.id}&download=true"
+        get "/api/v1/files?download=true", nil, headers
 
         expect(SaveFilesInS3Job).to have_received(:perform_later)
       end
