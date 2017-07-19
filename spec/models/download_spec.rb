@@ -1,15 +1,19 @@
 require "rails_helper"
 
 describe "Download" do
+  let(:veteran_first_name) { "Stan" }
+  let(:veteran_last_name) { "Lee" }
+  let(:veteran_last_four_ssn) { "0987" }
+
   before do
     Timecop.freeze(Time.utc(2015, 1, 1, 12, 0, 0))
 
     Download.bgs_service = Fakes::BGSService
     Fakes::BGSService.veteran_info = {
       "1234" => {
-        "veteran_first_name" => "Stan",
-        "veteran_last_name" => "Lee",
-        "veteran_last_four_ssn" => "0987"
+        "veteran_first_name" => veteran_first_name,
+        "veteran_last_name" => veteran_last_name,
+        "veteran_last_four_ssn" => veteran_last_four_ssn
       }
     }
   end
@@ -26,9 +30,9 @@ describe "Download" do
         Download.bgs_service = Fakes::BGSService
         Fakes::BGSService.veteran_info = {
           "1234" => {
-            "veteran_first_name" => "Stan",
-            "veteran_last_name" => "Lee",
-            "veteran_last_four_ssn" => "0987"
+            "veteran_first_name" => veteran_first_name,
+            "veteran_last_name" => veteran_last_name,
+            "veteran_last_four_ssn" => veteran_last_four_ssn
           }
         }
       end
@@ -377,6 +381,50 @@ describe "Download" do
 
       it "raises an error" do
         expect { download.prepare_files_for_api!(start_download: true) }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+  end
+
+  context "#veteran_last_name" do
+    it "retrieves last name from BGS" do
+      expect(download.veteran_last_name).to eq(veteran_last_name)
+    end
+  end
+
+  context "#veteran_first_name" do
+    it "retrieves last name from BGS" do
+      expect(download.veteran_first_name).to eq(veteran_first_name)
+    end
+  end
+
+  context "#veteran_last_four_ssn" do
+    it "retrieves last name from BGS" do
+      expect(download.veteran_last_four_ssn).to eq(veteran_last_four_ssn)
+    end
+  end
+
+  context "#fetch_veteran_info" do
+    context "already has veteran info" do
+      let(:different_veteran_first_name) { "Joe" }
+      let(:download) do
+        Download.create(
+          file_number: file_number,
+          veteran_first_name: different_veteran_first_name,
+          veteran_last_name: "Snuffy",
+          veteran_last_four_ssn: "1234"
+        )
+      end
+
+      it "doesn't fetch veteran info" do
+        download.fetch_veteran_info
+        expect(download.veteran_first_name).to eq(different_veteran_first_name)
+      end
+    end
+
+    context "doesn't have veteran info" do
+      it "saves it" do
+        download.fetch_veteran_info
+        expect(download.veteran_first_name).to eq(veteran_first_name)
       end
     end
   end

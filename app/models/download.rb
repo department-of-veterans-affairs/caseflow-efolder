@@ -20,24 +20,23 @@ class Download < ActiveRecord::Base
   has_many :searches
   belongs_to :user
 
-  before_create do |download|
-    # This fake is used in the test suite, but let's
-    # also use it if we're demo-ing eFolder express.
-    #
-    # TODO: (alex) we should maybe be setting the fake
-    # or real bgs service on an instance level, rather
-    # than a class. Refactor the class method `bgs_service`
-    # into an instance one.
-    bgs_service = download.demo? ? Fakes::BGSService : Download.bgs_service
+  # We override the getters for veteran info so that we can fetch the values
+  # from BGS if we do not have them. This lazy load allows us to avoid calling
+  # any BGS endpoints if we don't need the veteran name. Specifically, the files
+  # api doesn't need this information and can avoid calling BGS.
+  def veteran_last_name
+    fetch_veteran_info
+    self[:veteran_last_name]
+  end
 
-    if missing_veteran_info?
-      veteran_info = bgs_service.fetch_veteran_info(download.file_number)
-      if veteran_info
-        download.veteran_first_name = veteran_info["veteran_first_name"]
-        download.veteran_last_name = veteran_info["veteran_last_name"]
-        download.veteran_last_four_ssn = veteran_info["veteran_last_four_ssn"]
-      end
-    end
+  def veteran_first_name
+    fetch_veteran_info
+    self[:veteran_first_name]
+  end
+
+  def veteran_last_four_ssn
+    fetch_veteran_info
+    self[:veteran_last_four_ssn]
   end
 
   def veteran_name
@@ -53,7 +52,32 @@ class Download < ActiveRecord::Base
   end
 
   def missing_veteran_info?
-    file_number && (!veteran_first_name || !veteran_last_name || !veteran_last_four_ssn)
+    # We access the column names directly instead of using the rails defined get methods.
+    # Since we have redefined them above, using them would trigger a fetch of veteran info.
+    file_number && (!self[:veteran_last_four_ssn] ||
+                    !self[:veteran_last_name] ||
+                    !self[:veteran_first_name])
+  end
+
+  def fetch_veteran_info
+    # This fake is used in the test suite, but let's
+    # also use it if we're demo-ing eFolder express.
+    #
+    # TODO: (alex) we should maybe be setting the fake
+    # or real bgs service on an instance level, rather
+    # than a class. Refactor the class method `bgs_service`
+    # into an instance one.
+    if missing_veteran_info?
+      bgs_service = demo? ? Fakes::BGSService : Download.bgs_service
+
+      veteran_info = bgs_service.fetch_veteran_info(file_number)
+
+      reload.update_attributes!(
+        veteran_first_name: veteran_info["veteran_first_name"],
+        veteran_last_name: veteran_info["veteran_last_name"],
+        veteran_last_four_ssn: veteran_info["veteran_last_four_ssn"]
+      ) if veteran_info
+    end
   end
 
   def time_to_fetch_manifest
