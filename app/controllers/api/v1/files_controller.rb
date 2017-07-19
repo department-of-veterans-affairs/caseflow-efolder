@@ -36,7 +36,7 @@ class Api::V1::FilesController < Api::V1::ApplicationController
   end
 
   def verify_authentication_token
-    return unauthorized unless authenticate_with_http_token { |token, _options| token == ENV["FILES_ENDPOINT_TOKEN"] }
+    return unauthorized unless authenticate_with_http_token { |token, _options| token == ENV["EFOLDER_API_KEY"] }
   end
 
   def station_id
