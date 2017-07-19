@@ -52,4 +52,6 @@ Rails.application.configure do
 
   ENV["SIDEKIQ_USERNAME"] ||= "caseflow"
   ENV["SIDEKIQ_PASSWORD"] ||= "caseflow"
+
+  ENV["FILES_ENDPOINT_TOKEN"] ||= "token"
 end

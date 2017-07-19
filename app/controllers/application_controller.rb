@@ -30,20 +30,11 @@ class ApplicationController < BaseController
     redirect_to "/unauthorized" unless current_user.can? "System Admin"
   end
 
-  def authorize
-    redirect_to "/unauthorized" unless current_user.can? "Download eFolder"
-  end
-
   private
 
   def check_out_of_service
     render "out_of_service", layout: "application" if Rails.cache.read("out_of_service")
   end
-
-  def current_user
-    @current_user ||= User.from_session(session, request)
-  end
-  helper_method :current_user
 
   def configure_bgs
     Download.bgs_service = ExternalApi::BGSService.new(user: current_user) unless Rails.env.test?

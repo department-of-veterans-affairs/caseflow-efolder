@@ -12,6 +12,15 @@ class BaseController < ActionController::Base
     response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains" if request.ssl?
   end
 
+  def current_user
+    @current_user ||= User.from_session(session, request)
+  end
+  helper_method :current_user
+
+  def authorize
+    redirect_to "/unauthorized" unless (current_user.can? "Download eFolder") || (current_user.can? "Reader")
+  end
+
   class << self
     def dependencies_faked?
       Rails.env.development? || Rails.env.test? || Rails.env.demo?
