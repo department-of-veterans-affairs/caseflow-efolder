@@ -18,7 +18,7 @@ class BaseController < ActionController::Base
   helper_method :current_user
 
   def authorize
-    redirect_to "/unauthorized" unless (current_user.can? "Download eFolder") || (current_user.can? "Reader")
+    redirect_to "/unauthorized" unless current_user.can? "Download eFolder"
   end
 
   class << self
