@@ -30,44 +30,38 @@ window.VVATour = (function($){
     content: 'The total number of documents that will be downloaded from each database is listed here.'
   };
 
-  function getToggleCalloutsFn(calloutIds) {
-    var callouts = Array.prototype.slice.call(arguments);
-    return function() {
-      for (var calloutIndex in callouts){
-        if (calloutMgr.getCallout(callouts[calloutIndex].id)) {
-          calloutMgr.removeCallout(callouts[calloutIndex].id);
-          $('#cf-view-coachmarks-link').text('Show tutorial');
-        }
-        else {
-          calloutMgr.createCallout(callouts[calloutIndex]);
-          $('#cf-view-coachmarks-link').text('Hide tutorial');
-        }
-      }
-    }
-  }
-
   return {
     bind: function() {
-      var calloutArgs;
+      var callouts = [];
       function verifyElementExists(coachmarkID) {
         return document.getElementById(coachmarkID);
       }
       if (verifyElementExists('vva-tour-1')) {
         calloutMgr.createCallout(vvaCallout1);
-        calloutArgs = getToggleCalloutsFn(vvaCallout1);
+        callouts = [vvaCallout1];
       }
       // The confirming downloads page has 2 coachmarks, hence they're in the same conditional
       else if (verifyElementExists('vva-tour-2')){
         calloutMgr.createCallout(vvaCallout2);
         calloutMgr.createCallout(vvaCallout3);
-        calloutArgs = getToggleCalloutsFn(vvaCallout2, vvaCallout3);
+        callouts = [vvaCallout2, vvaCallout3];
       }
       else if (verifyElementExists('vva-tour-4')){
         calloutMgr.createCallout(vvaCallout4);
-        calloutArgs = getToggleCalloutsFn(vvaCallout4);
+        callouts = [vvaCallout4];
       }
-
-      $('#cf-view-coachmarks-link').on('click', calloutArgs)
+      $('#cf-view-coachmarks-link').on('click', function() {
+        for (var calloutIndex in callouts){
+          if (calloutMgr.getCallout(callouts[calloutIndex].id)) {
+            calloutMgr.removeCallout(callouts[calloutIndex].id);
+            $('#cf-view-coachmarks-link').text('Show tutorial');
+          }
+          else {
+            calloutMgr.createCallout(callouts[calloutIndex]);
+            $('#cf-view-coachmarks-link').text('Hide tutorial');
+          }
+        }
+      })
     }
   }
 })($);
