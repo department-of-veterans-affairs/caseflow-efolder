@@ -51,9 +51,9 @@ window.VVATour = (function($){
         callouts = [vvaCallout4];
       }
       $('#cf-view-coachmarks-link').on('click', function() {
-        callouts.forEach(function(calloutIndex) {
-          if (calloutMgr.getCallout(calloutIndex.id)) {
-            calloutMgr.removeCallout(calloutIndex.id);
+        callouts.forEach(function(callout) {
+          if (calloutMgr.getCallout(callout.id)) {
+            calloutMgr.removeCallout(callout.id);
             $('#cf-view-coachmarks-link').text('Show tutorial');
           }
           else {
