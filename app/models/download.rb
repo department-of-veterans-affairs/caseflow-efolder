@@ -52,6 +52,8 @@ class Download < ActiveRecord::Base
   end
 
   def missing_veteran_info?
+    # We access the column names directly instead of using the rails defined get methods.
+    # Since we have redefined them above, using them would trigger a fetch of veteran info.
     file_number && (!self[:veteran_last_four_ssn] ||
                     !self[:veteran_last_name] ||
                     !self[:veteran_first_name])
