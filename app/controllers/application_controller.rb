@@ -30,6 +30,10 @@ class ApplicationController < BaseController
     redirect_to "/unauthorized" unless current_user.can? "System Admin"
   end
 
+  def authorize
+    redirect_to "/unauthorized" unless current_user.can? "Download eFolder"
+  end
+
   private
 
   def check_out_of_service

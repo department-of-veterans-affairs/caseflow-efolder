@@ -17,10 +17,6 @@ class BaseController < ActionController::Base
   end
   helper_method :current_user
 
-  def authorize
-    redirect_to "/unauthorized" unless current_user.can? "Download eFolder"
-  end
-
   class << self
     def dependencies_faked?
       Rails.env.development? || Rails.env.test? || Rails.env.demo?
