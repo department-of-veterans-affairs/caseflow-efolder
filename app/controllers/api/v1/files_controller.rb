@@ -1,7 +1,7 @@
 class Api::V1::FilesController < Api::V1::ApplicationController
   before_action :verify_authentication_token
 
-  def show
+  def index
     render json: json_files
   rescue ActiveRecord::RecordNotFound
     file_not_found
@@ -36,23 +36,19 @@ class Api::V1::FilesController < Api::V1::ApplicationController
   end
 
   def verify_authentication_token
-    return unauthorized unless api_key
-  end
-
-  def api_key
-    @api_key ||= authenticate_with_http_token { |token, _options| token == ENV["FILES_ENDPOINT_TOKEN"] }
+    return unauthorized unless authenticate_with_http_token { |token, _options| token == ENV["FILES_ENDPOINT_TOKEN"] }
   end
 
   def station_id
-    params[:station_id]
+    request.headers["HTTP_STATION_ID"]
   end
 
   def css_id
-    params[:css_id]
+    request.headers["HTTP_CSS_ID"]
   end
 
   def id
-    params[:id]
+    request.headers["HTTP_VETERAN_ID"]
   end
 
   def current_user
