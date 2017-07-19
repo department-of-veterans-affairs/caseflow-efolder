@@ -422,7 +422,7 @@ describe "Download" do
     end
 
     context "doesn't have veteran info" do
-      it "savevs it" do
+      it "saves it" do
         download.fetch_veteran_info
         expect(download.veteran_first_name).to eq(veteran_first_name)
       end
