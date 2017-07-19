@@ -51,16 +51,16 @@ window.VVATour = (function($){
         callouts = [vvaCallout4];
       }
       $('#cf-view-coachmarks-link').on('click', function() {
-        for (var calloutIndex in callouts){
-          if (calloutMgr.getCallout(callouts[calloutIndex].id)) {
-            calloutMgr.removeCallout(callouts[calloutIndex].id);
+        callouts.forEach(function(calloutIndex) {
+          if (calloutMgr.getCallout(calloutIndex.id)) {
+            calloutMgr.removeCallout(calloutIndex.id);
             $('#cf-view-coachmarks-link').text('Show tutorial');
           }
           else {
-            calloutMgr.createCallout(callouts[calloutIndex]);
+            calloutMgr.createCallout(calloutIndex);
             $('#cf-view-coachmarks-link').text('Hide tutorial');
           }
-        }
+        })
       })
     }
   }
