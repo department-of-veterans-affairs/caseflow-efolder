@@ -15,7 +15,6 @@ describe "File API v1", type: :request do
   end
   let(:document) do
     download.documents.create(
-      id: 34,
       document_id: "{3333-3333}",
       received_at: Time.utc(2015, 9, 6, 1, 0, 0),
       type_id: "825",
@@ -90,17 +89,17 @@ describe "File API v1", type: :request do
               manifest_fetched_at: "2015-01-01T17:00:00.000Z",
               documents: [
                 {
-                  document_id: "{3333-3333}",
+                  id: download.documents[2].id,
                   type_id: "825",
                   received_at: "2015-09-06T01:00:00.000Z"
                 },
                 {
-                  document_id: "1",
+                  id: download.documents[1].id,
                   type_id: "123",
                   received_at: "2017-02-01T00:00:00.000Z"
                 },
                 {
-                  document_id: "2",
+                  id: download.documents[0].id,
                   type_id: "124",
                   received_at: "2017-04-03T00:00:00.000Z"
                 }
