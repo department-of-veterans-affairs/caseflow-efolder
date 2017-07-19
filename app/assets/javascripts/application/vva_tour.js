@@ -58,18 +58,8 @@ window.VVATour = (function($){
       }
       // The confirming downloads page has 2 coachmarks, hence they're in the same conditional
       else if (verifyElementExists('vva-tour-2')){
-        calloutMgr.createCallout({
-          id: "vva-tour-2",
-          content: "The total number of documents that will be retrieved from each database is listed here.",
-          target: "vva-tour-2",
-          placement: "top"
-        });
-        calloutMgr.createCallout({
-          id: "vva-tour-3",
-          content: "The Source column shows the name of the database from which the file will be retrieved.",
-          target: "vva-tour-3",
-          placement: "left"
-        });
+        calloutMgr.createCallout(vvaCallout2);
+        calloutMgr.createCallout(vvaCallout3);
         calloutArgs = toggleCallouts(vvaCallout2, vvaCallout3);
       }
       else if (verifyElementExists('vva-tour-4')){
