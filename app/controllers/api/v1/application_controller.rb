@@ -21,17 +21,19 @@ class Api::V1::ApplicationController < BaseController
   end
 
   def authenticate_with_token
-    @authenticate_with_token ||= authenticate_with_http_token do
-      |token, _options| token == Rails.application.config.api_key
+    @authenticate_with_token ||= authenticate_with_http_token do |token, _options|
+      token == Rails.application.config.api_key
     end
   end
 
   def user_has_role
-     current_user && (current_user.can?("Reader") || current_user.can?("System Admin"))
+    current_user && (current_user.can?("Reader") || current_user.can?("System Admin"))
   end
 
   def authorize
-    return unauthorized unless authenticate_with_token || user_has_role
+    # rubocop:disable Style/NegatedIf
+    return unauthorized if !(authenticate_with_token || user_has_role)
+    # rubocop:enable Style/NegatedIf
   end
 
   def station_id
