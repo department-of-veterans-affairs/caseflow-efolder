@@ -1,6 +1,4 @@
 class Api::V1::FilesController < Api::V1::ApplicationController
-  before_action :verify_authentication_token
-
   def index
     render json: json_files
   rescue ActiveRecord::RecordNotFound
@@ -35,24 +33,8 @@ class Api::V1::FilesController < Api::V1::ApplicationController
     }, status: 404
   end
 
-  def verify_authentication_token
-    return unauthorized unless authenticate_with_http_token { |token, _options| token == ENV["EFOLDER_API_KEY"] }
-  end
-
-  def station_id
-    request.headers["HTTP_STATION_ID"]
-  end
-
-  def css_id
-    request.headers["HTTP_CSS_ID"]
-  end
-
   def id
     request.headers["HTTP_VETERAN_ID"]
-  end
-
-  def current_user
-    @current_user ||= User.find_or_create_by(css_id: css_id, station_id: station_id)
   end
 
   def download

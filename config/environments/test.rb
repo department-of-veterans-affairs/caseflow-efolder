@@ -39,6 +39,8 @@ Rails.application.configure do
 
   config.s3_enabled = false
 
+  config.api_key = "token"
+
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 
@@ -48,6 +50,4 @@ Rails.application.configure do
 
   ENV["SIDEKIQ_USERNAME"] ||= "caseflow"
   ENV["SIDEKIQ_PASSWORD"] ||= "caseflow"
-
-  ENV["EFOLDER_API_KEY"] ||= "token"
 end
