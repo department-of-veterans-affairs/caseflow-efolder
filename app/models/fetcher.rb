@@ -8,7 +8,7 @@ class Fetcher
     document.update_attributes!(
       completed_at: Time.zone.now,
       download_status: :success,
-      size: result.bytesize
+      size: result.try(:bytesize)
     )
     result
   end
