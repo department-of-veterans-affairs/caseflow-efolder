@@ -72,9 +72,9 @@
           <h2 id="page-title" class="cf-application-title"><%= yield :page_title %></h2>
 
           <% if !current_user.nil? %>
-            <div class="cf-dropdown cf-nav-dropdown">
+            <div class="cf-dropdown cf-nav-dropdown" id="hide-tutorial-parent">
               <% if vva_feature_enabled? %>
-                <a href="#" id="cf-view-coachmarks-link">Hide tutorial</a>
+
               <% end %>
               <a href="#menu" class="cf-dropdown-trigger" id="menu-trigger">
                   <%= current_user.display_name %>
