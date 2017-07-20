@@ -27,12 +27,6 @@ describe "Documents API v1", type: :request do
       FeatureToggle.enable!(:reader_api)
     end
 
-    it "returns 401 if feature is not enabled" do
-      FeatureToggle.disable!(:reader_api)
-      get "/api/v1/documents/8888"
-      expect(response.code).to eq("401")
-    end
-
     context "returns 401 if user does not have Reader role" do
       let!(:current_user) do
         User.authenticate!(roles: [""])

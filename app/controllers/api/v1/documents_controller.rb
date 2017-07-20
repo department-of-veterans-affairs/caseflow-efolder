@@ -1,6 +1,4 @@
 class Api::V1::DocumentsController < Api::V1::ApplicationController
-  before_action :authorize
-
   def show
     document = Document.find(params[:id])
     # The line below enables document caching for a month.
@@ -17,10 +15,6 @@ class Api::V1::DocumentsController < Api::V1::ApplicationController
   end
 
   private
-
-  def authorize
-    unauthorized unless current_user.can? "Reader"
-  end
 
   def document_not_found
     render json: {
