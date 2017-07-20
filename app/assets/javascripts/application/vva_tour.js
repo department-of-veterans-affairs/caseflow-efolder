@@ -5,7 +5,7 @@ window.VVATour = (function($) {
     var countClosed = 0;
 
     function ensureCalloutExists(callout) {
-      return calloutManager.getCallout(callout) || calloutManager.createCallout(callout);
+      return calloutManager.getCallout(callout.id) || calloutManager.createCallout(callout);
     }
 
     callouts.forEach(function(callout) {
@@ -15,8 +15,7 @@ window.VVATour = (function($) {
           onAllClosed();
         }
       };
-      // debugger;
-      calloutManager.createCallout(callout);
+      ensureCalloutExists(callout);
     });
   }
 
@@ -79,13 +78,13 @@ window.VVATour = (function($) {
   }
 
   function initProgressPage() {
-    var vvaCallout4 = {
+    setCurrentPageCallouts([{
       id: 'vva-tour-4',
       target: 'vva-tour-4',
       placement: 'bottom',
       xOffset: 'center',
       content: 'The total number of documents that will be downloaded from each database is listed here.'
-    };
+    }]);
   }
 
   return {
