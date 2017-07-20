@@ -15,13 +15,13 @@ window.VVATour = (function($) {
           onAllClosed();
         }
       };
+      // debugger;
       calloutManager.createCallout(callout);
     });
   }
 
   function setCurrentPageCallouts(callouts) {
-    $(function() {
-
+    window.addEventListener('load', function() {
       var hideTutorialText = 'Hide tutorial';
       var $hideTutorialLink = $('<a href="#" id="cf-view-coachmarks-link">' + hideTutorialText + '</a>');
       $('#hide-tutorial-parent').prepend($hideTutorialLink)
