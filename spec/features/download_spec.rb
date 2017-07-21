@@ -293,6 +293,14 @@ RSpec.feature "Downloads" do
     expect(page).to have_content "Steph Curry (3456)"
     expect(page).to have_content "yawn.pdf VBMS 09/06/2015"
     expect(page).to have_content "smiley.pdf VBMS 01/19/2015"
+
+    expect(page).to have_content(
+      "The total number of documents that will be retrieved from each database is listed here."
+    )
+    expect(page).to have_content(
+      "The Source column shows the name of the database from which the file will be retrieved."
+    )
+
     expect(page.evaluate_script("window.DownloadStatus.intervalID")).to be_falsey
     first(:button, "Start retrieving eFolder").click
 
