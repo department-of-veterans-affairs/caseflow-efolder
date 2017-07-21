@@ -1,0 +1,78 @@
+@import 'caseflow_main';
+
+$arrow-style: 17px solid $color-cool-blue-lightest;
+
+.hopscotch-bubble-content,
+.hopscotch-bubble-container {
+  background-color: $color-cool-blue-lightest;
+}
+
+.hopscotch-bubble-container {
+  box-shadow: 1px 1px 5px $color-gray-medium;
+}
+
+// scss-lint:disable QualifyingElement
+div.hopscotch-bubble {
+// scss-lint:enable QualifyingElement
+  border: 0;
+
+  .hopscotch-bubble-arrow-container {
+    &.up {
+      .hopscotch-bubble-arrow-border {
+        border-left: 0;
+        border-right: 0;
+        border-bottom: 17px solid $color-base;
+      }
+
+      .hopscotch-bubble-arrow {
+        border-bottom: $arrow-style;
+      }
+    }
+
+    &.down {
+      .hopscotch-bubble-arrow-border {
+        border-left: 0;
+        border-right: 0;
+        border-bottom: 0;
+      }
+
+      .hopscotch-bubble-arrow {
+        border-top: $arrow-style;
+      }
+    }
+
+    &.left {
+      .hopscotch-bubble-arrow {
+        border-right: $arrow-style;
+      }
+    }
+
+    &.right {
+      .hopscotch-bubble-arrow-border {
+        border-left: 0;
+      }
+
+      .hopscotch-bubble-arrow {
+        border-left: $arrow-style;
+      }
+    }
+  }
+
+  .hopscotch-content {
+    padding-top: 20px;
+    font-family: 'Source Sans Pro';
+  }
+}
+
+.hopscotch-bubble-content {
+  .hopscotch-content {
+    font-size: 19px;
+  }
+}
+
+a {
+  &[id="cf-view-coachmarks-link"] {
+    color: $color-primary;
+    padding-right: 40px;
+  }
+}
