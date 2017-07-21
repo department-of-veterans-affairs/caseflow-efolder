@@ -4,10 +4,6 @@ window.VVATour = (function($) {
   function initCallouts(callouts, onAllClosed) {
     var countClosed = 0;
 
-    function ensureCalloutExists(callout) {
-      return calloutManager.getCallout(callout.id) || calloutManager.createCallout(callout);
-    }
-
     callouts.forEach(function(callout) {
       callout.onClose = function() {
         countClosed++;
@@ -15,7 +11,7 @@ window.VVATour = (function($) {
           onAllClosed();
         }
       };
-      ensureCalloutExists(callout);
+      calloutManager.createCallout(callout);
     });
   }
 
@@ -77,7 +73,16 @@ window.VVATour = (function($) {
     ]);
   }
 
+  // This app will load the progress partial multiple times and insert it into the page via jQuery.
+  // We only want to do this initialization once, however.
+  var progressPageInitialized = false;
   function initProgressPage() {
+    if (progressPageInitialized) {
+      return;
+    } else {
+      progressPageInitialized = true;
+    }
+
     setCurrentPageCallouts([{
       id: 'vva-tour-4',
       target: 'vva-tour-4',
