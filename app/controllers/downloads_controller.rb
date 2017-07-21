@@ -29,7 +29,7 @@ class DownloadsController < ApplicationController
     @download = downloads.find(params[:id])
 
     if @download.complete?
-      increment_coachmarks_status
+      increment_vva_coachmarks_status
     end
 
     respond_to do |format|
@@ -79,21 +79,13 @@ class DownloadsController < ApplicationController
 
   private
 
-  # TODO take feature flag enabled into account
-  def increment_coachmarks_status
-    current_user.coachmarks_count += 1
-    current_user.save!
-
-    if current_user.coachmarks_status === :never_seen
-      current_user.coachmarks_status = :seen_once
-      current_user.save!
+  def increment_vva_coachmarks_status
+    if !vva_feature_enabled?
       return
     end
 
-    if current_user.coachmarks_status === :seen_once
-      current_user.coachmarks_status = :many_times
-      current_user.save!
-    end
+    current_user.vva_coachmarks_view_count += 1
+    current_user.save!
   end
 
   def streaming_headers(download)
