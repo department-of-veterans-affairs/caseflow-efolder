@@ -28,6 +28,10 @@ class DownloadsController < ApplicationController
   def show
     @download = downloads.find(params[:id])
 
+    if @download.complete?
+      increment_coachmarks_status
+    end
+
     respond_to do |format|
       format.html
       format.json { render json: @download.to_json }
@@ -57,10 +61,6 @@ class DownloadsController < ApplicationController
   def download
     download = downloads.find(params[:id])
     @download_documents = DownloadDocuments.new(download: download)
-
-    if download.complete?
-      increment_coachmarks_status
-    end
 
     streaming_headers(download)
     self.response_body = @download_documents.stream_zip_from_s3
