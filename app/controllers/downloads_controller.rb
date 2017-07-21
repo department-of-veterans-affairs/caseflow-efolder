@@ -79,7 +79,11 @@ class DownloadsController < ApplicationController
 
   private
 
+  # TODO take feature flag enabled into account
   def increment_coachmarks_status
+    current_user.coachmarks_count += 1
+    current_user.save!
+
     if current_user.coachmarks_status === :never_seen
       current_user.coachmarks_status = :seen_once
       current_user.save!
