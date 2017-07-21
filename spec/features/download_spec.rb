@@ -35,6 +35,25 @@ RSpec.feature "Downloads" do
     expect(page).to have_content("Test VA Saml")
   end
 
+  scenario "Download coachmarks" do
+    def assert_coachmark_exists()
+      expect(page).to have_content("Downloads from eFolder Express now include Virtual VA documents.")
+    end
+
+    def assert_coachmark_does_not_exist() 
+      expect(page).to_not have_content("Downloads from eFolder Express now include Virtual VA documents.")
+    end
+
+    visit "/"
+    assert_coachmark_exists()
+    click_on "Close"
+    assert_coachmark_does_not_exist()
+    click_on "Show tutorial"
+    assert_coachmark_exists()
+    click_on "Hide tutorial"
+    assert_coachmark_does_not_exist()
+  end
+
   scenario "Creating a download" do
     Fakes::BGSService.veteran_info = {
       "12341234" => {
