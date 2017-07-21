@@ -79,14 +79,12 @@ class DownloadsController < ApplicationController
   end
 
   def increment_vva_coachmarks_status
-    if !vva_feature_enabled?
-      return
-    end
+    return if !vva_feature_enabled?
 
     current_user.vva_coachmarks_view_count += 1
     current_user.save!
 
-    render :text => ''
+    render text: ""
   end
 
   private
