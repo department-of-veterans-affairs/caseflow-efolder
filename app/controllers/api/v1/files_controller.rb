@@ -1,5 +1,5 @@
 class Api::V1::FilesController < Api::V1::ApplicationController
-  def show
+  def index
     render json: json_files
   rescue ActiveRecord::RecordNotFound
     file_not_found
@@ -33,15 +33,11 @@ class Api::V1::FilesController < Api::V1::ApplicationController
     }, status: 404
   end
 
-  def user_id
-    params.require(:user_id)
-  end
-
   def id
-    params[:id]
+    request.headers["HTTP_FILE_NUMBER"]
   end
 
   def download
-    @download ||= Download.find_or_create_by_user_and_file(user_id, id)
+    @download ||= Download.find_or_create_by_user_and_file(current_user, id)
   end
 end
