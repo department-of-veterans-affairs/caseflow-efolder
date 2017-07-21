@@ -441,6 +441,10 @@ RSpec.feature "Downloads" do
     expect(page).to have_css ".document-success", text: "VA 119 Report of Contact"
     expect(page).to have_css ".document-success", text: "VA 5655 Financial Status Report (Submit with Waiver Request)"
 
+    expect(page).to have_content(
+      "The total number of documents that will be downloaded from each database is listed here."
+    )
+
     first(:link, "Download eFolder").click
     expect(page.response_headers["Content-Type"]).to eq("application/zip")
     expect(page.response_headers["Content-Length"]).to eq(File.size(download_documents.zip_path).to_s)
