@@ -28,10 +28,6 @@ class DownloadsController < ApplicationController
   def show
     @download = downloads.find(params[:id])
 
-    if @download.complete?
-      increment_vva_coachmarks_status
-    end
-
     respond_to do |format|
       format.html
       format.json { render json: @download.to_json }
@@ -77,8 +73,6 @@ class DownloadsController < ApplicationController
     redirect_to "/"
   end
 
-  private
-
   def increment_vva_coachmarks_status
     if !vva_feature_enabled?
       return
@@ -86,7 +80,11 @@ class DownloadsController < ApplicationController
 
     current_user.vva_coachmarks_view_count += 1
     current_user.save!
+
+    render :text => ''
   end
+
+  private
 
   def streaming_headers(download)
     headers["Content-Type"] = "application/zip"

@@ -87,9 +87,10 @@ window.VVATour = (function($) {
   function initProgressPage() {
     if (progressPageInitialized) {
       return;
-    } else {
-      progressPageInitialized = true;
-    }
+    } 
+    progressPageInitialized = true;
+
+    $.post('/increment_vva_coachmarks_status');
 
     setCurrentPageCallouts([{
       id: 'vva-tour-4',
