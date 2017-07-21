@@ -2,10 +2,10 @@
 class User < ActiveRecord::Base
   has_many :searches
   has_many :downloads
-  
+
   NO_EMAIL = "No Email Recorded".freeze
 
-  attr_accessor :name, :roles, :ip_address, :coachmarks_status
+  attr_accessor :name, :roles, :ip_address
 
   def display_name
     return "Unknown" if name.nil?
