@@ -48,7 +48,7 @@ RSpec.feature "Downloads" do
     assert_coachmark_exists
     click_on "Close"
     assert_coachmark_does_not_exist
-    click_on "Show tutorial"
+    click_on "See what's new!"
     assert_coachmark_exists
     click_on "Hide tutorial"
     assert_coachmark_does_not_exist
