@@ -15,8 +15,16 @@ window.VVATour = (function($) {
     });
   }
 
+  function execOnPageReady(fn) {
+    if (document.readyState === 'complete') {
+      fn();
+      return;
+    }
+    window.addEventListener('load', fn);
+  }
+
   function setCurrentPageCallouts(callouts) {
-    window.addEventListener('load', function() {
+    execOnPageReady(function() {
       var hideTutorialText = 'Hide tutorial';
       var $hideTutorialLink = $('<a href="#" id="cf-view-coachmarks-link">' + hideTutorialText + '</a>');
       $('#hide-tutorial-parent').prepend($hideTutorialLink)
@@ -95,10 +103,6 @@ window.VVATour = (function($) {
   return {
     initNewPage: initNewPage,
     initConfirmPage: initConfirmPage,
-    initProgressPage: initProgressPage,
-
-    closeExistingCallouts: function() {
-      calloutManager.removeAllCallouts();
-    },
+    initProgressPage: initProgressPage
   };
 })($);
