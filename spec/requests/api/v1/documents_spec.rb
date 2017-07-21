@@ -1,5 +1,9 @@
 describe "Documents API v1", type: :request do
   context "Document by document ID" do
+    let!(:current_user) do
+      User.authenticate!(roles: ["Reader"])
+    end
+
     let(:download) do
       Download.create(
         file_number: "21012",
@@ -23,10 +27,15 @@ describe "Documents API v1", type: :request do
       FeatureToggle.enable!(:reader_api)
     end
 
-    it "returns 401 if feature is not enabled" do
-      FeatureToggle.disable!(:reader_api)
-      get "/api/v1/documents/8888"
-      expect(response.code).to eq("401")
+    context "returns 401 if user does not have Reader role" do
+      let!(:current_user) do
+        User.authenticate!(roles: [""])
+      end
+
+      it do
+        get "/api/v1/documents/8888"
+        expect(response.code).to eq("401")
+      end
     end
 
     it "returns 404 if document ID is not found" do
