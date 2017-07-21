@@ -37,7 +37,11 @@ class Api::V1::ApplicationController < BaseController
     # authenticates, then we create the current user based on the css_id and station_id
     # passed in the header. Otherwise we try to create the current user from the session
     # and authorize based on the presence of the Reader role.
-    return unauthorized if !(authenticate_with_token || user_has_role)
+    if authenticate_with_token
+      @current_user = User.find_or_create_by(css_id: css_id, station_id: station_id) if authenticate_with_token
+    elsif !user_has_role
+      unauthorized
+    end
   end
 
   def station_id
@@ -46,10 +50,5 @@ class Api::V1::ApplicationController < BaseController
 
   def css_id
     request.headers["HTTP_CSS_ID"]
-  end
-
-  def current_user
-    return @current_user ||= User.find_or_create_by(css_id: css_id, station_id: station_id) if authenticate_with_token
-    super
   end
 end
