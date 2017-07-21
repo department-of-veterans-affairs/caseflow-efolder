@@ -58,6 +58,10 @@ class DownloadsController < ApplicationController
     download = downloads.find(params[:id])
     @download_documents = DownloadDocuments.new(download: download)
 
+    if download.complete?
+      increment_coachmarks_status
+    end
+
     streaming_headers(download)
     self.response_body = @download_documents.stream_zip_from_s3
   end
@@ -74,6 +78,19 @@ class DownloadsController < ApplicationController
   end
 
   private
+
+  def increment_coachmarks_status
+    if current_user.coachmarks_status === :never_seen
+      current_user.coachmarks_status = :seen_once
+      current_user.save!
+      return
+    end
+
+    if current_user.coachmarks_status === :seen_once
+      current_user.coachmarks_status = :many_times
+      current_user.save!
+    end
+  end
 
   def streaming_headers(download)
     headers["Content-Type"] = "application/zip"
