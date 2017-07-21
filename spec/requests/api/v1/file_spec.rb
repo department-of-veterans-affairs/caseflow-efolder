@@ -27,7 +27,7 @@ describe "File API v1", type: :request do
   end
   let(:headers) do
     {
-      "HTTP_VETERAN_ID" => veteran_id,
+      "HTTP_FILE_NUMBER" => veteran_id,
       "HTTP_CSS_ID" => user.css_id,
       "HTTP_STATION_ID" => user.station_id,
       "HTTP_AUTHORIZATION" => "Token token=#{token}"
@@ -113,10 +113,10 @@ describe "File API v1", type: :request do
               manifest_fetched_at: "2015-01-01T17:00:00.000Z",
               documents: [
                 {
-                  id: download.documents[2].id,
-                  type_id: "825",
-                  received_at: "2015-09-06T01:00:00.000Z",
-                  vbms_document_id: document.document_id
+                  id: download.documents[0].id,
+                  type_id: "124",
+                  received_at: "2017-04-03T00:00:00.000Z",
+                  vbms_document_id: "2"
                 },
                 {
                   id: download.documents[1].id,
@@ -125,10 +125,10 @@ describe "File API v1", type: :request do
                   vbms_document_id: "1"
                 },
                 {
-                  id: download.documents[0].id,
-                  type_id: "124",
-                  received_at: "2017-04-03T00:00:00.000Z",
-                  vbms_document_id: "2"
+                  id: download.documents[2].id,
+                  type_id: "825",
+                  received_at: "2015-09-06T01:00:00.000Z",
+                  vbms_document_id: document.document_id
                 }
               ]
             }
