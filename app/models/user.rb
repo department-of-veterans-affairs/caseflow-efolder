@@ -3,6 +3,8 @@ class User < ActiveRecord::Base
   has_many :searches
   has_many :downloads
 
+  enum coachmarks_status: [ :never_seen, :seen_once, :seen_many_times ]
+
   NO_EMAIL = "No Email Recorded".freeze
 
   attr_accessor :name, :roles, :ip_address
