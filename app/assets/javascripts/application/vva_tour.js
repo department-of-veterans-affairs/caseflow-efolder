@@ -32,7 +32,7 @@ window.VVATour = (function($) {
       var allCalloutsClosed;
 
       function onAllCalloutsClosed() {
-        $hideTutorialLink.text('Show tutorial');
+        $hideTutorialLink.text("See what's new!");
         allCalloutsClosed = true;
       }
 
