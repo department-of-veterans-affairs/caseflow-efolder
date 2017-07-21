@@ -73,6 +73,11 @@ class DownloadsController < ApplicationController
     redirect_to "/"
   end
 
+  helper_method :should_show_vva_coachmarks?
+  def should_show_vva_coachmarks?
+    current_user.vva_coachmarks_view_count < 3
+  end
+
   def increment_vva_coachmarks_status
     if !vva_feature_enabled?
       return

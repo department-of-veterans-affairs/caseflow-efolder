@@ -112,7 +112,7 @@
   <% end %>
 </div>
 
-<% if vva_feature_enabled? %>
+<% if vva_feature_enabled? && should_show_vva_coachmarks? %>
   <script>
     window.VVATour.initNewPage();
   </script>

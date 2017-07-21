@@ -158,7 +158,7 @@
   </script>
 <% end %>
 
-<% if @download.complete_success? && vva_feature_enabled? %>
+<% if @download.complete_success? && vva_feature_enabled? && should_show_vva_coachmarks? %>
   <script>
     window.VVATour.initProgressPage();
   </script>

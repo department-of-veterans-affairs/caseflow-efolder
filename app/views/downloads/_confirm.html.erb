@@ -95,7 +95,7 @@
   <% end %>
 
   <%= link_to "Start over", root_path %>
-  <% if vva_feature_enabled? && @download.pending_confirmation? %>
+  <% if vva_feature_enabled? && @download.pending_confirmation? && should_show_vva_coachmarks? %>
     <script>
       window.VVATour.initConfirmPage();
     </script>
