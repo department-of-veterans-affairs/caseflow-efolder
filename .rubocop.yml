@@ -37,3 +37,6 @@ Metrics/AbcSize:
 
 Rails:
   Enabled: true
+
+Style/NegatedIf:
+  Enabled: false

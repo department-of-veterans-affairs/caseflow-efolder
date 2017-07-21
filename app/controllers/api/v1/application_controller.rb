@@ -1,6 +1,6 @@
 class Api::V1::ApplicationController < BaseController
   protect_from_forgery with: :null_session
-  before_action :authorize
+  before_action :authenticate_or_authorize
 
   rescue_from StandardError do |error|
     Raven.capture_exception(error)
@@ -30,10 +30,14 @@ class Api::V1::ApplicationController < BaseController
     current_user && (current_user.can?("Reader") || current_user.can?("System Admin"))
   end
 
-  def authorize
-    # rubocop:disable Style/NegatedIf
+  def authenticate_or_authorize
+    # We allow users to access the API by either authenticating with the API token
+    # or by making sure their user session has the Reader or System Admin role. We
+    # first check to see if a user passes a token and can authenticate with it. If it
+    # authenticates, then we create the current user based on the css_id and station_id
+    # passed in the header. Otherwise we try to create the current user from the session
+    # and authorize based on the presence of the Reader role.
     return unauthorized if !(authenticate_with_token || user_has_role)
-    # rubocop:enable Style/NegatedIf
   end
 
   def station_id

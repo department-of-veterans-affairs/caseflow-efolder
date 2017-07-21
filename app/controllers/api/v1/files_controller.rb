@@ -34,7 +34,7 @@ class Api::V1::FilesController < Api::V1::ApplicationController
   end
 
   def id
-    request.headers["HTTP_VETERAN_ID"]
+    request.headers["HTTP_FILE_NUMBER"]
   end
 
   def download
