@@ -28,12 +28,6 @@ module CaseflowEfolder
     config.autoload_paths += Dir[Rails.root + 'app/jobs']
     config.autoload_paths << Rails.root.join('lib')
 
-    # config.action_dispatch.default_headers = {
-    #   'Access-Control-Allow-Origin' => '',
-    #   'Access-Control-Allow-Credentials' => 'true',
-    #   'Access-Control-Request-Method' => %w{GET}.join(",")
-    # }
-
     config.middleware.insert_before 0, "Rack::Cors" do
       allow do
         origins 'http://localhost:3000'
