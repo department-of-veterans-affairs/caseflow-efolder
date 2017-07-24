@@ -7,7 +7,8 @@ class Fetcher
     result = S3Service.fetch_content(document.s3_filename) || cache_in_s3
     document.update_attributes!(
       completed_at: Time.zone.now,
-      download_status: :success
+      download_status: :success,
+      size: result.try(:bytesize)
     )
     result
   end
