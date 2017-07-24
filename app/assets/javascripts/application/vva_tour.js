@@ -30,7 +30,7 @@ window.VVATour = (function($) {
       var HIDE_TUTORIAL_TEXT = 'Hide tutorial';
 
       var hideTutorialText = showCalloutsWithSession ? HIDE_TUTORIAL_TEXT : SHOW_TUTORIAL_TEXT;
-      var $hideTutorialLink = $('<a href="#" id="cf-view-coachmarks-link">' + hideTutorialText + '</a>');
+      var $hideTutorialLink = $('<a href="#" class="cf-view-coachmarks-link">' + hideTutorialText + '</a>');
       $('#hide-tutorial-parent').prepend($hideTutorialLink)
 
       var allCalloutsClosed = !showCalloutsWithSession;
@@ -45,7 +45,7 @@ window.VVATour = (function($) {
         initCallouts(callouts, onAllCalloutsClosed);
       }
 
-      $('#cf-view-coachmarks-link').click(function() {
+      $hideTutorialLink.click(function() {
         if (allCalloutsClosed) {
           window.localStorage.showCallouts = true;
           $hideTutorialLink.text(HIDE_TUTORIAL_TEXT);
