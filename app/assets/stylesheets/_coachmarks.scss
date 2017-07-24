@@ -70,7 +70,9 @@ div.hopscotch-bubble {
   }
 }
 
+// scss-lint:disable QualifyingElement
 a.cf-view-coachmarks-link {
+// scss-lint:enable QualifyingElement
   color: $color-primary;
   padding-right: 40px;
   // We have to use !important here because an upstream rule
