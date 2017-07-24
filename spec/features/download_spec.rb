@@ -420,7 +420,7 @@ RSpec.feature "Downloads" do
     expect(page.status_code).to be(404)
   end
 
-  scenario "Completed download" do
+  scenario "Completed download", focus: true do
     Fakes::BGSService.veteran_info = {
       "12" => {
         "veteran_first_name" => "Stan",
@@ -449,13 +449,24 @@ RSpec.feature "Downloads" do
     expect(page).to have_css ".document-success", text: "VA 119 Report of Contact"
     expect(page).to have_css ".document-success", text: "VA 5655 Financial Status Report (Submit with Waiver Request)"
 
-    expect(page).to have_content(
-      "The total number of documents that will be downloaded from each database is listed here."
-    )
+    def expect_page_to_have_coachmarks
+      expect(page).to have_content(
+        "The total number of documents that will be downloaded from each database is listed here."
+      )
+    end
+
+    expect_page_to_have_coachmarks
 
     first(:link, "Download eFolder").click
     expect(page.response_headers["Content-Type"]).to eq("application/zip")
     expect(page.response_headers["Content-Length"]).to eq(File.size(download_documents.zip_path).to_s)
+
+    visit download_path(@download)
+    expect_page_to_have_coachmarks
+    visit download_path(@download)
+    expect(page).to_not have_content(
+      "The total number of documents that will be downloaded from each database is listed here."
+    )
   end
 
   scenario "Recent download list expires old downloads" do

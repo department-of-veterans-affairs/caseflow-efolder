@@ -83,6 +83,8 @@ class DownloadsController < ApplicationController
 
     current_user.vva_coachmarks_view_count += 1
     current_user.save!
+    
+    binding.pry
 
     render text: ''
   end
