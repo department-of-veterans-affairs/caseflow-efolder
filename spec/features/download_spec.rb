@@ -420,7 +420,7 @@ RSpec.feature "Downloads" do
     expect(page.status_code).to be(404)
   end
 
-  scenario "Completed download", focus: true do
+  scenario "Completed download" do
     Fakes::BGSService.veteran_info = {
       "12" => {
         "veteran_first_name" => "Stan",
@@ -478,7 +478,7 @@ RSpec.feature "Downloads" do
 
     click_on "See what's new!"
     expect_page_to_have_coachmarks
-    
+
     click_on "Hide tutorial"
     expect_page_to_not_have_coachmarks
   end
