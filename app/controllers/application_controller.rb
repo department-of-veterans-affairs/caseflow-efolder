@@ -40,11 +40,6 @@ class ApplicationController < BaseController
     render "out_of_service", layout: "application" if Rails.cache.read("out_of_service")
   end
 
-  def current_user
-    @current_user ||= User.from_session(session, request)
-  end
-  helper_method :current_user
-
   def configure_bgs
     Download.bgs_service = ExternalApi::BGSService.new(user: current_user) unless Rails.env.test?
   end
@@ -59,4 +54,9 @@ class ApplicationController < BaseController
     ENV["CASEFLOW_FEEDBACK_URL"] + "?" + param_object.to_param
   end
   helper_method :feedback_url
+
+  def vva_feature_enabled?
+    BaseController.dependencies_faked? || FeatureToggle.enabled?(:vva_service, user: current_user)
+  end
+  helper_method :vva_feature_enabled?
 end

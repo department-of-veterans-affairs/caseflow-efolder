@@ -35,6 +35,25 @@ RSpec.feature "Downloads" do
     expect(page).to have_content("Test VA Saml")
   end
 
+  scenario "Download coachmarks" do
+    def assert_coachmark_exists
+      expect(page).to have_content("Downloads from eFolder Express now include Virtual VA documents.")
+    end
+
+    def assert_coachmark_does_not_exist
+      expect(page).to_not have_content("Downloads from eFolder Express now include Virtual VA documents.")
+    end
+
+    visit "/"
+    assert_coachmark_exists
+    click_on "Close"
+    assert_coachmark_does_not_exist
+    click_on "Show tutorial"
+    assert_coachmark_exists
+    click_on "Hide tutorial"
+    assert_coachmark_does_not_exist
+  end
+
   scenario "Creating a download" do
     Fakes::BGSService.veteran_info = {
       "12341234" => {
@@ -274,6 +293,14 @@ RSpec.feature "Downloads" do
     expect(page).to have_content "Steph Curry (3456)"
     expect(page).to have_content "yawn.pdf VBMS 09/06/2015"
     expect(page).to have_content "smiley.pdf VBMS 01/19/2015"
+
+    expect(page).to have_content(
+      "The total number of documents that will be retrieved from each database is listed here."
+    )
+    expect(page).to have_content(
+      "The Source column shows the name of the database from which the file will be retrieved."
+    )
+
     expect(page.evaluate_script("window.DownloadStatus.intervalID")).to be_falsey
     first(:button, "Start retrieving eFolder").click
 
@@ -421,6 +448,10 @@ RSpec.feature "Downloads" do
     visit download_path(@download)
     expect(page).to have_css ".document-success", text: "VA 119 Report of Contact"
     expect(page).to have_css ".document-success", text: "VA 5655 Financial Status Report (Submit with Waiver Request)"
+
+    expect(page).to have_content(
+      "The total number of documents that will be downloaded from each database is listed here."
+    )
 
     first(:link, "Download eFolder").click
     expect(page.response_headers["Content-Type"]).to eq("application/zip")
