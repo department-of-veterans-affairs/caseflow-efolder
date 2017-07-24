@@ -54,4 +54,9 @@ class ApplicationController < BaseController
     ENV["CASEFLOW_FEEDBACK_URL"] + "?" + param_object.to_param
   end
   helper_method :feedback_url
+
+  def vva_feature_enabled?
+    BaseController.dependencies_faked? || FeatureToggle.enabled?(:vva_service, user: current_user)
+  end
+  helper_method :vva_feature_enabled?
 end

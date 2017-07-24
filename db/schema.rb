@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170707025718) do
+ActiveRecord::Schema.define(version: 20170720141247) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -52,6 +52,7 @@ ActiveRecord::Schema.define(version: 20170707025718) do
     t.string   "downloaded_from",  default: "VBMS"
     t.string   "jro"
     t.string   "ssn"
+    t.integer  "size"
   end
 
   add_index "documents", ["completed_at"], name: "index_documents_on_completed_at", using: :btree
