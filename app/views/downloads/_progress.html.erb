@@ -160,6 +160,6 @@
 
 <% if @download.complete_success? && vva_feature_enabled? %>
   <script>
-    window.VVATour.initProgressPage();
+    window.VVATour.initProgressPage(<%= should_show_vva_coachmarks? %>);
   </script>
 <% end %>
