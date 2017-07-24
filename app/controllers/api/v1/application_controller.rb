@@ -45,10 +45,10 @@ class Api::V1::ApplicationController < BaseController
   end
 
   def station_id
-    request.headers["HTTP_STATION-ID"]
+    request.headers["HTTP_STATION_ID"]
   end
 
   def css_id
-    request.headers["HTTP_CSS-ID"]
+    request.headers["HTTP_CSS_ID"]
   end
 end

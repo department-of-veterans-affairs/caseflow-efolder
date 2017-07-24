@@ -5,6 +5,6 @@ options = {
   expire_after: 24.hours
 }
 
-# options[:domain] = ENV["COOKIE_DOMAIN"] if ENV["COOKIE_DOMAIN"]
-options[:domain] = "localhost"
+options[:domain] = ENV["COOKIE_DOMAIN"] if ENV["COOKIE_DOMAIN"]
+
 Rails.application.config.session_store :cookie_store, options

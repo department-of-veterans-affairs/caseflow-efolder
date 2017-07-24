@@ -84,10 +84,10 @@ class Fakes::DownloadManifestJob < ActiveJob::Base
   def create_documents(download, number)
     (number || 0).times do |i|
       download.documents.create(
-        vbms_filename: "happy-thursday-#{SecureRandom.hex}.txt",
+        vbms_filename: "happy-thursday-#{SecureRandom.hex}.pdf",
         type_id: Document::TYPES.keys.sample,
         document_id: "{#{SecureRandom.hex(4).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(6).upcase}}",
-        mime_type: "text/plain",
+        mime_type: "application/pdf",
         received_at: (i * 2).days.ago,
         downloaded_from: rand(5) == 3 ? "VVA" : "VBMS"
       )
