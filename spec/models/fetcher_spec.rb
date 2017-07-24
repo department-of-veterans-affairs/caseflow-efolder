@@ -35,6 +35,11 @@ describe Fetcher do
       it "should return the content from VBMS" do
         expect(subject).to eq "from VBMS"
       end
+
+      it "should update document size" do
+        subject
+        expect(document.reload).to_not eq nil
+      end
     end
 
     context "when the file is in s3 after it has been cached" do

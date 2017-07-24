@@ -52,6 +52,7 @@ ActiveRecord::Schema.define(version: 20170721203804) do
     t.string   "downloaded_from",  default: "VBMS"
     t.string   "jro"
     t.string   "ssn"
+    t.integer  "size"
   end
 
   add_index "documents", ["completed_at"], name: "index_documents_on_completed_at", using: :btree
