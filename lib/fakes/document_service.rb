@@ -9,6 +9,7 @@ class Fakes::DocumentService
     sleep(rand(max_time))
     fail VBMS::ClientError if errors && rand(5) == 3
     fail VVA::ClientError if errors && rand(5) == 2
-    "this is some document, woah!"
+    # "this is some document, woah!"
+    IO.binread(Rails.root + "lib/pdfs/KnockKnockJokes.pdf")
   end
 end

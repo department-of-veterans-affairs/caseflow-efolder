@@ -28,6 +28,19 @@ module CaseflowEfolder
     config.autoload_paths += Dir[Rails.root + 'app/jobs']
     config.autoload_paths << Rails.root.join('lib')
 
+    # config.action_dispatch.default_headers = {
+    #   'Access-Control-Allow-Origin' => '',
+    #   'Access-Control-Allow-Credentials' => 'true',
+    #   'Access-Control-Request-Method' => %w{GET}.join(",")
+    # }
+
+    config.middleware.insert_before 0, "Rack::Cors" do
+      allow do
+        origins 'http://localhost:3000'
+        resource '*', headers: :any, methods: [:get, :post, :options], credentials: true
+      end
+    end
+
     config.active_job.queue_adapter = :sidekiq
 
     config.cache_store = :redis_store, Rails.application.secrets.redis_url_cache, { expires_in: 24.hours }
