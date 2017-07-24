@@ -453,6 +453,16 @@ RSpec.feature "Downloads" do
       expect(page).to have_content(
         "The total number of documents that will be downloaded from each database is listed here."
       )
+      expect(page).to have_content("Hide tutorial")
+    end
+
+    def expect_page_to_not_have_coachmarks
+      expect(page).to_not have_content(
+        "The total number of documents that will be downloaded from each database is listed here."
+      )
+      expect(page).to have_content(
+        "See what's new!"
+      )
     end
 
     expect_page_to_have_coachmarks
@@ -464,9 +474,13 @@ RSpec.feature "Downloads" do
     visit download_path(@download)
     expect_page_to_have_coachmarks
     visit download_path(@download)
-    expect(page).to_not have_content(
-      "The total number of documents that will be downloaded from each database is listed here."
-    )
+    expect_page_to_not_have_coachmarks
+
+    click_on "See what's new!"
+    expect_page_to_have_coachmarks
+    
+    click_on "Hide tutorial"
+    expect_page_to_not_have_coachmarks
   end
 
   scenario "Recent download list expires old downloads" do
