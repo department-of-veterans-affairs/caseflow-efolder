@@ -84,7 +84,7 @@ class DownloadsController < ApplicationController
     current_user.vva_coachmarks_view_count += 1
     current_user.save!
 
-    render text: ''
+    render text: ""
   end
 
   private
