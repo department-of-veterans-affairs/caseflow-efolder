@@ -25,14 +25,15 @@ window.VVATour = (function($) {
 
   function setCurrentPageCallouts(showCallouts, callouts) {
     execOnPageReady(function() {
+      var showCalloutsWithSession = JSON.parse(window.localStorage.getItem('showCallouts')) || showCallouts;
       var SHOW_TUTORIAL_TEXT = "See what's new!";
       var HIDE_TUTORIAL_TEXT = 'Hide tutorial';
 
-      var hideTutorialText = showCallouts ? HIDE_TUTORIAL_TEXT : SHOW_TUTORIAL_TEXT;
+      var hideTutorialText = showCalloutsWithSession ? HIDE_TUTORIAL_TEXT : SHOW_TUTORIAL_TEXT;
       var $hideTutorialLink = $('<a href="#" id="cf-view-coachmarks-link">' + hideTutorialText + '</a>');
       $('#hide-tutorial-parent').prepend($hideTutorialLink)
 
-      var allCalloutsClosed = !showCallouts;
+      var allCalloutsClosed = !showCalloutsWithSession;
 
       function onAllCalloutsClosed() {
         $hideTutorialLink.text(SHOW_TUTORIAL_TEXT);
@@ -46,16 +47,18 @@ window.VVATour = (function($) {
 
       $('#cf-view-coachmarks-link').click(function() {
         if (allCalloutsClosed) {
+          window.localStorage.showCallouts = true;
           $hideTutorialLink.text(HIDE_TUTORIAL_TEXT);
           createCallouts();
         } else {
+          window.localStorage.showCallouts = false;
           $hideTutorialLink.text(SHOW_TUTORIAL_TEXT);
           calloutManager.removeAllCallouts();
           onAllCalloutsClosed();
         }
       });
 
-      if (showCallouts) {
+      if (showCalloutsWithSession) {
         createCallouts();
       }
     });
@@ -91,7 +94,6 @@ window.VVATour = (function($) {
   // We only want to do this initialization once, however.
   var progressPageInitialized = false;
   function initProgressPage(showCallouts) {
-    debugger;
     if (progressPageInitialized) {
       return;
     } 

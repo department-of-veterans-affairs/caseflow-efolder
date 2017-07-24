@@ -473,6 +473,8 @@ RSpec.feature "Downloads" do
 
     visit download_path(@download)
     expect_page_to_have_coachmarks
+
+    # After visiting the download page 3 times, we no longer want the coachmarks to show up automatically.
     visit download_path(@download)
     expect_page_to_not_have_coachmarks
 
@@ -481,6 +483,14 @@ RSpec.feature "Downloads" do
 
     click_on "Hide tutorial"
     expect_page_to_not_have_coachmarks
+
+    click_on "See what's new!"
+    expect_page_to_have_coachmarks
+
+    # When we click on "See what's new", we want the coachmarks to show up on subsequent page loads.
+    visit "/"
+    expect(page).to have_content("Downloads from eFolder Express now include Virtual VA documents.")
+    expect(page).to have_content("Hide tutorial")
   end
 
   scenario "Recent download list expires old downloads" do
