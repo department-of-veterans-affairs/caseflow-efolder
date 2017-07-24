@@ -74,7 +74,7 @@ class DownloadsController < ApplicationController
   end
 
   def should_show_vva_coachmarks?
-    current_user.vva_coachmarks_view_count < 3
+    current_user.vva_coachmarks_view_count < 2
   end
   helper_method :should_show_vva_coachmarks?
 
@@ -83,8 +83,6 @@ class DownloadsController < ApplicationController
 
     current_user.vva_coachmarks_view_count += 1
     current_user.save!
-    
-    binding.pry
 
     render text: ''
   end
