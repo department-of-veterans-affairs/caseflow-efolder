@@ -1,8 +1,6 @@
 class Api::V1::FilesController < Api::V1::ApplicationController
   def index
     render json: json_files
-  rescue ActiveRecord::RecordNotFound
-    file_not_found
   end
 
   private
@@ -21,16 +19,6 @@ class Api::V1::FilesController < Api::V1::ApplicationController
   # that we want to download the content of the files from VBMS to S3.
   def download?
     params[:download]
-  end
-
-  def file_not_found
-    render json: {
-      "errors": [
-        "status": "404",
-        "title": "File not found",
-        "detail": "A case file with that ID was not found in our system."
-      ]
-    }, status: 404
   end
 
   def id

@@ -229,7 +229,6 @@ class Download < ActiveRecord::Base
   def prepare_files_for_api!(start_download: false)
     force_fetch_manifest_if_expired!
 
-    fail ActiveRecord::RecordNotFound if documents.empty?
     start_save_files_in_s3 if start_download
   end
 
