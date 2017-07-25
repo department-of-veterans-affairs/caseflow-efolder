@@ -31,7 +31,7 @@ module CaseflowEfolder
     config.middleware.insert_before 0, "Rack::Cors" do
       allow do
         origins (ENV["CORS_URL"] || "http://localhost:3000")
-        resource '*', headers: :any, methods: [:get, :post, :options], credentials: true
+        resource '*', headers: :any, methods: :any, credentials: true
       end
     end
 
