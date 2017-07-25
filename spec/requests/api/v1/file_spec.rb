@@ -78,7 +78,7 @@ describe "File API v1", type: :request do
         allow(VBMSService).to receive(:fetch_documents_for).and_raise(VBMS::ClientError)
       end
 
-      it "returns existing files, a nil manifest_fetched_at, and vbms_error is true" do
+      it "vbms_error is true" do
         get "/api/v1/files", nil, headers
         expect(response.code).to eq("200")
         attributes = JSON.parse(response.body)["data"]["attributes"]
@@ -94,7 +94,7 @@ describe "File API v1", type: :request do
         allow(VVAService).to receive(:fetch_documents_for).and_raise(VVA::ClientError)
       end
 
-      it "returns existing files, a nil manifest_fetched_at, and vbms_error is true" do
+      it "vva_error is true" do
         get "/api/v1/files", nil, headers
         expect(response.code).to eq("200")
         attributes = JSON.parse(response.body)["data"]["attributes"]
