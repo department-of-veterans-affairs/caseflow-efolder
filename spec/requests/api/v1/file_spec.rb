@@ -116,7 +116,7 @@ describe "File API v1", type: :request do
         allow(VVAService).to receive(:fetch_documents_for).and_raise(VVA::ClientError)
       end
 
-      it "returns existing files, a nil manifest_fetched_at, and vbms_error is true" do
+      it "returns existing files, a nil manifest_fetched_at, and vva_error is true" do
         get "/api/v1/files", nil, headers
         expect(response.code).to eq("200")
         expect(response.body).to eq(response_body)
