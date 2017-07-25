@@ -73,35 +73,53 @@ describe "File API v1", type: :request do
   end
 
   context "When a dependency throws an error" do
+    let(:vva_error) { false }
+    let(:vbms_error) { false }
+    let(:response_body) do
+      {
+        data: {
+          id: download.id.to_s,
+          type: "file",
+          attributes: {
+            manifest_fetched_at: nil,
+            vbms_error: vbms_error,
+            vva_error: vva_error,
+            documents: [{
+              id: document.id,
+              type_id: "825",
+              received_at: "2015-09-06T01:00:00.000Z",
+              external_document_id: document.document_id
+            }]
+          }
+        }
+      }.to_json
+    end
+
     context "vbms throws a client error" do
+      let(:vbms_error) { true }
+
       before do
         allow(VBMSService).to receive(:fetch_documents_for).and_raise(VBMS::ClientError)
       end
 
-      it "vbms_error is true" do
+      it "returns existing files, a nil manifest_fetched_at, and vbms_error is true" do
         get "/api/v1/files", nil, headers
         expect(response.code).to eq("200")
-        attributes = JSON.parse(response.body)["data"]["attributes"]
-
-        expect(attributes["documents"].size).to eq(1)
-        expect(attributes["vbms_error"]).to eq(true)
-        expect(attributes["manifest_fetched_at"]).to eq(nil)
+        expect(response.body).to eq(response_body)
       end
     end
 
     context "vva throws a client error" do
+      let(:vva_error) { true }
+
       before do
         allow(VVAService).to receive(:fetch_documents_for).and_raise(VVA::ClientError)
       end
 
-      it "vva_error is true" do
+      it "returns existing files, a nil manifest_fetched_at, and vbms_error is true" do
         get "/api/v1/files", nil, headers
         expect(response.code).to eq("200")
-        attributes = JSON.parse(response.body)["data"]["attributes"]
-
-        expect(attributes["documents"].size).to eq(1)
-        expect(attributes["vva_error"]).to eq(true)
-        expect(attributes["manifest_fetched_at"]).to eq(nil)
+        expect(response.body).to eq(response_body)
       end
     end
   end
