@@ -375,14 +375,6 @@ describe "Download" do
         end
       end
     end
-
-    context "when VBMS returns no documents" do
-      let(:vbms_documents) { [] }
-
-      it "raises an error" do
-        expect { download.prepare_files_for_api!(start_download: true) }.to raise_error(ActiveRecord::RecordNotFound)
-      end
-    end
   end
 
   context "#veteran_last_name" do

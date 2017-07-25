@@ -53,7 +53,7 @@ describe "File API v1", type: :request do
     let(:response_body) do
       {
         data: {
-          id: "1",
+          id: download.id.to_s,
           type: "file",
           attributes: {
             manifest_fetched_at: nil,

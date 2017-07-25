@@ -17,7 +17,7 @@ class Serializers::V1::DownloadSerializer < ActiveModel::Serializer
         id: document.id,
         type_id: document.type_id,
         received_at: document.received_at,
-        external_document_id: document.document_id,
+        external_document_id: document.document_id
       }
     end
   end
