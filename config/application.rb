@@ -39,7 +39,6 @@ module CaseflowEfolder
 
     config.cache_store = :redis_store, Rails.application.secrets.redis_url_cache, { expires_in: 24.hours }
 
-    # default to no analytics (production only)
-    config.analytics_account = nil
+    config.analytics_account = "UA-74789258-2"
   end
 end

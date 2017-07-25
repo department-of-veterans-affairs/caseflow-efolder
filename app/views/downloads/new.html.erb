@@ -114,6 +114,6 @@
 
 <% if vva_feature_enabled? %>
   <script>
-    window.VVATour.initNewPage();
+    window.VVATour.initNewPage(<%= should_show_vva_coachmarks? %>);
   </script>
 <% end %>

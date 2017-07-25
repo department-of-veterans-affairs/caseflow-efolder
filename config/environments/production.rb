@@ -81,6 +81,4 @@ Rails.application.configure do
   config.s3_bucket_name = ENV["AWS_BUCKET_NAME"]
 
   config.api_key = ENV["EFOLDER_API_KEY"]
-
-  config.google_analytics_account = "UA-74789258-2"
 end
