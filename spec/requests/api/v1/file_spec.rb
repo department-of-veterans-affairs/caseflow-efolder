@@ -50,10 +50,77 @@ describe "File API v1", type: :request do
 
     let(:veteran_id) { "21011" }
     let(:document) {}
+    let(:response_body) do
+      {
+        data: {
+          id: Download.find_by(file_number: veteran_id).id.to_s,
+          type: "file",
+          attributes: {
+            manifest_fetched_at: nil,
+            vbms_error: false,
+            vva_error: false,
+            documents: []
+          }
+        }
+      }.to_json
+    end
 
-    it "returns 404 if file ID is not found" do
+    it "returns empty array" do
       get "/api/v1/files", nil, headers
-      expect(response.code).to eq("404")
+      expect(response.code).to eq("200")
+      expect(response.body).to eq(response_body)
+    end
+  end
+
+  context "When a dependency throws an error" do
+    let(:vva_error) { false }
+    let(:vbms_error) { false }
+    let(:response_body) do
+      {
+        data: {
+          id: download.id.to_s,
+          type: "file",
+          attributes: {
+            manifest_fetched_at: nil,
+            vbms_error: vbms_error,
+            vva_error: vva_error,
+            documents: [{
+              id: document.id,
+              type_id: "825",
+              received_at: "2015-09-06T01:00:00.000Z",
+              external_document_id: document.document_id
+            }]
+          }
+        }
+      }.to_json
+    end
+
+    context "vbms throws a client error" do
+      let(:vbms_error) { true }
+
+      before do
+        allow(VBMSService).to receive(:fetch_documents_for).and_raise(VBMS::ClientError)
+      end
+
+      it "returns existing files, a nil manifest_fetched_at, and vbms_error is true" do
+        get "/api/v1/files", nil, headers
+        expect(response.code).to eq("200")
+        expect(response.body).to eq(response_body)
+      end
+    end
+
+    context "vva throws a client error" do
+      let(:vva_error) { true }
+
+      before do
+        allow(VVAService).to receive(:fetch_documents_for).and_raise(VVA::ClientError)
+      end
+
+      it "returns existing files, a nil manifest_fetched_at, and vva_error is true" do
+        get "/api/v1/files", nil, headers
+        expect(response.code).to eq("200")
+        expect(response.body).to eq(response_body)
+      end
     end
   end
 
@@ -111,24 +178,26 @@ describe "File API v1", type: :request do
             type: "file",
             attributes: {
               manifest_fetched_at: "2015-01-01T17:00:00.000Z",
+              vbms_error: false,
+              vva_error: false,
               documents: [
                 {
                   id: download.documents[0].id,
                   type_id: "124",
                   received_at: "2017-04-03T00:00:00.000Z",
-                  vbms_document_id: "2"
+                  external_document_id: "2"
                 },
                 {
                   id: download.documents[1].id,
                   type_id: "123",
                   received_at: "2017-02-01T00:00:00.000Z",
-                  vbms_document_id: "1"
+                  external_document_id: "1"
                 },
                 {
                   id: download.documents[2].id,
                   type_id: "825",
                   received_at: "2015-09-06T01:00:00.000Z",
-                  vbms_document_id: document.document_id
+                  external_document_id: document.document_id
                 }
               ]
             }
