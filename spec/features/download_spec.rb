@@ -48,7 +48,7 @@ RSpec.feature "Downloads" do
     assert_coachmark_exists
     click_on "Close"
     assert_coachmark_does_not_exist
-    click_on "Show tutorial"
+    click_on "See what's new!"
     assert_coachmark_exists
     click_on "Hide tutorial"
     assert_coachmark_does_not_exist
@@ -449,13 +449,48 @@ RSpec.feature "Downloads" do
     expect(page).to have_css ".document-success", text: "VA 119 Report of Contact"
     expect(page).to have_css ".document-success", text: "VA 5655 Financial Status Report (Submit with Waiver Request)"
 
-    expect(page).to have_content(
-      "The total number of documents that will be downloaded from each database is listed here."
-    )
+    def expect_page_to_have_coachmarks
+      expect(page).to have_content(
+        "The total number of documents that will be downloaded from each database is listed here."
+      )
+      expect(page).to have_content("Hide tutorial")
+    end
+
+    def expect_page_to_not_have_coachmarks
+      expect(page).to_not have_content(
+        "The total number of documents that will be downloaded from each database is listed here."
+      )
+      expect(page).to have_content(
+        "See what's new!"
+      )
+    end
+
+    expect_page_to_have_coachmarks
 
     first(:link, "Download eFolder").click
     expect(page.response_headers["Content-Type"]).to eq("application/zip")
     expect(page.response_headers["Content-Length"]).to eq(File.size(download_documents.zip_path).to_s)
+
+    visit download_path(@download)
+    expect_page_to_have_coachmarks
+
+    # After visiting the download page 3 times, we no longer want the coachmarks to show up automatically.
+    visit download_path(@download)
+    expect_page_to_not_have_coachmarks
+
+    click_on "See what's new!"
+    expect_page_to_have_coachmarks
+
+    click_on "Hide tutorial"
+    expect_page_to_not_have_coachmarks
+
+    click_on "See what's new!"
+    expect_page_to_have_coachmarks
+
+    # When we click on "See what's new", we want the coachmarks to show up on subsequent page loads.
+    visit "/"
+    expect(page).to have_content("Downloads from eFolder Express now include Virtual VA documents.")
+    expect(page).to have_content("Hide tutorial")
   end
 
   scenario "Recent download list expires old downloads" do
