@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170707025718) do
+ActiveRecord::Schema.define(version: 20170721203804) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -52,6 +52,7 @@ ActiveRecord::Schema.define(version: 20170707025718) do
     t.string   "downloaded_from",  default: "VBMS"
     t.string   "jro"
     t.string   "ssn"
+    t.integer  "size"
   end
 
   add_index "documents", ["completed_at"], name: "index_documents_on_completed_at", using: :btree
@@ -94,11 +95,12 @@ ActiveRecord::Schema.define(version: 20170707025718) do
   add_index "searches", ["user_id"], name: "index_searches_on_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|
-    t.string   "css_id",     null: false
-    t.string   "station_id", null: false
+    t.string   "css_id",                                null: false
+    t.string   "station_id",                            null: false
     t.string   "email"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
+    t.integer  "vva_coachmarks_view_count", default: 0
   end
 
   add_index "users", ["css_id", "station_id"], name: "index_users_on_css_id_and_station_id", using: :btree

@@ -81,4 +81,6 @@ Rails.application.configure do
   config.s3_enabled = ENV["AWS_BUCKET_NAME"].present?
   config.s3_bucket_name = ENV["AWS_BUCKET_NAME"]
 
+  config.api_key = "token"
+
 end

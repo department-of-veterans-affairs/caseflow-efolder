@@ -39,6 +39,8 @@ Rails.application.configure do
 
   config.s3_enabled = false
 
+  config.api_key = "token"
+
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 

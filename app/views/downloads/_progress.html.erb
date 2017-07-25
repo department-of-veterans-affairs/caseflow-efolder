@@ -28,7 +28,7 @@
           <% if vva_feature_enabled? %>
             <p>
               This efolder contains <%= @download.documents.count %> documents:
-              <%= downloaded_from_vbms %> from VBMS and <%= downloaded_from_vva %> from VVA/LCM.
+              <span id="vva-tour-4"><%= downloaded_from_vbms %> from VBMS and <%= downloaded_from_vva %> from VVA/LCM.</span>
             </p>
           <% else %>
             <p>
@@ -155,5 +155,11 @@
   <script>
     window.Modal.bind();
     window.DownloadProgress.complete();
+  </script>
+<% end %>
+
+<% if @download.complete_success? && vva_feature_enabled? %>
+  <script>
+    window.VVATour.initProgressPage(<%= should_show_vva_coachmarks? %>);
   </script>
 <% end %>

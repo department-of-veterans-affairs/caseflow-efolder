@@ -73,6 +73,20 @@ class DownloadsController < ApplicationController
     redirect_to "/"
   end
 
+  def should_show_vva_coachmarks?
+    current_user.vva_coachmarks_view_count < 2
+  end
+  helper_method :should_show_vva_coachmarks?
+
+  def increment_vva_coachmarks_status
+    return if !vva_feature_enabled?
+
+    current_user.vva_coachmarks_view_count += 1
+    current_user.save!
+
+    render text: ""
+  end
+
   private
 
   def streaming_headers(download)
@@ -138,9 +152,4 @@ class DownloadsController < ApplicationController
     { "progress": 0, "completed": 1, "errored": 2 }[current_tab.to_sym]
   end
   helper_method :current_document_status
-
-  def vva_feature_enabled?
-    BaseController.dependencies_faked? ? true : FeatureToggle.enabled?(:vva_service, user: current_user)
-  end
-  helper_method :vva_feature_enabled?
 end

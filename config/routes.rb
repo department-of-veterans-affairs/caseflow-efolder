@@ -10,6 +10,8 @@ Rails.application.routes.draw do
   get 'health-check', to: 'health_checks#show'
   get 'help', to:'help#show'
 
+  post 'increment_vva_coachmarks_status', to: 'downloads#increment_vva_coachmarks_status'
+
   resources :downloads, only: [:new, :create, :show] do
     post :start, on: :member
     post :retry, on: :member
@@ -25,7 +27,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :documents, only: :show
-      resources :files, only: :show
+      resources :files, only: :index
     end
   end
 
