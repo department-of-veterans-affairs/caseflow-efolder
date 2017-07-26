@@ -55,13 +55,13 @@ class Fakes::DownloadManifestJob < ActiveJob::Base
 
     check_and_raise_errors(demo)
 
-    download.update_attributes!(status: :pending_confirmation)
+    download.reload.update_attributes!(status: :pending_confirmation)
   rescue VBMS::ClientError => e
-    capture_error(e, download, :vbms_connection_error)
+    capture_error(e, download.reload, :vbms_connection_error)
   rescue VVA::ClientError => e
-    capture_error(e, download, :vva_connection_error)
+    capture_error(e, download.reload, :vva_connection_error)
   rescue
-    download.update_attributes!(status: :no_documents)
+    download.reload.update_attributes!(status: :no_documents)
   end
 
   def capture_error(e, download, status)
@@ -84,10 +84,10 @@ class Fakes::DownloadManifestJob < ActiveJob::Base
   def create_documents(download, number)
     (number || 0).times do |i|
       download.documents.create(
-        vbms_filename: "happy-thursday-#{SecureRandom.hex}.txt",
+        vbms_filename: "happy-thursday-#{SecureRandom.hex}.pdf",
         type_id: Document::TYPES.keys.sample,
         document_id: "{#{SecureRandom.hex(4).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(6).upcase}}",
-        mime_type: "text/plain",
+        mime_type: "application/pdf",
         received_at: (i * 2).days.ago,
         downloaded_from: rand(5) == 3 ? "VVA" : "VBMS"
       )

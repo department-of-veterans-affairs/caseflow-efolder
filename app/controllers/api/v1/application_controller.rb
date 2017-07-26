@@ -38,7 +38,7 @@ class Api::V1::ApplicationController < BaseController
     # passed in the header. Otherwise we try to create the current user from the session
     # and authorize based on the presence of the Reader role.
     if authenticate_with_token
-      @current_user = User.find_or_create_by(css_id: css_id, station_id: station_id) if authenticate_with_token
+      @current_user = User.find_or_create_by(css_id: css_id, station_id: station_id)
     elsif !user_has_role
       unauthorized
     end
