@@ -254,6 +254,7 @@ GEM
     puma (3.6.2)
     quantile (0.2.0)
     rack (1.6.5)
+    rack-cors (1.0.1)
     rack-protection (1.5.3)
       rack
     rack-test (0.6.3)
@@ -470,6 +471,7 @@ DEPENDENCIES
   prometheus-client
   pry
   puma
+  rack-cors
   rails (= 4.2.7.1)
   rails_stdout_logging
   rb-readline

@@ -5,10 +5,11 @@ class Fakes::DocumentService
     []
   end
 
-  def self.fetch_document_file(_document)
+  def self.fetch_document_file(document)
     sleep(rand(max_time))
     fail VBMS::ClientError if errors && rand(5) == 3
     fail VVA::ClientError if errors && rand(5) == 2
-    "this is some document, woah!"
+
+    IO.binread(Rails.root + "lib/pdfs/#{document.id % 5}.pdf")
   end
 end

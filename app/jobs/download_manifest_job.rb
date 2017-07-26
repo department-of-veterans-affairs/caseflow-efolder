@@ -18,6 +18,7 @@ class DownloadManifestJob < ActiveJob::Base
       external_documents: external_documents
     )
     download_documents.create_documents
+    download.reload
     download.update_attributes!(status: :pending_confirmation)
 
   rescue VBMS::ClientError => e
