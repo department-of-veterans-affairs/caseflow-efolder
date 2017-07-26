@@ -28,6 +28,9 @@ module CaseflowEfolder
     config.autoload_paths += Dir[Rails.root + 'app/jobs']
     config.autoload_paths << Rails.root.join('lib')
 
+    # Currently the Caseflow client makes calls to get document content directly
+    # from eFolder Express to reduce load on Caseflow. Since Caseflow and eFolder
+    # are in different sub-domains, we need to enable CORS.
     config.middleware.insert_before 0, "Rack::Cors" do
       allow do
         origins (ENV["CORS_URL"] || "http://localhost:3000")
