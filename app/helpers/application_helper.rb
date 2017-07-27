@@ -178,6 +178,19 @@ module ApplicationHelper
     </svg>
   HTML
 
+  APPEAL_ICON = <<-HTML.freeze
+    <svg width="16" height="16" class="cf-icon-appeal-id"
+    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 21">
+    <title>appeal</title>
+    <path d="M13.346 2.578h-2.664v-1.29C10.682.585 10.08 0 9.35 0H6.66c-.728 0-1.33.584-1.33
+    1.29v1.288H2.663v2.577h10.682V2.578zm-4.02 0H6.66v-1.29h2.665v1.29zm6.685
+    3.89V3.234a.665.665 0 0
+    0-.678-.656H14v1.29h.68v2.576H6.66v9.046H1.333V3.867h.68v-1.29H.678a.665.665 0 0
+    0-.68.657v12.913c0 .365.302.656.68.656h6.006v3.867h9.35l3.996-3.867V6.468h-4.02zm0
+    12.378v-2.043h2.112l-2.11 2.043zm2.665-3.356H14.68v3.867H7.992v-11.6h10.682v7.733z"
+    fill="#5B616B" fill-rule="evenodd"/></svg>
+  HTML
+
   def svg_icon(name)
     ({
       spacer: SPACER_ICON,
@@ -189,7 +202,8 @@ module ApplicationHelper
       page_loading_back: PAGE_LOADING_ICON_BACK,
       pill_loading_front: PILL_LOADING_ICON_FRONT,
       pill_loading_back: PILL_LOADING_ICON_BACK,
-      alert: ALERT_ICON
+      alert: ALERT_ICON,
+      appeal: APPEAL_ICON
     }[name] || "").html_safe
   end
 

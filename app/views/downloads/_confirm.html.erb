@@ -1,3 +1,5 @@
+
+
 <% if @download.fetching_manifest? %>
   <script>
     // Set up automatic download status updates
@@ -5,12 +7,29 @@
   </script>
 <% end %>
 
+
+<div class="cf-efolder-header cf-app-segment">
+    <h3 class="cf-push-left cf-name-header cf-efolder-name" id="correspondent-name">
+      <%=@download.veteran_name  %>
+    </h3>
+<div class="cf-txt-uc cf-efolder-id-control cf-push-right ">
+      Veteran  ID &nbsp;
+
+  <button type="submit" title="Copy to clipboard" class="cf-apppeal-id" data-clipboard-text="<%=@download.veteran_name%>">
+        <%= @download.file_number %>
+        <%= svg_icon(:appeal) %>
+      </button>
+</div>
+</div>
+
+
+
 <% fetch_button_text = "Start retrieving eFolder" %>
 
 <div class="<%= 'cf-app-msg-screen' if @download.no_documents? %> cf-app-segment cf-app-segment--alt">
 
   <% if @download.fetching_manifest? %>
-    <%= render "user_header" %>
+    <%#= render "user_header" %>
     <%= page_loading_indicator "We are gathering the list of files in the eFolder now..." %>
 
   <% elsif @download.no_documents? %>
@@ -20,7 +39,7 @@
       <p class="cf-msg-screen-text">Please check the Veteran ID number and <%= link_to "search again", root_path %>.</p>
 
   <% elsif @download.vbms_connection_error? %>
-    <%= render "user_header" %>
+    <%#= render "user_header" %>
     <div class="usa-alert usa-alert-error" role="alert">
       <div class="usa-alert-body">
         <h3 class="usa-alert-heading">Can't connect to VBMS</h3>
@@ -32,7 +51,7 @@
     </div>
 
   <% elsif @download.vva_connection_error? %>
-    <%= render "user_header" %>
+    <%#= render "user_header" %>
     <div class="usa-alert usa-alert-error" role="alert">
       <div class="usa-alert-body">
         <h3 class="usa-alert-heading">Can't connect to Virtual VA</h3>
@@ -44,7 +63,7 @@
     </div>
 
   <% elsif @download.pending_confirmation? %>
-    <%= render "user_header" %>
+    <%#= render "user_header" %>
     <% if vva_feature_enabled? %>
       <p>
         eFolder Express found a total of <%= @download.documents.count %> documents
