@@ -183,10 +183,9 @@ table td {
 }
 
 
-.cf-efolder-header,
-.cf-app-segment {
-    margin-top: 30px !important;
-    margin-bottom: 40px;
+.cf-efolder-header.cf-app-segment {
+  margin-top: 30px;
+  margin-bottom: 30px;
 }
 
 .cf-user-name,
@@ -194,13 +193,12 @@ table td {
   font-size: 17px;
 }
 
-.cf-push-left,
-.cf-name-header,
 .cf-efolder-name {
     text-transform: uppercase;
     font-size: 22px;
-    font-weight: 400 !important;
-    color: $color-gray;
+    font-weight: 400;
+    color: $color-gray-dark;
+    line-height: 2;
 }
 
 .cf-txt-uc,
@@ -209,4 +207,8 @@ table td {
   text-transform: uppercase;
   font-size: 17px;
   color: $color-gray;
+}
+
+.cf-apppeal-id {
+  background: $color-white;
 }

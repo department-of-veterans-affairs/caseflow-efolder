@@ -1,1 +1,14 @@
-<h1><%= @download.veteran_name %> <span class='ee-subheading'>(<%=h @download.file_number %>)</span></h1>
+
+<div class="cf-efolder-header cf-app-segment">
+    <h3 class="cf-push-left cf-name-header cf-efolder-name" id="correspondent-name">
+      <%=@download.veteran_name  %>
+    </h3>
+<div class="cf-txt-uc cf-efolder-id-control cf-push-right ">
+      Veteran  ID &nbsp;
+
+  <button type="submit" title="Copy to clipboard" class="cf-apppeal-id" data-clipboard-text="<%=@download.file_number%>">
+        <%= @download.file_number %>
+        <%= svg_icon(:appeal) %>
+      </button>
+</div>
+</div>
