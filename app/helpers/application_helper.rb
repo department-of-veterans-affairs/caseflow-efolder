@@ -178,7 +178,7 @@ module ApplicationHelper
     </svg>
   HTML
 
-  APPEAL_ICON = <<-HTML.freeze
+  COPY_ICON = <<-HTML.freeze
     <svg width="16" height="16" class="cf-icon-appeal-id"
     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 21">
     <title>appeal</title>
@@ -203,7 +203,7 @@ module ApplicationHelper
       pill_loading_front: PILL_LOADING_ICON_FRONT,
       pill_loading_back: PILL_LOADING_ICON_BACK,
       alert: ALERT_ICON,
-      appeal: APPEAL_ICON
+      copy: COPY_ICON
     }[name] || "").html_safe
   end
 
