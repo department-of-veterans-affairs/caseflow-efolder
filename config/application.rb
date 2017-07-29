@@ -32,10 +32,14 @@ module CaseflowEfolder
     # from eFolder Express to reduce load on Caseflow. Since Caseflow and eFolder
     # are in different sub-domains, we need to enable CORS.
     config.middleware.insert_before 0, "Rack::Cors" do
-      allow do
-        origins (ENV["CORS_URL"] || "http://localhost:3000")
-        resource '*', headers: :any, methods: :any, credentials: true
-      end
+        allow do
+          origins ENV["CORS_URL"]
+          resource '/api/v1/*', 
+            :headers     => :any, 
+            :methods     => :get, 
+            :expose      => ['Accept-Ranges'],
+            :credentials => true
+        end
     end
 
     config.active_job.queue_adapter = :sidekiq

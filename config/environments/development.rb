@@ -42,6 +42,20 @@ Rails.application.configure do
   config.s3_enabled = !ENV['AWS_ACCESS_KEY_ID'].nil?
   config.s3_bucket_name = "dsva-appeals-efolder-uat"
 
+  # Currently the Caseflow client makes calls to get document content directly
+  # from eFolder Express to reduce load on Caseflow. Since Caseflow and eFolder
+  # are in different sub-domains, we need to enable CORS.
+   config.middleware.insert_before 0, "Rack::Cors" do
+        allow do
+          origins ENV["CORS_URL"], "http://localhost:3000", "127.0.0.1:3000"
+          resource '/api/v1/*', 
+            :headers     => :any, 
+            :methods     => :get, 
+            :expose      => ['Accept-Ranges'],
+            :credentials => true
+        end
+    end
+
   config.api_key = "token"
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
