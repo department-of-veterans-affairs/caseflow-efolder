@@ -1,5 +1,4 @@
 require File.expand_path('../boot', __FILE__)
-
 require 'rails/all'
 
 # Require the gems listed in Gemfile, including any gems
@@ -31,13 +30,21 @@ module CaseflowEfolder
     # Currently the Caseflow client makes calls to get document content directly
     # from eFolder Express to reduce load on Caseflow. Since Caseflow and eFolder
     # are in different sub-domains, we need to enable CORS.
+    cors_origins = ENV["CORS_URL"]
+
+    # Enable localhost CORS for development and test environments and get rid of null values
+    # if the environment variable isn't set
+    cors_origins ||= "http://localhost:3000" unless Rails.env.production?
+
     config.middleware.insert_before 0, "Rack::Cors" do
         allow do
-          origins ENV["CORS_URL"]
-          resource '/api/v1/*', 
-            :headers     => :any, 
-            :methods     => :get, 
-            :expose      => ['Accept-Ranges'],
+          origins cors_origins
+          resource '/api/v1/*',
+            :headers     => :any, # Headers to allow in the request
+            :methods     => :get,
+            # when making a cross-origin request, only Cache-Control, Content-Language, 
+            # Content-Type, Expires, Last-Modified, Pragma are exposed. PDF.js requires some additional headers to be sent as well
+            :expose      => ['content-range, content-length, accept-ranges'], # Headers to send in response
             :credentials => true
         end
     end
