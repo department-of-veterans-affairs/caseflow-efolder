@@ -39,6 +39,7 @@ class Search < ActiveRecord::Base
       download.save!
     end
 
+    download.fetch_veteran_info
     download.start_fetch_manifest
     true
   end

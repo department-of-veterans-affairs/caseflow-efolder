@@ -54,9 +54,7 @@ class DownloadDocuments
         end
       end
 
-      # We were receiving stale object errors when we try to modify manifest_fetched_at.
-      # Locking the download object should prevent this.
-      @download.lock!.update_attributes!(manifest_fetched_at: Time.zone.now)
+      @download.update_attributes!(manifest_fetched_at: Time.zone.now)
     end
   end
 
