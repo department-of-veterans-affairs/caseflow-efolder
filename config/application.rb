@@ -30,11 +30,11 @@ module CaseflowEfolder
     # Currently the Caseflow client makes calls to get document content directly
     # from eFolder Express to reduce load on Caseflow. Since Caseflow and eFolder
     # are in different sub-domains, we need to enable CORS.
-    cors_origins = ENV["CORS_URL"]
+    cors_origins = ENV["CORS_URL"] || "" # Default to empty string to allow rake jobs to execute
 
     # Enable localhost CORS for development and test environments and get rid of null values
     # if the environment variable isn't set
-    cors_origins ||= "http://localhost:3000" unless Rails.env.production?
+    cors_origins = "http://localhost:3000" unless Rails.env.production? || !cors_origins.empty?
 
     config.middleware.insert_before 0, "Rack::Cors" do
         allow do
