@@ -67,7 +67,7 @@
           <a class="cf-header-link" href="/">
             <h1 class="cf-logo"><span class="cf-logo-image"></span>eFolder Express</h1>
           </a>
-          <h2 id="page-title" class="cf-application-title"><%=yield :page_title %></h2>
+          <h2 id="page-title" class="cf-application-title"><%= yield :page_title %></h2>
 
           <% if !current_user.nil? %>
             <div class="cf-dropdown cf-nav-dropdown" id="hide-tutorial-parent">
