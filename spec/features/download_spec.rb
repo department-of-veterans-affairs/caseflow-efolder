@@ -79,7 +79,7 @@ RSpec.feature "Downloads" do
     expect(@download.veteran_last_name).to eq("Lee")
     expect(@download.veteran_last_four_ssn).to eq("2222")
 
-    expect(page).to have_content "Stan Lee (12341234)"
+    expect(page).to have_content "STAN LEE VETERAN ID 12341234"
     expect(page).to have_content "We are gathering the list of files in the eFolder now"
     expect(page).to have_current_path(download_path(@download))
     expect(page.evaluate_script("window.DownloadStatus.intervalID")).to be_truthy
@@ -163,7 +163,7 @@ RSpec.feature "Downloads" do
     download = @user_download.last
     expect(download).to_not be_nil
 
-    expect(page).to have_content "Stan Lee (12341234)"
+    expect(page).to have_content "STAN LEE VETERAN ID 12341234"
   end
 
   scenario "Requesting invalid case number" do
@@ -200,7 +200,7 @@ RSpec.feature "Downloads" do
     expect(download.veteran_last_name).to eq("User")
     expect(download.veteran_last_four_ssn).to eq("1224")
 
-    expect(page).to have_content "Test User (DEMO123)"
+    expect(page).to have_content "TEST USER VETERAN ID DEMO123"
   end
 
   scenario "Sensitive download error" do
@@ -290,7 +290,7 @@ RSpec.feature "Downloads" do
     page.execute_script("window.DownloadStatus.recheck();")
 
     expect(page).to have_content "found a total of 2 documents"
-    expect(page).to have_content "Steph Curry (3456)"
+    expect(page).to have_content "STEPH CURRY VETERAN ID 3456"
     expect(page).to have_content "yawn.pdf VBMS 09/06/2015"
     expect(page).to have_content "smiley.pdf VBMS 01/19/2015"
 
@@ -302,7 +302,7 @@ RSpec.feature "Downloads" do
     )
 
     expect(page.evaluate_script("window.DownloadStatus.intervalID")).to be_falsey
-    first(:button, "Start retrieving eFolder").click
+    first(:button, "Start retrieving efolder").click
 
     expect(download.reload).to be_pending_documents
     expect(DownloadFilesJob).to have_received(:perform_later)
