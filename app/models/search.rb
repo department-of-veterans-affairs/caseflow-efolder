@@ -39,6 +39,9 @@ class Search < ActiveRecord::Base
       download.save!
     end
 
+    # We fetch the veteran info from BGS before starting the job so that we do any DB
+    # updates adding that information before another process starts writing to the DB.
+    download.fetch_veteran_info
     download.start_fetch_manifest
     true
   end

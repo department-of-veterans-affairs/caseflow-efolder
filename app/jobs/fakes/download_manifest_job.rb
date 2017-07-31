@@ -55,13 +55,13 @@ class Fakes::DownloadManifestJob < ActiveJob::Base
 
     check_and_raise_errors(demo)
 
-    download.reload.update_attributes!(status: :pending_confirmation)
+    download.update_attributes!(status: :pending_confirmation)
   rescue VBMS::ClientError => e
-    capture_error(e, download.reload, :vbms_connection_error)
+    capture_error(e, download, :vbms_connection_error)
   rescue VVA::ClientError => e
-    capture_error(e, download.reload, :vva_connection_error)
+    capture_error(e, download, :vva_connection_error)
   rescue
-    download.reload.update_attributes!(status: :no_documents)
+    download.update_attributes!(status: :no_documents)
   end
 
   def capture_error(e, download, status)
