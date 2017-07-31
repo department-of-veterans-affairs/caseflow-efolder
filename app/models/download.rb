@@ -67,12 +67,15 @@ class Download < ActiveRecord::Base
     # or real bgs service on an instance level, rather
     # than a class. Refactor the class method `bgs_service`
     # into an instance one.
-    if missing_veteran_info?
+    if !@veteran_info_fetched && missing_veteran_info?
       bgs_service = demo? ? Fakes::BGSService : Download.bgs_service
 
       veteran_info = bgs_service.fetch_veteran_info(file_number)
 
-      reload.update_attributes!(
+      # Calling update can result in infinite recursion if not all fields are defined
+      # by BGS. Therefore we set a variable once we've fetched the data.
+      @veteran_info_fetched = true
+      update_attributes!(
         veteran_first_name: veteran_info["veteran_first_name"],
         veteran_last_name: veteran_info["veteran_last_name"],
         veteran_last_four_ssn: veteran_info["veteran_last_four_ssn"]

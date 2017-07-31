@@ -182,10 +182,10 @@ describe "File API v1", type: :request do
               vva_error: false,
               documents: [
                 {
-                  id: download.documents[0].id,
-                  type_id: "124",
-                  received_at: "2017-04-03T00:00:00.000Z",
-                  external_document_id: "2"
+                  id: download.documents[2].id,
+                  type_id: "825",
+                  received_at: "2015-09-06T01:00:00.000Z",
+                  external_document_id: document.document_id
                 },
                 {
                   id: download.documents[1].id,
@@ -194,10 +194,10 @@ describe "File API v1", type: :request do
                   external_document_id: "1"
                 },
                 {
-                  id: download.documents[2].id,
-                  type_id: "825",
-                  received_at: "2015-09-06T01:00:00.000Z",
-                  external_document_id: document.document_id
+                  id: download.documents[0].id,
+                  type_id: "124",
+                  received_at: "2017-04-03T00:00:00.000Z",
+                  external_document_id: "2"
                 }
               ]
             }

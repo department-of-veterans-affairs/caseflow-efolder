@@ -54,7 +54,7 @@ class DownloadDocuments
         end
       end
 
-      @download.reload.update_attributes!(manifest_fetched_at: Time.zone.now)
+      @download.update_attributes!(manifest_fetched_at: Time.zone.now)
     end
   end
 
