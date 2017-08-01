@@ -143,7 +143,7 @@ describe "File API v1", type: :request do
         }
       end
 
-      it "returns bad request" do
+      it "returns 400" do
         get "/api/v1/files", nil, headers
         expect(response.code).to eq("400")
         expect(response.body).to eq("{\"status\":\"missing header: CSS ID\"}")
@@ -159,7 +159,7 @@ describe "File API v1", type: :request do
         }
       end
 
-      it "returns bad request" do
+      it "returns 400" do
         get "/api/v1/files", nil, headers
         expect(response.code).to eq("400")
         expect(response.body).to eq("{\"status\":\"missing header: Station ID\"}")
@@ -175,7 +175,7 @@ describe "File API v1", type: :request do
         }
       end
 
-      it "returns bad request" do
+      it "returns 400" do
         get "/api/v1/files", nil, headers
         expect(response.code).to eq("400")
         expect(response.body).to eq("{\"status\":\"missing header: File Number\"}")
