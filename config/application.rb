@@ -34,7 +34,7 @@ module CaseflowEfolder
 
     # Enable localhost CORS for development and test environments and get rid of null values
     # if the environment variable isn't set
-    cors_origins = "http://localhost:3000" unless Rails.env.production? || !cors_origins.empty?
+    cors_origins = "http://localhost:3000" if !Rails.env.production? && cors_origins.empty?
 
     config.middleware.insert_before 0, "Rack::Cors" do
         allow do
