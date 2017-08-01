@@ -1,3 +1,5 @@
+
+
 <% if @download.fetching_manifest? %>
   <script>
     // Set up automatic download status updates
@@ -5,12 +7,13 @@
   </script>
 <% end %>
 
-<% fetch_button_text = "Start retrieving eFolder" %>
+<%= render "user_header" %>
+
+<% fetch_button_text = "Start retrieving efolder" %>
 
 <div class="<%= 'cf-app-msg-screen' if @download.no_documents? %> cf-app-segment cf-app-segment--alt">
 
   <% if @download.fetching_manifest? %>
-    <%= render "user_header" %>
     <%= page_loading_indicator "We are gathering the list of files in the eFolder now..." %>
 
   <% elsif @download.no_documents? %>
@@ -20,7 +23,6 @@
       <p class="cf-msg-screen-text">Please check the Veteran ID number and <%= link_to "search again", root_path %>.</p>
 
   <% elsif @download.vbms_connection_error? %>
-    <%= render "user_header" %>
     <div class="usa-alert usa-alert-error" role="alert">
       <div class="usa-alert-body">
         <h3 class="usa-alert-heading">Can't connect to VBMS</h3>
@@ -32,7 +34,6 @@
     </div>
 
   <% elsif @download.vva_connection_error? %>
-    <%= render "user_header" %>
     <div class="usa-alert usa-alert-error" role="alert">
       <div class="usa-alert-body">
         <h3 class="usa-alert-heading">Can't connect to Virtual VA</h3>
@@ -44,7 +45,6 @@
     </div>
 
   <% elsif @download.pending_confirmation? %>
-    <%= render "user_header" %>
     <% if vva_feature_enabled? %>
       <p>
         eFolder Express found a total of <%= @download.documents.count %> documents
@@ -70,9 +70,9 @@
       <table class="usa-table-borderless ee-documents-table" summary="Files in veteran's eFolder">
       <thead>
         <tr>
-          <th scope="col">Filename</th>
+          <th scope="col">Document Type</th>
           <th scope="col" id="vva-tour-3">Source</th>
-          <th scope="col">Receipt Date</th>
+          <th scope="col">Upload Date</th>
         </tr>
       </thead>
       <tbody>
