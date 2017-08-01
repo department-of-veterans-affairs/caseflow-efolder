@@ -10,6 +10,7 @@
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
+//= require clipboard
 //= require hopscotch
 //= require jquery
 //= require jquery_ujs
@@ -18,4 +19,10 @@
 $(function() {
   window.Dropdown.bind();
   window.LoadingIndicator.bind();
+});
+
+/* Copies appeals ID to clipboard */
+$(function () {
+  "use strict";
+  new Clipboard('[data-clipboard-text]');
 });
