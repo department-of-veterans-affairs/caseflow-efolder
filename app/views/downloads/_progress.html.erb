@@ -1,3 +1,4 @@
+<%= render "user_header" %>
 <div class="cf-app-segment cf-app-segment--alt">
   <% if @download.complete? %>
     <% if failed_documents.any? %>
@@ -23,7 +24,7 @@
           <h3 class="usa-alert-heading">Success!</h3>
           <p class="usa-alert-text">
             All of the documents in the VBMS eFolder for #<%= @download.file_number %> are ready to download.
-            Click the "Download eFolder" button below.
+            Click the "Download efolder" button below.
           </p>
           <% if vva_feature_enabled? %>
             <p>
@@ -35,7 +36,7 @@
               (Remember that Virtual VA documents are not included in this download)
             </p>
           <% end %>
-          <%= link_to "Download eFolder", download_download_path(@download), {class: "usa-button"} %>
+          <%= link_to "Download efolder", download_download_path(@download), {class: "usa-button"} %>
         </div>
       </div>
 
