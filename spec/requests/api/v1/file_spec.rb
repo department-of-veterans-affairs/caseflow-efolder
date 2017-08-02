@@ -147,7 +147,7 @@ describe "File API v1", type: :request do
         get "/api/v1/files", nil, headers
         expect(response.code).to eq("400")
         body = JSON.parse(response.body)
-        expect(body["status"]).to match /missing.+CSS.+ID/
+        expect(body["status"]).to match(/missing.+CSS.+ID/)
       end
     end
 
@@ -164,7 +164,7 @@ describe "File API v1", type: :request do
         get "/api/v1/files", nil, headers
         expect(response.code).to eq("400")
         body = JSON.parse(response.body)
-        expect(body["status"]).to match /missing.+Station.+ID/
+        expect(body["status"]).to match(/missing.+Station.+ID/)
       end
     end
 
@@ -181,8 +181,8 @@ describe "File API v1", type: :request do
         get "/api/v1/files", nil, headers
         expect(response.code).to eq("400")
         body = JSON.parse(response.body)
-        expect(body["status"]).to match /missing.+File.+Number/
-        end
+        expect(body["status"]).to match(/missing.+File.+Number/)
+      end
     end
   end
 
