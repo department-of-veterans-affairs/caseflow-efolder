@@ -1,5 +1,6 @@
 class Api::V1::FilesController < Api::V1::ApplicationController
   def index
+    return missing_header("File Number") unless id
     render json: json_files
   end
 
