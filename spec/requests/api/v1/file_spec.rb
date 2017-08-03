@@ -133,6 +133,59 @@ describe "File API v1", type: :request do
     end
   end
 
+  context "When headers are missing" do
+    context "missing CSS ID" do
+      let(:headers) do
+        {
+          "HTTP_FILE_NUMBER" => veteran_id,
+          "HTTP_STATION_ID" => user.station_id,
+          "HTTP_AUTHORIZATION" => "Token token=#{token}"
+        }
+      end
+
+      it "returns 400" do
+        get "/api/v1/files", nil, headers
+        expect(response.code).to eq("400")
+        body = JSON.parse(response.body)
+        expect(body["status"]).to match(/missing.+CSS.+ID/)
+      end
+    end
+
+    context "missing Station ID" do
+      let(:headers) do
+        {
+          "HTTP_FILE_NUMBER" => veteran_id,
+          "HTTP_CSS_ID" => user.css_id,
+          "HTTP_AUTHORIZATION" => "Token token=#{token}"
+        }
+      end
+
+      it "returns 400" do
+        get "/api/v1/files", nil, headers
+        expect(response.code).to eq("400")
+        body = JSON.parse(response.body)
+        expect(body["status"]).to match(/missing.+Station.+ID/)
+      end
+    end
+
+    context "missing File Number" do
+      let(:headers) do
+        {
+          "HTTP_STATION_ID" => user.station_id,
+          "HTTP_CSS_ID" => user.css_id,
+          "HTTP_AUTHORIZATION" => "Token token=#{token}"
+        }
+      end
+
+      it "returns 400" do
+        get "/api/v1/files", nil, headers
+        expect(response.code).to eq("400")
+        body = JSON.parse(response.body)
+        expect(body["status"]).to match(/missing.+File.+Number/)
+      end
+    end
+  end
+
   context "When the file exists in VBMS or VVA" do
     before do
       allow(VVAService).to receive(:fetch_documents_for).and_return([])
