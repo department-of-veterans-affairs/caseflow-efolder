@@ -13,7 +13,7 @@
           </p>
           <ul class="ee-button-list">
             <li><%= link_to "Download anyway", "#confirm-download-anyway", {class: "usa-button cf-action-openmodal"} %></li>
-            <li><%= link_to "Try retrieving eFolder again", retry_download_path(@download), {method: :post, class: "usa-button usa-button-gray"} %></li>
+            <li><%= link_to "Try retrieving efolder again", retry_download_path(@download), {method: :post, class: "usa-button usa-button-gray"} %></li>
           </ul>
         </div>
       </div>
@@ -108,7 +108,7 @@
       <thead>
         <tr>
           <th scope="col"><span class="usa-sr-only">Status</span></th>
-          <th scope="col">Filename</th>
+          <th scope="col">Document Type</th>
           <% if current_tab == "errored" %>
             <th scope="col">Document ID</th>
           <% end %>
@@ -142,12 +142,12 @@
       <% if @download.documents.failed.any? %>
         <%= link_to "Download anyway", "#confirm-download-anyway", {class: "usa-button cf-action-openmodal"} %>
       <% else %>
-        <%= link_to "Download eFolder", download_download_path(@download), {class: "usa-button ee-right-button"} %>
+        <%= link_to "Download efolder", download_download_path(@download), {class: "usa-button ee-right-button cf-push-right"} %>
       <% end %>
   <% else %>
-    <button class="usa-button-disabled ee-right-button">Download eFolder</button>
+    <button class="usa-button-disabled ee-right-button">Download efolder</button>
   <% end %>
-  <span><%= link_to "Search for another eFolder", root_path %></span>
+  <span class="cf-push-left"><%= link_to "Search for another efolder", root_path %></span>
 </div>
 
 <%= render partial: 'confirm_download_anyway_modal' %>
