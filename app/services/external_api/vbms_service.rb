@@ -11,7 +11,7 @@ class ExternalApi::VBMSService
                 VBMS::Requests::ListDocuments.new(download.file_number)
               end
     documents = send_and_log_request(download.file_number, request)
-    Rails.logger.info("Document list length: #{documents.length}")
+    Rails.logger.info("VBMS Document list length: #{documents.length}")
     documents
   end
 
@@ -23,7 +23,7 @@ class ExternalApi::VBMSService
               else
                 VBMS::Requests::FetchDocumentById.new(document.document_id)
               end
-    result = send_and_log_request(document.document.id, request)
+    result = send_and_log_request(document.document_id, request)
     result && result.content
   end
 
