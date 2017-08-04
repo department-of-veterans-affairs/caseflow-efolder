@@ -1,6 +1,4 @@
 class Api::V1::DocumentsController < Api::V1::ApplicationController
-  include RetryHelper
-
   def show
     document = Document.find(params[:id])
     # The line below enables document caching for a month.
