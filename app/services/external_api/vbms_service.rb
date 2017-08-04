@@ -3,32 +3,28 @@ require "vbms"
 # Thin interface to all things VBMS
 class ExternalApi::VBMSService
   def self.fetch_documents_for(download)
-    @client ||= init_client
+    @vbms_client ||= init_client
 
     request = if FeatureToggle.enabled?(:vbms_efolder_service_v1)
                 VBMS::Requests::FindDocumentSeriesReference.new(download.file_number)
               else
                 VBMS::Requests::ListDocuments.new(download.file_number)
               end
-    @client.send_request(request)
-  rescue => e
-    Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
-    raise VBMS::ClientError, e
+    documents = send_and_log_request(file_number, request)
+    Rails.logger.info("Document list length: #{documents.length}")
+    documents
   end
 
   def self.fetch_document_file(document)
-    @client ||= init_client
+    @vbms_client ||= init_client
 
     request = if FeatureToggle.enabled?(:vbms_efolder_service_v1)
                 VBMS::Requests::GetDocumentContent.new(document.document_id)
               else
                 VBMS::Requests::FetchDocumentById.new(document.document_id)
               end
-    result = @client.send_request(request)
+    result = send_and_log_request(file_number, request)
     result && result.content
-  rescue => e
-    Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
-    raise VBMS::ClientError, e
   end
 
   def self.vbms_config
@@ -59,19 +55,31 @@ class ExternalApi::VBMSService
     )
   end
 
-  class RailsVBMSLogger
-    def log(event, data)
-      case event
-      when :request
-        Rails.logger.info("VBMS Request Sent: #{data[:request]} ")
-        if data[:response_code] != 200
-          Rails.logger.error(
-            "VBMS HTTP Error #{data[:response_code]}\n" \
-            "VBMS Response #{data[:response_body]}"
-          )
-        else
-          Rails.logger.info("VBMS Reponse Code #{data[:response_code]}")
-        end
+  def self.send_and_log_request(file_number, request)
+    name = request.class.name.split("::").last
+    MetricsService.record("sent VBMS request #{request.class} for #{file_number}",
+                          service: :vbms,
+                          name: name) do
+      @vbms_client.send_request(request)
+    end
+  rescue VBMS::ClientError => e
+    Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
+    raise e
+  end
+end
+
+class RailsVBMSLogger
+  def log(event, data)
+    case event
+    when :request
+      Rails.logger.info("VBMS Request Sent: #{data[:request]} ")
+      if data[:response_code] != 200
+        Rails.logger.error(
+          "VBMS HTTP Error #{data[:response_code]}\n" \
+          "VBMS Response #{data[:response_body]}"
+        )
+      else
+        Rails.logger.info("VBMS Reponse Code #{data[:response_code]}")
       end
     end
   end
