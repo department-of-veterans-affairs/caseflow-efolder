@@ -38,10 +38,9 @@ class ExternalApi::VBMSService
   end
 
   def self.init_client
-    return VBMS::Client.from_env_vars(
-      logger: RailsVBMSLogger.new,
-      env_name: ENV["CONNECT_VBMS_ENV"]
-    ) if Rails.application.secrets.vbms["env"]
+    return VBMS::Client.from_env_vars(logger: RailsVBMSLogger.new,
+                                      env_name: ENV["CONNECT_VBMS_ENV"]
+                                     ) if Rails.application.secrets.vbms["env"]
 
     VBMS::Client.new(
       vbms_config["url"],
@@ -57,29 +56,27 @@ class ExternalApi::VBMSService
 
   def self.send_and_log_request(id, request)
     name = request.class.name.split("::").last
-    MetricsService.record("sent VBMS request #{request.class} for #{id}",
+    MetricsService.record("#{request.class} for #{id}",
                           service: :vbms,
                           name: name) do
-      return @vbms_client.send_request(request)
+      @response = @vbms_client.send_request(request)
     end
   rescue VBMS::ClientError => e
     Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
     raise e
   end
+  @response
 end
 
 class RailsVBMSLogger
   def log(event, data)
     case event
     when :request
-      Rails.logger.info("VBMS Request Sent: #{data[:request]} ")
       if data[:response_code] != 200
         Rails.logger.error(
           "VBMS HTTP Error #{data[:response_code]}\n" \
           "VBMS Response #{data[:response_body]}"
         )
-      else
-        Rails.logger.info("VBMS Reponse Code #{data[:response_code]}")
       end
     end
   end

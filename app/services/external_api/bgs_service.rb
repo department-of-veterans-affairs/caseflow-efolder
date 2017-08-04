@@ -31,8 +31,9 @@ class ExternalApi::BGSService
     MetricsService.record("BGS: can_access? (find_flashes): #{file_number}",
                           service: :bgs,
                           name: "can_access?") do
-      @bgs_client.can_access? file_number
+      @can = @bgs_client.can_access? file_number
     end
+    @can
   end
 
   private
