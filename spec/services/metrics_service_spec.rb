@@ -1,9 +1,7 @@
 describe MetricsService do
   context ".timer" do
-    before do
-      RequestStore.store[:application] = "fake-app"
-    end
-    let(:labels) { { app: "fake-app", name: "ListDocuments" } }
+
+    let(:labels) { { app: "eFolder", name: "ListDocuments" } }
     let(:yield_val) { 5 }
     subject do
       MetricsService.record("fake api call", service: "vbms", name: "ListDocuments") { yield_val }
@@ -21,7 +19,7 @@ describe MetricsService do
 
       gauge = PrometheusService.vbms_request_latency.gauge
       gauge_labels = gauge.values.keys.first
-      expect(gauge_labels[:app]).to eq("fake-app")
+      expect(gauge_labels[:app]).to eq("eFolder")
       expect(gauge_labels[:name]).to eq("ListDocuments")
 
       expect(counter.values[labels]).to eq(current_counter + 1)
