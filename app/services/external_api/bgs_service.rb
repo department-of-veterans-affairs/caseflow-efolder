@@ -18,12 +18,13 @@ class ExternalApi::BGSService
 
   def fetch_veteran_info(file_number)
     @bgs_client ||= init_client
-    MetricsService.record("BGS: fetch veteran info for vbms id: #{file_number}",
-                          service: :bgs,
-                          name: "veteran.find_by_file_number") do
-      @veteran_data = @bgs_client.people.find_by_file_number(file_number)
+    veteran_data ||=
+      MetricsService.record("BGS: fetch veteran info for vbms id: #{file_number}",
+                            service: :bgs,
+                            name: "veteran.find_by_file_number") do
+      @bgs_client.people.find_by_file_number(file_number)
     end
-    parse_veteran_info(@veteran_data) if @veteran_data
+    parse_veteran_info(veteran_data) if veteran_data
   end
 
   def check_sensitivity(file_number)
@@ -31,9 +32,8 @@ class ExternalApi::BGSService
     MetricsService.record("BGS: can_access? (find_flashes): #{file_number}",
                           service: :bgs,
                           name: "can_access?") do
-      @can = @bgs_client.can_access? file_number
+      @bgs_client.can_access? file_number
     end
-    @can
   end
 
   private

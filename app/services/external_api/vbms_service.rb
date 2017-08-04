@@ -1,6 +1,21 @@
 require "vbms"
 
-# Thin interface to all things VBMS
+class RailsVBMSLogger
+  def log(event, data)
+    case event
+    when :request
+      if data[:response_code] != 200
+        name = data[:request].class.name.split("::").last
+
+        Rails.logger.error(
+          "VBMS HTTP Error #{data[:response_code]}\n" \
+          "VBMS #{name} Response #{data[:response_body]}"
+        )
+      end
+    end
+  end
+end
+
 class ExternalApi::VBMSService
   def self.fetch_documents_for(download)
     @vbms_client ||= init_client
@@ -59,25 +74,10 @@ class ExternalApi::VBMSService
     MetricsService.record("#{request.class} for #{id}",
                           service: :vbms,
                           name: name) do
-      @response = @vbms_client.send_request(request)
+      @vbms_client.send_request(request)
     end
   rescue VBMS::ClientError => e
     Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
     raise e
-  end
-  @response
-end
-
-class RailsVBMSLogger
-  def log(event, data)
-    case event
-    when :request
-      if data[:response_code] != 200
-        Rails.logger.error(
-          "VBMS HTTP Error #{data[:response_code]}\n" \
-          "VBMS Response #{data[:response_body]}"
-        )
-      end
-    end
   end
 end
