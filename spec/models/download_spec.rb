@@ -402,8 +402,7 @@ describe "Download" do
         Download.create(
           file_number: file_number,
           veteran_first_name: different_veteran_first_name,
-          veteran_last_name: "Snuffy",
-          veteran_last_four_ssn: "1234"
+          veteran_last_name: "Snuffy"
         )
       end
 
