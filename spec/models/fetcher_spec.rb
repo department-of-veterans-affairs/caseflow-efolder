@@ -14,7 +14,8 @@ describe Fetcher do
   end
 
   context "#content" do
-    subject { document.fetcher.content }
+    let(:time) { true }
+    subject { document.fetcher.content(time: time) }
 
     context "when file is in S3" do
       before do
@@ -23,7 +24,7 @@ describe Fetcher do
 
       it "should return the content from S3 and should not update the DB" do
         expect(subject).to eq "hello there"
-        expect(document.started_at).to be_nil
+        expect(document.started_at).to eq nil
       end
     end
 
@@ -40,6 +41,15 @@ describe Fetcher do
       it "should update document size" do
         subject
         expect(document.reload).to_not eq nil
+        expect(document.started_at).to_not eq nil
+      end
+
+      context "when time is false" do
+        let(:time) { false }
+        it "should not update DB when time is false" do
+          subject
+          expect(document.started_at).to eq nil
+        end
       end
     end
 
