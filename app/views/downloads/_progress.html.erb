@@ -147,7 +147,7 @@
   <% else %>
     <button class="usa-button-disabled ee-right-button">Download efolder</button>
   <% end %>
-  <span><%= link_to "Search for another efolder", root_path %></span>
+  <span><%= link_to "Search for another efolder", root_path, {class: "ee-button-align" } %></span>
 </div>
 
 <%= render partial: 'confirm_download_anyway_modal' %>
