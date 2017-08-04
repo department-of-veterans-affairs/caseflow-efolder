@@ -142,7 +142,7 @@
       <% if @download.documents.failed.any? %>
         <%= link_to "Download anyway", "#confirm-download-anyway", {class: "usa-button cf-action-openmodal"} %>
       <% else %>
-        <%= link_to "Download efolder", download_download_path(@download), {class: "usa-button ee-right-button"} %>
+        <%= link_to "Download efolder", download_download_path(@download), {class: "usa-button ee-right-button ee-download-button"} %>
       <% end %>
   <% else %>
     <button class="usa-button-disabled ee-right-button">Download efolder</button>

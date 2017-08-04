@@ -95,8 +95,7 @@
   <% if @download.pending_confirmation? %>
     <%= button_to fetch_button_text, start_download_path(@download), method: :post, class: "ee-right-button cf-submit cf-retrieve-button" %>
    <% end %>
-  <%= link_to "Start over", root_path %>
-  
+  <%= link_to "Start over", root_path, {class: "ee-button-align" }%>
   <% if vva_feature_enabled? && @download.pending_confirmation? %>
     <script>
       window.VVATour.initConfirmPage(<%= should_show_vva_coachmarks? %>);
