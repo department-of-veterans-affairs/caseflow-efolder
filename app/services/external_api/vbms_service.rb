@@ -10,7 +10,7 @@ class ExternalApi::VBMSService
               else
                 VBMS::Requests::ListDocuments.new(download.file_number)
               end
-    documents = send_and_log_request(file_number, request)
+    documents = send_and_log_request(download.file_number, request)
     Rails.logger.info("Document list length: #{documents.length}")
     documents
   end
@@ -23,7 +23,7 @@ class ExternalApi::VBMSService
               else
                 VBMS::Requests::FetchDocumentById.new(document.document_id)
               end
-    result = send_and_log_request(file_number, request)
+    result = send_and_log_request(document.document.id, request)
     result && result.content
   end
 
@@ -55,9 +55,9 @@ class ExternalApi::VBMSService
     )
   end
 
-  def self.send_and_log_request(file_number, request)
+  def self.send_and_log_request(id, request)
     name = request.class.name.split("::").last
-    MetricsService.record("sent VBMS request #{request.class} for #{file_number}",
+    MetricsService.record("sent VBMS request #{request.class} for #{id}",
                           service: :vbms,
                           name: name) do
       @vbms_client.send_request(request)
