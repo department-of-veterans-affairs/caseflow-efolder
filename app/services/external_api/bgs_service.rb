@@ -22,8 +22,8 @@ class ExternalApi::BGSService
       MetricsService.record("BGS: fetch veteran info for vbms id: #{file_number}",
                             service: :bgs,
                             name: "veteran.find_by_file_number") do
-      @bgs_client.people.find_by_file_number(file_number)
-    end
+        @bgs_client.people.find_by_file_number(file_number)
+      end
     parse_veteran_info(veteran_data) if veteran_data
   end
 
