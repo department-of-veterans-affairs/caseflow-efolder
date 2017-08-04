@@ -1,11 +1,18 @@
 class Api::V1::DocumentsController < Api::V1::ApplicationController
+  include RetryHelper
+
   def show
     document = Document.find(params[:id])
     # The line below enables document caching for a month.
     expires_in 30.days, public: true
 
+    content = nil
+    retry_when ActiveRecord::StaleObjectError, limit: 3 do
+      content = document.fetcher.content
+    end
+
     send_data(
-      document.fetcher.content,
+      content,
       type: document.mime_type,
       disposition: "attachment",
       filename: document.filename

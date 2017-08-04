@@ -3,8 +3,12 @@ class Fetcher
   attr_accessor :document, :external_service
 
   def content
+    result = S3Service.fetch_content(document.s3_filename)
+    return result if result
+
     document.update_attributes!(started_at: Time.zone.now)
-    result = S3Service.fetch_content(document.s3_filename) || cache_in_s3
+    result = cache_in_s3
+
     document.update_attributes!(
       completed_at: Time.zone.now,
       download_status: :success,
@@ -16,7 +20,6 @@ class Fetcher
   private
 
   def cache_in_s3
-    sleep 4 
     result = external_service.fetch_document_file(document)
     S3Service.store_file(document.s3_filename, result)
     result
