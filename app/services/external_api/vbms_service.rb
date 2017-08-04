@@ -60,7 +60,7 @@ class ExternalApi::VBMSService
     MetricsService.record("sent VBMS request #{request.class} for #{id}",
                           service: :vbms,
                           name: name) do
-      @vbms_client.send_request(request)
+      return @vbms_client.send_request(request)
     end
   rescue VBMS::ClientError => e
     Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"

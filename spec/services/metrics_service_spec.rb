@@ -1,6 +1,5 @@
 describe MetricsService do
   context ".timer" do
-
     let(:labels) { { app: "eFolder", name: "ListDocuments" } }
     let(:yield_val) { 5 }
     subject do
