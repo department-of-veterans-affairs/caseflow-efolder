@@ -1,57 +1,44 @@
-describe PrometheusService do
-  context "PrometheusGaugeSummary" do
+describe MetricsService do
+  context ".timer" do
     before do
-      @gauge = Prometheus::Client::Gauge.new(:foo_gauge, "foo")
-      @summary = Prometheus::Client::Summary.new(:foo_summary, "foo")
-      @metric = PrometheusGaugeSummary.new(@gauge, @summary)
-      @time = Timecop.freeze(Time.utc(2017, 2, 2))
+      RequestStore.store[:application] = "fake-app"
+    end
+    let(:labels) { { app: "fake-app", name: "ListDocuments" } }
+    let(:yield_val) { 5 }
+    subject do
+      MetricsService.record("fake api call", service: "vbms", name: "ListDocuments") { yield_val }
     end
 
-    context ".set" do
-      before do
-        @val = 5
-        @metric.set({}, @val)
-      end
+    it "returns yield value" do
+      expect(subject).to eq(yield_val)
+    end
 
-      it "sets values for gauge & summary" do
-        expect(@gauge.values[{}]).to eq(@val)
-        expect(@summary.values[{}][0.5]).to eq(@val)
-      end
+    it "sends prometheus metrics" do
+      counter = PrometheusService.vbms_request_attempt_counter
+      current_counter = counter.values[labels] || 0
 
-      it "sets a summary observation at most once every 5 minutes" do
-        new_val = 6
-        expect(@metric.last_summary_observation).to eq(@time)
+      subject
 
-        # Call the metric set() again to record a 2nd value
-        @metric.set({}, new_val)
+      gauge = PrometheusService.vbms_request_latency.gauge
+      gauge_labels = gauge.values.keys.first
+      expect(gauge_labels[:app]).to eq("fake-app")
+      expect(gauge_labels[:name]).to eq("ListDocuments")
 
-        # Verify the gauge updated as expected
-        expect(@gauge.values[{}]).to eq(new_val)
+      expect(counter.values[labels]).to eq(current_counter + 1)
 
-        # Verify the summary did *NOT* update
-        expect(@summary.values[{}][0.5]).to eq(@val)
+      # Ensure a value has been assigned
+      expect(gauge.values[labels]).to be_truthy
+    end
 
-        new_time = Timecop.freeze(@time + 2.minutes)
+    it "increments error counter on error" do
+      counter = PrometheusService.vbms_request_error_counter
+      current_counter = counter.values[labels] || 0
 
-        # Call the metric set() again to record a 3rd value
-        @metric.set({}, new_val)
+      expect do
+        MetricsService.record("fake api call", service: "vbms", name: "ListDocuments") { fail("hi") }
+      end.to raise_error("hi")
 
-        # Since 5 minutes have passed,
-        # verify the summary updated as expected,
-        expect(@summary.values[{}][0.5]).to eq(new_val)
-        expect(@metric.last_summary_observation).to eq(new_time)
-      end
-
-      it "does not clash with other summary metric's last_observation" do
-        gauge2 = Prometheus::Client::Gauge.new(:bar_gauge, "bar")
-        summary2 = Prometheus::Client::Summary.new(:bar_summary, "bar")
-        metric2 = PrometheusGaugeSummary.new(gauge2, summary2)
-
-        # Verify no last_summary_observation has been set
-        expect(metric2.last_summary_observation).to eq(Time.at(0).utc)
-        metric2.set({}, 10)
-        expect(summary2.values[{}][0.5]).to eq(10)
-      end
+      expect(counter.values[labels]).to eq(current_counter + 1)
     end
   end
 end
