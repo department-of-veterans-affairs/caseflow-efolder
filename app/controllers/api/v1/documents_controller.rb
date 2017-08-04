@@ -5,7 +5,7 @@ class Api::V1::DocumentsController < Api::V1::ApplicationController
     expires_in 30.days, public: true
 
     send_data(
-      document.fetcher.content_without_timing,
+      document.fetcher.content(time: false),
       type: document.mime_type,
       disposition: "attachment",
       filename: document.filename
