@@ -21,8 +21,9 @@ describe Fetcher do
         allow(S3Service).to receive(:fetch_content).and_return("hello there")
       end
 
-      it "should return the content from S3" do
+      it "should return the content from S3 and should not update the DB" do
         expect(subject).to eq "hello there"
+        expect(document.started_at).to be_nil
       end
     end
 
