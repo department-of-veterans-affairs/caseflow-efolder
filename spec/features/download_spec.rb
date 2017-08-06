@@ -371,7 +371,7 @@ RSpec.feature "Downloads" do
     expect(page).to have_button "Progress (0)", disabled: true
     expect(page).to have_content "Some files couldn't be added"
 
-    click_on "Search for another eFolder"
+    click_on "Search for another efolder"
     expect(page).to have_current_path(root_path)
   end
 
@@ -404,7 +404,7 @@ RSpec.feature "Downloads" do
     download.documents.create(vbms_filename: "tide.pdf", mime_type: "application/pdf", download_status: :success)
 
     visit download_path(download)
-    click_on "Try retrieving eFolder again"
+    click_on "Try retrieving efolder again"
 
     expect(page).to have_css ".cf-tab.cf-active", text: "Progress (2)"
     expect(page).to have_content "Completed (0)"
@@ -467,7 +467,7 @@ RSpec.feature "Downloads" do
 
     expect_page_to_have_coachmarks
 
-    first(:link, "Download eFolder").click
+    first(:link, "Download efolder").click
     expect(page.response_headers["Content-Type"]).to eq("application/zip")
     expect(page.response_headers["Content-Length"]).to eq(File.size(download_documents.zip_path).to_s)
 
@@ -536,7 +536,7 @@ RSpec.feature "Downloads" do
     expect(find(complete_with_errors_row)).to have_content("78902")
     expect(find(complete_with_errors_row)).to have_css(".cf-icon-alert")
     within(complete_with_errors_row) { click_on("View results") }
-    expect(page).to have_content("Download eFolder")
+    expect(page).to have_content("Download efolder")
 
     visit "/"
     pending_documents_row = "#download-#{pending_documents.id}"
