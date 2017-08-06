@@ -152,6 +152,7 @@ table td {
   padding-top: 1px;
   max-height: 600px;
   overflow-y: scroll;
+  border-bottom: 0;
 }
 
 .ee-subheading {
@@ -171,6 +172,7 @@ table td {
 
 .ee-documents-table {
   margin-top: 0;
+  margin-bottom: 0;
 }
 
 .cf-help-divider {
@@ -229,4 +231,8 @@ table td {
 
 .ee-download-button.ee-right-button {
   margin: 0;
+}
+
+.cf-tab-content {
+  border-bottom: 0;
 }
