@@ -10,7 +10,6 @@
 <%= render "user_header" %>
 
 <% fetch_button_text = "Start retrieving efolder" %>
-
 <div class="<%= 'cf-app-msg-screen' if @download.no_documents? %> cf-app-segment cf-app-segment--alt">
 
   <% if @download.fetching_manifest? %>
@@ -63,10 +62,10 @@
     <% end %>
 
     <p>
-      <%= button_to fetch_button_text, start_download_path(@download), method: :post, class: "cf-submit" %>
+      <%= button_to fetch_button_text, start_download_path(@download), method: :post, class: "cf-submit cf-retrieve-button" %>
     </p>
 
-    <div class="ee-document-list">
+      <div class="ee-document-list">
       <table class="usa-table-borderless ee-documents-table" summary="Files in veteran's eFolder">
       <thead>
         <tr>
@@ -75,15 +74,18 @@
           <th scope="col">Upload Date</th>
         </tr>
       </thead>
-      <tbody>
+      
+        <tbody>
         <% @download.documents.each do |document| %>
+        
           <tr>
             <td class="ee-filename-row"><%= document.type_name %></td>
             <td><%= document.from_vva? ? "VVA/LCM" : "VBMS" %></td>
             <td><%= document.received_at && document.received_at.to_formatted_s(:short_date) %></td>
           </tr>
+        
         <% end %>
-      </tbody>
+        </tbody>
       </table>
     <% end %>
   </div>
@@ -91,10 +93,9 @@
 
 <div class="cf-app-segment">
   <% if @download.pending_confirmation? %>
-    <%= button_to fetch_button_text, start_download_path(@download), method: :post, class: "ee-right-button cf-submit" %>
-  <% end %>
-
-  <%= link_to "Start over", root_path %>
+    <%= button_to fetch_button_text, start_download_path(@download), method: :post, class: "ee-right-button cf-submit cf-retrieve-button" %>
+   <% end %>
+  <%= link_to "Start over", root_path, {class: "ee-button-align" }%>
   <% if vva_feature_enabled? && @download.pending_confirmation? %>
     <script>
       window.VVATour.initConfirmPage(<%= should_show_vva_coachmarks? %>);
