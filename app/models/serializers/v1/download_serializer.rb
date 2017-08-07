@@ -12,7 +12,7 @@ class Serializers::V1::DownloadSerializer < ActiveModel::Serializer
   end
 
   attribute :documents do
-    object.documents.map do |document|
+    object.documents.order(:id).map do |document|
       {
         id: document.id,
         type_id: document.type_id,
