@@ -27,6 +27,6 @@ class Api::V1::FilesController < Api::V1::ApplicationController
   end
 
   def download
-    @download ||= Download.find_or_create_by_user_and_file(current_user, id)
+    @download ||= Download.find_or_create_by_user_and_file(current_user.id, id)
   end
 end
