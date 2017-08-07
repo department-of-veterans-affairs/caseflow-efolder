@@ -235,10 +235,10 @@ describe "File API v1", type: :request do
               vva_error: false,
               documents: [
                 {
-                  id: download.documents[2].id,
-                  type_id: "825",
-                  received_at: "2015-09-06T01:00:00.000Z",
-                  external_document_id: document.document_id
+                  id: download.documents[0].id,
+                  type_id: "124",
+                  received_at: "2017-04-03T00:00:00.000Z",
+                  external_document_id: "2"
                 },
                 {
                   id: download.documents[1].id,
@@ -247,10 +247,10 @@ describe "File API v1", type: :request do
                   external_document_id: "1"
                 },
                 {
-                  id: download.documents[0].id,
-                  type_id: "124",
-                  received_at: "2017-04-03T00:00:00.000Z",
-                  external_document_id: "2"
+                  id: download.documents[2].id,
+                  type_id: "825",
+                  received_at: "2015-09-06T01:00:00.000Z",
+                  external_document_id: document.document_id
                 }
               ]
             }
@@ -259,6 +259,17 @@ describe "File API v1", type: :request do
       end
 
       it "returns existing and new files" do
+        get "/api/v1/files", nil, headers
+
+        expect(response.code).to eq("200")
+        expect(response.body).to eq(response_body)
+      end
+
+      it "doesn't download files added within 3 hours of calling the endpoint" do
+        get "/api/v1/files", nil, headers
+
+        expect(VBMSService).to receive(:fetch_documents_for).exactly(0).times
+
         get "/api/v1/files", nil, headers
 
         expect(response.code).to eq("200")
