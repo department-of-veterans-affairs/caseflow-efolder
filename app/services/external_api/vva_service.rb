@@ -9,7 +9,7 @@ class ExternalApi::VVAService
                                         name: "document_list.get_by_claim_number") do
       @vva_client.document_list.get_by_claim_number(download.file_number)
     end
-    Rails.logger.info("VVA Document list length: #{@documents.length}")
+    Rails.logger.info("VVA Document list length: #{documents.length}")
     documents
   end
 
