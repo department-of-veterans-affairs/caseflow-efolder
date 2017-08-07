@@ -268,13 +268,7 @@ describe "File API v1", type: :request do
       it "doesn't download files added within 3 hours of calling the endpoint" do
         get "/api/v1/files", nil, headers
 
-        vbms_documents.concat([
-                                OpenStruct.new(
-                                  document_id: "3",
-                                  received_at: "5/6/2017",
-                                  type_id: "123")
-                              ])
-        allow(VBMSService).to receive(:fetch_documents_for).and_return(vbms_documents)
+        expect(VBMSService).to receive(:fetch_documents_for).exactly(0).times
 
         get "/api/v1/files", nil, headers
 
