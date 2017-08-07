@@ -14,15 +14,17 @@ describe Fetcher do
   end
 
   context "#content" do
-    subject { document.fetcher.content }
+    let(:save_document_metadata) { true }
+    subject { document.fetcher.content(save_document_metadata: save_document_metadata) }
 
     context "when file is in S3" do
       before do
         allow(S3Service).to receive(:fetch_content).and_return("hello there")
       end
 
-      it "should return the content from S3" do
+      it "should return the content from S3 and should not update the DB" do
         expect(subject).to eq "hello there"
+        expect(document.started_at).to eq nil
       end
     end
 
@@ -36,9 +38,18 @@ describe Fetcher do
         expect(subject).to eq "from VBMS"
       end
 
-      it "should update document size" do
+      it "should update document DB fields" do
         subject
         expect(document.reload).to_not eq nil
+        expect(document.started_at).to_not eq nil
+      end
+
+      context "when save_document_metadata is false" do
+        let(:save_document_metadata) { false }
+        it "should not update DB when save_document_metadata is false" do
+          subject
+          expect(document.started_at).to eq nil
+        end
       end
     end
 
