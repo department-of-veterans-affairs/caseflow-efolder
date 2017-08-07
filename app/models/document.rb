@@ -53,7 +53,7 @@ class Document < ActiveRecord::Base
   end
 
   def s3_filename
-    "#{download_id}-#{id}.#{preferred_extension}"
+    "#{id}.#{preferred_extension}"
   end
 
   def download_status_icon
