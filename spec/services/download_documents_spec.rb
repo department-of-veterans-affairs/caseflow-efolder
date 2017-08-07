@@ -169,7 +169,7 @@ describe DownloadDocuments do
     end
   end
 
-  context "#fetch_from_s3", focus: true do
+  context "#fetch_from_s3" do
     let(:document) do
       Document.new(
         document_id: "{3333-3333}",
