@@ -14,8 +14,8 @@ describe Fetcher do
   end
 
   context "#content" do
-    let(:time) { true }
-    subject { document.fetcher.content(time: time) }
+    let(:save_document_metadata) { true }
+    subject { document.fetcher.content(save_document_metadata: save_document_metadata) }
 
     context "when file is in S3" do
       before do
@@ -44,9 +44,9 @@ describe Fetcher do
         expect(document.started_at).to_not eq nil
       end
 
-      context "when time is false" do
-        let(:time) { false }
-        it "should not update DB when time is false" do
+      context "when save_document_metadata is false" do
+        let(:save_document_metadata) { false }
+        it "should not update DB when save_document_metadata is false" do
           subject
           expect(document.started_at).to eq nil
         end
