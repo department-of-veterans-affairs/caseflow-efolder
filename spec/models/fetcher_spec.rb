@@ -38,7 +38,7 @@ describe Fetcher do
         expect(subject).to eq "from VBMS"
       end
 
-      it "should update document size" do
+      it "should update document DB fields" do
         subject
         expect(document.reload).to_not eq nil
         expect(document.started_at).to_not eq nil
