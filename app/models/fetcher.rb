@@ -14,7 +14,8 @@ class Fetcher
   private
 
   def cached_content
-    @cached_content ||= S3Service.fetch_content(document.s3_filename)
+    @cached_content ||= (S3Service.fetch_content(document.s3_filename) ||
+      S3Service.fetch_content(document.old_s3_filename))
   end
 
   def download_from_service

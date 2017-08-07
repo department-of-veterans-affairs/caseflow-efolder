@@ -82,7 +82,8 @@ class DownloadDocuments
     # if the file exists on the filesystem, skip
     return if File.exist?(document.filepath)
 
-    S3Service.fetch_file(document.s3_filename, document.filepath)
+    S3Service.fetch_file(document.s3_filename, document.filepath) ||
+      S3Service.fetch_file(document.old_s3_filename, document.filepath)
   end
 
   def zip_exists_locally?
