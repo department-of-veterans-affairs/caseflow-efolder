@@ -191,7 +191,7 @@ describe DownloadDocuments do
     let(:filepath) { Rails.root + "tmp/files/#{download.id}/test" }
 
     before do
-      allow(S3Service).to receive(:fetch_file).
+      allow(S3Service).to receive(:fetch_file)
         .with(document.s3_filename, anything).and_return(s3_file_return)
       allow(S3Service).to receive(:fetch_file)
         .with(document.old_s3_filename, anything).and_return(old_s3_file_return)
