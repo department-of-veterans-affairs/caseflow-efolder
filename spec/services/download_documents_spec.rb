@@ -2,6 +2,10 @@ require "fileutils"
 require "zip"
 require "rails_helper"
 
+def generate_id
+  SecureRandom.hex[0..8].to_s
+end
+
 describe DownloadDocuments do
   before do
     Download.bgs_service = Fakes::BGSService
@@ -17,14 +21,18 @@ describe DownloadDocuments do
     )
   end
 
+  let(:first_document_id) { generate_id }
+  let(:second_document_id) { generate_id }
+  let(:third_document_id) { generate_id }
+
   let(:external_documents) do
     [
-      OpenStruct.new(document_id: "1", filename: "filename.pdf", doc_type: "123",
+      OpenStruct.new(document_id: first_document_id, filename: "filename.pdf", doc_type: "123",
                      source: "SRC", received_at: Time.zone.now, type_id: "123",
                      mime_type: "application/pdf", type_description: "VA 9 Appeal to Board of Appeals"),
-      OpenStruct.new(document_id: "2", received_at: 1.hour.ago),
-      OpenStruct.new(document_id: "3", received_at: 5.hours.ago, downloaded_from: "VVA"),
-      OpenStruct.new(document_id: "4", received_at: 3.hours.ago, downloaded_from: "VVA")
+      OpenStruct.new(document_id: second_document_id, received_at: 1.hour.ago),
+      OpenStruct.new(document_id: third_document_id, received_at: 5.hours.ago, downloaded_from: "VVA"),
+      OpenStruct.new(document_id: generate_id, received_at: 3.hours.ago, downloaded_from: "VVA")
     ]
   end
 
@@ -41,8 +49,8 @@ describe DownloadDocuments do
       expect(Document.count).to equal(4)
 
       document = Document.first
-      expect(document.document_id).to eq("1")
-      expect(document.filename).to eq("VA 9 Appeal to Board of Appeals-20150101-1.pdf")
+      expect(document.document_id).to eq(first_document_id)
+      expect(document.filename).to eq("VA 9 Appeal to Board of Appeals-20150101-#{first_document_id}.pdf")
       expect(document.type_id).to eq("123")
       expect(document.source).to eq("SRC")
       expect(document.mime_type).to eq("application/pdf")
@@ -55,7 +63,7 @@ describe DownloadDocuments do
     context "when an external document has already been saved" do
       let(:updated_external_documents) do
         [
-          OpenStruct.new(document_id: "1", filename: "filename.pdf", doc_type: "124",
+          OpenStruct.new(document_id: first_document_id, filename: "filename.pdf", doc_type: "124",
                          source: "SRC", received_at: Time.zone.now, type_id: "124",
                          mime_type: "application/pdf", type_description: "VA 9 Appeal to Board of Appeals"),
           OpenStruct.new(document_id: "5", received_at: 1.hour.ago)
@@ -91,8 +99,8 @@ describe DownloadDocuments do
     context "when one file errors" do
       before do
         allow(Fakes::DocumentService).to receive(:fetch_document_file) do |document|
-          fail VBMS::ClientError, "Failure" if document.document_id == "2"
-          fail VVA::ClientError, "Failure" if document.document_id == "3"
+          fail VBMS::ClientError, "Failure" if document.document_id == second_document_id
+          fail VVA::ClientError, "Failure" if document.document_id == third_document_id
           file
         end
 
@@ -103,7 +111,7 @@ describe DownloadDocuments do
       it "saves download state for each document" do
         successful_document = Document.first
         expect(successful_document).to be_success
-        expect(successful_document.filepath).to eq((Rails.root + "tmp/files/#{download.id}/00010-VA 9 Appeal to Board of Appeals-20150101-1.pdf").to_s)
+        expect(successful_document.filepath).to eq((Rails.root + "tmp/files/#{download.id}/00010-VA 9 Appeal to Board of Appeals-20150101-#{first_document_id}.pdf").to_s)
         expect(successful_document.started_at).to eq(Time.zone.now)
         expect(successful_document.completed_at).to eq(Time.zone.now)
         expect(successful_document.error_message).to eq nil
@@ -184,9 +192,9 @@ describe DownloadDocuments do
 
     before do
       allow(S3Service).to receive(:fetch_file).
-        with(document.s3_filename, anything).and_return(s3_file_return)
-      allow(S3Service).to receive(:fetch_file).
-        with(document.old_s3_filename, anything).and_return(old_s3_file_return)
+        .with(document.s3_filename, anything).and_return(s3_file_return)
+      allow(S3Service).to receive(:fetch_file)
+        .with(document.old_s3_filename, anything).and_return(old_s3_file_return)
     end
 
     context "document with s3_filename exists" do
