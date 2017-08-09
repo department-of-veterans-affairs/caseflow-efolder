@@ -6,6 +6,7 @@ describe Fetcher do
   let(:download) { Download.create(file_number: "21012") }
   let(:document) do
     download.documents.build(
+      id: "1234",
       document_id: "{3333-3333}",
       received_at: Time.utc(2015, 9, 6, 1, 0, 0),
       type_id: "825",
@@ -19,12 +20,25 @@ describe Fetcher do
 
     context "when file is in S3" do
       before do
-        allow(S3Service).to receive(:fetch_content).and_return("hello there")
+        allow(S3Service).to receive(:fetch_content).with("#{document.document_id}.pdf").and_return("hello there")
+        allow(S3Service).to receive(:fetch_content).with("#{download.id}-#{document.id}.pdf").and_return(nil)
       end
 
       it "should return the content from S3 and should not update the DB" do
         expect(subject).to eq "hello there"
-        expect(document.started_at).to eq nil
+        expect(document.started_at).to_not eq nil
+      end
+    end
+
+    context "when file is in S3 under the old name" do
+      before do
+        allow(S3Service).to receive(:fetch_content).with("#{document.document_id}.pdf").and_return(nil)
+        allow(S3Service).to receive(:fetch_content).with("#{download.id}-#{document.id}.pdf").and_return("hello there")
+      end
+
+      it "should return the content from S3 and should not update the DB" do
+        expect(subject).to eq "hello there"
+        expect(document.started_at).to_not eq nil
       end
     end
 
