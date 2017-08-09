@@ -172,6 +172,7 @@ table td {
 .ee-documents-table {
   margin-top: 0;
   margin-bottom: 0;
+  display: block;
 }
 
 
@@ -237,27 +238,7 @@ table td {
   border-bottom: 0;
 }
 
-// .ee-document-scroll {
-//   display: block;
-//   width: 500px;
-//   height: 200px;
-//   background: pink;
-//   overflow: auto;
-// }
-
-// .ee-document-name {
-//   display: block;
-//   width: 500px;
-//   overflow: auto;
-//   color: #fff;
-//   background: #000;
-// }
-
-table thead tr {
-    display: block;
-}
-
-table  tbody {
+.ee-document-scroll {
   display: block;
   height: 600px;
   overflow-y: scroll;

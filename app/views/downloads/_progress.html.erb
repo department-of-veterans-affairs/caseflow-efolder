@@ -106,7 +106,7 @@
     <% else %>
       <table class="usa-table-borderless ee-documents-table" summary="Status of veteran eFolder file downloads">
       <thead>
-        <tr>
+       <tr>
           <th class="ee-status" scope="col"><span class="usa-sr-only">Status</span></th>
           <th class="ee-filename-row" scope="col">Document Type</th>
           <% if current_tab == "errored" %>
@@ -115,9 +115,9 @@
           <th class="source-col" scope="col">Source</th>
           <th class="receipt-col" scope="col">Receipt Date</th>
         </tr>
-      </thead>
+     </thead>
 
-      <tbody>
+      <tbody class ="ee-document-scroll">
         <% @download.documents.where(download_status: current_document_status).each do |document| %>
           <tr class="document-<%= document.download_status %>">
             <td class="ee-status">
