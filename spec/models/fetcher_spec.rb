@@ -26,7 +26,7 @@ describe Fetcher do
 
       it "should return the content from S3 and should not update the DB" do
         expect(subject).to eq "hello there"
-        expect(document.started_at).to eq nil
+        expect(document.started_at).to_not eq nil
       end
     end
 
@@ -38,7 +38,7 @@ describe Fetcher do
 
       it "should return the content from S3 and should not update the DB" do
         expect(subject).to eq "hello there"
-        expect(document.started_at).to eq nil
+        expect(document.started_at).to_not eq nil
       end
     end
 
