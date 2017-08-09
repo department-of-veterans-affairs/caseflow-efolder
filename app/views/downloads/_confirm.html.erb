@@ -69,21 +69,19 @@
       <table class="usa-table-borderless ee-documents-table" summary="Files in veteran's eFolder">
       <thead>
         <tr>
-          <th scope="col">Document Type</th>
-          <th scope="col" id="vva-tour-3">Source</th>
-          <th scope="col">Upload Date</th>
+          <th class ="document-col" scope="col">Document Type</th>
+          <th class ="sources-col" scope="col" id="vva-tour-3">Source</th>
+          <th class ="upload-col" scope="col">Upload Date</th>
         </tr>
       </thead>
       
         <tbody>
         <% @download.documents.each do |document| %>
-        
           <tr>
-            <td class="ee-filename-row"><%= document.type_name %></td>
-            <td><%= document.from_vva? ? "VVA/LCM" : "VBMS" %></td>
-            <td><%= document.received_at && document.received_at.to_formatted_s(:short_date) %></td>
+            <td class ="document-col"><%= document.type_name %></td>
+            <td class ="sources-col"><%= document.from_vva? ? "VVA/LCM" : "VBMS" %></td>
+            <td class ="upload-col"><%= document.received_at && document.received_at.to_formatted_s(:short_date) %></td>
           </tr>
-        
         <% end %>
         </tbody>
       </table>
