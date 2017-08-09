@@ -217,8 +217,8 @@ class Download < ActiveRecord::Base
     end
 
     def find_or_create_by_user_and_file(user_id, file_id)
-      Download.includes(:documents).where(user_id: user_id, file_number: file_id).last ||
-        Download.create(user_id: user_id, file_number: file_id)
+      Download.includes(:documents).where(user_id: user_id, file_number: file_id, from_api: true).last ||
+        Download.create(user_id: user_id, file_number: file_id, from_api: true)
     end
   end
 

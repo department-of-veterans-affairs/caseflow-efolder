@@ -8,6 +8,7 @@ describe "File API v1", type: :request do
   let(:veteran_id) { "21012" }
   let(:download) do
     Download.create(
+      from_api: true,
       user_id: user.id,
       file_number: veteran_id,
       veteran_first_name: "George",

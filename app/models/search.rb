@@ -55,7 +55,8 @@ class Search < ActiveRecord::Base
   def download_scope
     Download.active.where(
       file_number: sanitized_file_number,
-      user: user
+      user: user,
+      from_api: [false, nil]
     ).where.not(status: [1, 7, 8])
   end
 
