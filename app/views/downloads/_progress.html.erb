@@ -106,29 +106,29 @@
     <% else %>
       <table class="usa-table-borderless ee-documents-table" summary="Status of veteran eFolder file downloads">
       <thead>
-        <tr>
-          <th scope="col"><span class="usa-sr-only">Status</span></th>
-          <th scope="col">Document Type</th>
+       <tr>
+          <th class="ee-status" scope="col"><span class="usa-sr-only">Status</span></th>
+          <th class="ee-filename-row" scope="col">Document Type</th>
           <% if current_tab == "errored" %>
-            <th scope="col">Document ID</th>
+            <th class="ee-document-id"scope="col">Document ID</th>
           <% end %>
-          <th scope="col">Source</th>
-          <th scope="col">Receipt Date</th>
+          <th class="source-col" scope="col">Source</th>
+          <th class="receipt-col" scope="col">Receipt Date</th>
         </tr>
-      </thead>
+     </thead>
 
-      <tbody>
+      <tbody class ="ee-document-scroll">
         <% @download.documents.where(download_status: current_document_status).each do |document| %>
           <tr class="document-<%= document.download_status %>">
-            <td class="ee-status-row">
+            <td class="ee-status">
               <%= svg_icon(document.download_status_icon) %>
             </td>
             <td class="ee-filename-row"><%= document.type_name %></td>
             <% if current_tab == "errored" %>
               <td class="ee-doc-id-row"><%= document.filename_doc_id %></td>
             <% end %>
-            <td><%= document.from_vva? ? "VVA/LCM" : "VBMS" %></td>
-            <td><%= document.received_at && document.received_at.to_formatted_s(:short_date) %></td>
+            <td class="source-col"><%= document.from_vva? ? "VVA/LCM" : "VBMS" %></td>
+            <td class="receipt-col"><%= document.received_at && document.received_at.to_formatted_s(:short_date) %></td>
           </tr>
         <% end %>
       </tbody>

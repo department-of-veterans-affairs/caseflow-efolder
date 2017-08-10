@@ -150,8 +150,6 @@ table td {
 .ee-document-list {
   border: 1px solid $color-gray-lighter;
   padding-top: 1px;
-  max-height: 600px;
-  overflow-y: scroll;
   border-bottom: 0;
 }
 
@@ -173,7 +171,9 @@ table td {
 .ee-documents-table {
   margin-top: 0;
   margin-bottom: 0;
+  display: block;
 }
+
 
 .cf-help-divider {
   margin: 5px 25px 30px auto;
@@ -235,4 +235,42 @@ table td {
 
 .cf-tab-content {
   border-bottom: 0;
+}
+
+.ee-document-scroll {
+  display: block;
+  height: 600px;
+  overflow-y: scroll;
+}
+
+.usa-sr-only {
+  min-width: 19px;
+}
+
+.document-col {
+  min-width: 627px;
+}
+
+.source-col {
+  min-width: 93px;
+}
+
+.receipt-col {
+  min-width: 128px;
+}
+
+.ee-status {
+  min-width: 49px;
+}
+
+.ee-document-id {
+  min-width: 340px;
+}
+
+.sources-col {
+  min-width: 116px;
+}
+
+.upload-col {
+  min-width: 152px;
 }
