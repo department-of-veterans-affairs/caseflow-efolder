@@ -241,9 +241,16 @@ describe "Download" do
     let(:user) { User.create(css_id: "WALTER", station_id: "123") }
     let(:file_number) { "123" }
 
-    context "retrieves most recent existing record" do
-      let!(:old_download) { Download.create(user: user, file_number: file_number, created_at: 2.seconds.ago) }
-      let!(:new_download) { Download.create(user: user, file_number: file_number, created_at: 1.second.ago) }
+    context "retrieves most recent existing record with from_api: true" do
+      let!(:old_download) do
+        Download.create(user: user, file_number: file_number, created_at: 3.seconds.ago, from_api: true)
+      end
+      let!(:new_download) do
+        Download.create(user: user, file_number: file_number, created_at: 2.seconds.ago, from_api: true)
+      end
+      let!(:non_api_download) do
+        Download.create(user: user, file_number: file_number, created_at: 1.second.ago)
+      end
 
       it { is_expected.to eq(new_download) }
     end
@@ -252,6 +259,7 @@ describe "Download" do
       it do
         expect(subject.user_id).to eq(user.id)
         expect(subject.file_number).to eq(file_number)
+        expect(subject.from_api).to eq(true)
       end
     end
   end

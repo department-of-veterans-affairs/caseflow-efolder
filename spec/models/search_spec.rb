@@ -96,6 +96,18 @@ describe Search do
           expect(search.download.id).to_not eq(@existing_download.id)
         end
       end
+
+      context "when that download was created by the api" do
+        before do
+          @existing_download.update_attributes!(from_api: true)
+        end
+
+        it "creates a new download" do
+          expect(subject).to be_truthy
+          expect(search.reload).to be_download_created
+          expect(search.download.id).to_not eq(@existing_download.id)
+        end
+      end
     end
 
     context "when case is not found in BGS" do
