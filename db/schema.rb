@@ -63,8 +63,8 @@ ActiveRecord::Schema.define(version: 20170809174911) do
     t.string   "request_id"
     t.string   "file_number"
     t.integer  "status",                          default: 0
-    t.datetime "created_at",                                  null: false
-    t.datetime "updated_at",                                  null: false
+    t.datetime "created_at",                                      null: false
+    t.datetime "updated_at",                                      null: false
     t.integer  "lock_version"
     t.datetime "manifest_fetched_at"
     t.datetime "started_at"
@@ -74,7 +74,7 @@ ActiveRecord::Schema.define(version: 20170809174911) do
     t.string   "veteran_last_four_ssn"
     t.integer  "user_id"
     t.integer  "zipfile_size",          limit: 8
-    t.boolean  "from_api"
+    t.boolean  "from_api",                        default: false
   end
 
   add_index "downloads", ["completed_at"], name: "downloads_completed_at", using: :btree
