@@ -3,7 +3,6 @@ class Fetcher
   attr_accessor :document, :external_service
 
   def content(save_document_metadata: true)
-    return cached_content if cached_content
     if save_document_metadata
       download_from_service_and_record
     else
@@ -14,10 +13,12 @@ class Fetcher
   private
 
   def cached_content
-    @cached_content ||= S3Service.fetch_content(document.s3_filename)
+    @cached_content ||= (S3Service.fetch_content(document.s3_filename) ||
+      S3Service.fetch_content(document.old_s3_filename))
   end
 
   def download_from_service
+    return cached_content if cached_content
     external_service.fetch_document_file(document).tap do |result|
       S3Service.store_file(document.s3_filename, result)
     end
