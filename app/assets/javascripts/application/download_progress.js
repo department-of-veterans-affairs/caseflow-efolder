@@ -20,11 +20,11 @@ window.DownloadProgress = (function($) {
         openRequests++
         $.get("/downloads/" + id + "/progress?current_tab=" + this.currentTab).then(function(fragment) {
           openRequests--;
-          var scrollTop = $(".cf-tab-content")[0].scrollTop;
+          var scrollTop = $(".ee-document-list")[0].scrollTop;
           $("#download-progress").html(fragment);
 
           if (!changingTabs) {
-            $(".cf-tab-content")[0].scrollTop = scrollTop;
+            $(".ee-document-list")[0].scrollTop = scrollTop;
           }
 
           self.initTabs();
