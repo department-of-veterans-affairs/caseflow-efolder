@@ -74,7 +74,7 @@ div.hopscotch-bubble {
 a.cf-view-coachmarks-link {
 // scss-lint:enable QualifyingElement
   color: $color-primary;
-  padding-right: 40px;
+  margin-right: 40px;
   // We have to use !important here because an upstream rule
   // also uses !important. :(
   text-decoration: underline !important;
