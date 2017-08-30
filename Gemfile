@@ -68,7 +68,7 @@ gem 'active_model_serializers'
 gem 'redis-namespace'
 
 gem 'connect_vbms', git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "87d0cab4bb5a87e70d6e2dab81e1da17fc512571"
-gem 'connect_vva', git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "7d9f82dc90313a0ac9f4792701a63f24e6caa509"
+gem 'connect_vva', git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "65112ad14e083f3046c3ad856edbf164024a4dc2"
 gem 'bgs', git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", :branch => 'master'
 #gem 'connect_vbms', git: 'https://github.com/department-of-veterans-affairs/connect_vbms.git'
 
