@@ -79,13 +79,23 @@ window.VVATour = (function($) {
         id: 'vva-tour-2',
         content: 'The total number of documents that will be retrieved from each database is listed here.',
         target: 'vva-tour-2',
-        placement: 'top'
+        placement: 'top',
+        xOffset: -180,
+        arrowOffset: 180
       },
       {
         id: 'vva-tour-3',
         content: 'The Source column shows the name of the database from which the file will be retrieved.',
         target: 'vva-tour-3',
         placement: 'left'
+      },
+      {
+        id: 'vva-tour-5',
+        content: 'This button allows you to copy the Veteran ID so that you can easily paste it in another application or document.',
+        target: 'vva-tour-5',
+        placement: 'bottom',
+        xOffset: -60,
+        arrowOffset: 100
       }
     ]);
   }
@@ -96,7 +106,7 @@ window.VVATour = (function($) {
   function initProgressPage(showCallouts) {
     if (progressPageInitialized) {
       return;
-    } 
+    }
     progressPageInitialized = true;
 
     if (showCallouts) {
