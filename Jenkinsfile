@@ -46,9 +46,6 @@ node('deploy') {
             returnStdout: true
             ).trim()
         }
-        sh 'git submodule init'
-        sh 'git submodule update'
-
         // The commmon pipeline script should kick off the deployment.
         commonPipeline = load "../jenkins/common-pipeline.groovy"
       }
