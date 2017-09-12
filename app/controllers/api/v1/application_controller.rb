@@ -31,7 +31,7 @@ class Api::V1::ApplicationController < BaseController
   end
 
   def user_has_role
-    current_user && (current_user.can?("Reader") || current_user.can?("System Admin"))
+    current_user && (current_user.can?("Reader") || current_user.admin?)
   end
 
   def authenticate_or_authorize

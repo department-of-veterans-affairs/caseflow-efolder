@@ -27,7 +27,7 @@ class ApplicationController < BaseController
   end
 
   def authorize_system_admin
-    redirect_to "/unauthorized" unless current_user.can? "System Admin"
+    redirect_to "/unauthorized" unless current_user.admin?
   end
 
   def authorize

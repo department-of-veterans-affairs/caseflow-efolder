@@ -7,8 +7,8 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/caseflow-commons
-  revision: ff94bc32a637c77230a3fa5f793e77966ec02c61
-  ref: ff94bc32a637c77230a3fa5f793e77966ec02c61
+  revision: 706ba7bde215f53d96365e3dba217f9a98781f4e
+  ref: 706ba7bde215f53d96365e3dba217f9a98781f4e
   specs:
     caseflow (0.1.6)
       aws-sdk (~> 2)
@@ -168,7 +168,7 @@ GEM
     coffee-script-source (1.12.2)
     concurrent-ruby (1.0.4)
     connection_pool (2.2.1)
-    d3-rails (4.10.0)
+    d3-rails (4.10.2)
       railties (>= 3.1)
     database_cleaner (1.5.3)
     diff-lcs (1.2.5)
