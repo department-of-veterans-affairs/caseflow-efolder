@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.feature "Stats Dashboard" do
   before do
+    Functions.delete_all_keys!
     Timecop.freeze(Time.utc(2015, 1, 1, 17, 0, 0))
 
     user1 = User.create(css_id: "ROCKY", station_id: "203")
