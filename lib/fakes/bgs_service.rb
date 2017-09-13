@@ -7,11 +7,23 @@ class Fakes::BGSService
   end
 
   def self.demo_veteran_info
-    {
-      "veteran_first_name" => "Test",
-      "veteran_last_name" => "User",
-      "veteran_last_four_ssn" => "1224"
-    }
+    [
+      {
+        "veteran_first_name" => "Joe",
+        "veteran_last_name" => "Snuffy",
+        "veteran_last_four_ssn" => "1234"
+      },
+      {
+        "veteran_first_name" => "Bob",
+        "veteran_last_name" => "Marley",
+        "veteran_last_four_ssn" => "3232"
+      },
+      {
+        "veteran_first_name" => "James",
+        "veteran_last_name" => "Ross",
+        "veteran_last_four_ssn" => "4221"
+      }
+    ].sample
   end
 
   def self.fetch_veteran_info(file_number)
