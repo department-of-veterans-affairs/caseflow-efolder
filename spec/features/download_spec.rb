@@ -196,6 +196,7 @@ RSpec.feature "Downloads" do
     download = @user_download.last
     expect(download).to_not be_nil
     expect(download.veteran_name).to_not be_nil
+    expect(download.veteran_name).to_not be_empty
 
     expect(page).to have_content "VETERAN ID"
   end
