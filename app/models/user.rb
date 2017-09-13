@@ -12,9 +12,28 @@ class User < ActiveRecord::Base
     name
   end
 
-  def can?(thing)
-    return false if roles.nil?
-    roles.include? thing
+  # We should not use user.can?("System Admin"), but user.admin? instead
+  def can?(function)
+    return true if admin?
+    # Check if user is granted the function
+    return true if granted?(function)
+    # Check if user is denied the function
+    return false if denied?(function)
+    # Ignore "System Admin" function from CSUM/CSEM users
+    return false if function.include?("System Admin")
+    roles ? roles.include?(function) : false
+  end
+
+  def admin?
+    Functions.granted?("System Admin", css_id)
+  end
+
+  def granted?(thing)
+    Functions.granted?(thing, css_id)
+  end
+
+  def denied?(thing)
+    Functions.denied?(thing, css_id)
   end
 
   class << self

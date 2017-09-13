@@ -39,6 +39,10 @@ module StubbableUser
     end
 
     def authenticate!(options = {})
+      if options[:roles] && options[:roles].include?("System Admin")
+        Functions.grant!("System Admin", users: ["123123"])
+      end
+
       self.stub = find_or_create_by(css_id: "123123", station_id: "116").tap do |u|
         u.name = "first last"
         u.email = "test@gmail.com"
@@ -57,6 +61,7 @@ module StubbableUser
     end
 
     def unauthenticate!
+      Functions.delete_all_keys!
       self.stub = nil
     end
 
