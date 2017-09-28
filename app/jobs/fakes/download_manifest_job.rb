@@ -1,3 +1,6 @@
+require "vbms"
+require "vva"
+
 class Fakes::DownloadManifestJob < ActiveJob::Base
   queue_as :default
 
