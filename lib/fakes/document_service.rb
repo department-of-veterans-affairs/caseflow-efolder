@@ -62,10 +62,14 @@ class Fakes::DocumentService
     IO.binread(Rails.root + "lib/pdfs/#{document.id % 5}.pdf")
   end
 
+  # can be overridden by child classes to provide more specific error
+  def self.raise_error
+    fail "Could not obtain docs"
+  end
+
   def self.check_and_raise_errors(demo)
     return unless demo[:error]
-    fail VBMS::ClientError if demo[:error_type] == "VBMS"
-    fail VVA::ClientError if demo[:error_type] == "VVA"
+    self.raise_error if demo[:error_type] == @service_type
   end
 
   def self.sleep_manifest_load(wait)
@@ -86,7 +90,7 @@ class Fakes::DocumentService
           document_id: "{#{SecureRandom.hex(4).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(6).upcase}}",
           mime_type: "application/pdf",
           received_at: (i * 2).days.ago,
-          downloaded_from: rand(5) == 3 ? "VVA" : "VBMS"
+          downloaded_from: @service_type
         )
       )
     end
