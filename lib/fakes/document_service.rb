@@ -41,8 +41,6 @@ class Fakes::DocumentService
     "DEMO_NO_DOCUMENTS" => {
       manifest_load: 1,
       num_docs: 0,
-      error: true,
-      error_type: "NO_DOCUMENTS"
     },
     "DEMODEFAULT" => {
       manifest_load: 4,
@@ -72,7 +70,6 @@ class Fakes::DocumentService
     return unless demo[:error]
     fail VBMS::ClientError if demo[:error_type] == "VBMS"
     fail VVA::ClientError if demo[:error_type] == "VVA"
-    fail "no documents" if demo[:error_type] == "NO_DOCUMENTS"
   end
 
   def self.sleep_manifest_load(wait)
