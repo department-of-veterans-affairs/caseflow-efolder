@@ -1,4 +1,6 @@
 class Api::V1::FilesController < Api::V1::ApplicationController
+  before_action :can_access?
+
   def index
     return missing_header("File Number") unless id
     render json: json_files
@@ -24,6 +26,10 @@ class Api::V1::FilesController < Api::V1::ApplicationController
 
   def id
     request.headers["HTTP_FILE_NUMBER"]
+  end
+
+  def can_access?
+    Download.bgs_service.check_sensitivity(id)
   end
 
   def download
