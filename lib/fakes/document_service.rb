@@ -40,7 +40,7 @@ class Fakes::DocumentService
     },
     "DEMO_NO_DOCUMENTS" => {
       manifest_load: 1,
-      num_docs: 0,
+      num_docs: 0
     },
     "DEMODEFAULT" => {
       manifest_load: 4,
@@ -51,11 +51,11 @@ class Fakes::DocumentService
 
   def self.fetch_documents_for(download)
     demo = DEMOS[download.file_number] || DEMOS["DEMODEFAULT"]
-    self.sleep_manifest_load(demo[:manifest_load])
+    sleep_manifest_load(demo[:manifest_load])
 
-    self.check_and_raise_errors(demo)
-    docs = self.create_documents(download, demo[:num_docs])
-    return docs
+    check_and_raise_errors(demo)
+    docs = create_documents(download, demo[:num_docs])
+    docs
   end
 
   def self.fetch_document_file(document)
@@ -89,6 +89,6 @@ class Fakes::DocumentService
       )
       docs.push(doc)
     end
-    return docs
+    docs
   end
 end
