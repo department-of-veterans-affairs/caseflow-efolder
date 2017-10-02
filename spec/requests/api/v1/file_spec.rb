@@ -41,6 +41,7 @@ describe "File API v1", type: :request do
     document
 
     FeatureToggle.enable!(:reader_api)
+    FeatureToggle.enable!(:vva_service)
   end
 
   context "When the file doesn't exist in VBMS or VVA" do
