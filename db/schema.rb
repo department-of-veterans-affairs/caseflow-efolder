@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170809174911) do
+ActiveRecord::Schema.define(version: 20171002160028) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -62,9 +62,9 @@ ActiveRecord::Schema.define(version: 20170809174911) do
   create_table "downloads", force: :cascade do |t|
     t.string   "request_id"
     t.string   "file_number"
-    t.integer  "status",                          default: 0
-    t.datetime "created_at",                                      null: false
-    t.datetime "updated_at",                                      null: false
+    t.integer  "status",                            default: 0
+    t.datetime "created_at",                                        null: false
+    t.datetime "updated_at",                                        null: false
     t.integer  "lock_version"
     t.datetime "manifest_fetched_at"
     t.datetime "started_at"
@@ -73,8 +73,10 @@ ActiveRecord::Schema.define(version: 20170809174911) do
     t.string   "veteran_first_name"
     t.string   "veteran_last_four_ssn"
     t.integer  "user_id"
-    t.integer  "zipfile_size",          limit: 8
-    t.boolean  "from_api",                        default: false
+    t.integer  "zipfile_size",            limit: 8
+    t.boolean  "from_api",                          default: false
+    t.datetime "vva_fetched_at"
+    t.datetime "manifest_vva_fetched_at"
   end
 
   add_index "downloads", ["completed_at"], name: "downloads_completed_at", using: :btree
