@@ -225,7 +225,7 @@ class Download < ActiveRecord::Base
 
   def force_fetch_manifest_if_expired!
     return if manifest_fetched_at && manifest_fetched_at > 3.hours.ago
-    DownloadManifestJob.perform_now(self)
+    DownloadManifestJob.perform_now(self, true)
   end
 
   def prepare_files_for_api!(start_download: false)
@@ -235,7 +235,7 @@ class Download < ActiveRecord::Base
   end
 
   def start_fetch_manifest
-    DownloadManifestJob.perform_later(self)
+    DownloadManifestJob.perform_later(self, false)
   end
 
   private

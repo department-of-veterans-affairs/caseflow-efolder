@@ -1,11 +1,26 @@
 class DownloadManifestJob < ActiveJob::Base
   queue_as :default
 
-  def perform(download)
-    external_documents = VBMSService.fetch_documents_for(download)
+  def perform(download, graceful=false)
+    external_documents = []
 
+    # fetch vbms docs
+    begin
+      external_documents += VBMSService.fetch_documents_for(download)
+    rescue VBMS::ClientError => e
+      capture_error(e, download, :vbms_connection_error)
+      return if !graceful
+    end
+
+    # fetch vva docs
     if FeatureToggle.enabled?(:vva_service, user: download.user)
-      external_documents += VVAService.fetch_documents_for(download)
+      begin
+          external_documents += VVAService.fetch_documents_for(download)
+          download.update_attributes!(manifest_vva_fetched_at: Time.zone.now)
+      rescue VVA::ClientError => e
+        capture_error(e, download, :vva_connection_error)
+        return if !graceful
+      end
     end
 
     if external_documents.empty?
@@ -18,12 +33,10 @@ class DownloadManifestJob < ActiveJob::Base
       external_documents: external_documents
     )
     download_documents.create_documents
-    download.update_attributes!(status: :pending_confirmation)
 
-  rescue VBMS::ClientError => e
-    capture_error(e, download, :vbms_connection_error)
-  rescue VVA::ClientError => e
-    capture_error(e, download, :vva_connection_error)
+    if download.status == "fetching_manifest"
+      download.update_attributes!(status: :pending_confirmation)
+    end
   end
 
   def max_attempts
