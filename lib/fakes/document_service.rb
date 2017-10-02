@@ -84,19 +84,15 @@ class Fakes::DocumentService
     sleep_manifest_load(demo[:manifest_load])
     check_and_raise_errors(demo)
 
-    docs = []
-    (demo[:num_docs] || 0).times do |i|
-      docs.push(
-        OpenStruct.new(
-          vbms_filename: "happy-thursday-#{SecureRandom.hex}.pdf",
-          type_id: Document::TYPES.keys.sample,
-          document_id: "{#{SecureRandom.hex(4).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(6).upcase}}",
-          mime_type: "application/pdf",
-          received_at: (i * 2).days.ago,
-          downloaded_from: @service_type
-        )
+    (0.. (demo[:num_docs] || 0)).to_a.map do |i|
+      OpenStruct.new(
+        vbms_filename: "happy-thursday-#{SecureRandom.hex}.pdf",
+        type_id: Document::TYPES.keys.sample,
+        document_id: "{#{SecureRandom.hex(4).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(6).upcase}}",
+        mime_type: "application/pdf",
+        received_at: (i * 2).days.ago,
+        downloaded_from: @service_type
       )
     end
-    docs
   end
 end
