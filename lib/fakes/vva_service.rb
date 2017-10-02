@@ -1,5 +1,4 @@
 class Fakes::VVAService < Fakes::DocumentService
-
   def self.service_type
     "VVA"
   end

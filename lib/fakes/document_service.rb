@@ -50,7 +50,7 @@ class Fakes::DocumentService
   }.freeze
 
   def self.service_type
-    return "Document"
+    "Document"
   end
 
   def self.fetch_documents_for(download)
@@ -84,7 +84,7 @@ class Fakes::DocumentService
     sleep_manifest_load(demo[:manifest_load])
     check_and_raise_errors(demo)
 
-    (0.. (demo[:num_docs] || 0)).to_a.map do |i|
+    (0..(demo[:num_docs] || 0)).to_a.map do |i|
       OpenStruct.new(
         vbms_filename: "happy-thursday-#{SecureRandom.hex}.pdf",
         type_id: Document::TYPES.keys.sample,

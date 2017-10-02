@@ -1,5 +1,4 @@
 class Fakes::VBMSService < Fakes::DocumentService
-
   def self.service_type
     "VBMS"
   end
