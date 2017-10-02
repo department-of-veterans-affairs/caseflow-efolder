@@ -1,5 +1,8 @@
 class Fakes::VVAService < Fakes::DocumentService
-  @service_type = "VVA"
+
+  def self.service_type
+    "VVA"
+  end
 
   def self.raise_error
     fail VVA::ClientError

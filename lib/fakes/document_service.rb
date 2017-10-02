@@ -49,9 +49,12 @@ class Fakes::DocumentService
     }
   }.freeze
 
+  def self.service_type
+    return "Document"
+  end
+
   def self.fetch_documents_for(download)
-    docs = list_fake_documents(download.file_number)
-    docs
+    list_fake_documents(download.file_number)
   end
 
   def self.fetch_document_file(document)
@@ -69,7 +72,7 @@ class Fakes::DocumentService
 
   def self.check_and_raise_errors(demo)
     return unless demo[:error]
-    self.raise_error if demo[:error_type] == @service_type
+    raise_error if demo[:error_type] == service_type
   end
 
   def self.sleep_manifest_load(wait)

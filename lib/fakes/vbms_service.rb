@@ -1,5 +1,8 @@
 class Fakes::VBMSService < Fakes::DocumentService
-  @service_type = "VBMS"
+
+  def self.service_type
+    "VBMS"
+  end
 
   def self.raise_error
     fail VBMS::ClientError
