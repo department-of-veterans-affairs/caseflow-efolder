@@ -1,12 +1,14 @@
 class DownloadManifestJob < ActiveJob::Base
   queue_as :default
 
+  # pass graceful=true if the job should continue to obtain doc manifests from other services after a failure
   def perform(download, graceful=false)
     external_documents = []
 
     # fetch vbms docs
     begin
       external_documents += VBMSService.fetch_documents_for(download)
+      download.update_attributes!(manifest_vbms_fetched_at: Time.zone.now)
     rescue VBMS::ClientError => e
       capture_error(e, download, :vbms_connection_error)
       return if !graceful
