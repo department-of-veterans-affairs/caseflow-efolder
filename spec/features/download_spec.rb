@@ -186,7 +186,7 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Using demo mode" do
-    expect(Fakes::DownloadManifestJob).to receive(:perform_later)
+    expect(DownloadManifestJob).to receive(:perform_later)
 
     visit "/"
 
