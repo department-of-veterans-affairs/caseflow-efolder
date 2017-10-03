@@ -127,6 +127,8 @@ describe "File API v1", type: :request do
 
     context "vva throws a client error" do
       let(:vva_error) { true }
+      let(:manifest_fetched_at) { "2015-01-01T17:00:00.000Z" }
+      let(:manifest_vbms_fetched_at) { "2015-01-01T17:00:00.000Z" }
 
       before do
         allow(VVAService).to receive(:fetch_documents_for).and_raise(VVA::ClientError)
@@ -247,6 +249,8 @@ describe "File API v1", type: :request do
             type: "file",
             attributes: {
               manifest_fetched_at: "2015-01-01T17:00:00.000Z",
+              manifest_vva_fetched_at: "2015-01-01T17:00:00.000Z",
+              manifest_vbms_fetched_at: "2015-01-01T17:00:00.000Z",
               vbms_error: false,
               vva_error: false,
               documents: [
@@ -276,7 +280,6 @@ describe "File API v1", type: :request do
 
       it "returns existing and new files" do
         get "/api/v1/files", nil, headers
-
         expect(response.code).to eq("200")
         expect(response.body).to eq(response_body)
       end
