@@ -26,7 +26,7 @@ class DownloadManifestJob < ActiveJob::Base
       end
     end
 
-    if external_documents.empty?
+    if !has_error && external_documents.empty?
       download.update_attributes!(status: :no_documents)
       return
     end
