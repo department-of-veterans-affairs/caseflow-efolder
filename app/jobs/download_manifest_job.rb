@@ -4,13 +4,14 @@ class DownloadManifestJob < ActiveJob::Base
   # pass graceful=true if the job should continue to obtain doc manifests from other services after a failure
   def perform(download, graceful=false)
     external_documents = []
+    has_error = false
 
     # fetch vbms docs
     begin
       external_documents += VBMSService.fetch_documents_for(download)
       download.update_attributes!(manifest_vbms_fetched_at: Time.zone.now)
     rescue VBMS::ClientError => e
-      capture_error(e, download, :vbms_connection_error)
+      has_error = capture_error(e, download, :vbms_connection_error)
       return if !graceful
     end
 
@@ -20,7 +21,7 @@ class DownloadManifestJob < ActiveJob::Base
           external_documents += VVAService.fetch_documents_for(download)
           download.update_attributes!(manifest_vva_fetched_at: Time.zone.now)
       rescue VVA::ClientError => e
-        capture_error(e, download, :vva_connection_error)
+        has_error  = capture_error(e, download, :vva_connection_error)
         return if !graceful
       end
     end
@@ -35,10 +36,7 @@ class DownloadManifestJob < ActiveJob::Base
       external_documents: external_documents
     )
     download_documents.create_documents
-
-    if download.status == "fetching_manifest"
-      download.update_attributes!(status: :pending_confirmation)
-    end
+    download.update_attributes!(status: :pending_confirmation) if !has_error
   end
 
   def max_attempts
