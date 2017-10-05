@@ -81,7 +81,8 @@ class Fakes::DocumentService
 
   def self.list_fake_documents(file_number)
     demo = DEMOS[file_number]
-    return [] if !demo
+    return [] if !demo || demo[:num_docs] <= 0
+
     sleep_manifest_load(demo[:manifest_load])
     check_and_raise_errors(demo)
 
