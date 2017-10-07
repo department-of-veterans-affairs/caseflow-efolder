@@ -23,7 +23,7 @@ class DownloadManifestJob < ActiveJob::Base
       return if !graceful
     end
 
-    create_docs(download, external_documents, has_error)
+    create_documents(download, external_documents, has_error)
   end
 
   def download_vbms(download)
@@ -41,7 +41,7 @@ class DownloadManifestJob < ActiveJob::Base
     external_documents
   end
 
-  def create_docs(download, external_documents, has_error)
+  def create_documents(download, external_documents, has_error)
     # only indicate no_documents status if we've successfully completed fetching from services
     if !has_error && external_documents.empty?
       download.update_attributes!(status: :no_documents)
