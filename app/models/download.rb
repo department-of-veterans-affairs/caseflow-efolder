@@ -235,7 +235,7 @@ class Download < ActiveRecord::Base
   end
 
   def start_fetch_manifest
-    DownloadManifestJob.perform_later(self, false)
+    DownloadManifestJob.perform_later(self)
   end
 
   private

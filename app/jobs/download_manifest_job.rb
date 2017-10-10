@@ -26,20 +26,6 @@ class DownloadManifestJob < ActiveJob::Base
     create_documents(download, external_documents, has_error)
   end
 
-  def download_vbms(download)
-    external_documents = VBMSService.fetch_documents_for(download)
-    download.update_attributes!(manifest_vbms_fetched_at: Time.zone.now)
-    external_documents
-  end
-
-  def download_vva(download)
-    external_documents = []
-    if FeatureToggle.enabled?(:vva_service, user: download.user)
-      external_documents = VVAService.fetch_documents_for(download)
-      download.update_attributes!(manifest_vva_fetched_at: Time.zone.now)
-    end
-    external_documents
-  end
 
   def create_documents(download, external_documents, has_error)
     # only indicate no_documents status if we've successfully completed fetching from services
@@ -54,6 +40,24 @@ class DownloadManifestJob < ActiveJob::Base
     )
     download_documents.create_documents
     download.update_attributes!(status: :pending_confirmation) if !has_error
+  end
+
+
+  private
+
+  def download_vbms(download)
+    external_documents = VBMSService.fetch_documents_for(download)
+    download.update_attributes!(manifest_vbms_fetched_at: Time.zone.now)
+    external_documents || []
+  end
+
+  def download_vva(download)
+    external_documents = []
+    if FeatureToggle.enabled?(:vva_service, user: download.user)
+      external_documents = VVAService.fetch_documents_for(download)
+      download.update_attributes!(manifest_vva_fetched_at: Time.zone.now)
+    end
+    external_documents || []
   end
 
   def max_attempts
