@@ -26,7 +26,6 @@ class DownloadManifestJob < ActiveJob::Base
     create_documents(download, external_documents, has_error)
   end
 
-
   def create_documents(download, external_documents, has_error)
     # only indicate no_documents status if we've successfully completed fetching from services
     if !has_error && external_documents.empty?
@@ -42,7 +41,6 @@ class DownloadManifestJob < ActiveJob::Base
     download.update_attributes!(status: :pending_confirmation) if !has_error
     download_documents
   end
-
 
   private
 
