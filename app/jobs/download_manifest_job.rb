@@ -40,6 +40,7 @@ class DownloadManifestJob < ActiveJob::Base
     )
     download_documents.create_documents
     download.update_attributes!(status: :pending_confirmation) if !has_error
+    download_documents
   end
 
 

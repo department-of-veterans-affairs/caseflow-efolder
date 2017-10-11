@@ -16,11 +16,20 @@ describe DownloadManifestJob do
     context "when VBMS client fails" do
       before do
         allow(VBMSService).to receive(:fetch_documents_for).and_raise(VBMS::ClientError)
-        DownloadManifestJob.perform_now(download)
       end
+      context "saves download status as :vbms_connection_error" do
+        after do
+          expect(download.reload).to be_vbms_connection_error
+        end
 
-      it "saves download status as :vbms_connection_error" do
-        expect(download.reload).to be_vbms_connection_error
+        it "does not return documents on error" do
+          expect(DownloadManifestJob.perform_now(download)).to be_nil
+        end
+
+        it "returns documents on error" do
+          # graceful is set to true
+          expect(DownloadManifestJob.perform_now(download, true)).to_not be_nil
+        end
       end
     end
 
