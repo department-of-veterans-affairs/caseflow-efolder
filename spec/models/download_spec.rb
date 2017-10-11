@@ -351,7 +351,7 @@ describe "Download" do
         expect(DownloadManifestJob).to_not have_received(:perform_now)
       end
 
-      it "with a service error does start the manifest job" do
+      it "starts the manifest job when vbms request failed" do
         download.force_fetch_manifest_if_expired!
         expect(DownloadManifestJob).to have_received(:perform_now)
       end

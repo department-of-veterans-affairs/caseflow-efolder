@@ -22,13 +22,15 @@ describe DownloadManifestJob do
           expect(download.reload).to be_vbms_connection_error
         end
 
-        it "does not return documents on error" do
-          expect(DownloadManifestJob.perform_now(download)).to be_nil
+        context "when graceful is set to false" do
+          it "does not return documents" do
+            expect(DownloadManifestJob.perform_now(download)).to be_nil
+          end
         end
-
-        it "returns documents on error" do
-          # graceful is set to true
-          expect(DownloadManifestJob.perform_now(download, true)).to_not be_nil
+        context "when graceful is set to true" do
+          it "does return documents" do
+            expect(DownloadManifestJob.perform_now(download, true)).to_not be_nil
+          end
         end
       end
     end
