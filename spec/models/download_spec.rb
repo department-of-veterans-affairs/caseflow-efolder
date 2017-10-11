@@ -342,11 +342,18 @@ describe "Download" do
     context "when the manifest was fetched less than 3 hours ago" do
       before do
         download.update_attributes!(manifest_fetched_at: Time.zone.now - 2.hours)
+        download.update_attributes!(manifest_vva_fetched_at: Time.zone.now - 2.hours)
       end
 
       it "does not start the manifest job" do
+        download.update_attributes!(manifest_vbms_fetched_at: Time.zone.now - 2.hours)
         download.force_fetch_manifest_if_expired!
         expect(DownloadManifestJob).to_not have_received(:perform_now)
+      end
+
+      it "with a service error does start the manifest job" do
+        download.force_fetch_manifest_if_expired!
+        expect(DownloadManifestJob).to have_received(:perform_now)
       end
     end
   end
