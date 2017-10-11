@@ -224,8 +224,10 @@ class Download < ActiveRecord::Base
   end
 
   def force_fetch_manifest_if_expired!
-    return if manifest_fetched_at && manifest_fetched_at > 3.hours.ago
-    DownloadManifestJob.perform_now(self)
+    # if all services have succeeded and has been fetched in the last three hours, don't refetch
+    # TODO (Sunil) - Ideally we should only retry the failed job
+    return if manifest_fetched_at && manifest_vva_fetched_at && manifest_vbms_fetched_at && manifest_fetched_at > 3.hours.ago
+    DownloadManifestJob.perform_now(self, true)
   end
 
   def prepare_files_for_api!(start_download: false)
