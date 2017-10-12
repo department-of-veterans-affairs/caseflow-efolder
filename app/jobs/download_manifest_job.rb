@@ -2,7 +2,7 @@ class DownloadManifestJob < ActiveJob::Base
   queue_as :default
 
   # these must be implemented by child classes
-  def service(download)
+  def service(_download)
     nil
   end
 
@@ -18,12 +18,10 @@ class DownloadManifestJob < ActiveJob::Base
     "manifest_#{service_name}_fetched_at"
   end
 
-
   def perform(download)
     external_documents = download_from_service(download)
     create_documents(download, external_documents)
   end
-
 
   private
 
@@ -45,14 +43,13 @@ class DownloadManifestJob < ActiveJob::Base
 
   def download_from_service(download)
     s = service(download)
-    return if not s
+    return if !s
     external_documents = s.fetch_documents_for(download)
-    download.update_attributes!({manifest_fetched_at_name => Time.zone.now})
+    download.update_attributes!(manifest_fetched_at_name => Time.zone.now)
     external_documents || []
   end
 
   def max_attempts
     1
   end
-
 end

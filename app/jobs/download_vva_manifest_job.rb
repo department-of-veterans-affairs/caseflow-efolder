@@ -9,5 +9,4 @@ class DownloadVVAManifestJob < DownloadManifestJob
   def service_name
     "vva"
   end
-
 end

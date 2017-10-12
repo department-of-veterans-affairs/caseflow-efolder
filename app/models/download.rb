@@ -224,6 +224,7 @@ class Download < ActiveRecord::Base
   end
 
   def fetch_vbms_manifest
+    return if manifest_vbms_fetched_at && manifest_vbms_fetched_at > 3.hours.ago
     begin
       DownloadVBMSManifestJob.perform_now(self)
     rescue VBMS::ClientError => e
@@ -234,6 +235,7 @@ class Download < ActiveRecord::Base
   end
 
   def fetch_vva_manifest
+    return if manifest_vva_fetched_at && manifest_vva_fetched_at > 3.hours.ago
     begin
       DownloadVVAManifestJob.perform_now(self)
     rescue VVA::ClientError => e
@@ -244,17 +246,11 @@ class Download < ActiveRecord::Base
   end
 
   def force_fetch_manifest_if_expired!
-    error = nil
-    # fetch from both vbms and vva
-    if !manifest_vbms_fetched_at || manifest_vbms_fetched_at < 3.hours.ago
-      error = fetch_vbms_manifest
-    end
+    vbms_error = fetch_vbms_manifest
+    vva_error = fetch_vva_manifest
 
-    if !manifest_vva_fetched_at || manifest_vva_fetched_at < 3.hours.ago
-      error = fetch_vva_manifest || error
-    end
-
-    self.update_attributes!(status: error) if error
+    error = vbms_error || vva_error
+    update_attributes!(status: error) if error
   end
 
   def capture_error(e)

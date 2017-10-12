@@ -2,15 +2,13 @@ class DownloadAllManifestJob < ActiveJob::Base
   queue_as :default
 
   def perform(download)
-    begin
-      # sequentially download documents from all services
-      DownloadVBMSManifestJob.perform_now(download)
-      DownloadVVAManifestJob.perform_now(download)
-    rescue VBMS::ClientError => e
-      capture_error(e, download, :vbms_connection_error)
-    rescue VVA::ClientError => e
-      capture_error(e, download, :vva_connection_error)
-    end
+    # sequentially download documents from all services
+    DownloadVBMSManifestJob.perform_now(download)
+    DownloadVVAManifestJob.perform_now(download)
+  rescue VBMS::ClientError => e
+    capture_error(e, download, :vbms_connection_error)
+  rescue VVA::ClientError => e
+    capture_error(e, download, :vva_connection_error)
   end
 
   def capture_error(e, download, status)
