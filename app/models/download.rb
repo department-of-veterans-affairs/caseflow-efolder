@@ -223,11 +223,43 @@ class Download < ActiveRecord::Base
     end
   end
 
+  def fetch_vbms_manifest
+    begin
+      DownloadVBMSManifestJob.perform_now(self)
+    rescue VBMS::ClientError => e
+      capture_error(e)
+      return :vbms_connection_error
+    end
+    nil
+  end
+
+  def fetch_vva_manifest
+    begin
+      DownloadVVAManifestJob.perform_now(self)
+    rescue VVA::ClientError => e
+      capture_error(e)
+      return :vva_connection_error
+    end
+    nil
+  end
+
   def force_fetch_manifest_if_expired!
-    # if all services have succeeded and has been fetched in the last three hours, don't refetch
-    # TODO (Sunil) - Ideally we should only retry the failed job
-    return if manifest_fetched_at && manifest_vva_fetched_at && manifest_vbms_fetched_at && manifest_fetched_at > 3.hours.ago
-    DownloadManifestJob.perform_now(self, true)
+    error = nil
+    # fetch from both vbms and vva
+    if !manifest_vbms_fetched_at || manifest_vbms_fetched_at < 3.hours.ago
+      error = fetch_vbms_manifest
+    end
+
+    if !manifest_vva_fetched_at || manifest_vva_fetched_at < 3.hours.ago
+      error = fetch_vva_manifest || error
+    end
+
+    self.update_attributes!(status: error) if error
+  end
+
+  def capture_error(e)
+    Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
+    Raven.capture_exception(e)
   end
 
   def prepare_files_for_api!(start_download: false)
@@ -237,7 +269,7 @@ class Download < ActiveRecord::Base
   end
 
   def start_fetch_manifest
-    DownloadManifestJob.perform_later(self)
+    DownloadAllManifestJob.perform_later(self)
   end
 
   private

@@ -5,7 +5,7 @@ describe DownloadManifestJob do
     context "when document list is empty" do
       before do
         allow(VBMSService).to receive(:fetch_documents_for).and_return([])
-        DownloadManifestJob.perform_now(download)
+        DownloadVBMSManifestJob.perform_now(download)
       end
 
       it "saves download status as :no_documents" do
@@ -17,21 +17,9 @@ describe DownloadManifestJob do
       before do
         allow(VBMSService).to receive(:fetch_documents_for).and_raise(VBMS::ClientError)
       end
-      context "saves download status as :vbms_connection_error" do
-        after do
-          expect(download.reload).to be_vbms_connection_error
-        end
-
-        context "when graceful is set to false" do
-          it "does not return documents" do
-            expect(DownloadManifestJob.perform_now(download)).to be_nil
-          end
-        end
-        context "when graceful is set to true" do
-          it "does return documents" do
-            expect(DownloadManifestJob.perform_now(download, true)).to_not be_nil
-          end
-        end
+      it "saves download status as :vbms_connection_error" do
+        expect(DownloadAllManifestJob.perform_now(download)).to be_nil
+        expect(download.reload).to be_vbms_connection_error
       end
     end
 
@@ -43,7 +31,7 @@ describe DownloadManifestJob do
             OpenStruct.new(document_id: "2")
           ])
 
-        DownloadManifestJob.perform_now(download)
+        DownloadVBMSManifestJob.perform_now(download)
       end
 
       it "saves download status as pending confirmation and creates documents" do

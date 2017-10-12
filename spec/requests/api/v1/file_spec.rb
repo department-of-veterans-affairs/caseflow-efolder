@@ -111,7 +111,6 @@ describe "File API v1", type: :request do
 
     context "vbms throws a client error" do
       let(:vbms_error) { true }
-      let(:manifest_fetched_at) { "2015-01-01T17:00:00.000Z" }
       let(:manifest_vva_fetched_at) { "2015-01-01T17:00:00.000Z" }
 
       before do
@@ -127,7 +126,6 @@ describe "File API v1", type: :request do
 
     context "vva throws a client error" do
       let(:vva_error) { true }
-      let(:manifest_fetched_at) { "2015-01-01T17:00:00.000Z" }
       let(:manifest_vbms_fetched_at) { "2015-01-01T17:00:00.000Z" }
 
       before do
