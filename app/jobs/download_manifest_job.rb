@@ -3,15 +3,15 @@ class DownloadManifestJob < ActiveJob::Base
 
   # these must be implemented by child classes
   def get_service(_download)
-    raise "get_service must be implemented by a child class of DownloadManifestJob"
+    fail "get_service must be implemented by a child class of DownloadManifestJob"
   end
 
   def service_name
-    raise "service_name must be implemented by a child class of DownloadManifestJob"
+    fail "service_name must be implemented by a child class of DownloadManifestJob"
   end
 
   def client_error
-    raise "client_error must be implemented by a child class of DownloadManifestJob"
+    fail "client_error must be implemented by a child class of DownloadManifestJob"
   end
 
   def manifest_fetched_at_name
@@ -25,14 +25,12 @@ class DownloadManifestJob < ActiveJob::Base
   # obtain docs from a service and save to the document model
   # retuns <error>, <array of fetched documents>
   def perform(download)
-    begin
-      external_documents = download_from_service(download)
-      create_documents(download, external_documents) if !external_documents.empty?
-      return nil, external_documents
-    rescue client_error => e
-      capture_error(e)
-      return connection_error_tag, nil
-    end
+    external_documents = download_from_service(download)
+    create_documents(download, external_documents) if !external_documents.empty?
+    return nil, external_documents
+  rescue client_error => e
+    capture_error(e)
+    return connection_error_tag, nil
   end
 
   private
