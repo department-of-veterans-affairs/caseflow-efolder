@@ -2,49 +2,57 @@ class DownloadManifestJob < ActiveJob::Base
   queue_as :default
 
   # these must be implemented by child classes
-  def service(_download)
-    nil
+  def get_service(_download)
+    raise "get_service must be implemented by a child class of DownloadManifestJob"
   end
 
   def service_name
-    nil
+    raise "service_name must be implemented by a child class of DownloadManifestJob"
   end
 
   def client_error
-    Error
+    raise "client_error must be implemented by a child class of DownloadManifestJob"
   end
 
   def manifest_fetched_at_name
     "manifest_#{service_name}_fetched_at"
   end
 
+  def connection_error_tag
+    "#{service_name}_connection_error"
+  end
+
+  # obtain docs from a service and save to the document model
+  # retuns <error>, <array of fetched documents>
   def perform(download)
-    external_documents = download_from_service(download)
-    create_documents(download, external_documents)
+    begin
+      external_documents = download_from_service(download)
+      create_documents(download, external_documents) if !external_documents.empty?
+      return nil, external_documents
+    rescue client_error => e
+      capture_error(e)
+      return connection_error_tag, nil
+    end
   end
 
   private
 
-  def create_documents(download, external_documents)
-    # only indicate no_documents status if we've successfully completed fetching from services
-    if external_documents.empty?
-      download.update_attributes!(status: :no_documents)
-      return
-    end
+  def capture_error(e)
+    Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
+    Raven.capture_exception(e)
+  end
 
+  def create_documents(download, external_documents)
     download_documents = DownloadDocuments.new(
       download: download,
       external_documents: external_documents
     )
     download_documents.create_documents
-    download.update_attributes!(status: :pending_confirmation)
-    download_documents
   end
 
   def download_from_service(download)
-    s = service(download)
-    return if !s
-    external_documents = s.fetch_documents_for(download)
+    service = get_service(download)
+    external_documents = service.fetch_documents_for(download)
     download.update_attributes!(manifest_fetched_at_name => Time.zone.now)
     external_documents || []
   end

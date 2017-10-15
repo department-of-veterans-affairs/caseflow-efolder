@@ -3,18 +3,26 @@ class DownloadAllManifestJob < ActiveJob::Base
 
   def perform(download)
     # sequentially download documents from all services
-    DownloadVBMSManifestJob.perform_now(download)
-    DownloadVVAManifestJob.perform_now(download)
-  rescue VBMS::ClientError => e
-    capture_error(e, download, :vbms_connection_error)
-  rescue VVA::ClientError => e
-    capture_error(e, download, :vva_connection_error)
-  end
+    error, vbms_documents = DownloadVBMSManifestJob.perform_now(download)
+    if error
+      download.update_attributes!(status: error)
+      return
+    end
 
-  def capture_error(e, download, status)
-    Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
-    Raven.capture_exception(e)
-    download.update_attributes!(status: status)
-    nil
+    error, vva_documents = DownloadVVAManifestJob.perform_now(download)
+    if error
+      download.update_attributes!(status: error)
+      return
+    end
+
+    external_documents = vbms_documents + vva_documents
+
+    # update status of download
+    if external_documents.empty?
+      download.update_attributes!(status: :no_documents)
+    else
+      download.update_attributes!(status: :pending_confirmation)
+    end
+    external_documents
   end
 end

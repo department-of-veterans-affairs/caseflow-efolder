@@ -225,39 +225,43 @@ class Download < ActiveRecord::Base
     end
   end
 
+  # returns <cached>, <service error>, <docs>
   def fetch_vbms_manifest
-    return if manifest_vbms_fetched_at && manifest_vbms_fetched_at > 3.hours.ago
-    begin
-      DownloadVBMSManifestJob.perform_now(self)
-    rescue VBMS::ClientError => e
-      capture_error(e)
-      return :vbms_connection_error
-    end
-    nil
+    # cache manifests for 3 hours
+    return true, nil, nil if manifest_vbms_fetched_at && manifest_vbms_fetched_at > 3.hours.ago
+    error, docs = DownloadVBMSManifestJob.perform_now(self)
+    return false, error, docs
   end
 
+  # returns <cached>, <error>, <docs>
   def fetch_vva_manifest
-    return if manifest_vva_fetched_at && manifest_vva_fetched_at > 3.hours.ago
-    begin
-      DownloadVVAManifestJob.perform_now(self)
-    rescue VVA::ClientError => e
-      capture_error(e)
-      return :vva_connection_error
-    end
-    nil
+    # cache manifests for 3 hours
+    return true, nil, nil if manifest_vva_fetched_at && manifest_vva_fetched_at > 3.hours.ago
+    error, docs = DownloadVVAManifestJob.perform_now(self)
+    return false, error, docs
   end
 
   def force_fetch_manifest_if_expired!
-    vbms_error = fetch_vbms_manifest
-    vva_error = fetch_vva_manifest
+    vbms_cached, vbms_error, vbms_docs = fetch_vbms_manifest
+    vva_cached, vva_error, vva_docs = fetch_vva_manifest
 
+    # update object if there is an error returned
     error = vbms_error || vva_error
-    update_attributes!(status: error) if error
-  end
+    if error
+      update_attributes!(status: error)
+      return
+    end
 
-  def capture_error(e)
-    Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
-    Raven.capture_exception(e)
+    # only update download status at this point if we're not using
+    # cached manifests
+    if !vbms_cached && !vva_cached
+      external_documents = vbms_docs + vva_docs
+      if external_documents.empty?
+        update_attributes!(status: :no_documents)
+      else
+        update_attributes!(status: :pending_confirmation)
+      end
+    end
   end
 
   def prepare_files_for_api!(start_download: false)
