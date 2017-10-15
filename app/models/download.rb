@@ -230,7 +230,7 @@ class Download < ActiveRecord::Base
     # cache manifests for 3 hours
     return true, nil, nil if manifest_vbms_fetched_at && manifest_vbms_fetched_at > 3.hours.ago
     error, docs = DownloadVBMSManifestJob.perform_now(self)
-    [false, error, docs]
+    [false, error, docs || []]
   end
 
   # returns <cached>, <error>, <docs>
@@ -238,7 +238,7 @@ class Download < ActiveRecord::Base
     # cache manifests for 3 hours
     return true, nil, nil if manifest_vva_fetched_at && manifest_vva_fetched_at > 3.hours.ago
     error, docs = DownloadVVAManifestJob.perform_now(self)
-    [false, error, docs]
+    [false, error, docs || []]
   end
 
   def force_fetch_manifest_if_expired!
