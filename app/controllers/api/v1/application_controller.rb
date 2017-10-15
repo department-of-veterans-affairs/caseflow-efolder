@@ -3,7 +3,7 @@ class Api::V1::ApplicationController < BaseController
   before_action :authenticate_or_authorize
 
   rescue_from StandardError do |error|
-    Raven.capture_exception(error)
+    capture_error(error)
 
     render json: {
       "errors": [
@@ -56,5 +56,10 @@ class Api::V1::ApplicationController < BaseController
 
   def css_id
     request.headers["HTTP_CSS_ID"]
+  end
+
+  def capture_error(e)
+    Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
+    Raven.capture_exception(e)
   end
 end
