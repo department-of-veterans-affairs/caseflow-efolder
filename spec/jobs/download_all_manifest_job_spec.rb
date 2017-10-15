@@ -67,6 +67,5 @@ describe DownloadAllManifestJob do
         expect(download.reload).to be_vva_connection_error
       end
     end
-
   end
 end
