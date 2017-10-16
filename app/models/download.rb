@@ -229,7 +229,7 @@ class Download < ActiveRecord::Base
     documents.where(downloaded_from: service)
   end
 
-  # returns <cached>, <service error>, <docs>
+  # returns <service error>, <docs>
   def fetch_vbms_manifest
     # cache manifests for 3 hours
     return nil, get_cached_documents("VBMS") if manifest_vbms_fetched_at && manifest_vbms_fetched_at > 3.hours.ago
@@ -237,7 +237,7 @@ class Download < ActiveRecord::Base
     [error, docs || []]
   end
 
-  # returns <cached>, <error>, <docs>
+  # returns <service error>, <docs>
   def fetch_vva_manifest
     # cache manifests for 3 hours
     return nil, get_cached_documents("VVA") if manifest_vva_fetched_at && manifest_vva_fetched_at > 3.hours.ago
