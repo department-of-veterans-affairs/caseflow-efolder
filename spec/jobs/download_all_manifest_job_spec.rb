@@ -1,5 +1,8 @@
 describe DownloadAllManifestJob do
   context "#perform" do
+    before do
+      FeatureToggle.enable!(:vva_service)
+    end
     let(:download) { Download.create }
 
     context "when document list is empty" do

@@ -1,5 +1,3 @@
-require "pp"
-
 class DownloadManifestJob < ActiveJob::Base
   queue_as :default
 
@@ -52,8 +50,7 @@ class DownloadManifestJob < ActiveJob::Base
 
   def download_from_service(download)
     service = get_service(download)
-    pp service_name
-    pp service
+    return [] if !service
     external_documents = service.fetch_documents_for(download)
     download.update_attributes!(manifest_fetched_at_name => Time.zone.now)
     external_documents || []
