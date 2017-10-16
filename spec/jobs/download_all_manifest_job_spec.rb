@@ -96,5 +96,4 @@ describe DownloadAllManifestJob do
       end
     end
   end
-
 end
