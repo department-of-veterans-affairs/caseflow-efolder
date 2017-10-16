@@ -16,6 +16,7 @@ describe "Download" do
         "veteran_last_four_ssn" => veteran_last_four_ssn
       }
     }
+    FeatureToggle.enable!(:vva_service)
   end
   after { Timecop.return }
 
