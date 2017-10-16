@@ -5,6 +5,7 @@ describe DownloadAllManifestJob do
     context "when document list is empty" do
       before do
         allow(VBMSService).to receive(:fetch_documents_for).and_return([])
+        allow(VVAService).to receive(:fetch_documents_for).and_return([])
         DownloadAllManifestJob.perform_now(download)
       end
 
@@ -30,7 +31,7 @@ describe DownloadAllManifestJob do
             OpenStruct.new(document_id: "1"),
             OpenStruct.new(document_id: "2")
           ])
-
+        allow(VVAService).to receive(:fetch_documents_for).and_return([])
         DownloadAllManifestJob.perform_now(download)
       end
 
@@ -42,6 +43,7 @@ describe DownloadAllManifestJob do
 
     context "when VVA client fails" do
       before do
+        allow(VBMSService).to receive(:fetch_documents_for).and_return([])
         allow(VVAService).to receive(:fetch_documents_for).and_raise(VVA::ClientError)
       end
       it "saves download status as :vbms_connection_error" do
