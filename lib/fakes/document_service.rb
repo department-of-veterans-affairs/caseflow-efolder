@@ -93,7 +93,7 @@ class Fakes::DocumentService
         document_id: "{#{SecureRandom.hex(4).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(6).upcase}}",
         mime_type: "application/pdf",
         received_at: (i * 2).days.ago,
-        downloaded_from: @service_type
+        downloaded_from: service_type
       )
     end
   end

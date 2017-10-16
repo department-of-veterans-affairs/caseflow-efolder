@@ -225,25 +225,29 @@ class Download < ActiveRecord::Base
     end
   end
 
+  def get_cached_documents(service)
+    self.documents.where(downloaded_from: service)
+  end
+
   # returns <cached>, <service error>, <docs>
   def fetch_vbms_manifest
     # cache manifests for 3 hours
-    return true, nil, nil if manifest_vbms_fetched_at && manifest_vbms_fetched_at > 3.hours.ago
+    return nil, get_cached_documents("VBMS") if manifest_vbms_fetched_at && manifest_vbms_fetched_at > 3.hours.ago
     error, docs = DownloadVBMSManifestJob.perform_now(self)
-    [false, error, docs || []]
+    [error, docs || []]
   end
 
   # returns <cached>, <error>, <docs>
   def fetch_vva_manifest
     # cache manifests for 3 hours
-    return true, nil, nil if manifest_vva_fetched_at && manifest_vva_fetched_at > 3.hours.ago
+    return nil, get_cached_documents("VVA") if manifest_vva_fetched_at && manifest_vva_fetched_at > 3.hours.ago
     error, docs = DownloadVVAManifestJob.perform_now(self)
-    [false, error, docs || []]
+    [error, docs || []]
   end
 
   def force_fetch_manifest_if_expired!
-    vbms_cached, vbms_error, vbms_docs = fetch_vbms_manifest
-    vva_cached, vva_error, vva_docs = fetch_vva_manifest
+    vbms_error, vbms_docs = fetch_vbms_manifest
+    vva_error, vva_docs = fetch_vva_manifest
 
     # update object if there is an error returned
     error = vbms_error || vva_error
@@ -254,13 +258,11 @@ class Download < ActiveRecord::Base
 
     # only update download status at this point if we're not using
     # cached manifests
-    if !vbms_cached && !vva_cached
-      external_documents = vbms_docs + vva_docs
-      if external_documents.empty?
-        update_attributes!(status: :no_documents)
-      else
-        update_attributes!(status: :pending_confirmation)
-      end
+    external_documents = vbms_docs + vva_docs
+    if external_documents.empty?
+      update_attributes!(status: :no_documents)
+    else
+      update_attributes!(status: :pending_confirmation)
     end
   end
 
