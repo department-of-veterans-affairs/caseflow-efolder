@@ -352,13 +352,13 @@ describe "Download" do
         expect(DownloadVVAManifestJob).to_not have_received(:perform_now)
       end
 
-      it "does start the VBMS manifest job" do
+      it "does start the VBMS manifest job when VBMS was fetched more than 3 hours ago" do
         download.update_attributes!(manifest_vbms_fetched_at: Time.zone.now - 4.hours)
         download.force_fetch_manifest_if_expired!
         expect(DownloadVBMSManifestJob).to have_received(:perform_now)
       end
 
-      it "does not start the VBMS manifest job" do
+      it "does not start the VBMS manifest job when VBMS manifest was fetched less than 3 hours ago" do
         download.update_attributes!(manifest_vbms_fetched_at: Time.zone.now - 2.hours)
         download.force_fetch_manifest_if_expired!
         expect(DownloadVBMSManifestJob).to_not have_received(:perform_now)

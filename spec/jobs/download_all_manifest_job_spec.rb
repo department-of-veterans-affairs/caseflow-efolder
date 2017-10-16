@@ -72,5 +72,29 @@ describe DownloadAllManifestJob do
         expect(download.reload).to be_vva_connection_error
       end
     end
+
+    context "when VBMS returns non-empty document list and VVA returns non-empty document" do
+      before do
+        allow(VBMSService).to receive(:fetch_documents_for).and_return(
+          [
+            OpenStruct.new(document_id: "1"),
+            OpenStruct.new(document_id: "2")
+          ])
+
+        allow(VVAService).to receive(:fetch_documents_for).and_return(
+          [
+            OpenStruct.new(document_id: "3"),
+            OpenStruct.new(document_id: "4")
+          ])
+
+        DownloadAllManifestJob.perform_now(download)
+      end
+
+      it "saves download status as pending_confirmation" do
+        expect(DownloadAllManifestJob.perform_now(download)).to_not be_nil
+        expect(download.reload).to be_pending_confirmation
+      end
+    end
   end
+
 end
