@@ -55,7 +55,7 @@ describe Search do
         }
       Fakes::BGSService.sensitive_files = {}
       Download.bgs_service = Fakes::BGSService
-      allow(DownloadManifestJob).to receive(:perform_later)
+      allow(DownloadAllManifestJob).to receive(:perform_later)
 
       Download.delete_all
     end
