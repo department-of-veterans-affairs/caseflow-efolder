@@ -226,7 +226,7 @@ class Download < ActiveRecord::Base
   end
 
   def get_cached_documents(service)
-    self.documents.where(downloaded_from: service)
+    documents.where(downloaded_from: service)
   end
 
   # returns <cached>, <service error>, <docs>
