@@ -16,6 +16,7 @@ describe "Download" do
         "veteran_last_four_ssn" => veteran_last_four_ssn
       }
     }
+    FeatureToggle.enable!(:vva_service)
   end
   after { Timecop.return }
 
@@ -61,7 +62,7 @@ describe "Download" do
 
   context ".start_fetch_manifest" do
     it "creates a job to fetch the download manifest" do
-      expect(DownloadManifestJob).to receive(:perform_later)
+      expect(DownloadAllManifestJob).to receive(:perform_later)
       download.start_fetch_manifest
     end
   end
@@ -318,35 +319,54 @@ describe "Download" do
 
   context "#force_fetch_manifest_if_expired!" do
     before do
-      allow(DownloadManifestJob).to receive(:perform_now)
+      allow(DownloadVBMSManifestJob).to receive(:perform_now)
+      allow(DownloadVVAManifestJob).to receive(:perform_now)
     end
 
-    context "when the manifest has never been fetched" do
+    context "when the vbms manifest has never been fetched" do
       it "starts the manifest job" do
         download.force_fetch_manifest_if_expired!
-        expect(DownloadManifestJob).to have_received(:perform_now)
+        expect(DownloadVBMSManifestJob).to have_received(:perform_now)
       end
     end
 
-    context "when the manifest was fetched more than 3 hours ago" do
+    context "when the VBMS manifest was fetched more than 3 hours ago" do
       before do
-        download.update_attributes!(manifest_fetched_at: Time.zone.now - 4.hours)
+        download.update_attributes!(manifest_vbms_fetched_at: Time.zone.now - 4.hours)
       end
 
-      it "starts the manifest job" do
+      it "starts the VBMS manifest job" do
         download.force_fetch_manifest_if_expired!
-        expect(DownloadManifestJob).to have_received(:perform_now)
+        expect(DownloadVBMSManifestJob).to have_received(:perform_now)
       end
     end
 
-    context "when the manifest was fetched less than 3 hours ago" do
+    context "when the vva manifest was fetched less than 3 hours ago" do
       before do
         download.update_attributes!(manifest_fetched_at: Time.zone.now - 2.hours)
+        download.update_attributes!(manifest_vva_fetched_at: Time.zone.now - 2.hours)
       end
 
-      it "does not start the manifest job" do
+      it "does not start the VVA manifest job" do
         download.force_fetch_manifest_if_expired!
-        expect(DownloadManifestJob).to_not have_received(:perform_now)
+        expect(DownloadVVAManifestJob).to_not have_received(:perform_now)
+      end
+
+      it "does start the VBMS manifest job when VBMS was fetched more than 3 hours ago" do
+        download.update_attributes!(manifest_vbms_fetched_at: Time.zone.now - 4.hours)
+        download.force_fetch_manifest_if_expired!
+        expect(DownloadVBMSManifestJob).to have_received(:perform_now)
+      end
+
+      it "does not start the VBMS manifest job when VBMS manifest was fetched less than 3 hours ago" do
+        download.update_attributes!(manifest_vbms_fetched_at: Time.zone.now - 2.hours)
+        download.force_fetch_manifest_if_expired!
+        expect(DownloadVBMSManifestJob).to_not have_received(:perform_now)
+      end
+
+      it "starts the manifest job when VBMS request failed" do
+        download.force_fetch_manifest_if_expired!
+        expect(DownloadVBMSManifestJob).to have_received(:perform_now)
       end
     end
   end
