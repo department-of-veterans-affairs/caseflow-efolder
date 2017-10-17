@@ -61,7 +61,7 @@ describe Document do
     subject { document.s3_filename }
 
     let(:document) do
-      Document.new(id: 5, document_id: "{TEST}", mime_type: "application/pdf")
+      Document.new(id: 5, document_id: "{TEST}", mime_type: "application/pdf", download_id: 45)
     end
 
     it { is_expected.to eq("{TEST}.pdf") }
