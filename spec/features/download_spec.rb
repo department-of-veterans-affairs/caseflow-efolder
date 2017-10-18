@@ -5,7 +5,7 @@ RSpec.feature "Downloads" do
     @user = User.create(css_id: "123123", station_id: "116")
     @user_download = Download.where(user: @user)
 
-    allow(DownloadManifestJob).to receive(:perform_later)
+    allow(DownloadAllManifestJob).to receive(:perform_later)
     allow(DownloadFilesJob).to receive(:perform_later)
     User.authenticate!
     Download.bgs_service = Fakes::BGSService
@@ -83,7 +83,7 @@ RSpec.feature "Downloads" do
     expect(page).to have_content "We are gathering the list of files in the eFolder now"
     expect(page).to have_current_path(download_path(@download))
     expect(page.evaluate_script("window.DownloadStatus.intervalID")).to be_truthy
-    expect(DownloadManifestJob).to have_received(:perform_later)
+    expect(DownloadAllManifestJob).to have_received(:perform_later)
 
     search = Search.where(user: @user).first
     expect(search).to be_download_created
@@ -186,7 +186,7 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Using demo mode" do
-    expect(DownloadManifestJob).to receive(:perform_later)
+    expect(DownloadAllManifestJob).to receive(:perform_later)
 
     visit "/"
 

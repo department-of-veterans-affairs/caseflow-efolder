@@ -80,7 +80,9 @@ class Fakes::DocumentService
   end
 
   def self.list_fake_documents(file_number)
-    demo = DEMOS[file_number] || DEMOS["DEMODEFAULT"]
+    demo = DEMOS[file_number]
+    return [] if !demo || demo[:num_docs] <= 0
+
     sleep_manifest_load(demo[:manifest_load])
     check_and_raise_errors(demo)
 
@@ -91,7 +93,7 @@ class Fakes::DocumentService
         document_id: "{#{SecureRandom.hex(4).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(6).upcase}}",
         mime_type: "application/pdf",
         received_at: (i * 2).days.ago,
-        downloaded_from: @service_type
+        downloaded_from: service_type
       )
     end
   end
