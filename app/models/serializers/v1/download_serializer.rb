@@ -2,6 +2,8 @@ class Serializers::V1::DownloadSerializer < ActiveModel::Serializer
   type :file
 
   attribute :manifest_fetched_at
+  attribute :manifest_vva_fetched_at
+  attribute :manifest_vbms_fetched_at
 
   attribute :vbms_error do
     object.status == "vbms_connection_error"

@@ -54,7 +54,7 @@ describe Search do
           }
         }
       Fakes::BGSService.sensitive_files = {}
-      allow(DownloadManifestJob).to receive(:perform_later)
+      allow(DownloadAllManifestJob).to receive(:perform_later)
 
       Download.delete_all
     end

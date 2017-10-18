@@ -38,11 +38,12 @@ class DownloadDocuments
     Download.transaction do
       @external_documents.each do |external_document|
         # JRO and SSN are required when searching for a document in VVA
+        type_id = external_document.try(:doc_type) || external_document.type_id
         @download.documents.find_or_initialize_by(document_id: external_document.document_id).tap do |t|
           t.assign_attributes(
             vbms_filename: external_document.filename,
-            type_id: external_document.doc_type || external_document.type_id,
-            type_description: external_document.try(:type_description) || TYPES[external_document.doc_type.to_i],
+            type_id: type_id,
+            type_description: external_document.try(:type_description) || TYPES[type_id.to_i],
             source: external_document.source,
             mime_type: external_document.mime_type,
             received_at: external_document.received_at,
@@ -82,8 +83,7 @@ class DownloadDocuments
     # if the file exists on the filesystem, skip
     return if File.exist?(document.filepath)
 
-    S3Service.fetch_file(document.s3_filename, document.filepath) ||
-      S3Service.fetch_file(document.old_s3_filename, document.filepath)
+    S3Service.fetch_file(document.s3_filename, document.filepath)
   end
 
   def zip_exists_locally?

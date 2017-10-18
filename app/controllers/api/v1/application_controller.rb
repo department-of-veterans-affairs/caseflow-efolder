@@ -2,17 +2,16 @@ class Api::V1::ApplicationController < BaseController
   protect_from_forgery with: :null_session
   before_action :authenticate_or_authorize
 
-  # rescue_from StandardError do |error|
-  #   Raven.capture_exception(error)
-
-  #   render json: {
-  #     "errors": [
-  #       "status": "500",
-  #       "title": "Unknown error occured",
-  #       "detail": "#{error} (Sentry event id: #{Raven.last_event_id})"
-  #     ]
-  #   }, status: 500
-  # end
+  rescue_from StandardError do |error|
+    capture_error(error)
+    render json: {
+      "errors": [
+        "status": "500",
+        "title": "Unknown error occured",
+        "detail": "#{error} (Sentry event id: #{Raven.last_event_id})"
+      ]
+    }, status: 500
+  end
 
   private
 
@@ -35,7 +34,7 @@ class Api::V1::ApplicationController < BaseController
   end
 
   def user_has_role
-    current_user && (current_user.can?("Reader") || current_user.admin?)
+    current_user && (current_user.can?("Reader") || current_user.can?("Hearing Prep") || current_user.admin?)
   end
 
   def authenticate_or_authorize
@@ -62,5 +61,10 @@ class Api::V1::ApplicationController < BaseController
 
   def css_id
     request.headers["HTTP_CSS_ID"]
+  end
+
+  def capture_error(e)
+    Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
+    Raven.capture_exception(e)
   end
 end

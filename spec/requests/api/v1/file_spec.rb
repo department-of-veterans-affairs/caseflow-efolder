@@ -38,12 +38,14 @@ describe "File API v1", focus: true, type: :request do
   before do
     Fakes::BGSService.sensitive_files = {"#{veteran_id}" => false}
     FeatureToggle.enable!(:reader_api)
+    FeatureToggle.enable!(:vva_service)
   end
 
   context "When the file doesn't exist in VBMS or VVA" do
     before do
       allow(VBMSService).to receive(:fetch_documents_for).and_return([])
       allow(VVAService).to receive(:fetch_documents_for).and_return([])
+      Timecop.freeze(Time.utc(2015, 1, 1, 17, 0, 0))
     end
 
     let(:veteran_id) { "21011" }
@@ -55,6 +57,8 @@ describe "File API v1", focus: true, type: :request do
           type: "file",
           attributes: {
             manifest_fetched_at: nil,
+            manifest_vva_fetched_at: "2015-01-01T17:00:00.000Z",
+            manifest_vbms_fetched_at: "2015-01-01T17:00:00.000Z",
             vbms_error: false,
             vva_error: false,
             documents: []
@@ -71,15 +75,24 @@ describe "File API v1", focus: true, type: :request do
   end
 
   context "When a dependency throws an error" do
+    before do
+      Timecop.freeze(Time.utc(2015, 1, 1, 17, 0, 0))
+    end
+
     let(:vva_error) { false }
     let(:vbms_error) { false }
+    let(:manifest_fetched_at) { nil }
+    let(:manifest_vva_fetched_at) { nil }
+    let(:manifest_vbms_fetched_at) { nil }
     let(:response_body) do
       {
         data: {
           id: download.id.to_s,
           type: "file",
           attributes: {
-            manifest_fetched_at: nil,
+            manifest_fetched_at: manifest_fetched_at,
+            manifest_vva_fetched_at: manifest_vva_fetched_at,
+            manifest_vbms_fetched_at: manifest_vbms_fetched_at,
             vbms_error: vbms_error,
             vva_error: vva_error,
             documents: [{
@@ -95,6 +108,7 @@ describe "File API v1", focus: true, type: :request do
 
     context "vbms throws a client error" do
       let(:vbms_error) { true }
+      let(:manifest_vva_fetched_at) { "2015-01-01T17:00:00.000Z" }
 
       before do
         allow(VBMSService).to receive(:fetch_documents_for).and_raise(VBMS::ClientError)
@@ -105,10 +119,22 @@ describe "File API v1", focus: true, type: :request do
         expect(response.code).to eq("200")
         expect(response.body).to eq(response_body)
       end
+
+      it "caches the VVA manifest and only fetches from VBMS the second time" do
+        get "/api/v1/files", nil, headers
+
+        expect(VBMSService).to receive(:fetch_documents_for).exactly(1).times
+        expect(VVAService).to receive(:fetch_documents_for).exactly(0).times
+        get "/api/v1/files", nil, headers
+
+        expect(response.code).to eq("200")
+        expect(response.body).to eq(response_body)
+      end
     end
 
     context "vva throws a client error" do
       let(:vva_error) { true }
+      let(:manifest_vbms_fetched_at) { "2015-01-01T17:00:00.000Z" }
 
       before do
         allow(VVAService).to receive(:fetch_documents_for).and_raise(VVA::ClientError)
@@ -116,6 +142,17 @@ describe "File API v1", focus: true, type: :request do
 
       it "returns existing files, a nil manifest_fetched_at, and vva_error is true" do
         get "/api/v1/files", nil, headers
+        expect(response.code).to eq("200")
+        expect(response.body).to eq(response_body)
+      end
+
+      it "caches the VBMS manifest and doesn't fetch from it again" do
+        get "/api/v1/files", nil, headers
+
+        expect(VBMSService).to receive(:fetch_documents_for).exactly(0).times
+        expect(VVAService).to receive(:fetch_documents_for).exactly(1).times
+        get "/api/v1/files", nil, headers
+
         expect(response.code).to eq("200")
         expect(response.body).to eq(response_body)
       end
@@ -242,6 +279,8 @@ describe "File API v1", focus: true, type: :request do
             type: "file",
             attributes: {
               manifest_fetched_at: "2015-01-01T17:00:00.000Z",
+              manifest_vva_fetched_at: "2015-01-01T17:00:00.000Z",
+              manifest_vbms_fetched_at: "2015-01-01T17:00:00.000Z",
               vbms_error: false,
               vva_error: false,
               documents: [
@@ -271,7 +310,6 @@ describe "File API v1", focus: true, type: :request do
 
       it "returns existing and new files" do
         get "/api/v1/files", nil, headers
-
         expect(response.code).to eq("200")
         expect(response.body).to eq(response_body)
       end

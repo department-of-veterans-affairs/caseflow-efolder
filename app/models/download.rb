@@ -1,3 +1,5 @@
+# rubocop:disable Metrics/ClassLength
+# #626 is a task to refactor the Download model
 class Download < ActiveRecord::Base
   enum status: {
     fetching_manifest: 0,
@@ -209,9 +211,45 @@ class Download < ActiveRecord::Base
     end
   end
 
+  def get_cached_documents(service)
+    documents.where(downloaded_from: service)
+  end
+
+  # returns <service error>, <docs>
+  def fetch_vbms_manifest
+    # cache manifests for 3 hours
+    return nil, get_cached_documents("VBMS") if manifest_vbms_fetched_at && manifest_vbms_fetched_at > 3.hours.ago
+    error, docs = DownloadVBMSManifestJob.perform_now(self)
+    [error, docs || []]
+  end
+
+  # returns <service error>, <docs>
+  def fetch_vva_manifest
+    # cache manifests for 3 hours
+    return nil, get_cached_documents("VVA") if manifest_vva_fetched_at && manifest_vva_fetched_at > 3.hours.ago
+    error, docs = DownloadVVAManifestJob.perform_now(self)
+    [error, docs || []]
+  end
+
   def force_fetch_manifest_if_expired!
-    return if manifest_fetched_at && manifest_fetched_at > 3.hours.ago
-    demo? ? Fakes::DownloadManifestJob.perform_now(self) : DownloadManifestJob.perform_now(self)
+    vbms_error, vbms_docs = fetch_vbms_manifest
+    vva_error, vva_docs = fetch_vva_manifest
+
+    # update object if there is an error returned
+    error = vbms_error || vva_error
+    if error
+      update_attributes!(status: error)
+      return
+    end
+
+    # only update download status at this point if we're not using
+    # cached manifests
+    external_documents = vbms_docs + vva_docs
+    if external_documents.empty?
+      update_attributes!(status: :no_documents)
+    else
+      update_attributes!(status: :pending_confirmation)
+    end
   end
 
   def prepare_files_for_api!(start_download: false)
@@ -221,7 +259,7 @@ class Download < ActiveRecord::Base
   end
 
   def start_fetch_manifest
-    demo? ? Fakes::DownloadManifestJob.perform_later(self) : DownloadManifestJob.perform_later(self)
+    DownloadAllManifestJob.perform_later(self)
   end
 
   private

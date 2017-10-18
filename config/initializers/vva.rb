@@ -1,1 +1,1 @@
-VVAService = (!BaseController.dependencies_faked? ? ExternalApi::VVAService : Fakes::DocumentService)
+VVAService = (!BaseController.dependencies_faked? ? ExternalApi::VVAService : Fakes::VVAService)

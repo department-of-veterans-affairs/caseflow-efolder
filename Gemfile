@@ -15,7 +15,7 @@ gem 'activerecord-jdbcpostgresql-adapter', platforms: :jruby
 
 gem 'aws-sdk', '~> 2'
 
-gem 'prometheus-client'
+gem 'prometheus-client', "~> 0.6"
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
@@ -70,7 +70,7 @@ gem 'redis-namespace'
 gem 'request_store'
 
 gem 'connect_vbms', git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "87d0cab4bb5a87e70d6e2dab81e1da17fc512571"
-gem 'connect_vva', git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "65112ad14e083f3046c3ad856edbf164024a4dc2"
+gem 'connect_vva', git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "f1389dab28158076d856f614ed85af0cf167522f"
 gem 'bgs', git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", :branch => 'master'
 #gem 'connect_vbms', git: 'https://github.com/department-of-veterans-affairs/connect_vbms.git'
 
