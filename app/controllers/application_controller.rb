@@ -54,10 +54,4 @@ class ApplicationController < BaseController
     BaseController.dependencies_faked? || FeatureToggle.enabled?(:vva_service, user: current_user)
   end
   helper_method :vva_feature_enabled?
-
-  class << self
-    def dependencies_faked?
-      Rails.env.development? || Rails.env.test? || Rails.env.demo?
-    end
-  end
 end

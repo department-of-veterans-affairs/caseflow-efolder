@@ -227,11 +227,13 @@ class Download < ActiveRecord::Base
   def fetch_vva_manifest
     # cache manifests for 3 hours
     return nil, get_cached_documents("VVA") if manifest_vva_fetched_at && manifest_vva_fetched_at > 3.hours.ago
+    binding.pry
     error, docs = DownloadVVAManifestJob.perform_now(self)
     [error, docs || []]
   end
 
   def force_fetch_manifest_if_expired!
+
     vbms_error, vbms_docs = fetch_vbms_manifest
     vva_error, vva_docs = fetch_vva_manifest
 
@@ -241,7 +243,7 @@ class Download < ActiveRecord::Base
       update_attributes!(status: error)
       return
     end
-
+    binding.pry
     # only update download status at this point if we're not using
     # cached manifests
     external_documents = vbms_docs + vva_docs

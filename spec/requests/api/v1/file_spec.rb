@@ -1,4 +1,4 @@
-describe "File API v1", focus: true, type: :request do
+describe "File API v1", type: :request do
   let(:user) do
     User.create(
       css_id: "TEST_USER",
@@ -114,7 +114,7 @@ describe "File API v1", focus: true, type: :request do
         allow(VBMSService).to receive(:fetch_documents_for).and_raise(VBMS::ClientError)
       end
 
-      it "returns existing files, a nil manifest_fetched_at, and vbms_error is true" do
+      it "returns existing files, a nil manifest_fetched_at, and vbms_error is true", focus: true do
         get "/api/v1/files", nil, headers
         expect(response.code).to eq("200")
         expect(response.body).to eq(response_body)
