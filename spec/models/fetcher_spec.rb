@@ -1,8 +1,4 @@
 describe Fetcher do
-  before do
-    Download.bgs_service = Fakes::BGSService
-  end
-
   let(:download) { Download.create(file_number: "21012") }
   let(:document) do
     download.documents.build(

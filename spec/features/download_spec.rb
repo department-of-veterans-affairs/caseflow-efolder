@@ -8,7 +8,6 @@ RSpec.feature "Downloads" do
     allow(DownloadManifestJob).to receive(:perform_later)
     allow(DownloadFilesJob).to receive(:perform_later)
     User.authenticate!
-    Download.bgs_service = Fakes::BGSService
   end
 
   scenario "Not login bounces to login page" do

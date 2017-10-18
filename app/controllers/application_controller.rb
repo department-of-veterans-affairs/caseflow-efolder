@@ -5,7 +5,6 @@ class ApplicationController < BaseController
   before_action :check_out_of_service
   before_action :authenticate
   before_action :set_raven_user
-  before_action :configure_bgs
 
   def authenticate
     return true unless current_user.nil?
@@ -40,10 +39,6 @@ class ApplicationController < BaseController
     render "out_of_service", layout: "application" if Rails.cache.read("out_of_service")
   end
 
-  def configure_bgs
-    Download.bgs_service = ExternalApi::BGSService.new(user: current_user) unless Rails.env.test?
-  end
-
   def feedback_url
     unless ENV["CASEFLOW_FEEDBACK_URL"]
       return "https://vaww.vaco.portal.va.gov/sites/BVA/olkm/DigitalService/Lists/Feedback/NewForm.aspx"
@@ -59,4 +54,10 @@ class ApplicationController < BaseController
     BaseController.dependencies_faked? || FeatureToggle.enabled?(:vva_service, user: current_user)
   end
   helper_method :vva_feature_enabled?
+
+  class << self
+    def dependencies_faked?
+      Rails.env.development? || Rails.env.test? || Rails.env.demo?
+    end
+  end
 end

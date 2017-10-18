@@ -1,6 +1,7 @@
 class BaseController < ActionController::Base
   force_ssl if: :ssl_enabled?
   before_action :strict_transport_security
+  before_action :current_user
 
   private
 
@@ -13,9 +14,17 @@ class BaseController < ActionController::Base
   end
 
   def current_user
-    @current_user ||= User.from_session(session, request)
+    @current_user ||= begin
+      user = User.from_session(session, request)
+      RequestStore.store[:current_user] = user
+      user
+    end
   end
   helper_method :current_user
+
+  def configure_bgs
+    Thread.current[:bgs_service] = BGSService.new(user: current_user)
+  end
 
   class << self
     def dependencies_faked?

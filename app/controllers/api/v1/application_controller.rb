@@ -2,22 +2,26 @@ class Api::V1::ApplicationController < BaseController
   protect_from_forgery with: :null_session
   before_action :authenticate_or_authorize
 
-  rescue_from StandardError do |error|
-    Raven.capture_exception(error)
+  # rescue_from StandardError do |error|
+  #   Raven.capture_exception(error)
 
-    render json: {
-      "errors": [
-        "status": "500",
-        "title": "Unknown error occured",
-        "detail": "#{error} (Sentry event id: #{Raven.last_event_id})"
-      ]
-    }, status: 500
-  end
+  #   render json: {
+  #     "errors": [
+  #       "status": "500",
+  #       "title": "Unknown error occured",
+  #       "detail": "#{error} (Sentry event id: #{Raven.last_event_id})"
+  #     ]
+  #   }, status: 500
+  # end
 
   private
 
   def unauthorized
     render json: { status: "unauthorized" }, status: 401
+  end
+
+  def forbidden(reason="unspecified")
+    render json: { status: "forbidden: #{reason}" }, status: 403
   end
 
   def missing_header(header)
@@ -44,7 +48,9 @@ class Api::V1::ApplicationController < BaseController
     if authenticate_with_token
       return missing_header("Station ID") unless station_id
       return missing_header("CSS ID") unless css_id
-      @current_user = User.find_or_create_by(css_id: css_id, station_id: station_id)
+      @current_user = User.find_or_create_by(css_id: css_id, station_id: station_id).tap do |user|
+        user.ip_address = request.remote_ip
+      end
     elsif !user_has_role
       unauthorized
     end

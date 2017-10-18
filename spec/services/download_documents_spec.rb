@@ -8,8 +8,6 @@ end
 
 describe DownloadDocuments do
   before do
-    Download.bgs_service = Fakes::BGSService
-
     Timecop.freeze(Time.utc(2015, 1, 1, 12, 0, 0))
   end
 

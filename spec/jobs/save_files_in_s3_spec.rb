@@ -32,9 +32,6 @@ describe SaveFilesInS3Job do
           "veteran_last_four_ssn" => "2222"
         }
       }
-      Download.bgs_service = Fakes::BGSService
-      # Force the creation of document after BGS has been initialized
-      document
     end
 
     it "saves files in S3" do

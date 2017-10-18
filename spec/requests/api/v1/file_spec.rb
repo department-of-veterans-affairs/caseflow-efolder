@@ -1,4 +1,4 @@
-describe "File API v1", type: :request do
+describe "File API v1", focus: true, type: :request do
   let(:user) do
     User.create(
       css_id: "TEST_USER",
@@ -36,10 +36,7 @@ describe "File API v1", type: :request do
   end
 
   before do
-    Download.bgs_service = Fakes::BGSService
-    # Force the creation of document after BGS has been initialized
-    document
-
+    Fakes::BGSService.sensitive_files = {"#{veteran_id}" => false}
     FeatureToggle.enable!(:reader_api)
   end
 
@@ -184,6 +181,19 @@ describe "File API v1", type: :request do
         body = JSON.parse(response.body)
         expect(body["status"]).to match(/missing.+File.+Number/)
       end
+    end
+  end
+
+  context "When sensitivity is higher than permissions" do
+    before do
+      Fakes::BGSService.sensitive_files = {"#{veteran_id}" => true}
+    end
+
+    it "returns 403" do
+      get "/api/v1/files", nil, headers
+      expect(response.code).to eq("403")
+      body = JSON.parse(response.body)
+      expect(body["status"]).to match(/sensitive/)
     end
   end
 
