@@ -193,29 +193,14 @@ describe DownloadDocuments do
     before do
       allow(S3Service).to receive(:fetch_file)
         .with(document.s3_filename, anything).and_return(s3_file_return)
-      allow(S3Service).to receive(:fetch_file)
-        .with(document.old_s3_filename, anything).and_return(old_s3_file_return)
     end
 
     context "document with s3_filename exists" do
       let(:s3_file_return) { true }
-      let(:old_s3_file_return) { nil }
 
       it "saves document locally" do
         download_documents.fetch_from_s3(document)
         expect(S3Service).to have_received(:fetch_file).with(document.s3_filename, anything)
-        expect(S3Service).not_to have_received(:fetch_file).with(document.old_s3_filename, anything)
-      end
-    end
-
-    context "document with old_s3_filename exists" do
-      let(:s3_file_return) { nil }
-      let(:old_s3_file_return) { true }
-
-      it "saves document locally" do
-        download_documents.fetch_from_s3(document)
-        expect(S3Service).to have_received(:fetch_file).with(document.s3_filename, anything)
-        expect(S3Service).to have_received(:fetch_file).with(document.old_s3_filename, anything)
       end
     end
   end
