@@ -80,7 +80,6 @@ class Fakes::DocumentService
   end
 
   def self.list_fake_documents(file_number)
-    binding.pry
     demo = DEMOS[file_number]
     return [] if !demo || demo[:num_docs] <= 0
 

@@ -14,7 +14,7 @@ describe SaveFilesInS3Job do
         veteran_last_name: "Washington"
       )
     end
-    let(:document) do
+    let!(:document) do
       download.documents.create(
         id: 34,
         document_id: "{3333-3333}",

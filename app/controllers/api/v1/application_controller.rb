@@ -19,7 +19,7 @@ class Api::V1::ApplicationController < BaseController
     render json: { status: "unauthorized" }, status: 401
   end
 
-  def forbidden(reason="unspecified")
+  def forbidden(reason = "unspecified")
     render json: { status: "forbidden: #{reason}" }, status: 403
   end
 

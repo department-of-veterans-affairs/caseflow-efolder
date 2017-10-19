@@ -10,7 +10,7 @@ class Api::V1::FilesController < Api::V1::ApplicationController
 
   def json_files
     download.prepare_files_for_api!(start_download: download?)
-binding.pry
+
     ActiveModelSerializers::SerializableResource.new(
       download,
       each_serializer: Serializers::V1::DownloadSerializer

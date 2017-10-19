@@ -15,7 +15,7 @@ describe "File API v1", type: :request do
       veteran_last_name: "Washington"
     )
   end
-  let(:document) do
+  let!(:document) do
     download.documents.create(
       document_id: "{3333-3333}",
       received_at: Time.utc(2015, 9, 6, 1, 0, 0),
@@ -36,7 +36,7 @@ describe "File API v1", type: :request do
   end
 
   before do
-    Fakes::BGSService.sensitive_files = {"#{veteran_id}" => false}
+    Fakes::BGSService.sensitive_files = { veteran_id.to_s => false }
     FeatureToggle.enable!(:reader_api)
     FeatureToggle.enable!(:vva_service)
   end
@@ -114,7 +114,7 @@ describe "File API v1", type: :request do
         allow(VBMSService).to receive(:fetch_documents_for).and_raise(VBMS::ClientError)
       end
 
-      it "returns existing files, a nil manifest_fetched_at, and vbms_error is true", focus: true do
+      it "returns existing files, a nil manifest_fetched_at, and vbms_error is true" do
         get "/api/v1/files", nil, headers
         expect(response.code).to eq("200")
         expect(response.body).to eq(response_body)
@@ -223,7 +223,7 @@ describe "File API v1", type: :request do
 
   context "When sensitivity is higher than permissions" do
     before do
-      Fakes::BGSService.sensitive_files = {"#{veteran_id}" => true}
+      Fakes::BGSService.sensitive_files = { veteran_id.to_s => true }
     end
 
     it "returns 403" do
