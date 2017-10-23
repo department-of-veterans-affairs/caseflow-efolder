@@ -70,7 +70,7 @@ class Search < ActiveRecord::Base
   def validate!
     if download.demo?
       return true
-
+binding.pry
     elsif !download.case_exists?
       update_attributes!(status: :veteran_not_found)
       return false
