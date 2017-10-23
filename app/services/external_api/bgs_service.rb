@@ -2,7 +2,6 @@ require "bgs"
 
 # Thin interface to all things BGS
 class ExternalApi::BGSService
-  include ActiveModel::Model
 
   def parse_veteran_info(veteran_data)
     ssn = veteran_data[:ssn_nbr]
