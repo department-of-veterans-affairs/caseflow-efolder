@@ -13,12 +13,13 @@ class BaseController < ActionController::Base
     response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains" if request.ssl?
   end
 
+  def current_user=(user)
+    RequestStore.store[:current_user] = user
+    @current_user = user
+  end
+
   def current_user
-    @current_user ||= begin
-      user = User.from_session(session, request)
-      RequestStore.store[:current_user] = user
-      user
-    end
+    @current_user || current_user = User.from_session(session, request)
   end
   helper_method :current_user
 
