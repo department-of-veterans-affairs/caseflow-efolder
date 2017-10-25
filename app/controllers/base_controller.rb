@@ -24,7 +24,7 @@ class BaseController < ActionController::Base
   helper_method :current_user
 
   def configure_bgs
-    Thread.current[:bgs_service] = BGSService.new(user: current_user)
+    Thread.current[:bgs_service] = ::BGSService.new(user: current_user)
   end
 
   class << self
