@@ -29,7 +29,7 @@ class Api::V1::FilesController < Api::V1::ApplicationController
   end
 
   def can_access?
-    forbidden("sensitive record") if !::BGSService.new.check_sensitivity(id)
+    forbidden("sensitive record") if !BGSService.new.check_sensitivity(id)
   end
 
   def download

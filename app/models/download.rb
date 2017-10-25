@@ -60,7 +60,7 @@ class Download < ActiveRecord::Base
   end
 
   def bgs_service
-    @bgs_service ||= ::BGSService.new
+    @bgs_service ||= BGSService.new
   end
 
   def fetch_veteran_info
