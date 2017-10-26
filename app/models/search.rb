@@ -30,13 +30,16 @@ class Search < ActiveRecord::Base
   def perform!
     return true if match_existing_download
 
-    self.download = download_scope.new
+    download = download_scope.new
 
-    return false unless validate!
+    return false unless validate!(download)
 
     transaction do
-      update_attributes!(status: :download_created)
       download.save!
+      update_attributes!(
+        status: :download_created,
+        download: download
+      )
     end
 
     # We fetch the veteran info from BGS before starting the job so that we do any DB
@@ -67,7 +70,7 @@ class Search < ActiveRecord::Base
     true
   end
 
-  def validate!
+  def validate!(download)
     if download.demo?
       return true
 
