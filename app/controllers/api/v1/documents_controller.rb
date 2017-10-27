@@ -22,7 +22,7 @@ class Api::V1::DocumentsController < Api::V1::ApplicationController
   end
 
   def can_access?
-    forbidden("sensitive record") if !BGSService.new.check_sensitivity(document.download.file_number)
+    forbidden("sensitive record") if document.download.user.css_id != current_user.css_id
   end
 
   def document_not_found

@@ -75,6 +75,7 @@ ActiveRecord::Schema.define(version: 20171002200747) do
     t.integer  "user_id"
     t.integer  "zipfile_size",             limit: 8
     t.boolean  "from_api",                           default: false
+    t.datetime "vva_fetched_at"
     t.datetime "manifest_vva_fetched_at"
     t.datetime "manifest_vbms_fetched_at"
   end
