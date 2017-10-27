@@ -23,6 +23,8 @@ class Api::V1::DocumentsController < Api::V1::ApplicationController
 
   def can_access?
     forbidden("sensitive record") if document.can_access?(current_user)
+  rescue ActiveRecord::RecordNotFound
+    document_not_found
   end
 
   def document_not_found

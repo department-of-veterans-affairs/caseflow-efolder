@@ -8,7 +8,8 @@ describe "Documents API v1", type: :request do
       Download.create(
         file_number: "21012",
         veteran_first_name: "George",
-        veteran_last_name: "Washington"
+        veteran_last_name: "Washington",
+        user: current_user
       )
     end
     let(:document) do

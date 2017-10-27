@@ -49,7 +49,7 @@ class Document < ActiveRecord::Base
   end
 
   def can_access?(user)
-    download.user.css_id != user.css_id
+    user && download.user.css_id != user.css_id
   end
 
   def filename_doc_id
