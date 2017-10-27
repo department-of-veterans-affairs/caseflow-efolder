@@ -22,7 +22,7 @@ class Api::V1::DocumentsController < Api::V1::ApplicationController
   end
 
   def can_access?
-    forbidden("sensitive record") if document.download.user.css_id != current_user.css_id
+    forbidden("sensitive record") if document.can_access?(current_user)
   end
 
   def document_not_found

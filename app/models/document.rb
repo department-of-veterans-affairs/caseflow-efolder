@@ -48,6 +48,10 @@ class Document < ActiveRecord::Base
     downloaded_from == "VBMS"
   end
 
+  def can_access?(user)
+    download.user.css_id != user.css_id
+  end
+
   def filename_doc_id
     (document_id || "").gsub(/[}{]/, "")
   end

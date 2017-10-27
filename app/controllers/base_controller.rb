@@ -25,7 +25,7 @@ class BaseController < ActionController::Base
 
   class << self
     def dependencies_faked?
-      (Rails.env.development? || Rails.env.test? || Rails.env.demo?) && Rails.env != 'staging'
+      Rails.env.development? || Rails.env.test? || Rails.env.demo?
     end
   end
 end

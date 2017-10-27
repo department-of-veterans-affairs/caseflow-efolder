@@ -49,9 +49,7 @@ class Api::V1::ApplicationController < BaseController
       return missing_header("Station ID") unless station_id
       return missing_header("CSS ID") unless css_id
 
-      self.current_user = User.find_or_create_by(css_id: css_id, station_id: station_id).tap do |user|
-        user.ip_address = request.remote_ip
-      end
+      self.current_user = User.find_or_create_by(css_id: css_id, station_id: station_id)
     elsif !user_has_role
       unauthorized
     end
