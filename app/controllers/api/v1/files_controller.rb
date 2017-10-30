@@ -1,4 +1,3 @@
-
 class Api::V1::FilesController < Api::V1::ApplicationController
   include RetryHelper
 
