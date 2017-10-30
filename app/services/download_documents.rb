@@ -65,9 +65,12 @@ class DownloadDocuments
       before_document_download(document)
       success, content, error_kind = document.fetch_content!(save_document_metadata: true)
       document.save_locally(content, index) if save_locally && success
-      @download.touch
 
-      return false if error_kind == :caseflow_efolder_error
+      if error_kind == :caseflow_efolder_error
+        return false 
+      else
+        @download.touch
+      end
     end
   end
 
@@ -137,14 +140,6 @@ class DownloadDocuments
   end
 
   private
-
-  def update_document_with_error(document, error)
-    document.update_attributes!(
-      download_status: :failed,
-      error_message: error
-    )
-    @download.touch
-  end
 
   def cleanup!
     files = Dir["#{@download.download_dir}/*"].select do |filepath|
