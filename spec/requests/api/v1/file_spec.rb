@@ -1,4 +1,8 @@
 describe "File API v1", type: :request do
+  # Clear out any authentications from previous tests
+  let!(:current_user) do
+    User.authenticate!()
+  end
   let(:user) do
     User.create(
       css_id: "TEST_USER",

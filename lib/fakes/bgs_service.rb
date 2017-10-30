@@ -4,8 +4,6 @@ class Fakes::BGSService
   cattr_accessor :veteran_info
   cattr_accessor :sensitive_files
 
-  attr_accessor :user
-
   def demo?(file_number)
     file_number =~ /DEMO/
   end
