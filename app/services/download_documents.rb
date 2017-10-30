@@ -64,9 +64,7 @@ class DownloadDocuments
     @download.documents.where(download_status: 0).each_with_index do |document, index|
       before_document_download(document)
       success, content = document.fetch_content!
-      if success
-        document.save_locally(content, index) if save_locally
-      end
+      document.save_locally(content, index) if save_locally && success
       begin
         @download.touch
       rescue ActiveRecord::StaleObjectError
