@@ -29,7 +29,7 @@ class Document < ActiveRecord::Base
     Zaru.sanitize! "#{cropped_type_name}-#{filename_date}-#{filename_doc_id}.#{preferred_extension}"
   end
 
-  def fetch_content!(save_document_metadata: false)
+  def fetch_content!(save_document_metadata:)
     return true, fetcher.content(save_document_metadata: save_document_metadata)
   rescue VBMS::ClientError => e
     update_with_error "VBMS::ClientError::#{e.message}\n#{e.backtrace.join("\n")}"

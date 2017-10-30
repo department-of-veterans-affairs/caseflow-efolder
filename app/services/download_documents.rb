@@ -63,7 +63,7 @@ class DownloadDocuments
     @download.update_attributes!(started_at: Time.zone.now)
     @download.documents.where(download_status: 0).each_with_index do |document, index|
       before_document_download(document)
-      success, content = document.fetch_content!
+      success, content = document.fetch_content!(save_document_metadata: true)
       document.save_locally(content, index) if save_locally && success
       begin
         @download.touch
