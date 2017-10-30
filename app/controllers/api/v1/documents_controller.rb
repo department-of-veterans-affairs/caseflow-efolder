@@ -1,20 +1,37 @@
 class Api::V1::DocumentsController < Api::V1::ApplicationController
   def show
-    document = Document.find(params[:id])
-    # The line below enables document caching for a month.
+    begin
+      document = Document.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      document_not_found
+    end
+
+    # Enable document caching for a month.
     expires_in 30.days, public: true
 
-    send_data(
-      document.fetcher.content(save_document_metadata: false),
-      type: document.mime_type,
-      disposition: "attachment",
-      filename: document.filename
-    )
-  rescue ActiveRecord::RecordNotFound
-    document_not_found
-  end
+    success, content = document.fetch_content!(save_document_metadata: false)
+    if success
+      send_data(
+        content,
+        type: document.mime_type,
+        disposition: "attachment",
+        filename: document.filename
+      )
+    else
+      document_download_filed
+    end
 
   private
+
+  def document_download_filed
+    render json: {
+      "errors": [
+        "status": "502",
+        "title": "Document download failed",
+        "detail": "An upstream dependency failed to fetch document contents."
+      ]
+    }, status: 502
+  end
 
   def document_not_found
     render json: {
