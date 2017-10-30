@@ -48,8 +48,8 @@ class Document < ActiveRecord::Base
     downloaded_from == "VBMS"
   end
 
-  def can_access?(user)
-    user && download.user.css_id != user.css_id
+  def can_be_access_by?(user)
+    user && download.user.css_id == user.css_id
   end
 
   def filename_doc_id

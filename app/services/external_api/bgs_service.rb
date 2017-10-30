@@ -2,7 +2,6 @@ require "bgs"
 
 # Thin interface to all things BGS
 class ExternalApi::BGSService
-
   def parse_veteran_info(veteran_data)
     ssn = veteran_data[:ssn_nbr]
     last_four_ssn = ssn ? ssn[ssn.length - 4..ssn.length] : nil

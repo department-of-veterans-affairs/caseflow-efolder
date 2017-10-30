@@ -50,6 +50,24 @@ describe "Documents API v1", type: :request do
       expect(response.headers["Cache-Control"]).to match(/2592000/)
     end
 
+    context "When user doesn't own corresponding download record" do
+      let(:download) do
+        Download.create(
+          file_number: "21012",
+          veteran_first_name: "George",
+          veteran_last_name: "Washington",
+          user: User.create(css_id: "1234", station_id: "567")
+        )
+      end
+
+      it "returns 403" do
+        get "/api/v1/documents/#{document.id}", nil, headers
+        expect(response.code).to eq("403")
+        body = JSON.parse(response.body)
+        expect(body["status"]).to match(/sensitive/)
+      end
+    end
+
     it "returns 500 on any other error" do
       allow_any_instance_of(Fetcher).to receive(:content).and_raise("Much random error")
       expect(Raven).to receive(:capture_exception)
