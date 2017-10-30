@@ -31,13 +31,12 @@ class Document < ActiveRecord::Base
 
   def save_content!(save_document_metadata: false)
     return true, fetcher.content(save_document_metadata: save_document_metadata)
-    rescue VBMS::ClientError => e
-      update_with_error "VBMS::ClientError::#{e.message}\n#{e.backtrace.join("\n")}"
-      return false, nil
-    rescue VVA::ClientError => e
-      update_with_error "VVA::ClientError::#{e.message}\n#{e.backtrace.join("\n")}"
-      return false, nil
-    end
+  rescue VBMS::ClientError => e
+    update_with_error "VBMS::ClientError::#{e.message}\n#{e.backtrace.join("\n")}"
+    return false, nil
+  rescue VVA::ClientError => e
+    update_with_error "VVA::ClientError::#{e.message}\n#{e.backtrace.join("\n")}"
+    return false, nil
   end
 
   # Since Windows has the maximum length for a path, we crop type_name if the filename is longer than set maximum (issue #371)
