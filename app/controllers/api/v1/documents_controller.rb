@@ -9,7 +9,7 @@ class Api::V1::DocumentsController < Api::V1::ApplicationController
     # Enable document caching for a month.
     expires_in 30.days, public: true
 
-    success, content = document.fetch_content!(save_document_metadata: false)
+    success, content, error_kind = document.fetch_content!(save_document_metadata: false)
     if success
       send_data(
         content,
@@ -18,20 +18,28 @@ class Api::V1::DocumentsController < Api::V1::ApplicationController
         filename: document.filename
       ) if success
     else
-      document_download_filed
+      document_download_failed(error_kind)
     end
   end
 
   private
 
-  def document_download_filed
+  def document_download_failed(error_kind)
+    status = 500
+    message = "Caseflow eFolder failed to fetch document contents."
+
+    if error_kind == :vva_error || error_kind == :vbms_error
+      status = 502
+      message = "An upstream dependency failed to fetch document contents."
+    end
+
     render json: {
       "errors": [
         "status": "502",
         "title": "Document download failed",
-        "detail": "An upstream dependency failed to fetch document contents."
+        "detail": message
       ]
-    }, status: 502
+    }, status: status
   end
 
   def document_not_found

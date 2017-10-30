@@ -33,10 +33,13 @@ class Document < ActiveRecord::Base
     return true, fetcher.content(save_document_metadata: save_document_metadata)
   rescue VBMS::ClientError => e
     update_with_error "VBMS::ClientError::#{e.message}\n#{e.backtrace.join("\n")}"
-    return false, nil
+    return false, nil, :vbms_error
   rescue VVA::ClientError => e
     update_with_error "VVA::ClientError::#{e.message}\n#{e.backtrace.join("\n")}"
-    return false, nil
+    return false, nil, :vva_error
+  rescue ActiveRecord::StaleObjectError
+    Rails.logger.info "Duplicate download detected. Document ID: #{id}"
+    return false, nil, :caseflow_efolder_error
   end
 
   # Since Windows has the maximum length for a path, we crop type_name if the filename is longer than set maximum (issue #371)

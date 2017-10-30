@@ -65,12 +65,8 @@ class DownloadDocuments
       before_document_download(document)
       success, content = document.fetch_content!(save_document_metadata: true)
       document.save_locally(content, index) if save_locally && success
-      begin
-        @download.touch
-      rescue ActiveRecord::StaleObjectError
-        Rails.logger.info "Duplicate download detected. Document ID: #{document.id}"
-        return false
-      end
+      @download.touch
+      return success
     end
   end
 
