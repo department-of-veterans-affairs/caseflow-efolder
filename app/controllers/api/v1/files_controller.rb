@@ -1,4 +1,7 @@
+
 class Api::V1::FilesController < Api::V1::ApplicationController
+  include RetryHelper
+
   def index
     return missing_header("File Number") unless id
     render json: json_files
@@ -13,6 +16,19 @@ class Api::V1::FilesController < Api::V1::ApplicationController
       download,
       each_serializer: Serializers::V1::DownloadSerializer
     ).as_json
+
+  rescue ActiveRecord::StaleObjectError
+    retry_when ActiveRecord::StaleObjectError, limit: 3 do
+      Rails.logger.info "StaleObjectError. Retrying file #: #{download.file_number}, user: #{download.user_id}"
+      # Reload the download so we have a fresh copy.
+      # Otherwise, we'll just throw a StaleObjectError again.
+      download.reload.prepare_files_for_api!(start_download: download?)
+
+      ActiveModelSerializers::SerializableResource.new(
+        download,
+        each_serializer: Serializers::V1::DownloadSerializer
+      ).as_json
+    end
   end
 
   # A caller can pass a download parameter in the url: `?download=true`.
