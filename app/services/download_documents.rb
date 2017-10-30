@@ -66,7 +66,7 @@ class DownloadDocuments
       success, content = document.fetch_content!(save_document_metadata: true)
       document.save_locally(content, index) if save_locally && success
       @download.touch
-      return success
+      return success if !success
     end
   end
 
