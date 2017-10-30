@@ -3,7 +3,7 @@ class Api::V1::DocumentsController < Api::V1::ApplicationController
     begin
       document = Document.find(params[:id])
     rescue ActiveRecord::RecordNotFound
-      document_not_found
+      return document_not_found
     end
 
     # Enable document caching for a month.
