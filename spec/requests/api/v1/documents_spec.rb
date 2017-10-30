@@ -52,11 +52,11 @@ describe "Documents API v1", type: :request do
 
     it "returns 502 if there is a VBMS error" do
       allow_any_instance_of(Fetcher).to receive(:content).and_raise(VBMS::ClientError)
-  
+
       get "/api/v1/documents/#{document.id}"
-  
+
       expect(response.code).to eq("502")
-  
+
       json = JSON.parse(response.body)
       expect(json["errors"].length).to eq(1)
       expect(json["errors"].first["title"]).to eq("Document download failed")
@@ -65,11 +65,11 @@ describe "Documents API v1", type: :request do
 
     it "returns 502 if there is a VVA error" do
       allow_any_instance_of(Fetcher).to receive(:content).and_raise(VVA::ClientError)
-  
+
       get "/api/v1/documents/#{document.id}"
-  
+
       expect(response.code).to eq("502")
-  
+
       json = JSON.parse(response.body)
       expect(json["errors"].length).to eq(1)
       expect(json["errors"].first["title"]).to eq("Document download failed")
@@ -78,11 +78,11 @@ describe "Documents API v1", type: :request do
 
     it "returns 500 if there is a Caseflow eFolder error" do
       allow_any_instance_of(Fetcher).to receive(:content).and_raise(ActiveRecord::StaleObjectError.new(nil, nil))
-  
+
       get "/api/v1/documents/#{document.id}"
-  
+
       expect(response.code).to eq("500")
-  
+
       json = JSON.parse(response.body)
       expect(json["errors"].length).to eq(1)
       expect(json["errors"].first["title"]).to eq("Document download failed")
