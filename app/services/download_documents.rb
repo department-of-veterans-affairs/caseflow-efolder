@@ -67,9 +67,7 @@ class DownloadDocuments
       document.save_locally(content, index) if save_locally && success
       @download.touch
 
-      if error_kind == :caseflow_efolder_error
-        return false
-      end
+      return false if error_kind == :caseflow_efolder_error
     end
   end
 
