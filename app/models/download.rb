@@ -232,7 +232,7 @@ class Download < ActiveRecord::Base
   # returns <service error>, <docs>
   def fetch_vbms_manifest
     # cache manifests for 3 hours
-    return nil, get_cached_documents("VBMS") if manifest_vbms_fetched_at && manifest_vbms_fetched_at > 3.hours.ago
+    return nil, get_cached_documents("VBMS") if vbms_manifest_current
     error, docs = DownloadVBMSManifestJob.perform_now(self)
     [error, docs || []]
   end
@@ -240,9 +240,25 @@ class Download < ActiveRecord::Base
   # returns <service error>, <docs>
   def fetch_vva_manifest
     # cache manifests for 3 hours
-    return nil, get_cached_documents("VVA") if manifest_vva_fetched_at && manifest_vva_fetched_at > 3.hours.ago
+    return nil, get_cached_documents("VVA") if vva_manifest_current
     error, docs = DownloadVVAManifestJob.perform_now(self)
     [error, docs || []]
+  end
+
+  def vva_manifest_current?
+    manifest_vva_fetched_at && manifest_vva_fetched_at > 3.hours.ago
+  end
+
+  def vbms_manifest_current?
+    manifest_vbms_fetched_at && manifest_vbms_fetched_at > 3.hours.ago
+  end
+
+  def all_manifests_current?
+    all_current = if !FeatureToggle.enabled?(:vva_service, user: user)
+                    vbms_manifest_current?
+                  else
+                    vbms_manifest_current? && vva_manifest_current?
+                  end
   end
 
   def force_fetch_manifest_if_expired!
