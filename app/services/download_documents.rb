@@ -66,11 +66,8 @@ class DownloadDocuments
       fetch_result = document.fetch_content!(save_document_metadata: true)
       document.save_locally(fetch_result[:content], index) if save_locally && !fetch_result[:error_kind]
 
-      if fetch_result[:error_kind] == :caseflow_efolder_error
-        return false
-      else
-        @download.touch
-      end
+      return false if fetch_result[:error_kind] == :caseflow_efolder_error
+      @download.touch
     end
   end
 
