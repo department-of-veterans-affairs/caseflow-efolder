@@ -8,6 +8,8 @@ class Api::V1::FilesController < Api::V1::ApplicationController
 
   private
 
+  TRIES_TO_TIMEOUT = 5
+
   def json_files
     download.prepare_files_for_api!(start_download: download?)
 
@@ -21,7 +23,6 @@ class Api::V1::FilesController < Api::V1::ApplicationController
     # the documents list more than once simultaneously. Until we solve our underlying
     # problem with a refactor, let's stop the API caller from receiving the
     # error by waiting and checking if the other manifest fetch has finished.
-    TRIES_TO_TIMEOUT = 5
     tries = 1
     until download.reload.all_manifests_current? || tries >= TRIES_TO_TIMEOUT do
       sleep 2
