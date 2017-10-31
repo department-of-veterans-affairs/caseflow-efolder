@@ -50,4 +50,3 @@ RSpec.describe RetryHelper, type: :helper do
     end
   end
 end
-`
