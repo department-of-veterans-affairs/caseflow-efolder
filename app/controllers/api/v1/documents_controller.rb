@@ -35,7 +35,6 @@ class Api::V1::DocumentsController < Api::V1::ApplicationController
 
     render json: {
       "errors": [
-        "status": "502",
         "title": "Document download failed",
         "detail": message
       ]
@@ -45,7 +44,6 @@ class Api::V1::DocumentsController < Api::V1::ApplicationController
   def document_not_found
     render json: {
       "errors": [
-        "status": "404",
         "title": "Document not found",
         "detail": "A document with that ID was not found in our systems."
       ]
