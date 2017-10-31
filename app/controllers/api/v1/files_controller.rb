@@ -17,17 +17,21 @@ class Api::V1::FilesController < Api::V1::ApplicationController
     ).as_json
 
   rescue ActiveRecord::StaleObjectError
-    retry_when ActiveRecord::StaleObjectError, limit: 3 do
-      Rails.logger.info "StaleObjectError. Retrying file #: #{download.file_number}, user: #{download.user_id}"
-      # Reload the download so we have a fresh copy.
-      # Otherwise, we'll just throw a StaleObjectError again.
-      download.reload.prepare_files_for_api!(start_download: download?)
-
-      ActiveModelSerializers::SerializableResource.new(
-        download,
-        each_serializer: Serializers::V1::DownloadSerializer
-      ).as_json
+    # We expect StaleObjectErrors when a user is trying to fetch
+    # the documents list more than once simultaneously. Until we solve our underlying
+    # problem with a refactor, let's stop the API caller from receiving the
+    # error by waiting and checking if the other manifest fetch has finished.
+    TRIES_TO_TIMEOUT = 5
+    tries = 1
+    until download.reload.all_manifests_current? || tries >= TRIES_TO_TIMEOUT do
+      sleep 2
+      tries += 1
     end
+
+    ActiveModelSerializers::SerializableResource.new(
+      download,
+      each_serializer: Serializers::V1::DownloadSerializer
+    ).as_json
   end
 
   # A caller can pass a download parameter in the url: `?download=true`.
