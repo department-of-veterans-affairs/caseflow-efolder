@@ -1,12 +1,14 @@
 class Fakes::BGSService
+  include ActiveModel::Model
+
   cattr_accessor :veteran_info
   cattr_accessor :sensitive_files
 
-  def self.demo?(file_number)
+  def demo?(file_number)
     file_number =~ /DEMO/
   end
 
-  def self.demo_veteran_info
+  def demo_veteran_info
     [
       {
         "veteran_first_name" => "Joe",
@@ -26,12 +28,12 @@ class Fakes::BGSService
     ].sample
   end
 
-  def self.fetch_veteran_info(file_number)
+  def fetch_veteran_info(file_number)
     return demo_veteran_info if demo?(file_number)
     (veteran_info || {})[file_number]
   end
 
-  def self.check_sensitivity(file_number)
+  def check_sensitivity(file_number)
     !(sensitive_files || {})[file_number]
   end
 end

@@ -59,6 +59,10 @@ class Download < ActiveRecord::Base
     file_number && (!self[:veteran_last_name] || !self[:veteran_first_name])
   end
 
+  def bgs_service
+    @bgs_service ||= BGSService.new
+  end
+
   def fetch_veteran_info
     # This fake is used in the test suite, but let's
     # also use it if we're demo-ing eFolder express.
@@ -68,8 +72,6 @@ class Download < ActiveRecord::Base
     # than a class. Refactor the class method `bgs_service`
     # into an instance one.
     if !@veteran_info_fetched && missing_veteran_info?
-      bgs_service = demo? ? Fakes::BGSService : Download.bgs_service
-
       veteran_info = bgs_service.fetch_veteran_info(file_number)
 
       # Calling update can result in infinite recursion if not all fields are defined
@@ -110,13 +112,13 @@ class Download < ActiveRecord::Base
   end
 
   def case_exists?
-    !Download.bgs_service.fetch_veteran_info(file_number).nil?
+    !bgs_service.fetch_veteran_info(file_number).nil?
   rescue
     false
   end
 
   def can_access?
-    Download.bgs_service.check_sensitivity(file_number)
+    bgs_service.check_sensitivity(file_number)
   end
 
   def confirmed?
@@ -202,22 +204,6 @@ class Download < ActiveRecord::Base
   end
 
   class << self
-    def bgs_service=(service)
-      if Rails.env.test?
-        @bgs_service = service
-      else
-        Thread.current[:download_bgs_service] = service
-      end
-    end
-
-    def bgs_service
-      if Rails.env.test?
-        @bgs_service
-      else
-        Thread.current[:download_bgs_service]
-      end
-    end
-
     def find_or_create_by_user_and_file(user_id, file_id)
       download_scope = Download.where(user_id: user_id, file_number: file_id, from_api: true)
 

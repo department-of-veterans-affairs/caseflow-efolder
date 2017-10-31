@@ -14,7 +14,7 @@ describe SaveFilesInS3Job do
         veteran_last_name: "Washington"
       )
     end
-    let(:document) do
+    let!(:document) do
       download.documents.create(
         id: 34,
         document_id: "{3333-3333}",
@@ -32,9 +32,6 @@ describe SaveFilesInS3Job do
           "veteran_last_four_ssn" => "2222"
         }
       }
-      Download.bgs_service = Fakes::BGSService
-      # Force the creation of document after BGS has been initialized
-      document
     end
 
     it "saves files in S3" do

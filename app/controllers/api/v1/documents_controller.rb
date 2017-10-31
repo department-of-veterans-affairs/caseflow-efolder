@@ -1,11 +1,7 @@
 class Api::V1::DocumentsController < Api::V1::ApplicationController
-  def show
-    begin
-      document = Document.find(params[:id])
-    rescue ActiveRecord::RecordNotFound
-      return document_not_found
-    end
+  before_action :can_access?
 
+  def show
     # Enable document caching for a month.
     expires_in 30.days, public: true
 
@@ -36,6 +32,16 @@ class Api::V1::DocumentsController < Api::V1::ApplicationController
         "detail": message
       ]
     }, status: status
+  end
+
+  def document
+    @document ||= Document.find(params[:id])
+  end
+
+  def can_access?
+    forbidden("sensitive record") if !document.can_be_access_by?(current_user)
+  rescue ActiveRecord::RecordNotFound
+    document_not_found
   end
 
   def document_not_found
