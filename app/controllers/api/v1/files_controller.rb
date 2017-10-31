@@ -30,7 +30,9 @@ class Api::V1::FilesController < Api::V1::ApplicationController
     end
 
     # After we've waited the allotted number of times, let's send back
-    # what we currently have anyway.
+    # what we currently have even if the manifest hasn't finished refreshing.
+    # In some cases, this will not be the refreshed list of documents,
+    # but the caller can also call the API again later.
     ActiveModelSerializers::SerializableResource.new(
       download,
       each_serializer: Serializers::V1::DownloadSerializer
