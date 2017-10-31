@@ -269,7 +269,25 @@ class Download < ActiveRecord::Base
   end
 
   def prepare_files_for_api!(start_download: false)
-    force_fetch_manifest_if_expired!
+    begin
+      force_fetch_manifest_if_expired!
+    rescue ActiveRecord::StaleObjectError
+      # We expect StaleObjectErrors when a user is trying to fetch
+      # the documents list more than once simultaneously. Until we solve our underlying
+      # problem with a refactor, let's stop the API caller from receiving the
+      # error by waiting and checking if the other manifest fetch has finished before
+      # we continue.
+      #
+      # After we've waited the allotted number of times, let's continue back
+      # even if the manifest hasn't finished refreshing.
+      # In some cases, this will not be the refreshed list of documents,
+      # but the caller can always call the API again later.
+      tries = 1
+      until self.reload.all_manifests_current? || tries >= TRIES_TO_TIMEOUT do
+        sleep 2
+        tries += 1
+      end
+    end
 
     start_save_files_in_s3 if start_download
   end

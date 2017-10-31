@@ -11,28 +11,7 @@ class Api::V1::FilesController < Api::V1::ApplicationController
   TRIES_TO_TIMEOUT = 5
 
   def json_files
-    begin
-      download.prepare_files_for_api!(start_download: download?)
-    rescue ActiveRecord::StaleObjectError
-      # We expect StaleObjectErrors when a user is trying to fetch
-      # the documents list more than once simultaneously. Until we solve our underlying
-      # problem with a refactor, let's stop the API caller from receiving the
-      # error by waiting and checking if the other manifest fetch has finished.
-      #
-      # After we've waited the allotted number of times, let's send back
-      # what we currently have even if the manifest hasn't finished refreshing.
-      # In some cases, this will not be the refreshed list of documents,
-      # but the caller can always call the API again later.
-      tries = 1
-      until download.reload.all_manifests_current? || tries >= TRIES_TO_TIMEOUT do
-        sleep 2
-        tries += 1
-      end
-      # If one call with ?download=true and one without it
-      # are racing, then we need to start the S3 job
-      # if the ?download=true call lost the race.
-      download.start_save_files_in_s3 if download?
-    end
+    download.prepare_files_for_api!(start_download: download?)
 
     ActiveModelSerializers::SerializableResource.new(
       download,
