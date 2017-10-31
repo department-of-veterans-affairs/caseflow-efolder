@@ -1,7 +1,7 @@
 describe "File API v1", type: :request do
   # Clear out any authentications from previous tests
   let!(:current_user) do
-    User.authenticate!()
+    User.authenticate!
   end
   let(:user) do
     User.create(
