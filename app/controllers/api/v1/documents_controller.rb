@@ -16,7 +16,7 @@ class Api::V1::DocumentsController < Api::V1::ApplicationController
         type: document.mime_type,
         disposition: "attachment",
         filename: document.filename
-      ) if success
+      )
     else
       document_download_failed(error_kind)
     end
