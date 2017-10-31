@@ -8,7 +8,6 @@ describe "Download" do
   before do
     Timecop.freeze(Time.utc(2015, 1, 1, 12, 0, 0))
 
-    Download.bgs_service = Fakes::BGSService
     Fakes::BGSService.veteran_info = {
       "1234" => {
         "veteran_first_name" => veteran_first_name,
@@ -28,7 +27,6 @@ describe "Download" do
 
     context "when file number is set" do
       before do
-        Download.bgs_service = Fakes::BGSService
         Fakes::BGSService.veteran_info = {
           "1234" => {
             "veteran_first_name" => veteran_first_name,

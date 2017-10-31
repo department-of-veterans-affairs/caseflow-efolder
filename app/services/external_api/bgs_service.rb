@@ -2,10 +2,6 @@ require "bgs"
 
 # Thin interface to all things BGS
 class ExternalApi::BGSService
-  include ActiveModel::Model
-
-  attr_accessor :user
-
   def parse_veteran_info(veteran_data)
     ssn = veteran_data[:ssn_nbr]
     last_four_ssn = ssn ? ssn[ssn.length - 4..ssn.length] : nil
@@ -39,12 +35,16 @@ class ExternalApi::BGSService
   private
 
   def init_client
+    # Fetch current_user from global thread
+    current_user = RequestStore[:current_user]
+
+    # We hardcode the ip since all clients show up as a single IP anyway.
     BGS::Services.new(
       env: Rails.application.config.bgs_environment,
       application: "CASEFLOW",
-      client_ip: user.ip_address,
-      client_station_id: user.station_id,
-      client_username: user.css_id,
+      client_ip: "10.236.66.133",
+      client_station_id: current_user.station_id,
+      client_username: current_user.css_id,
       ssl_cert_key_file: ENV["BGS_KEY_LOCATION"],
       ssl_cert_file: ENV["BGS_CERT_LOCATION"],
       ssl_ca_cert: ENV["BGS_CA_CERT_LOCATION"],

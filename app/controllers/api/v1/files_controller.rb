@@ -1,5 +1,5 @@
 class Api::V1::FilesController < Api::V1::ApplicationController
-  include RetryHelper
+  before_action :can_access?
 
   def index
     return missing_header("File Number") unless id
@@ -43,6 +43,10 @@ class Api::V1::FilesController < Api::V1::ApplicationController
 
   def id
     request.headers["HTTP_FILE_NUMBER"]
+  end
+
+  def can_access?
+    forbidden("sensitive record") if !BGSService.new.check_sensitivity(id)
   end
 
   def download

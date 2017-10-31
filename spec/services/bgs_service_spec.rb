@@ -1,5 +1,5 @@
 describe ExternalApi::BGSService do
-  let(:bgs_service) { ExternalApi::BGSService.new(user: nil) }
+  let(:bgs_service) { ExternalApi::BGSService.new }
 
   context "#parse_veteran_info" do
     before do

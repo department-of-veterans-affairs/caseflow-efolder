@@ -5,7 +5,6 @@ class ApplicationController < BaseController
   before_action :check_out_of_service
   before_action :authenticate
   before_action :set_raven_user
-  before_action :configure_bgs
 
   def authenticate
     return true unless current_user.nil?
@@ -38,10 +37,6 @@ class ApplicationController < BaseController
 
   def check_out_of_service
     render "out_of_service", layout: "application" if Rails.cache.read("out_of_service")
-  end
-
-  def configure_bgs
-    Download.bgs_service = ExternalApi::BGSService.new(user: current_user) unless Rails.env.test?
   end
 
   def feedback_url

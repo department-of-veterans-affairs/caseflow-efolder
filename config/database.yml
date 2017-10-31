@@ -15,6 +15,11 @@ development:
   username: <%= `whoami` %>
   database: caseflow_efolder_development
 
+staging:
+  <<: *default
+  username: <%= `whoami` %>
+  database: caseflow_efolder_staging
+
 test:
   <<: *default
   username: <%= `whoami` %>
