@@ -29,6 +29,8 @@ class Api::V1::FilesController < Api::V1::ApplicationController
       tries += 1
     end
 
+    # After we've waited the allotted number of times, let's send back
+    # what we currently have anyway.
     ActiveModelSerializers::SerializableResource.new(
       download,
       each_serializer: Serializers::V1::DownloadSerializer
