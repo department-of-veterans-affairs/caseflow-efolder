@@ -4,7 +4,6 @@ describe Document do
   before do
     Rails.cache.clear
     Timecop.freeze(Time.utc(2015, 1, 1, 17, 0, 0))
-    Download.bgs_service = Fakes::BGSService
   end
 
   let(:download) { Download.create(file_number: "21012") }
@@ -197,6 +196,25 @@ describe Document do
 
       # Initial call, saving value to cahce
       expect(subject).to eq(3.minutes.round(2))
+    end
+  end
+
+  context "#can_be_access_by?" do
+    let(:user) { User.create(css_id: "123", station_id: "456") }
+    let(:user_without_download) { User.create(css_id: "789", station_id: "456") }
+    let(:download) do
+      Download.create(
+        file_number: "21012",
+        user: user
+      )
+    end
+
+    it "returns true when corresponding download has the passed in user." do
+      expect(document.can_be_access_by?(user)).to eq(true)
+    end
+
+    it "returns false when corresponding download does not have the passed in user." do
+      expect(document.can_be_access_by?(user_without_download)).to eq(false)
     end
   end
 

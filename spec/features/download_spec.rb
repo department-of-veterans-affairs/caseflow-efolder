@@ -8,7 +8,6 @@ RSpec.feature "Downloads" do
     allow(DownloadAllManifestJob).to receive(:perform_later)
     allow(DownloadFilesJob).to receive(:perform_later)
     User.authenticate!
-    Download.bgs_service = Fakes::BGSService
   end
 
   scenario "Not login bounces to login page" do
@@ -16,7 +15,8 @@ RSpec.feature "Downloads" do
 
     visit("/")
     expect(page).to have_content("Test VA Saml")
-    fill_in "Email:", with: "xyz@va.gov"
+    fill_in "css_id", with: "css_id"
+    fill_in "station_id", with: "station_id"
     click_on "Sign In"
 
     puts page.current_path
@@ -27,7 +27,8 @@ RSpec.feature "Downloads" do
     User.unauthenticate!
 
     visit("/")
-    fill_in "Email:", with: "xyz@va.gov"
+    fill_in "css_id", with: "css_id"
+    fill_in "station_id", with: "station_id"
     click_on "Sign In"
 
     click_on "First Last"
