@@ -296,7 +296,6 @@ class Download < ActiveRecord::Base
     DownloadAllManifestJob.perform_later(self)
   end
 
-
   private
 
   def start_save_files_in_s3
