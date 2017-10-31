@@ -10,16 +10,13 @@ class Api::V1::DocumentsController < Api::V1::ApplicationController
     expires_in 30.days, public: true
 
     success, content, error_kind = document.fetch_content!(save_document_metadata: false)
-    if success
-      send_data(
-        content,
-        type: document.mime_type,
-        disposition: "attachment",
-        filename: document.filename
-      )
-    else
-      document_download_failed(error_kind)
-    end
+    return document_download_failed(error_kind) unless success
+    send_data(
+      content,
+      type: document.mime_type,
+      disposition: "attachment",
+      filename: document.filename
+    )
   end
 
   private
