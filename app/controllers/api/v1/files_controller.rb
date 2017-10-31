@@ -8,8 +8,6 @@ class Api::V1::FilesController < Api::V1::ApplicationController
 
   private
 
-  TRIES_TO_TIMEOUT = 5
-
   def json_files
     download.prepare_files_for_api!(start_download: download?)
 

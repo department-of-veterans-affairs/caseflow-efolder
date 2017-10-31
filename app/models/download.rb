@@ -15,6 +15,7 @@ class Download < ActiveRecord::Base
 
   TIMEOUT = 10.minutes
   HOURS_UNTIL_EXPIRY = 72
+  STALE_OBJECT_ERROR_RETRIES = 5
 
   # sort by receipt date; documents with same date ordered as sent by vbms; see
   # https://github.com/department-of-veterans-affairs/caseflow-efolder/issues/213
@@ -283,7 +284,7 @@ class Download < ActiveRecord::Base
       # In some cases, this will not be the refreshed list of documents,
       # but the caller can always call the API again later.
       tries = 1
-      until reload.all_manifests_current? || tries >= TRIES_TO_TIMEOUT
+      until reload.all_manifests_current? || tries >= STALE_OBJECT_ERROR_RETRIES
         sleep 2
         tries += 1
       end
