@@ -240,11 +240,11 @@ class Download < ActiveRecord::Base
   end
 
   def all_manifests_current?
-    all_current = if !FeatureToggle.enabled?(:vva_service, user: user)
-                    vbms_manifest_current?
-                  else
-                    vbms_manifest_current? && vva_manifest_current?
-                  end
+    if !FeatureToggle.enabled?(:vva_service, user: user)
+      vbms_manifest_current?
+    else
+      vbms_manifest_current? && vva_manifest_current?
+    end
   end
 
   def force_fetch_manifest_if_expired!
