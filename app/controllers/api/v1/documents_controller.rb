@@ -9,10 +9,10 @@ class Api::V1::DocumentsController < Api::V1::ApplicationController
     # Enable document caching for a month.
     expires_in 30.days, public: true
 
-    success, content, error_kind = document.fetch_content!(save_document_metadata: false)
-    return document_download_failed(error_kind) unless success
+    fetch_result = document.fetch_content!(save_document_metadata: false)
+    return document_download_failed(fetch_result[:error_kind]) if fetch_result[:error_kind]
     send_data(
-      content,
+      fetch_result[:content],
       type: document.mime_type,
       disposition: "attachment",
       filename: document.filename

@@ -63,10 +63,10 @@ class DownloadDocuments
     @download.update_attributes!(started_at: Time.zone.now)
     @download.documents.where(download_status: 0).each_with_index do |document, index|
       before_document_download(document)
-      success, content, error_kind = document.fetch_content!(save_document_metadata: true)
-      document.save_locally(content, index) if save_locally && success
+      fetch_result = document.fetch_content!(save_document_metadata: true)
+      document.save_locally(fetch_result[:content], index) if save_locally && !fetch_result[:error_kind]
 
-      if error_kind == :caseflow_efolder_error
+      if fetch_result[:error_kind] == :caseflow_efolder_error
         return false
       else
         @download.touch
