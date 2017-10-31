@@ -232,7 +232,7 @@ class Download < ActiveRecord::Base
   # returns <service error>, <docs>
   def fetch_vbms_manifest
     # cache manifests for 3 hours
-    return nil, get_cached_documents("VBMS") if vbms_manifest_current
+    return nil, get_cached_documents("VBMS") if vbms_manifest_current?
     error, docs = DownloadVBMSManifestJob.perform_now(self)
     [error, docs || []]
   end
@@ -240,7 +240,7 @@ class Download < ActiveRecord::Base
   # returns <service error>, <docs>
   def fetch_vva_manifest
     # cache manifests for 3 hours
-    return nil, get_cached_documents("VVA") if vva_manifest_current
+    return nil, get_cached_documents("VVA") if vva_manifest_current?
     error, docs = DownloadVVAManifestJob.perform_now(self)
     [error, docs || []]
   end
