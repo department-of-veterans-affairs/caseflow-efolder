@@ -283,7 +283,7 @@ class Download < ActiveRecord::Base
       # In some cases, this will not be the refreshed list of documents,
       # but the caller can always call the API again later.
       tries = 1
-      until self.reload.all_manifests_current? || tries >= TRIES_TO_TIMEOUT do
+      until reload.all_manifests_current? || tries >= TRIES_TO_TIMEOUT
         sleep 2
         tries += 1
       end
