@@ -55,12 +55,19 @@ class DownloadDocuments
         end
       end
 
+      # TODO(alex): do we still need this field? why are we setting it here?
       @download.update_attributes!(manifest_fetched_at: Time.zone.now)
     end
   end
 
   def download_contents(save_locally: true)
-    @download.update_attributes!(started_at: Time.zone.now)
+    begin
+      @download.update_attributes!(started_at: Time.zone.now)
+    rescue ActiveRecord::StaleObjectError
+      Rails.logger.info "Duplicate download detected. Download ID: #{@download.id}"
+      return false
+    end
+
     @download.documents.where(download_status: 0).each_with_index do |document, index|
       before_document_download(document)
       fetch_result = document.fetch_content!(save_document_metadata: true)
