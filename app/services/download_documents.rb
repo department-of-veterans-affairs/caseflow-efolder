@@ -72,12 +72,11 @@ class DownloadDocuments
         update_document_with_error(document, "VBMS::ClientError::#{e.message}\n#{e.backtrace.join("\n")}")
       rescue VVA::ClientError => e
         update_document_with_error(document, "VVA::ClientError::#{e.message}\n#{e.backtrace.join("\n")}")
-
-      rescue ActiveRecord::StaleObjectError
-        Rails.logger.info "Duplicate download detected. Document ID: #{document.id}"
-        return false
       end
     end
+  rescue ActiveRecord::StaleObjectError
+    Rails.logger.info "Duplicate download detected. Download ID: #{@download.id}"
+    return false
   end
 
   def fetch_from_s3(document)
