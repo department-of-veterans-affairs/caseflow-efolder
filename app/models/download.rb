@@ -15,6 +15,7 @@ class Download < ActiveRecord::Base
 
   TIMEOUT = 10.minutes
   HOURS_UNTIL_EXPIRY = 72
+  STALE_OBJECT_ERROR_RETRIES = 5
 
   # sort by receipt date; documents with same date ordered as sent by vbms; see
   # https://github.com/department-of-veterans-affairs/caseflow-efolder/issues/213
@@ -218,7 +219,7 @@ class Download < ActiveRecord::Base
   # returns <service error>, <docs>
   def fetch_vbms_manifest
     # cache manifests for 3 hours
-    return nil, get_cached_documents("VBMS") if manifest_vbms_fetched_at && manifest_vbms_fetched_at > 3.hours.ago
+    return nil, get_cached_documents("VBMS") if vbms_manifest_current?
     error, docs = DownloadVBMSManifestJob.perform_now(self)
     [error, docs || []]
   end
@@ -226,9 +227,25 @@ class Download < ActiveRecord::Base
   # returns <service error>, <docs>
   def fetch_vva_manifest
     # cache manifests for 3 hours
-    return nil, get_cached_documents("VVA") if manifest_vva_fetched_at && manifest_vva_fetched_at > 3.hours.ago
+    return nil, get_cached_documents("VVA") if vva_manifest_current?
     error, docs = DownloadVVAManifestJob.perform_now(self)
     [error, docs || []]
+  end
+
+  def vva_manifest_current?
+    manifest_vva_fetched_at && manifest_vva_fetched_at > 3.hours.ago
+  end
+
+  def vbms_manifest_current?
+    manifest_vbms_fetched_at && manifest_vbms_fetched_at > 3.hours.ago
+  end
+
+  def all_manifests_current?
+    if !FeatureToggle.enabled?(:vva_service, user: user)
+      vbms_manifest_current?
+    else
+      vbms_manifest_current? && vva_manifest_current?
+    end
   end
 
   def force_fetch_manifest_if_expired!
@@ -253,7 +270,25 @@ class Download < ActiveRecord::Base
   end
 
   def prepare_files_for_api!(start_download: false)
-    force_fetch_manifest_if_expired!
+    begin
+      force_fetch_manifest_if_expired!
+    rescue ActiveRecord::StaleObjectError
+      # We expect StaleObjectErrors when a user is trying to fetch
+      # the documents list more than once simultaneously. Until we solve our underlying
+      # problem with a refactor, let's stop the API caller from receiving the
+      # error by waiting and checking if the other manifest fetch has finished before
+      # we continue.
+      #
+      # After we've waited the allotted number of times, let's continue back
+      # even if the manifest hasn't finished refreshing.
+      # In some cases, this will not be the refreshed list of documents,
+      # but the caller can always call the API again later.
+      tries = 1
+      until reload.all_manifests_current? || tries >= STALE_OBJECT_ERROR_RETRIES
+        sleep 2
+        tries += 1
+      end
+    end
 
     start_save_files_in_s3 if start_download
   end
