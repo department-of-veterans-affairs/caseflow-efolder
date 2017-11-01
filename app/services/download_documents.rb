@@ -55,6 +55,7 @@ class DownloadDocuments
         end
       end
 
+      # TODO(alex): do we still need this field? why are we setting it here?
       @download.update_attributes!(manifest_fetched_at: Time.zone.now)
     end
   end
