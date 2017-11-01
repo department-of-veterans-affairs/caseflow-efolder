@@ -68,7 +68,21 @@ Then to run the test suite:
 > $ rake
 
 
-### Setting up VBMS
+### Run connected to UAT
 
-TODO: fill this out
-You'll need to add all the VBMS info to your `config/secrets.yml`.
+First, you'll need a VA machine. Next, you'll need the secrets file. These come from the appeals deployment repo. Run [decrypt.sh](https://github.com/department-of-veterans-affairs/appeals-deployment/blob/master/decrypt.sh) and source the appropriate secrets environment.
+
+Then you must setup the staging DB. Run:
+
+> $ RAILS_ENV=staging rake db:create
+> $ RAILS_ENV=staging rake db:schema:load
+
+Finally, you can run the server and sidekiq. In one tab you can run:
+
+> $ rails s -e staging
+
+In a separate tab run:
+
+> $ RAILS_ENV=staging bundle exec sidekiq
+
+Now when you go to [localhost:3000](localhost:3000) you'll be prompted with a fake login screen. Use any of these [logins](https://github.com/department-of-veterans-affairs/appeals-qa/blob/master/TestData/LOGINS.md) to impersonate a UAT user.
