@@ -63,8 +63,8 @@ class DownloadDocuments
   def download_contents(save_locally: true)
     @download.update_attributes!(started_at: Time.zone.now)
     @download.documents.where(download_status: 0).each_with_index do |document, index|
-      begin
       before_document_download(document)
+      begin
         content = document.fetcher.content
         document.save_locally(content, index) if save_locally
         @download.touch
