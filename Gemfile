@@ -15,7 +15,7 @@ gem 'activerecord-jdbcpostgresql-adapter', platforms: :jruby
 
 gem 'aws-sdk', '~> 2'
 
-gem 'prometheus-client', "~> 0.6"
+gem 'prometheus-client', '~> 0.7.1'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
