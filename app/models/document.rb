@@ -29,6 +29,22 @@ class Document < ActiveRecord::Base
     Zaru.sanitize! "#{cropped_type_name}-#{filename_date}-#{filename_doc_id}.#{preferred_extension}"
   end
 
+  def fetch_content!(save_document_metadata:)
+    return {
+      content: fetcher.content(save_document_metadata: save_document_metadata),
+      error_kind: nil
+    }
+  rescue VBMS::ClientError => e
+    update_with_error "VBMS::ClientError::#{e.message}\n#{e.backtrace.join("\n")}"
+    return { content: nil, error_kind: :vbms_error }
+  rescue VVA::ClientError => e
+    update_with_error "VVA::ClientError::#{e.message}\n#{e.backtrace.join("\n")}"
+    return { content: nil, error_kind: :vva_error }
+  rescue ActiveRecord::StaleObjectError
+    Rails.logger.info "Duplicate download detected. Document ID: #{id}"
+    return { content: nil, error_kind: :caseflow_efolder_error }
+  end
+
   # Since Windows has the maximum length for a path, we crop type_name if the filename is longer than set maximum (issue #371)
   def cropped_type_name
     over_limit = (Zaru.sanitize! "#{type_name}-#{filename_date}-#{filename_doc_id}.#{preferred_extension}").size - MAXIMUM_FILENAME_LENGTH
@@ -147,6 +163,13 @@ class Document < ActiveRecord::Base
   end
 
   private
+
+  def update_with_error(error)
+    update_attributes!(
+      download_status: :failed,
+      error_message: error
+    )
+  end
 
   def external_service
     from_vva? ? VVAService : VBMSService

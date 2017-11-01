@@ -61,22 +61,21 @@ class DownloadDocuments
   end
 
   def download_contents(save_locally: true)
-    @download.update_attributes!(started_at: Time.zone.now)
+    begin
+      @download.update_attributes!(started_at: Time.zone.now)
+    rescue ActiveRecord::StaleObjectError
+      Rails.logger.info "Duplicate download detected. Download ID: #{@download.id}"
+      return false
+    end
+
     @download.documents.where(download_status: 0).each_with_index do |document, index|
       before_document_download(document)
-      begin
-        content = document.fetcher.content
-        document.save_locally(content, index) if save_locally
-        @download.touch
-      rescue VBMS::ClientError => e
-        update_document_with_error(document, "VBMS::ClientError::#{e.message}\n#{e.backtrace.join("\n")}")
-      rescue VVA::ClientError => e
-        update_document_with_error(document, "VVA::ClientError::#{e.message}\n#{e.backtrace.join("\n")}")
-      end
+      fetch_result = document.fetch_content!(save_document_metadata: true)
+      document.save_locally(fetch_result[:content], index) if save_locally && !fetch_result[:error_kind]
+
+      return false if fetch_result[:error_kind] == :caseflow_efolder_error
+      @download.touch
     end
-  rescue ActiveRecord::StaleObjectError
-    Rails.logger.info "Duplicate download detected. Download ID: #{@download.id}"
-    return false
   end
 
   def fetch_from_s3(document)
@@ -145,14 +144,6 @@ class DownloadDocuments
   end
 
   private
-
-  def update_document_with_error(document, error)
-    document.update_attributes!(
-      download_status: :failed,
-      error_message: error
-    )
-    @download.touch
-  end
 
   def cleanup!
     files = Dir["#{@download.download_dir}/*"].select do |filepath|
