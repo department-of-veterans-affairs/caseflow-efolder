@@ -75,7 +75,7 @@ class DownloadDocuments
       end
     end
   rescue ActiveRecord::StaleObjectError
-    Rails.logger.info "Duplicate download detected. Download ID: #{download.id}"
+    Rails.logger.info "Duplicate download detected. Download ID: #{@download.id}"
     return false
   end
 
