@@ -8,7 +8,6 @@ describe "Download" do
   before do
     Timecop.freeze(Time.utc(2015, 1, 1, 12, 0, 0))
 
-    Download.bgs_service = Fakes::BGSService
     Fakes::BGSService.veteran_info = {
       "1234" => {
         "veteran_first_name" => veteran_first_name,
@@ -28,7 +27,6 @@ describe "Download" do
 
     context "when file number is set" do
       before do
-        Download.bgs_service = Fakes::BGSService
         Fakes::BGSService.veteran_info = {
           "1234" => {
             "veteran_first_name" => veteran_first_name,
@@ -98,6 +96,29 @@ describe "Download" do
     subject { download.time_to_fetch_files }
 
     it { is_expected.to eq(7.hours) }
+  end
+
+  context "#all_manifests_current?" do
+    let(:download) do
+      Download.create(
+        user: User.create(css_id: "CSS_ID", station_id: "STATION_ID"),
+        file_number: file_number,
+        manifest_vva_fetched_at: 10.hours.ago,
+        manifest_vbms_fetched_at: 2.hours.ago
+      )
+    end
+
+    subject { download.all_manifests_current? }
+
+    context "when vva is enabled and the vva manifest has not been fetched in 10 hrs" do
+      before { FeatureToggle.enable!(:vva_service, users: ["CSS_ID"]) }
+      it { is_expected.to eq(false) }
+    end
+
+    context "when vva is disabled and the vva manifest has not been fetched in 10 hrs" do
+      before { FeatureToggle.disable!(:vva_service, users: ["CSS_ID"]) }
+      it { is_expected.to eq(true) }
+    end
   end
 
   context "#s3_filename" do

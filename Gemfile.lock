@@ -35,8 +35,8 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/connect_vva.git
-  revision: f1389dab28158076d856f614ed85af0cf167522f
-  ref: f1389dab28158076d856f614ed85af0cf167522f
+  revision: 67610c998e0dda12e8912eb8ddddb33c3b84925d
+  ref: 67610c998e0dda12e8912eb8ddddb33c3b84925d
   specs:
     connect_vva (0.1)
       savon (~> 2.11, >= 2.11.0)
@@ -244,7 +244,7 @@ GEM
       cliver (~> 0.3.1)
       websocket-driver (>= 0.2.0)
     powerpack (0.1.1)
-    prometheus-client (0.6.0)
+    prometheus-client (0.7.1)
       quantile (~> 0.2.0)
     pry (0.10.4)
       coderay (~> 1.1.0)
@@ -308,6 +308,7 @@ GEM
     redis-store (1.2.0)
       redis (>= 2.2)
     ref (2.0.0)
+    request_store (1.3.2)
     rspec (3.5.0)
       rspec-core (~> 3.5.0)
       rspec-expectations (~> 3.5.0)
@@ -468,7 +469,7 @@ DEPENDENCIES
   moment_timezone-rails
   omniauth-saml-va!
   pg
-  prometheus-client (~> 0.6)
+  prometheus-client (~> 0.7.1)
   pry
   puma
   rack-cors
@@ -477,6 +478,7 @@ DEPENDENCIES
   rb-readline
   redis-namespace
   redis-rails
+  request_store
   rspec
   rspec-rails
   rubocop (~> 0.36.0)

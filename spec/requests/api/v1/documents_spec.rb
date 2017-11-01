@@ -8,7 +8,8 @@ describe "Documents API v1", type: :request do
       Download.create(
         file_number: "21012",
         veteran_first_name: "George",
-        veteran_last_name: "Washington"
+        veteran_last_name: "Washington",
+        user: current_user
       )
     end
     let(:document) do
@@ -22,7 +23,6 @@ describe "Documents API v1", type: :request do
     end
 
     before do
-      Download.bgs_service = Fakes::BGSService
       allow(S3Service).to receive(:fetch_content).and_return("hello there")
       FeatureToggle.enable!(:reader_api)
     end
@@ -48,6 +48,63 @@ describe "Documents API v1", type: :request do
       expect(response.code).to eq("200")
       expect(response.body).to eq("hello there")
       expect(response.headers["Cache-Control"]).to match(/2592000/)
+    end
+
+    it "returns 502 if there is a VBMS error" do
+      allow_any_instance_of(Fetcher).to receive(:content).and_raise(VBMS::ClientError)
+
+      get "/api/v1/documents/#{document.id}"
+
+      expect(response.code).to eq("502")
+
+      json = JSON.parse(response.body)
+      expect(json["errors"].length).to eq(1)
+      expect(json["errors"].first["title"]).to eq("Document download failed")
+      expect(json["errors"].first["detail"]).to eq("An upstream dependency failed to fetch document contents.")
+    end
+
+    it "returns 502 if there is a VVA error" do
+      allow_any_instance_of(Fetcher).to receive(:content).and_raise(VVA::ClientError)
+
+      get "/api/v1/documents/#{document.id}"
+
+      expect(response.code).to eq("502")
+
+      json = JSON.parse(response.body)
+      expect(json["errors"].length).to eq(1)
+      expect(json["errors"].first["title"]).to eq("Document download failed")
+      expect(json["errors"].first["detail"]).to eq("An upstream dependency failed to fetch document contents.")
+    end
+
+    it "returns 500 if there is a Caseflow eFolder error" do
+      allow_any_instance_of(Fetcher).to receive(:content).and_raise(ActiveRecord::StaleObjectError.new(nil, nil))
+
+      get "/api/v1/documents/#{document.id}"
+
+      expect(response.code).to eq("500")
+
+      json = JSON.parse(response.body)
+      expect(json["errors"].length).to eq(1)
+      expect(json["errors"].first["title"]).to eq("Document download failed")
+      expect(json["errors"].first["detail"]).to eq("Caseflow eFolder failed to fetch document contents.")
+    end
+
+    context "When user doesn't own corresponding download record" do
+      let(:download) do
+        Download.create(
+          file_number: "21012",
+          veteran_first_name: "George",
+          veteran_last_name: "Washington",
+          user: User.create(css_id: "1234", station_id: "567")
+        )
+      end
+
+      it "returns 403" do
+        get "/api/v1/documents/#{document.id}", nil, headers
+        expect(response.code).to eq("403")
+        body = JSON.parse(response.body)
+        expect(body["status"]).to match(/sensitive/)
+      end
     end
 
     it "returns 500 on any other error" do
