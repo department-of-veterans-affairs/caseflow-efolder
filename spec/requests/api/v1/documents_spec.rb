@@ -50,6 +50,45 @@ describe "Documents API v1", type: :request do
       expect(response.headers["Cache-Control"]).to match(/2592000/)
     end
 
+    it "returns 502 if there is a VBMS error" do
+      allow_any_instance_of(Fetcher).to receive(:content).and_raise(VBMS::ClientError)
+
+      get "/api/v1/documents/#{document.id}"
+
+      expect(response.code).to eq("502")
+
+      json = JSON.parse(response.body)
+      expect(json["errors"].length).to eq(1)
+      expect(json["errors"].first["title"]).to eq("Document download failed")
+      expect(json["errors"].first["detail"]).to eq("An upstream dependency failed to fetch document contents.")
+    end
+
+    it "returns 502 if there is a VVA error" do
+      allow_any_instance_of(Fetcher).to receive(:content).and_raise(VVA::ClientError)
+
+      get "/api/v1/documents/#{document.id}"
+
+      expect(response.code).to eq("502")
+
+      json = JSON.parse(response.body)
+      expect(json["errors"].length).to eq(1)
+      expect(json["errors"].first["title"]).to eq("Document download failed")
+      expect(json["errors"].first["detail"]).to eq("An upstream dependency failed to fetch document contents.")
+    end
+
+    it "returns 500 if there is a Caseflow eFolder error" do
+      allow_any_instance_of(Fetcher).to receive(:content).and_raise(ActiveRecord::StaleObjectError.new(nil, nil))
+
+      get "/api/v1/documents/#{document.id}"
+
+      expect(response.code).to eq("500")
+
+      json = JSON.parse(response.body)
+      expect(json["errors"].length).to eq(1)
+      expect(json["errors"].first["title"]).to eq("Document download failed")
+      expect(json["errors"].first["detail"]).to eq("Caseflow eFolder failed to fetch document contents.")
+    end
+
     context "When user doesn't own corresponding download record" do
       let(:download) do
         Download.create(

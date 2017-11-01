@@ -98,6 +98,29 @@ describe "Download" do
     it { is_expected.to eq(7.hours) }
   end
 
+  context "#all_manifests_current?" do
+    let(:download) do
+      Download.create(
+        user: User.create(css_id: "CSS_ID", station_id: "STATION_ID"),
+        file_number: file_number,
+        manifest_vva_fetched_at: 10.hours.ago,
+        manifest_vbms_fetched_at: 2.hours.ago
+      )
+    end
+
+    subject { download.all_manifests_current? }
+
+    context "when vva is enabled and the vva manifest has not been fetched in 10 hrs" do
+      before { FeatureToggle.enable!(:vva_service, users: ["CSS_ID"]) }
+      it { is_expected.to eq(false) }
+    end
+
+    context "when vva is disabled and the vva manifest has not been fetched in 10 hrs" do
+      before { FeatureToggle.disable!(:vva_service, users: ["CSS_ID"]) }
+      it { is_expected.to eq(true) }
+    end
+  end
+
   context "#s3_filename" do
     subject { download.s3_filename }
     it { is_expected.to eq("#{download.id}-download.zip") }
