@@ -35,6 +35,8 @@ gem 'therubyrhino', platforms: :jruby
 # Error reporting to Sentry
 gem "sentry-raven"
 
+gem 'newrelic_rpm'
+
 # SSOI
 gem 'omniauth-saml-va', git: 'https://github.com/department-of-veterans-affairs/omniauth-saml-va', branch: 'paultag/css'
 
