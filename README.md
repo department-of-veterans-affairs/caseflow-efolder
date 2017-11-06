@@ -67,6 +67,15 @@ Then to run the test suite:
 
 > $ rake
 
+## Monitoring
+We use NewRelic to monitor the app. By default, it's disabled locally. To enable it, do:
+
+```
+NEW_RELIC_LICENSE_KEY='<key as displayed on NewRelic.com>' NEW_RELIC_AGENT_ENABLED=true bundle exec rails s
+```
+
+You may wish to do this if you are debugging our NewRelic integration, for instance.
+
 
 ### Run connected to UAT
 
