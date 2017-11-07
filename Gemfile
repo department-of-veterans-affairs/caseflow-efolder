@@ -15,7 +15,7 @@ gem 'activerecord-jdbcpostgresql-adapter', platforms: :jruby
 
 gem 'aws-sdk', '~> 2'
 
-gem 'prometheus-client', "~> 0.6"
+gem 'prometheus-client', '~> 0.7.1'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
@@ -34,6 +34,8 @@ gem 'therubyrhino', platforms: :jruby
 
 # Error reporting to Sentry
 gem "sentry-raven"
+
+gem 'newrelic_rpm'
 
 # SSOI
 gem 'omniauth-saml-va', git: 'https://github.com/department-of-veterans-affairs/omniauth-saml-va', branch: 'paultag/css'

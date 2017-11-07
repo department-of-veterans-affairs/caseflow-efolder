@@ -27,6 +27,7 @@ class DownloadManifestJob < ActiveJob::Base
   def perform(download)
     external_documents = download_from_service(download)
     create_documents(download, external_documents) if !external_documents.empty?
+    download.update_attributes!(manifest_fetched_at_name => Time.zone.now)
     return nil, external_documents
   rescue client_error => e
     capture_error(e)
@@ -52,7 +53,6 @@ class DownloadManifestJob < ActiveJob::Base
     service = get_service(download)
     return [] if !service
     external_documents = service.fetch_documents_for(download)
-    download.update_attributes!(manifest_fetched_at_name => Time.zone.now)
     external_documents || []
   end
 

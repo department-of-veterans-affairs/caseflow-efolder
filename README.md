@@ -67,8 +67,31 @@ Then to run the test suite:
 
 > $ rake
 
+## Monitoring
+We use NewRelic to monitor the app. By default, it's disabled locally. To enable it, do:
 
-### Setting up VBMS
+```
+NEW_RELIC_LICENSE_KEY='<key as displayed on NewRelic.com>' NEW_RELIC_AGENT_ENABLED=true bundle exec rails s
+```
 
-TODO: fill this out
-You'll need to add all the VBMS info to your `config/secrets.yml`.
+You may wish to do this if you are debugging our NewRelic integration, for instance.
+
+
+### Run connected to UAT
+
+First, you'll need a VA machine. Next, you'll need the secrets file. These come from the appeals deployment repo. Run [decrypt.sh](https://github.com/department-of-veterans-affairs/appeals-deployment/blob/master/decrypt.sh) and source the appropriate secrets environment.
+
+Then you must setup the staging DB. Run:
+
+> $ RAILS_ENV=staging rake db:create
+> $ RAILS_ENV=staging rake db:schema:load
+
+Finally, you can run the server and sidekiq. In one tab you can run:
+
+> $ rails s -e staging
+
+In a separate tab run:
+
+> $ RAILS_ENV=staging bundle exec sidekiq
+
+Now when you go to [localhost:3000](localhost:3000) you'll be prompted with a fake login screen. Use any of these [logins](https://github.com/department-of-veterans-affairs/appeals-qa/blob/master/TestData/LOGINS.md) to impersonate a UAT user.
