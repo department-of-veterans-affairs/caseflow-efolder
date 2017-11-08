@@ -228,6 +228,7 @@ GEM
     neat (2.1.0)
       sass (~> 3.4)
       thor (~> 0.19)
+    newrelic_rpm (4.5.0.337)
     nokogiri (1.8.1)
       mini_portile2 (~> 2.3.0)
     nori (2.6.0)
@@ -469,6 +470,7 @@ DEPENDENCIES
   launchy
   mini_magick
   moment_timezone-rails
+  newrelic_rpm
   omniauth-saml-va!
   pg
   prometheus-client (~> 0.7.1)
@@ -506,4 +508,4 @@ DEPENDENCIES
   zaru
 
 BUNDLED WITH
-   1.16.0.pre.2
+   1.16.0
