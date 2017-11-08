@@ -23,8 +23,11 @@ class DownloadManifestJob < ActiveJob::Base
   end
 
   # obtain docs from a service and save to the document model
-  # retuns <error>, <array of fetched documents>
+  # returns <error>, <array of fetched documents>
   def perform(download)
+    # Short circuit if the current service is nil (i.e. not enabled)
+    return nil, [] if !get_service(download)
+
     external_documents = download_from_service(download)
     create_documents(download, external_documents) if !external_documents.empty?
     download.update_attributes!(manifest_fetched_at_name => Time.zone.now)
@@ -51,7 +54,6 @@ class DownloadManifestJob < ActiveJob::Base
 
   def download_from_service(download)
     service = get_service(download)
-    return [] if !service
     external_documents = service.fetch_documents_for(download)
     external_documents || []
   end
