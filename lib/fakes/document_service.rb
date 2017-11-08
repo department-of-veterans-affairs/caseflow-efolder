@@ -7,7 +7,7 @@ class Fakes::DocumentService
   DEMOS = {
     "DEMO1" => {
       manifest_load: 4,
-      num_docs: 50,
+      num_docs: 1,
       max_file_load: 4
     },
     "DEMO2" => {
@@ -62,7 +62,7 @@ class Fakes::DocumentService
     fail VBMS::ClientError if errors && rand(5) == 3
     fail VVA::ClientError if errors && rand(5) == 2
 
-    IO.binread(Rails.root + "lib/pdfs/#{document.id % 5}.pdf")
+    IO.binread(Rails.root + "lib/pdfs/#{document.id % 5}.tiff")
   end
 
   # can be overridden by child classes to provide more specific error
@@ -88,10 +88,10 @@ class Fakes::DocumentService
 
     (0..(demo[:num_docs] || 0)).to_a.map do |i|
       OpenStruct.new(
-        vbms_filename: "happy-thursday-#{SecureRandom.hex}.pdf",
+        vbms_filename: "happy-thursday-#{SecureRandom.hex}.tiff",
         type_id: Document::TYPES.keys.sample,
         document_id: "{#{SecureRandom.hex(4).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(6).upcase}}",
-        mime_type: "application/pdf",
+        mime_type: "image/tiff",
         received_at: (i * 2).days.ago,
         downloaded_from: service_type
       )

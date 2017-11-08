@@ -1,4 +1,4 @@
-#!groovy
+#!/usr/env groovy
 
 // This is a boilerplate script used by Jenkins to run the appeals-deployment
 // pipeline. It clones the appeals-deployment repo and execute a file called

@@ -217,6 +217,7 @@ GEM
     mime-types (3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
+    mini_magick (4.8.0)
     mini_portile2 (2.3.0)
     minitest (5.10.1)
     moment_timezone-rails (0.5.0)
@@ -466,6 +467,7 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jquery-rails
   launchy
+  mini_magick
   moment_timezone-rails
   omniauth-saml-va!
   pg
