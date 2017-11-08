@@ -29,7 +29,7 @@ describe DownloadVVAManifestJob do
         FeatureToggle.disable!(:vva_service)
       end
 
-      it "creates documents and updates vva_manifest_fetched_at" do
+      it "doesn't create documents and or update vva_manifest_fetched_at" do
         DownloadVVAManifestJob.perform_now(download)
 
         expect(download.reload.manifest_vva_fetched_at).to be_nil
