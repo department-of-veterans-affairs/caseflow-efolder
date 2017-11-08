@@ -21,7 +21,7 @@ class Fetcher
                           service: :image_magick,
                           name: "convert") do
       base_path = File.join(Rails.application.config.download_filepath, "tiff_convert")
-      Dir.mkdir(base_path) unless File.exist?(base_path)
+      FileUtils.mkdir_p(base_path) unless File.exist?(base_path)
 
       tiff_name = File.join(base_path, File.basename(document.s3_filename, ".*") + ".tiff")
 
@@ -30,12 +30,13 @@ class Fetcher
       end
 
       document.update_attributes!(converted_mime_type: "application/pdf")
+      pdf_name = File.join(base_path, document.s3_filename)
 
       image = MiniMagick::Image.open(tiff_name)
       image.format "pdf"
-      pdf_version = image.to_blob
+      image.write pdf_name
 
-      pdf_version
+      File.open(pdf_name, "r", &:read)
     end
   end
 
