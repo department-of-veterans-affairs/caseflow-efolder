@@ -10,9 +10,9 @@ Tables:
     t.string   "veteran_last_name"
     t.string   "veteran_first_name"
     t.string   "veteran_last_four_ssn"
-    t.zipfile_size,          limit: 8  # will be updated based on the changes to the documents
-    t.datetime "created_at",                                      null: false
-    t.datetime "updated_at",                                     null: false
+    t.zipfile_size,                 # will be updated based on the changes to the documents
+    t.datetime "created_at",
+    t.datetime "updated_at",
   end
 ```
 
@@ -20,11 +20,11 @@ Tables:
   # Having this separately will allow us to start fetching manifests in parallel
   create_table "manifest_statuses" |t|
     t.integer  "manifest_id"
-    t.integer  "status",  # success, failed, pending
-    t.string "source" #  "VBMS" or "VVA"
+    t.integer  "status",            # success, failed, pending
+    t.string "source"               # "VBMS" or "VVA"
     t.datetime "fetched_at"         # we will use this field to determine if manifest has expired
-    t.datetime "created_at",                                      null: false
-    t.datetime "updated_at",                                     null: false
+    t.datetime "created_at",
+    t.datetime "updated_at",
   end
 ```
 
@@ -33,7 +33,7 @@ Tables:
   create_table "user_manifests" |t|
     t.integer  "manifest_id"
     t.integer  "user_id"
-    t.integer  "status",    # UI specific statuses: fetching_manifest, no_documents, etc
+    t.integer  "status",         # UI specific statuses: fetching_manifest, no_documents, etc
     t.datetime "created_at",     # We can use this field to display user's history in the UI
     t.datetime "updated_at",
   end
@@ -45,20 +45,20 @@ Tables:
     t.integer  "status",  default: 0
     t.string   "external_document_id"
     t.string   "mime_type"
-    t.datetime "received_at" # VBMS and VVA timestamp
+    t.datetime "received_at"      # VBMS and VVA timestamp
     t.string   "type_description"
-    t.string   "type_id" # will be deprecated when we move to the VBMS new eFolder API
-    t.string   "vbms_filename" # deprecate
-    t.string   "filepath" # deprecate??
-    t.string   "jro" # deprecate??
-    t.string   "ssn" # deprecate??
-    t.integer  "size" #deprecate??
-    t.datetime "created_at",                        null: false
-    t.datetime "updated_at",                        null: false
+    t.string   "type_id"          # will be deprecated when we move to the VBMS new eFolder API
+    t.string   "vbms_filename"    # deprecate
+    t.string   "filepath"         # deprecate??
+    t.string   "jro"              # deprecate??
+    t.string   "ssn"              # deprecate??
+    t.integer  "size"             # deprecate??
+    t.datetime "created_at",
+    t.datetime "updated_at",
   end
 ```
 
-Open discussion:
+Open questions:
 1. Based on the discussion with multiple people, we don't need to expire `manifests`. We will have `user_manifests` and `documents` tables that will have all the necessary information to answer questions such as "this user downloaded XYZ documents on XXX date".
 2. Do we need `searches` table?
 3. Using this data model, how can we migrate the existing data?
