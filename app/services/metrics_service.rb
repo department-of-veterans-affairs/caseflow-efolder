@@ -11,7 +11,7 @@ class MetricsService
     stopwatch = Benchmark.measure do
       return_value = yield
     end
-      Rails.logger.info("#{service}_request_latency is #{stopwatch.real}")
+
     if service
       metric = PrometheusService.send("#{service}_request_latency".to_sym)
 

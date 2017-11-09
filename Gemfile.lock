@@ -252,6 +252,9 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
+    pry-byebug (3.4.3)
+      byebug (>= 9.0, < 9.1)
+      pry (~> 0.10)
     public_suffix (2.0.5)
     puma (3.6.2)
     quantile (0.2.0)
@@ -475,6 +478,7 @@ DEPENDENCIES
   pg
   prometheus-client (~> 0.7.1)
   pry
+  pry-byebug
   puma
   rack-cors
   rails (= 4.2.7.1)

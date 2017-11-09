@@ -99,6 +99,7 @@ group :development, :test do
   gem 'bundler-audit'
 
   gem 'pry'
+  gem 'pry-byebug'
 
   gem 'rubocop', '~> 0.36.0', require: false
   gem 'scss_lint', require: false

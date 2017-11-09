@@ -23,7 +23,7 @@ class Fetcher
       base_path = File.join(Rails.application.config.download_filepath, "tiff_convert")
       FileUtils.mkdir_p(base_path) unless File.exist?(base_path)
 
-      tiff_name = File.join(base_path, File.basename(document.s3_filename, ".*") + ".tiff")
+      tiff_name = File.join(base_path, document.s3_filename)
 
       File.open(tiff_name, "wb") do |f|
         f.write(result)
@@ -32,9 +32,10 @@ class Fetcher
       document.update_attributes!(converted_mime_type: "application/pdf")
       pdf_name = File.join(base_path, document.s3_filename)
 
-      image = MiniMagick::Image.open(tiff_name)
-      image.format "pdf"
-      image.write pdf_name
+      MiniMagick::Tool::Convert.new do |convert|
+        convert << tiff_name
+        convert << pdf_name
+      end
 
       File.open(pdf_name, "r", &:read)
     end
@@ -42,10 +43,10 @@ class Fetcher
 
   def download_from_service
     return cached_content if cached_content
-    external_service.fetch_document_file(document).tap do |result|
-      result = convert_from_tiff(result) if document.mime_type == "image/tiff"
-      S3Service.store_file(document.s3_filename, result)
-    end
+
+    result = external_service.fetch_document_file(document)
+    result = convert_from_tiff(result) if document.mime_type == "image/tiff"
+    S3Service.store_file(document.s3_filename, result)
   end
 
   def download_from_service_and_record
