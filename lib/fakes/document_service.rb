@@ -93,10 +93,10 @@ class Fakes::DocumentService
     type = document_type
 
     OpenStruct.new(
-      vbms_filename: "happy-thursday-#{SecureRandom.hex}.#{type.ext}",
+      vbms_filename: "happy-thursday-#{SecureRandom.hex}.#{type[:ext]}",
       type_id: Document::TYPES.keys.sample,
       document_id: "{#{SecureRandom.hex(4).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(6).upcase}}",
-      mime_type: type.mime_type,
+      mime_type: type[:mime_type],
       received_at: (i * 2).days.ago,
       downloaded_from: service_type
     )

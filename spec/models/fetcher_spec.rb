@@ -10,10 +10,7 @@ describe Fetcher do
     )
   end
   let(:tiff_file) { Rails.root + "lib/tiffs/0.tiff" }
-  let(:pdf_file) { Rails.root + "lib/pdfs/0.pdf" }
-
   let(:tiff_content) { File.open(tiff_file, "r", &:read) }
-  let(:pdf_content) { File.open(pdf_file, "r", &:read) }
 
   let(:fake_pdf_content) { "From VBMS" }
 
@@ -72,13 +69,15 @@ describe Fetcher do
         end
 
         it "should convert the tiff to pdf and return it" do
-          # This method strips dates from the PDF file since these change on each conversion.
-          def strip_dates(string)
-            string = string.scrub.sub(/CreationDate \(D:\d*\)/, 'CreationDate')
-            string.scrub.sub(/ModDate \(D:\d*\)/, 'ModDate')
+          # Checks for a valid PDF as based on this stack overflow response
+          # https://stackoverflow.com/questions/28156467/fastest-way-to-check-that-a-pdf-
+          # is-corrupted-or-just-missing-eof-in-ruby
+          def valid_pdf?(data)
+            pattern = /^startxref\n\d+\n%%EOF\n\z/m
+            data.scrub =~ pattern
           end
 
-          expect(strip_dates(subject)).to eq strip_dates(pdf_content)
+          expect(valid_pdf?(subject)).to be_truthy
           expect(document.reload.mime_type).to eq "image/tiff"
           expect(document.converted_mime_type).to eq "application/pdf"
         end

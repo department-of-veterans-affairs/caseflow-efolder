@@ -41,11 +41,16 @@ class Fetcher
     end
   end
 
+  # Adding a magic number check based on this recommendation: https://imagetragick.com/
+  def tiff?(data)
+    "MM\u0000*" == data[0..3] || "II*\u0000" == data[0..3]
+  end
+
   def download_from_service
     return cached_content if cached_content
 
     result = external_service.fetch_document_file(document)
-    result = convert_from_tiff(result) if document.mime_type == "image/tiff"
+    result = convert_from_tiff(result) if document.mime_type == "image/tiff" && tiff?(result)
     S3Service.store_file(document.s3_filename, result)
   end
 
