@@ -2,6 +2,7 @@ Things to consider:
 1. We will start with the simplest solution possible
 2. We will probably deprecate eX stats page so we will not worry about it at this point.
 3. Table names are different from the previous version.
+   This will make it easier to create new models/DB tables without conflicts.
 
 Tables:
 
@@ -62,8 +63,8 @@ Tables:
 Open questions:
 
 1. Based on the discussion with multiple people, we don't need to expire `manifests`.
-We will have `user_manifests` and `records` tables that will have all the necessary
-information to answer questions such as "this user downloaded XYZ documents on XXX date".
+   We will have `user_manifests` and `records` tables that will have all the necessary
+   information to answer questions such as "this user downloaded XYZ documents on XXX date".
 2. Do we need `searches` table?
 3. Using this data model, how can we migrate the existing data?
 
