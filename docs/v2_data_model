@@ -1,6 +1,7 @@
 Things to consider:
 1. We will start with the simplest solution possible
 2. We will probably deprecate eX stats page so we will not worry about it at this point.
+3. Table names are different from the previous version.
 
 Tables:
 
