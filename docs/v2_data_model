@@ -40,7 +40,7 @@ Tables:
 ```
 
 ```
- create_table "documents" do |t|
+ create_table "records" do |t|
     t.integer  "manifest_id"
     t.integer  "status",  default: 0
     t.string   "external_document_id"
@@ -59,8 +59,9 @@ Tables:
 ```
 
 Open questions:
+
 1. Based on the discussion with multiple people, we don't need to expire `manifests`.
-We will have `user_manifests` and `documents` tables that will have all the necessary
+We will have `user_manifests` and `records` tables that will have all the necessary
 information to answer questions such as "this user downloaded XYZ documents on XXX date".
 2. Do we need `searches` table?
 3. Using this data model, how can we migrate the existing data?
