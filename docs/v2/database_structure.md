@@ -30,42 +30,42 @@ We think this structure has three main advantages:
 # Tables
 
 ```
-  create_table "manifests" |t|
+  create_table :manifests do |t|
     t.string   "file_number"
     t.string   "veteran_last_name"
     t.string   "veteran_first_name"
     t.string   "veteran_last_four_ssn"
-    t.integer  "zipfile_size"          # The value will be updated based on the changes to the documents
-    t.datetime "created_at",
-    t.datetime "updated_at",
+    t.integer  "zipfile_size",  limit: 8  # The value will be updated based on the changes to the documents
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 ```
 
 ```
   # Having this separately will allow us to start fetching manifests in parallel
-  create_table "manifest_statuses" |t|
+  create_table :manifest_statuses do |t|
     t.integer  "manifest_id"
-    t.integer  "status",            # Values: success, failed, pending
-    t.string "source"               # "VBMS" or "VVA"
-    t.datetime "fetched_at"         # We will use this field to determine if manifest has expired
-    t.datetime "created_at",
-    t.datetime "updated_at",
+    t.integer  "status",  default: 0       # Values: success, failed, pending
+    t.string   "source"                    # "VBMS" or "VVA"
+    t.datetime "fetched_at"                # We will use this field to determine if manifest has expired
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 ```
 
 ```
-# For audit purposes, both the API and the UI will use this table.
-  create_table "user_manifests" |t|
+  # For audit purposes, both the API and the UI will use this table.
+  create_table "user_manifests" do |t|
     t.integer  "manifest_id"
     t.integer  "user_id"
-    t.integer  "status",         # UI specific statuses: fetching_manifest, no_documents, etc
-    t.datetime "created_at",     # We can use this field to display user's history in the UI
-    t.datetime "updated_at",
+    t.integer  "status", default: 0         # UI specific statuses: fetching_manifest, no_documents, etc
+    t.datetime "created_at", null: false    # We can use this field to display user's history in the UI
+    t.datetime "updated_at", null: false
   end
 ```
 
 ```
- create_table "records" do |t|
+  create_table "records" do |t|
     t.integer  "manifest_id"
     t.integer  "status",  default: 0
     t.string   "external_document_id"
@@ -76,8 +76,8 @@ We think this structure has three main advantages:
     t.integer  "size"                 # This field is used to keep track of document sizes
     t.string   "vva_jro"              # VVA metadata to download document content
     t.string   "vva_source"           # VVA metadata to download document content
-    t.datetime "created_at",
-    t.datetime "updated_at",
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 ```
 
