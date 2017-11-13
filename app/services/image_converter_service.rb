@@ -30,7 +30,7 @@ class ImageConverterService
   def convert_from_tiff
     MetricsService.record("Image Magick: Convert tiff to pdf",
                           service: :image_magick,
-                          name: "convert tiff to pdf") do
+                          name: "image_magick_convert_tiff_to_pdf") do
       base_path = File.join(Rails.application.config.download_filepath, "tiff_convert")
       FileUtils.mkdir_p(base_path) unless File.exist?(base_path)
 
