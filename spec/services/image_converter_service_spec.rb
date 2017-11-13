@@ -25,7 +25,7 @@ describe ImageConverterService do
     end
   end
 
-  context ".converted_mime_type", focus: true do
+  context ".converted_mime_type" do
     it "when type is image/tiff changes it to application/pdf" do
       expect(ImageConverterService.converted_mime_type("image/tiff")).to eq("application/pdf")
     end
