@@ -35,7 +35,7 @@ We think this structure has three main advantages:
     t.string   "veteran_last_name"
     t.string   "veteran_first_name"
     t.string   "veteran_last_four_ssn"
-    t.zipfile_size,                 # The value will be updated based on the changes to the documents
+    t.integer  "zipfile_size"          # The value will be updated based on the changes to the documents
     t.datetime "created_at",
     t.datetime "updated_at",
   end
