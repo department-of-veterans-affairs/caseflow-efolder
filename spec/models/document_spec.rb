@@ -6,13 +6,14 @@ describe Document do
     Timecop.freeze(Time.utc(2015, 1, 1, 17, 0, 0))
   end
 
+  let(:mime_type) { "application/pdf" }
   let(:download) { Download.create(file_number: "21012") }
   let(:document) do
     download.documents.build(
       document_id: "{3333-3333}",
       received_at: Time.utc(2015, 9, 6, 1, 0, 0),
       type_id: "825",
-      mime_type: "application/pdf"
+      mime_type: mime_type
     )
   end
 
@@ -235,6 +236,26 @@ describe Document do
     it "handles non-pdf files correctly" do
       txt_document.save_locally("Howdy", 3)
       expect(IO.read(txt_document.filepath)).to eq("Howdy")
+    end
+  end
+
+  context "#preferred_extension" do
+    it "when passed application/pdf returns pdf" do
+      expect(document.preferred_extension).to eq("pdf")
+    end
+
+    context "when passed image/tiff" do
+      let(:mime_type) { "image/tiff" }
+      it "returns pdf" do
+        expect(document.preferred_extension).to eq("pdf")
+      end
+    end
+
+    context "when passed image/jpeg" do
+      let(:mime_type) { "image/jpeg" }
+      it "returns jpeg" do
+        expect(document.preferred_extension).to eq("jpeg")
+      end
     end
   end
 end
