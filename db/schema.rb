@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171002200747) do
+ActiveRecord::Schema.define(version: 20171113205819) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -85,6 +85,40 @@ ActiveRecord::Schema.define(version: 20171002200747) do
   add_index "downloads", ["manifest_fetched_at"], name: "downloads_manifest_fetched_at", using: :btree
   add_index "downloads", ["user_id"], name: "index_downloads_on_user_id", using: :btree
 
+  create_table "manifest_statuses", force: :cascade do |t|
+    t.integer  "manifest_id"
+    t.integer  "status",      default: 0
+    t.string   "source"
+    t.datetime "fetched_at"
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
+
+  create_table "manifests", force: :cascade do |t|
+    t.string   "file_number"
+    t.string   "veteran_last_name"
+    t.string   "veteran_first_name"
+    t.string   "veteran_last_four_ssn"
+    t.integer  "zipfile_size",          limit: 8
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+  end
+
+  create_table "records", force: :cascade do |t|
+    t.integer  "manifest_id"
+    t.integer  "status",               default: 0
+    t.string   "external_document_id"
+    t.string   "mime_type"
+    t.datetime "received_at"
+    t.string   "type_description"
+    t.string   "type_id"
+    t.integer  "size"
+    t.string   "vva_jro"
+    t.string   "vva_source"
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
+  end
+
   create_table "searches", force: :cascade do |t|
     t.integer  "download_id"
     t.string   "file_number"
@@ -97,6 +131,14 @@ ActiveRecord::Schema.define(version: 20171002200747) do
   add_index "searches", ["download_id"], name: "index_searches_on_download_id", using: :btree
   add_index "searches", ["status", "created_at"], name: "searches_status_created_at", using: :btree
   add_index "searches", ["user_id"], name: "index_searches_on_user_id", using: :btree
+
+  create_table "user_manifests", force: :cascade do |t|
+    t.integer  "manifest_id"
+    t.integer  "user_id"
+    t.integer  "status",      default: 0
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
 
   create_table "users", force: :cascade do |t|
     t.string   "css_id",                                null: false
