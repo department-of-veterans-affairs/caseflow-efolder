@@ -80,7 +80,7 @@ class DownloadDocuments
 
   def fetch_from_s3(document)
     # if the file exists on the filesystem, skip
-    return if File.exist?(document.filepath)
+    return if document.filepath && File.exist?(document.filepath)
 
     S3Service.fetch_file(document.s3_filename, document.filepath)
   end
