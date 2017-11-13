@@ -1,8 +1,11 @@
 Things to consider:
-1. We will start with the simplest solution possible
+1. We will start with the simplest solution possible.
 2. We will probably deprecate eX stats page so we will not worry about it at this point.
-3. Table names are different from the previous version.
-   This will make it easier to create new models/DB tables without conflicts.
+3. Table names are different from the previous version. This will make it easier to create new models/DB tables without conflicts.
+4. Deprecate `searches` table.
+5. We don't need to expire `manifests`. We will have `user_manifests` and `records` tables that will have all the necessary
+information to answer questions such as "this user downloaded XYZ documents on XXX date".
+6. If we miss something now, don't panic, we can add later as we move forward
 
 Tables:
 
@@ -47,24 +50,17 @@ Tables:
     t.integer  "status",  default: 0
     t.string   "external_document_id"
     t.string   "mime_type"
-    t.datetime "received_at"      # VBMS and VVA timestamp
+    t.datetime "received_at"          # VBMS and VVA timestamp
     t.string   "type_description"
-    t.string   "type_id"          # will be deprecated when we move to the VBMS new eFolder API
-    t.string   "vbms_filename"    # deprecate
-    t.string   "filepath"         # deprecate??
-    t.string   "jro"              # deprecate??
-    t.string   "ssn"              # deprecate??
-    t.integer  "size"             # deprecate??
+    t.string   "type_id"              # will be deprecated when we move to the VBMS new eFolder API
+    t.integer  "size"                 # to keep track of document sizes
+    t.string   "vva_jro"              # VVA metadata
+    t.string   "vva_source"           # VVA metadata
     t.datetime "created_at",
     t.datetime "updated_at",
   end
 ```
 
-Open questions:
-
-1. Based on the discussion with multiple people, we don't need to expire `manifests`.
-   We will have `user_manifests` and `records` tables that will have all the necessary
-   information to answer questions such as "this user downloaded XYZ documents on XXX date".
-2. Do we need `searches` table?
-3. Using this data model, how can we migrate the existing data?
-
+Steps to Implement:
+1) Create our new DB structure with associated models
+2) Point the API to this new code
