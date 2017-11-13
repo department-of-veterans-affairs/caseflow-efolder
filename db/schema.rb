@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171103174548) do
+ActiveRecord::Schema.define(version: 20171002200747) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -34,26 +34,25 @@ ActiveRecord::Schema.define(version: 20171103174548) do
 
   create_table "documents", force: :cascade do |t|
     t.integer  "download_id"
-    t.integer  "download_status",     default: 0
+    t.integer  "download_status",  default: 0
     t.string   "document_id"
     t.string   "vbms_filename"
     t.string   "filepath"
     t.string   "source"
     t.string   "mime_type"
     t.datetime "received_at"
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
     t.datetime "started_at"
     t.datetime "completed_at"
     t.integer  "lock_version"
     t.string   "type_description"
     t.string   "type_id"
     t.text     "error_message"
-    t.string   "downloaded_from",     default: "VBMS"
+    t.string   "downloaded_from",  default: "VBMS"
     t.string   "jro"
     t.string   "ssn"
     t.integer  "size"
-    t.string   "converted_mime_type"
   end
 
   add_index "documents", ["completed_at"], name: "index_documents_on_completed_at", using: :btree
@@ -76,6 +75,7 @@ ActiveRecord::Schema.define(version: 20171103174548) do
     t.integer  "user_id"
     t.integer  "zipfile_size",             limit: 8
     t.boolean  "from_api",                           default: false
+    t.datetime "vva_fetched_at"
     t.datetime "manifest_vva_fetched_at"
     t.datetime "manifest_vbms_fetched_at"
   end
