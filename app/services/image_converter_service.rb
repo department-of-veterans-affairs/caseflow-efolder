@@ -1,15 +1,13 @@
+# Converts images to PDFs
 class ImageConverterService
-  # Converts images to PDFs
-  def initialize(image, mime_type)
-    @image = image
-    @mime_type = mime_type
-  end
+  include ActiveModel::Model
+  attr_accessor :image, :mime_type
 
   def process
     # If we do not handle converting this mime_type, don't do any processing.
-    return @image if self.class.converted_mime_type(@mime_type) == @mime_type
+    return image if self.class.converted_mime_type(mime_type) == mime_type
 
-    convert_from_tiff if @mime_type == "image/tiff" && tiff?
+    convert_tiff_to_pdf if mime_type == "image/tiff" && tiff?
   end
 
   # If the converter converts this mime_type then this returns the converted type
@@ -24,10 +22,10 @@ class ImageConverterService
 
   # Adding a magic number check based on this recommendation: https://imagetragick.com/
   def tiff?
-    "MM\u0000*" == @image[0..3] || "II*\u0000" == @image[0..3]
+    "MM\u0000*" == image[0..3] || "II*\u0000" == image[0..3]
   end
 
-  def convert_from_tiff
+  def convert_tiff_to_pdf
     MetricsService.record("Image Magick: Convert tiff to pdf",
                           service: :image_magick,
                           name: "image_magick_convert_tiff_to_pdf") do
@@ -39,7 +37,7 @@ class ImageConverterService
       tiff_name = File.join(base_path, "#{filename}.tiff")
 
       File.open(tiff_name, "wb") do |f|
-        f.write(@image)
+        f.write(image)
       end
 
       pdf_name = File.join(base_path, "#{filename}.pdf")
