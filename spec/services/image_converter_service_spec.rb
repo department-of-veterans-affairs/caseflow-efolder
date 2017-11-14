@@ -6,7 +6,7 @@ describe ImageConverterService do
   let(:pdf_content) { File.open(tiff_file, "r", &:read) }
 
   let(:mime_type) { "image/tiff" }
-  let(:image_converter) { ImageConverterService.new(tiff_content, mime_type) }
+  let(:image_converter) { ImageConverterService.new(image: tiff_content, mime_type: mime_type) }
 
   context "#process" do
     context "when image is a tiff" do
@@ -17,7 +17,7 @@ describe ImageConverterService do
 
     context "when image is a pdf" do
       let(:mime_type) { "application/pdf" }
-      let(:image_converter) { ImageConverterService.new(pdf_content, mime_type) }
+      let(:image_converter) { ImageConverterService.new(image: pdf_content, mime_type: mime_type) }
 
       it "doesn't change it" do
         expect(image_converter.process).to eq(pdf_content)
