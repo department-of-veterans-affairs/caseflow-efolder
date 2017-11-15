@@ -4,12 +4,13 @@ describe "Download" do
   let(:veteran_first_name) { "Stan" }
   let(:veteran_last_name) { "Lee" }
   let(:veteran_last_four_ssn) { "0987" }
+  let(:file_number) { "1234" }
 
   before do
     Timecop.freeze(Time.utc(2015, 1, 1, 12, 0, 0))
 
     Fakes::BGSService.veteran_info = {
-      "1234" => {
+      file_number => {
         "veteran_first_name" => veteran_first_name,
         "veteran_last_name" => veteran_last_name,
         "veteran_last_four_ssn" => veteran_last_four_ssn
@@ -19,7 +20,6 @@ describe "Download" do
   end
   after { Timecop.return }
 
-  let(:file_number) { "1234" }
   let(:download) { Download.create(file_number: file_number) }
 
   context ".new" do
@@ -28,7 +28,7 @@ describe "Download" do
     context "when file number is set" do
       before do
         Fakes::BGSService.veteran_info = {
-          "1234" => {
+          file_number => {
             "veteran_first_name" => veteran_first_name,
             "veteran_last_name" => veteran_last_name,
             "veteran_last_four_ssn" => veteran_last_four_ssn
