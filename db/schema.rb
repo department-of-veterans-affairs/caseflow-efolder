@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171113205819) do
+ActiveRecord::Schema.define(version: 20171115141844) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -104,6 +104,8 @@ ActiveRecord::Schema.define(version: 20171113205819) do
     t.datetime "updated_at",                      null: false
   end
 
+  add_index "manifests", ["file_number"], name: "index_manifests_on_file_number", using: :btree
+
   create_table "records", force: :cascade do |t|
     t.integer  "manifest_id"
     t.integer  "status",               default: 0
@@ -139,6 +141,8 @@ ActiveRecord::Schema.define(version: 20171113205819) do
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
   end
+
+  add_index "user_manifests", ["manifest_id", "user_id"], name: "index_user_manifests_on_manifest_id_and_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "css_id",                                null: false
