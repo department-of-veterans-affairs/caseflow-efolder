@@ -71,6 +71,8 @@ gem 'redis-namespace'
 
 gem 'request_store'
 
+gem "mini_magick"
+
 gem 'connect_vbms', git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "87d0cab4bb5a87e70d6e2dab81e1da17fc512571"
 gem 'connect_vva', git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "55ae8fa0a526a879818ce5835ae5384c55d3c64c"
 gem 'bgs', git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", :branch => 'master'
@@ -97,6 +99,7 @@ group :development, :test do
   gem 'bundler-audit'
 
   gem 'pry'
+  gem 'pry-byebug'
 
   gem 'rubocop', '~> 0.36.0', require: false
   gem 'scss_lint', require: false

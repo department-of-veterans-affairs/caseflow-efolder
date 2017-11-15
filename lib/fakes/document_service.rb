@@ -62,7 +62,11 @@ class Fakes::DocumentService
     fail VBMS::ClientError if errors && rand(5) == 3
     fail VVA::ClientError if errors && rand(5) == 2
 
-    IO.binread(Rails.root + "lib/pdfs/#{document.id % 5}.pdf")
+    if document.mime_type == "application/pdf"
+      IO.binread(Rails.root + "lib/pdfs/#{document.id % 5}.pdf")
+    else
+      IO.binread(Rails.root + "lib/tiffs/#{document.id % 5}.tiff")
+    end
   end
 
   # can be overridden by child classes to provide more specific error
@@ -79,6 +83,25 @@ class Fakes::DocumentService
     sleep(wait || 0)
   end
 
+  # Randomly send a pdf or tiff
+  def self.document_type
+    return { ext: "pdf", mime_type: "application/pdf" } if rand(2)
+    { ext: "tiff", mime_type: "image/tiff" }
+  end
+
+  def self.create_document(i)
+    type = document_type
+
+    OpenStruct.new(
+      vbms_filename: "happy-thursday-#{SecureRandom.hex}.#{type[:ext]}",
+      type_id: Document::TYPES.keys.sample,
+      document_id: "{#{SecureRandom.hex(4).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(6).upcase}}",
+      mime_type: type[:mime_type],
+      received_at: (i * 2).days.ago,
+      downloaded_from: service_type
+    )
+  end
+
   def self.list_fake_documents(file_number)
     demo = DEMOS[file_number]
     return [] if !demo || demo[:num_docs] <= 0
@@ -87,14 +110,7 @@ class Fakes::DocumentService
     check_and_raise_errors(demo)
 
     (0..(demo[:num_docs] || 0)).to_a.map do |i|
-      OpenStruct.new(
-        vbms_filename: "happy-thursday-#{SecureRandom.hex}.pdf",
-        type_id: Document::TYPES.keys.sample,
-        document_id: "{#{SecureRandom.hex(4).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(6).upcase}}",
-        mime_type: "application/pdf",
-        received_at: (i * 2).days.ago,
-        downloaded_from: service_type
-      )
+      create_document(i)
     end
   end
 end
