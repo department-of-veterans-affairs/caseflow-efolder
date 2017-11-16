@@ -4,7 +4,7 @@
     <% if failed_documents.any? %>
       <div class="usa-alert usa-alert-error" role="alert">
         <div class="usa-alert-body">
-          <h3 class="usa-alert-heading">Some files couldn't be added to eFolder</h3>
+          <h2 class="usa-alert-heading">Some files couldn't be added to eFolder</h2>
           <p class="usa-alert-text">
             eFolder Express wasn't able to retrieve some files. Click on the 'Errors' tab below to view them
           </p>
@@ -21,7 +21,7 @@
     <% else %>
       <div class="usa-alert usa-alert-success" role="alert">
         <div class="usa-alert-body">
-          <h3 class="usa-alert-heading">Success!</h3>
+          <h2 class="usa-alert-heading">Success!</h2>
           <p class="usa-alert-text">
             All of the documents in the VBMS eFolder for #<%= @download.file_number %> are ready to download.
             Click the "Download efolder" button below.
@@ -45,7 +45,7 @@
     <p>
       <div class="usa-alert usa-alert-info" role="alert">
         <div class="usa-alert-body">
-          <h3 class="usa-alert-heading">You can close this page at any time.</h3>
+          <h2 class="usa-alert-heading">You can close this page at any time.</h2>
           <p class="usa-alert-text">
             You can close this page at any time and eFolder Express will continue retrieving files in the background. View progress and download eFolders from the History on the <a href="/">eFolder Express home page.</a>
           </p>
