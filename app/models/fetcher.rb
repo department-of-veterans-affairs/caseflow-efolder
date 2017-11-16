@@ -18,9 +18,12 @@ class Fetcher
 
   def download_from_service
     return cached_content if cached_content
-    external_service.fetch_document_file(document).tap do |result|
-      S3Service.store_file(document.s3_filename, result)
-    end
+
+    converted_image = ImageConverterService.new(
+      image: external_service.fetch_document_file(document), mime_type: document.mime_type).process
+    S3Service.store_file(document.s3_filename, converted_image)
+
+    converted_image
   end
 
   def download_from_service_and_record

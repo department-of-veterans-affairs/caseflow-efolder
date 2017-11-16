@@ -126,7 +126,7 @@ class Document < ActiveRecord::Base
   end
 
   def preferred_extension
-    mime = MIME::Types[mime_type].first
+    mime = MIME::Types[ImageConverterService.converted_mime_type(mime_type)].first
     mime ? mime.preferred_extension : ""
   end
 

@@ -217,6 +217,7 @@ GEM
     mime-types (3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
+    mini_magick (4.8.0)
     mini_portile2 (2.3.0)
     minitest (5.10.1)
     moment_timezone-rails (0.5.0)
@@ -251,6 +252,9 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
+    pry-byebug (3.4.3)
+      byebug (>= 9.0, < 9.1)
+      pry (~> 0.10)
     public_suffix (2.0.5)
     puma (3.6.2)
     quantile (0.2.0)
@@ -467,12 +471,14 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jquery-rails
   launchy
+  mini_magick
   moment_timezone-rails
   newrelic_rpm
   omniauth-saml-va!
   pg
   prometheus-client (~> 0.7.1)
   pry
+  pry-byebug
   puma
   rack-cors
   rails (= 4.2.7.1)
