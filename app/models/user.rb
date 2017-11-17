@@ -6,6 +6,11 @@ class User < ActiveRecord::Base
   has_many :user_manifests
   has_many :manifests, through: :user_manifests
 
+  after_initialize do |u|
+    u.email.try(:strip!)
+    u.css_id.try(:upcase!)
+  end
+
   NO_EMAIL = "No Email Recorded".freeze
 
   attr_accessor :name, :roles, :ip_address

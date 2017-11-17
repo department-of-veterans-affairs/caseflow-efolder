@@ -40,6 +40,20 @@ describe User do
     end
   end
 
+  context "validation on object instantiation" do
+    let(:email) { "   email_address with leading_and_trailing_whitespace@zombo.com  " }
+    let(:css_id) { "lowercase_string" }
+    subject { User.new(email: email, css_id: css_id) }
+
+    it "trims leading and trailing whitespace from User's email address" do
+      expect(subject.email).to eq email.strip
+    end
+
+    it "capitalizes all letters in the css_id" do
+      expect(subject.css_id).to eq css_id.upcase
+    end
+  end
+
   context ".from_session" do
     let(:request) { OpenStruct.new(remote_ip: "123.123.222.222") }
     let(:session) { { "user" => user.as_json.merge("roles" => user.roles, "name" => user.name) } }
