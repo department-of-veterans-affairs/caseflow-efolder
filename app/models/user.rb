@@ -7,8 +7,8 @@ class User < ActiveRecord::Base
   has_many :manifests, through: :user_manifests
 
   after_initialize do |u|
-    u.email.try(:strip!)
-    u.css_id.try(:upcase!)
+    u.email.try(:strip!) if new_record?
+    u.css_id.try(:upcase!) if new_record?
   end
 
   NO_EMAIL = "No Email Recorded".freeze
