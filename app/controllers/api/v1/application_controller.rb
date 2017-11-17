@@ -60,7 +60,7 @@ class Api::V1::ApplicationController < BaseController
   end
 
   def css_id
-    request.headers["HTTP_CSS_ID"]
+    request.headers["HTTP_CSS_ID"].try(:upcase!)
   end
 
   def capture_error(e)

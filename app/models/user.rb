@@ -48,7 +48,7 @@ class User < ActiveRecord::Base
     def from_session(session, request)
       return nil unless session["user"]
       user = session["user"]
-      find_or_create_by(css_id: user["css_id"], station_id: user["station_id"]).tap do |u|
+      find_or_create_by(css_id: user["css_id"].try(:upcase), station_id: user["station_id"]).tap do |u|
         u.name = user["name"]
         u.email = user["email"]
         u.roles = user["roles"]
@@ -64,7 +64,7 @@ class User < ActiveRecord::Base
 
       {
         id: auth_hash.uid,
-        css_id: auth_hash.uid,
+        css_id: auth_hash.uid.try(:upcase),
         email: raw_css_response["http://vba.va.gov/css/common/emailAddress"],
         name: "#{first_name} #{last_name}",
         roles: raw_css_response.attributes["http://vba.va.gov/css/caseflow/role"],
