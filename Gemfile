@@ -1,6 +1,6 @@
 source ENV['GEM_SERVER_URL'] || 'https://rubygems.org'
 
-gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons", ref: "706ba7bde215f53d96365e3dba217f9a98781f4e"
+gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons", ref: "c24ad69cf999c30b01deaadc0e8c13f6109c8c54"
 
 gem "moment_timezone-rails"
 
@@ -15,7 +15,7 @@ gem 'activerecord-jdbcpostgresql-adapter', platforms: :jruby
 
 gem 'aws-sdk', '~> 2'
 
-gem 'prometheus-client', "~> 0.6"
+gem 'prometheus-client', '~> 0.7.1'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
@@ -34,6 +34,8 @@ gem 'therubyrhino', platforms: :jruby
 
 # Error reporting to Sentry
 gem "sentry-raven"
+
+gem 'newrelic_rpm'
 
 # SSOI
 gem 'omniauth-saml-va', git: 'https://github.com/department-of-veterans-affairs/omniauth-saml-va', branch: 'paultag/css'
@@ -69,8 +71,10 @@ gem 'redis-namespace'
 
 gem 'request_store'
 
-gem 'connect_vbms', git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "87d0cab4bb5a87e70d6e2dab81e1da17fc512571"
-gem 'connect_vva', git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "67610c998e0dda12e8912eb8ddddb33c3b84925d"
+gem "mini_magick"
+
+gem 'connect_vbms', git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "2e401bf7749f0780280951cbde777b7d67765554"
+gem 'connect_vva', git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "55ae8fa0a526a879818ce5835ae5384c55d3c64c"
 gem 'bgs', git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", :branch => 'master'
 #gem 'connect_vbms', git: 'https://github.com/department-of-veterans-affairs/connect_vbms.git'
 
@@ -95,6 +99,7 @@ group :development, :test do
   gem 'bundler-audit'
 
   gem 'pry'
+  gem 'pry-byebug'
 
   gem 'rubocop', '~> 0.36.0', require: false
   gem 'scss_lint', require: false

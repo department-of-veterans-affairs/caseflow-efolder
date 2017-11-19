@@ -16,7 +16,7 @@ class Search < ActiveRecord::Base
 
   def valid_file_number?
     number = sanitized_file_number
-    return true if number =~ /DEMO/
+    return true if number =~ /^DEMO/
 
     return false if /\D+/ =~ number
     # We don't want to render an error message on initial pageload.

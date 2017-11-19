@@ -5,6 +5,46 @@ require "prometheus/client/push"
 class PrometheusService
   # :nocov:
   class << self
+    def image_magick_request_attempt_counter
+      @image_magick_request_attempt_counter ||=
+        find_or_register_metric(:counter,
+                                :image_magick_request_attempt_counter,
+                                "A counter of attempted image_magick requests")
+    end
+
+    def image_magick_request_error_counter
+      @image_magick_request_error_counter ||=
+        find_or_register_metric(:counter,
+                                :image_magick_request_error_counter,
+                                "A counter of errored image_magick requests")
+    end
+
+    def image_magick_request_latency
+      @image_magick_request_latency ||=
+        find_or_register_gauge_and_summary(:image_magick_request_latency,
+                                           "latency of completed image_magick requests")
+    end
+
+    def s3_request_attempt_counter
+      @s3_request_attempt_counter ||=
+        find_or_register_metric(:counter,
+                                :s3_request_attempt_counter,
+                                "A counter of attempted S3 fetch requests")
+    end
+
+    def s3_request_error_counter
+      @s3_request_error_counter ||=
+        find_or_register_metric(:counter,
+                                :s3_request_error_counter,
+                                "A counter of errored s3 requests")
+    end
+
+    def s3_request_latency
+      @s3_request_latency ||=
+        find_or_register_gauge_and_summary(:s3_request_latency,
+                                           "latency of completed s3 requests")
+    end
+
     def vbms_request_attempt_counter
       @vbms_request_attempt_counter ||=
         find_or_register_metric(:counter,

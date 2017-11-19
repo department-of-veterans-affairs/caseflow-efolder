@@ -51,7 +51,7 @@ class Download < ActiveRecord::Base
   end
 
   def demo?
-    file_number =~ /DEMO/
+    !!(file_number =~ /^DEMO/)
   end
 
   def missing_veteran_info?

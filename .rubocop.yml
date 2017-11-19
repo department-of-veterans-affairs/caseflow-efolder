@@ -35,6 +35,9 @@ Metrics/ClassLength:
 Metrics/AbcSize:
   Max: 30
 
+Style/DoubleNegation:
+  Enabled: false
+
 Rails:
   Enabled: true
 

@@ -7,8 +7,8 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/caseflow-commons
-  revision: 706ba7bde215f53d96365e3dba217f9a98781f4e
-  ref: 706ba7bde215f53d96365e3dba217f9a98781f4e
+  revision: c24ad69cf999c30b01deaadc0e8c13f6109c8c54
+  ref: c24ad69cf999c30b01deaadc0e8c13f6109c8c54
   specs:
     caseflow (0.1.6)
       aws-sdk (~> 2)
@@ -21,22 +21,22 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/connect_vbms.git
-  revision: 87d0cab4bb5a87e70d6e2dab81e1da17fc512571
-  ref: 87d0cab4bb5a87e70d6e2dab81e1da17fc512571
+  revision: 2e401bf7749f0780280951cbde777b7d67765554
+  ref: 2e401bf7749f0780280951cbde777b7d67765554
   specs:
     connect_vbms (1.0.0)
       httpclient (~> 2.8.0)
       httpi (~> 2.4)
       mail
-      nokogiri (>= 1.7.1)
+      nokogiri (>= 1.8.1)
       nori
       xmldsig (~> 0.3.1)
       xmlenc
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/connect_vva.git
-  revision: 67610c998e0dda12e8912eb8ddddb33c3b84925d
-  ref: 67610c998e0dda12e8912eb8ddddb33c3b84925d
+  revision: 55ae8fa0a526a879818ce5835ae5384c55d3c64c
+  ref: 55ae8fa0a526a879818ce5835ae5384c55d3c64c
   specs:
     connect_vva (0.1)
       savon (~> 2.11, >= 2.11.0)
@@ -217,6 +217,7 @@ GEM
     mime-types (3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
+    mini_magick (4.8.0)
     mini_portile2 (2.3.0)
     minitest (5.10.1)
     moment_timezone-rails (0.5.0)
@@ -227,6 +228,7 @@ GEM
     neat (2.1.0)
       sass (~> 3.4)
       thor (~> 0.19)
+    newrelic_rpm (4.5.0.337)
     nokogiri (1.8.1)
       mini_portile2 (~> 2.3.0)
     nori (2.6.0)
@@ -244,12 +246,15 @@ GEM
       cliver (~> 0.3.1)
       websocket-driver (>= 0.2.0)
     powerpack (0.1.1)
-    prometheus-client (0.6.0)
+    prometheus-client (0.7.1)
       quantile (~> 0.2.0)
     pry (0.10.4)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
+    pry-byebug (3.4.3)
+      byebug (>= 9.0, < 9.1)
+      pry (~> 0.10)
     public_suffix (2.0.5)
     puma (3.6.2)
     quantile (0.2.0)
@@ -434,7 +439,7 @@ GEM
     websocket-extensions (0.1.2)
     xmldsig (0.3.2)
       nokogiri
-    xmlenc (0.6.9)
+    xmlenc (0.7.0)
       activemodel (>= 3.0.0)
       activesupport (>= 3.0.0)
       nokogiri (>= 1.6.0, < 2.0.0)
@@ -466,11 +471,14 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jquery-rails
   launchy
+  mini_magick
   moment_timezone-rails
+  newrelic_rpm
   omniauth-saml-va!
   pg
-  prometheus-client (~> 0.6)
+  prometheus-client (~> 0.7.1)
   pry
+  pry-byebug
   puma
   rack-cors
   rails (= 4.2.7.1)
@@ -504,4 +512,4 @@ DEPENDENCIES
   zaru
 
 BUNDLED WITH
-   1.16.0.pre.2
+   1.16.0
