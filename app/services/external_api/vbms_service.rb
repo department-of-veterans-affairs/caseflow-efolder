@@ -42,16 +42,6 @@ class ExternalApi::VBMSService
     result && result.content
   end
 
-  def self.vbms_config
-    config = Rails.application.secrets.vbms.clone
-
-    %w(keyfile saml key cacert cert).each do |file|
-      config[file] = File.join(config["env_dir"], config[file])
-    end
-
-    config
-  end
-
   def self.init_client
     VBMS::Client.from_env_vars(logger: RailsVBMSLogger.new,
                                 env_name: ENV["CONNECT_VBMS_ENV"],
