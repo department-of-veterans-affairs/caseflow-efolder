@@ -53,20 +53,10 @@ class ExternalApi::VBMSService
   end
 
   def self.init_client
-    return VBMS::Client.from_env_vars(logger: RailsVBMSLogger.new,
-                                      env_name: ENV["CONNECT_VBMS_ENV"]
-                                     ) if Rails.application.secrets.vbms["env"]
-
-    VBMS::Client.new(
-      vbms_config["url"],
-      vbms_config["keyfile"],
-      vbms_config["saml"],
-      vbms_config["key"],
-      vbms_config["keypass"],
-      vbms_config["cacert"],
-      vbms_config["cert"],
-      RailsVBMSLogger.new
-    )
+    VBMS::Client.from_env_vars(logger: RailsVBMSLogger.new,
+                                env_name: ENV["CONNECT_VBMS_ENV"],
+                                use_forward_proxy: FeatureToggle.enabled?(:vbms_forward_proxy)
+                               )
   end
 
   def self.send_and_log_request(id, request)
