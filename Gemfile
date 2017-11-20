@@ -76,7 +76,7 @@ gem "mini_magick"
 gem 'connect_vbms', git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "2e401bf7749f0780280951cbde777b7d67765554"
 gem 'connect_vva', git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "55ae8fa0a526a879818ce5835ae5384c55d3c64c"
 gem 'bgs', git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", :branch => 'master'
-#gem 'connect_vbms', git: 'https://github.com/department-of-veterans-affairs/connect_vbms.git'
+
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
