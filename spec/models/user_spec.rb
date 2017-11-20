@@ -41,12 +41,13 @@ describe User do
   end
 
   context "validation on object instantiation" do
-    let(:email) { "   email_address with leading_and_trailing_whitespace@zombo.com  " }
+    let(:core_email) { "core_email address@zombo.com" }
+    let(:email) { "  #{core_email}    " }
     let(:css_id) { "lowercase_string" }
     subject { User.new(email: email, css_id: css_id) }
 
     it "trims leading and trailing whitespace from User's email address" do
-      expect(subject.email).to eq email.strip
+      expect(subject.email).to eq core_email
     end
 
     it "capitalizes all letters in the css_id" do
