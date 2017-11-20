@@ -44,7 +44,8 @@ describe User do
     let(:core_email) { "core_email address@zombo.com" }
     let(:email) { "  #{core_email}    " }
     let(:css_id) { "lowercase_string" }
-    subject { User.new(email: email, css_id: css_id) }
+    let(:station_id) { 101 }
+    subject { User.find_or_create_by(email: email, css_id: css_id, station_id: station_id) }
 
     it "trims leading and trailing whitespace from User's email address" do
       expect(subject.email).to eq core_email
