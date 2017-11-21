@@ -30,13 +30,15 @@ class ExternalApi::VVAService
   end
 
   def self.init_client
+    forward_proxy_url = FeatureToggle.enabled?(:vva_forward_proxy) ? ENV["CONNECT_VVA_PROXY_BASE_URL"] : nil
     VVA::Services.new(
       wsdl: Rails.application.config.vva_wsdl,
       username: ENV["VVA_USERNAME"],
       password: ENV["VVA_PASSWORD"],
       ssl_cert_key_file: ENV["VVA_KEY_LOCATION"],
       ssl_cert_file: ENV["VVA_CERT_LOCATION"],
-      ssl_ca_cert: ENV["VVA_CA_CERT_LOCATION"]
+      ssl_ca_cert: ENV["VVA_CA_CERT_LOCATION"],
+      forward_proxy_url: forward_proxy_url
     )
   end
 end
