@@ -5,7 +5,7 @@ class Fakes::BGSService
   cattr_accessor :sensitive_files
 
   def demo?(file_number)
-    file_number =~ /DEMO/
+    !!(file_number =~ /^DEMO/)
   end
 
   def demo_veteran_info

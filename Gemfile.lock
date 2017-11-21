@@ -21,14 +21,14 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/connect_vbms.git
-  revision: 87d0cab4bb5a87e70d6e2dab81e1da17fc512571
-  ref: 87d0cab4bb5a87e70d6e2dab81e1da17fc512571
+  revision: 2e401bf7749f0780280951cbde777b7d67765554
+  ref: 2e401bf7749f0780280951cbde777b7d67765554
   specs:
     connect_vbms (1.0.0)
       httpclient (~> 2.8.0)
       httpi (~> 2.4)
       mail
-      nokogiri (>= 1.7.1)
+      nokogiri (>= 1.8.1)
       nori
       xmldsig (~> 0.3.1)
       xmlenc
@@ -439,7 +439,7 @@ GEM
     websocket-extensions (0.1.2)
     xmldsig (0.3.2)
       nokogiri
-    xmlenc (0.6.9)
+    xmlenc (0.7.0)
       activemodel (>= 3.0.0)
       activesupport (>= 3.0.0)
       nokogiri (>= 1.6.0, < 2.0.0)
