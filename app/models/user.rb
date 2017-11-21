@@ -73,8 +73,8 @@ class User < ActiveRecord::Base
     end
 
     def find_or_create_by(args)
-      args[:css_id].try(:upcase!)
-      args[:email].try(:strip!)
+      args[:css_id] = args[:css_id].try(:upcase)
+      args[:email] = args[:email].try(:strip)
       super
     end
   end
