@@ -35,8 +35,8 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/connect_vva.git
-  revision: 55ae8fa0a526a879818ce5835ae5384c55d3c64c
-  ref: 55ae8fa0a526a879818ce5835ae5384c55d3c64c
+  revision: 32bb9962eb422c17049d085cf505ce5008d6f057
+  ref: 32bb9962eb422c17049d085cf505ce5008d6f057
   specs:
     connect_vva (0.1)
       savon (~> 2.11, >= 2.11.0)
@@ -51,11 +51,11 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/ruby-bgs.git
-  revision: 68f7431a3e642ed41da5ff6568aa9d45c11e6aca
-  branch: master
+  revision: faad830fe463e88f21bdb4a1af7422c2e529aab8
+  branch: faad830fe463e88f21bdb4a1af7422c2e529aab8
   specs:
     bgs (0.1)
-      nokogiri
+      nokogiri (~> 1.8.1)
       savon (~> 2.11)
 
 GIT
@@ -359,7 +359,7 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (>= 1.1, < 3)
-    savon (2.11.1)
+    savon (2.11.2)
       akami (~> 1.2)
       builder (>= 2.1.2)
       gyoku (~> 1.2)
