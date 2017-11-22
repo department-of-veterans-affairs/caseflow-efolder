@@ -40,6 +40,20 @@ describe User do
     end
   end
 
+  context "case-insensitive css_id in find_or_create_by()" do
+    let(:station_id) { Random.rand(900) + 1 }
+    let(:lowercase_css_id) { "tony_hawk" }
+    let(:uppercase_css_id) { lowercase_css_id.upcase }
+    let(:orig_user) { User.create(css_id: lowercase_css_id, station_id: station_id) }
+
+    before { orig_user.save }
+
+    it "returns original user record with differently cased css_id" do
+      u = User.find_or_create_by(css_id: uppercase_css_id, station_id: station_id)
+      expect(u.css_id).to eq(lowercase_css_id)
+    end
+  end
+
   context ".from_session" do
     let(:request) { OpenStruct.new(remote_ip: "123.123.222.222") }
     let(:session) { { "user" => user.as_json.merge("roles" => user.roles, "name" => user.name) } }
