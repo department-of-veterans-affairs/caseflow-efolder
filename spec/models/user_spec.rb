@@ -40,19 +40,17 @@ describe User do
     end
   end
 
-  context "validation on object instantiation" do
-    let(:core_email) { "core_email address@zombo.com" }
-    let(:email) { "  #{core_email}    " }
-    let(:css_id) { "lowercase_string" }
-    let(:station_id) { 101 }
-    subject { User.find_or_create_by(email: email, css_id: css_id, station_id: station_id) }
+  context "case-insensitive css_id in find_or_create_by()" do
+    let(:station_id) { Random.rand(900) + 1 }
+    let(:lowercase_css_id) { "tony_hawk" }
+    let(:uppercase_css_id) { lowercase_css_id.upcase }
+    let(:orig_user) { User.create(css_id: lowercase_css_id, station_id: station_id) }
 
-    it "trims leading and trailing whitespace from User's email address" do
-      expect(subject.email).to eq core_email
-    end
+    before { orig_user.save }
 
-    it "capitalizes all letters in the css_id" do
-      expect(subject.css_id).to eq css_id.upcase
+    it "returns original user record with differently cased css_id" do
+      u = User.find_or_create_by(css_id: uppercase_css_id, station_id: station_id)
+      expect(u.css_id).to eq(lowercase_css_id)
     end
   end
 
