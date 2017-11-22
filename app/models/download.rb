@@ -109,9 +109,7 @@ class Download < ActiveRecord::Base
   end
 
   def estimated_to_complete_at
-    binding.pry
-    if !@estimated_to_complete_at.nil? && (@estimated_to_complete_at ||= calculate_estimated_to_complete_at)
-    end
+    @estimated_to_complete_at ||= calculate_estimated_to_complete_at
   end
 
   def case_exists?
