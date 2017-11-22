@@ -1,4 +1,4 @@
-class ManifestStatus < ActiveRecord::Base
+class ManifestSource < ActiveRecord::Base
   enum status: {
     pending: 0,
     success: 1,
