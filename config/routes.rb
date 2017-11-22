@@ -29,7 +29,12 @@ Rails.application.routes.draw do
       resources :documents, only: :show
       resources :files, only: :index
     end
+
+    namespace :v2 do
+      resources :manifests, only: :index
+    end
   end
+
 
   get '/stats(/:interval)', to: 'stats#show', as: 'stats'
 

@@ -11,8 +11,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171122181603) do
 
+ActiveRecord::Schema.define(version: 20171127190302) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -75,7 +75,6 @@ ActiveRecord::Schema.define(version: 20171122181603) do
     t.integer  "user_id"
     t.integer  "zipfile_size",             limit: 8
     t.boolean  "from_api",                           default: false
-    t.datetime "vva_fetched_at"
     t.datetime "manifest_vva_fetched_at"
     t.datetime "manifest_vbms_fetched_at"
   end
@@ -115,8 +114,8 @@ ActiveRecord::Schema.define(version: 20171122181603) do
     t.string   "type_description"
     t.string   "type_id"
     t.integer  "size"
-    t.string   "vva_jro"
-    t.string   "vva_source"
+    t.string   "jro"
+    t.string   "source"
     t.datetime "created_at",                       null: false
     t.datetime "updated_at",                       null: false
   end
