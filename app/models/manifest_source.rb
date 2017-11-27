@@ -6,6 +6,7 @@ class ManifestSource < ActiveRecord::Base
   }
 
   belongs_to :manifest
+  has_many :records
 
   validates :manifest, :source, presence: true
 end
