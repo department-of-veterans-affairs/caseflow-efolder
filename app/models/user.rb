@@ -6,6 +6,8 @@ class User < ActiveRecord::Base
   has_many :user_manifests
   has_many :manifests, through: :user_manifests
 
+  before_save { |u| u.email.try(:strip!) }
+
   NO_EMAIL = "No Email Recorded".freeze
 
   attr_accessor :name, :roles, :ip_address
