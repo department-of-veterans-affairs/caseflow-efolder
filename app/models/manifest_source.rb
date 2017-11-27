@@ -1,4 +1,4 @@
-class ManifestStatus < ActiveRecord::Base
+class ManifestSource < ActiveRecord::Base
   enum status: {
     pending: 0,
     success: 1,
@@ -6,6 +6,7 @@ class ManifestStatus < ActiveRecord::Base
   }
 
   belongs_to :manifest
+  has_many :records
 
   validates :manifest, :source, presence: true
 end
