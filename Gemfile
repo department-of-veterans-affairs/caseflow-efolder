@@ -73,7 +73,7 @@ gem 'request_store'
 
 gem "mini_magick"
 
-gem 'connect_vbms', git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "2e401bf7749f0780280951cbde777b7d67765554"
+gem 'connect_vbms', git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "0a91e8d3410665120fb1ab163c49869217cfa640"
 gem 'connect_vva', git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "32bb9962eb422c17049d085cf505ce5008d6f057"
 gem 'bgs', git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", :branch => 'faad830fe463e88f21bdb4a1af7422c2e529aab8'
 
