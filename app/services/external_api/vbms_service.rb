@@ -21,7 +21,7 @@ class ExternalApi::VBMSService
     @vbms_client ||= init_client
 
     request = if FeatureToggle.enabled?(:vbms_efolder_service_v1)
-                VBMS::Requests::FindDocumentSeriesReference.new(download.file_number)
+                VBMS::Requests::FindDocumentVersionReference.new(download.file_number)
               else
                 VBMS::Requests::ListDocuments.new(download.file_number)
               end
