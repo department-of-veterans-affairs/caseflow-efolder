@@ -31,11 +31,11 @@ class Manifest < ActiveRecord::Base
     end
   end
 
-  private
-
   def veteran
     @veteran ||= Veteran.new(file_number: file_number).load_bgs_record!
   end
+
+  private
 
   def update_veteran_info
     return unless veteran

@@ -37,5 +37,36 @@ describe Manifest do
   end
 
   context "#veteran_first_name" do
+    let(:manifest) { Manifest.create(file_number: "445566", veteran_first_name: name) }
+
+    let(:veteran_record) do
+      {
+        "veteran_first_name" => "June",
+        "veteran_last_name" => "Juniper",
+        "veteran_last_four_ssn" => "6789"
+      }
+    end
+
+    before do
+      Fakes::BGSService.veteran_info = { "445566" => veteran_record }
+    end
+
+    subject { manifest.veteran_first_name }
+
+    context "when veteran first name is empty string" do
+      let(:name) { "" }
+
+      it "should not set the veteran_first_name" do
+        expect(manifest.reload.veteran_first_name).to eq ""
+      end
+    end
+
+    context "when veteran first name is nil" do
+      let(:name) { nil }
+
+      it "should set the veteran_first_name" do
+        expect(manifest.reload.veteran_first_name).to eq "June"
+      end
+    end
   end
 end
