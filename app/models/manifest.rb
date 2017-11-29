@@ -20,27 +20,14 @@ class Manifest < ActiveRecord::Base
     sources.find_or_create_by(source: "VVA")
   end
 
-  # If we do not yet have the veteran_first_name saved in Caseflow's DB, then
+  # If we do not yet have the veteran info saved in Caseflow's DB, then
   # we want to fetch it from BGS, save it to the DB, then return it
-  # TODO: these 3 methods are identical, let's simplify this
-  def veteran_first_name
-    super || begin
-      update_attributes(veteran_first_name: veteran.first_name || "") if veteran
-      super
-    end
-  end
-
-  def veteran_last_name
-    super || begin
-      update_attributes(veteran_last_name: veteran.last_name || "") if veteran
-      super
-    end
-  end
-
-  def veteran_last_four_ssn
-    super || begin
-      update_attributes(veteran_last_four_ssn: veteran.last_four_ssn || "") if veteran
-      super
+  %w(veteran_first_name veteran_last_name veteran_last_four_ssn).each do |name|
+    define_method(name) do
+      self[name] || begin
+        update_veteran_info
+        self[name]
+      end
     end
   end
 
@@ -48,5 +35,12 @@ class Manifest < ActiveRecord::Base
 
   def veteran
     @veteran ||= Veteran.new(file_number: file_number).load_bgs_record!
+  end
+
+  def update_veteran_info
+    return unless veteran
+    update(veteran_first_name: veteran.first_name || "",
+           veteran_last_name: veteran.last_name || "",
+           veteran_last_four_ssn: veteran.last_four_ssn || "")
   end
 end
