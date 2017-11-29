@@ -5,7 +5,6 @@ class Record < ActiveRecord::Base
   validates :external_document_id, uniqueness: true
 
   def self.create_from_external_document(manifest_source, document)
-    # TODO: add DB index for [manifest_source_id, external_document_id]
     find_or_initialize_by(manifest_source: manifest_source, external_document_id: document.document_id).tap do |t|
       t.assign_attributes(
         type_id: document.type_id,

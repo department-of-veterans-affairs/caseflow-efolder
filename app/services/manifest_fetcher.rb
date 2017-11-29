@@ -3,16 +3,17 @@ class ManifestFetcher
 
   EXCEPTIONS = [VBMS::ClientError, VVA::ClientError]
 
-  attr_accessor :manifest_source, :service
+  attr_accessor :manifest_source
 
   def process
     manifest_source.update(status: :pending)
-    documents = service.fetch_documents_for(manifest_source.manifest)
+    documents = manifest_source.service.fetch_documents_for(manifest_source.manifest)
     manifest_source.update(status: :success, fetched_at: Time.zone.now)
     documents
   rescue *EXCEPTIONS => e
     manifest_source.update(status: :failed)
     log_error(e)
+    []
   end
 
   def log_error(e)

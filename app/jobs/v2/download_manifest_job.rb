@@ -3,14 +3,10 @@ class V2::DownloadManifestJob < ActiveJob::Base
 
   around_perform :set_vbms_version
 
-  def perform(service, manifest_source)
-    documents = ManifestFetcher.new(
-      service: service,
-      manifest_source: manifest_source
-    ).process
-    if documents.present?
-      DocumentCreator.new(manifest_source: manifest_source, external_documents: documents).create
-    end
+  def perform(manifest_source)
+    documents = ManifestFetcher.new(manifest_source: manifest_source).process
+    return if documents.blank?
+    DocumentCreator.new(manifest_source: manifest_source, external_documents: documents).create
   end
 
   private
