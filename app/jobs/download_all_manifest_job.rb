@@ -24,5 +24,11 @@ class DownloadAllManifestJob < ActiveJob::Base
       download.update_attributes!(status: :pending_confirmation)
     end
     external_documents
+
+    # efolder issue #675: Set the download's status to manifest_fetch_error
+    # if this job fails and the download's status == fetching_manifest.
+  rescue StandardError => e
+    download.update_attributes!(status: :manifest_fetch_error) if download.fetching_manifest?
+    raise e
   end
 end
