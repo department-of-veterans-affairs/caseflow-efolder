@@ -1,7 +1,7 @@
 class ManifestFetcher
   include ActiveModel::Model
 
-  EXCEPTIONS = [VBMS::ClientError, VVA::ClientError]
+  EXCEPTIONS = [VBMS::ClientError, VVA::ClientError].freeze
 
   attr_accessor :manifest_source
 

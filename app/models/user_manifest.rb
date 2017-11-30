@@ -3,5 +3,4 @@ class UserManifest < ActiveRecord::Base
   belongs_to :manifest
 
   validates :manifest, :user, presence: true
-  validates :user, uniqueness: { scope: :manifest }
 end

@@ -35,7 +35,8 @@ class Manifest < ActiveRecord::Base
 
   def self.find_or_create_by_user(user:, file_number:)
     manifest = Manifest.find_or_create_by(file_number: file_number)
-    manifest.user_manifests.find_or_create_by(user: user).touch
+    # Create a record every time for auditing purposes
+    manifest.user_manifests.create(user: user)
     manifest
   end
 

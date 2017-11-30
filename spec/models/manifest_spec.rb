@@ -40,13 +40,20 @@ describe Manifest do
     let(:user) { User.create(css_id: "Foo", station_id: "112") }
     subject { Manifest.find_or_create_by_user(user: user, file_number: "1234") }
 
-    it "should create objects" do
+    it "creates manifest and user manifest records" do
       subject
+      manifest = Manifest.first
+      user_manifest = UserManifest.first
+      expect(manifest.file_number).to eq "1234"
+      expect(user_manifest.user).to eq user
+      expect(user_manifest.manifest).to eq manifest
+
+      Manifest.find_or_create_by_user(user: user, file_number: "1234")
       expect(Manifest.count).to eq 1
-      expect(UserManifest.count).to eq 1
-      expect(Manifest.first.file_number).to eq "1234"
-      expect(UserManifest.first.user).to eq user
-      expect(UserManifest.first.manifest).to eq Manifest.first
+      expect(UserManifest.count).to eq 2
+      user_manifest = UserManifest.second
+      expect(user_manifest.user).to eq user
+      expect(user_manifest.manifest).to eq manifest
     end
   end
 

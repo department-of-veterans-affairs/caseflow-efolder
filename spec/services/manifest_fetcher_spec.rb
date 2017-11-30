@@ -55,7 +55,7 @@ describe ManifestFetcher do
         end
       end
 
-      context "when VBMS client returns error" do
+      context "when VVA client returns error" do
         before do
           allow(VVAService).to receive(:fetch_documents_for).and_raise(VVA::ClientError)
         end

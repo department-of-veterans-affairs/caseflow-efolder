@@ -20,10 +20,6 @@ class ManifestSource < ActiveRecord::Base
     # TODO: start downloading records from VBMS and save to S3
   end
 
-  def current?
-    success? && fetched_at && fetched_at > 3.hours.ago
-  end
-
   def service
     case source
     when "VBMS"
@@ -31,5 +27,11 @@ class ManifestSource < ActiveRecord::Base
     when "VVA"
       VVAService
     end
+  end
+
+  private
+
+  def current?
+    success? && fetched_at && fetched_at > 3.hours.ago
   end
 end
