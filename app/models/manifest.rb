@@ -34,8 +34,8 @@ class Manifest < ActiveRecord::Base
     @veteran ||= Veteran.new(file_number: file_number).load_bgs_record!
   end
 
-  def self.find_or_create_by(user:, file_number:)
-    manifest = Manifest.includes(:records, :sources).find_or_create_by(file_number: file_number)
+  def self.find_or_create_by_user(user:, file_number:)
+    manifest = Manifest.find_or_create_by(file_number: file_number)
     manifest.user_manifests.find_or_create_by(user: user).touch
     manifest
   end
