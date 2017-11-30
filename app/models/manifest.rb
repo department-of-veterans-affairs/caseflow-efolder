@@ -6,7 +6,6 @@ class Manifest < ActiveRecord::Base
   validates :file_number, presence: true, uniqueness: true
 
   def start!
-    # TODO: create UserManifest object
     # TODO: can we do it in parallel
     vbms_source.start!
     vva_source.start!
@@ -33,6 +32,12 @@ class Manifest < ActiveRecord::Base
 
   def veteran
     @veteran ||= Veteran.new(file_number: file_number).load_bgs_record!
+  end
+
+  def self.find_or_create_by(user:, file_number:)
+    manifest = Manifest.includes(:records, :sources).find_or_create_by(file_number: file_number)
+    manifest.user_manifests.find_or_create_by(user: user).touch
+    manifest
   end
 
   private

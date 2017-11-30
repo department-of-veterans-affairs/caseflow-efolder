@@ -27,6 +27,6 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
   end
 
   def manifest
-    @manifest ||= Manifest.find_or_create_by(file_number: file_number)
+    Manifest.find_or_create_by(user: current_user, file_number: file_number)
   end
 end
