@@ -19,15 +19,17 @@ development:
 
 staging:
   <<: *default
+  host: <%= ENV['POSTGRES_HOST'] %>
   username: <%= `whoami` %>
+  password: <%= ENV['POSTGRES_PASSWORD'] %>
   database: caseflow_efolder_staging
 
 test:
   <<: *default
-  username: <%= ENV['POSTGRES_USER'] || `whoami` %>
-  database: caseflow_efolder_test
   host: <%= ENV['POSTGRES_HOST'] %>
+  username: <%= ENV['POSTGRES_USER'] || `whoami` %>
   password: <%= ENV['POSTGRES_PASSWORD'] %>
+  database: caseflow_efolder_test
 
 production:
   <<: *default
