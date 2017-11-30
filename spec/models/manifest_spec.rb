@@ -36,6 +36,20 @@ describe Manifest do
     end
   end
 
+  context ".find_or_create_by_user" do
+    let(:user) { User.create(css_id: "Foo", station_id: "112") }
+    subject { Manifest.find_or_create_by_user(user: user, file_number: "1234") }
+
+    it "should create objects" do
+      subject
+      expect(Manifest.count).to eq 1
+      expect(UserManifest.count).to eq 1
+      expect(Manifest.first.file_number).to eq "1234"
+      expect(UserManifest.first.user).to eq user
+      expect(UserManifest.first.manifest).to eq Manifest.first
+    end
+  end
+
   context "#veteran_first_name" do
     let(:manifest) { Manifest.create(file_number: "445566", veteran_first_name: name) }
 

@@ -6,7 +6,6 @@ class Manifest < ActiveRecord::Base
   validates :file_number, presence: true, uniqueness: true
 
   def start!
-    # TODO: can we do it in parallel
     vbms_source.start!
     vva_source.start!
   end
