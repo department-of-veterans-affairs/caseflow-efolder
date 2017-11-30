@@ -10,19 +10,24 @@ default: &default
   pool: <%= ENV["DB_CONN_POOL_MAX_SIZE"] || 5 %>
   timeout: 5000
 
+default: &default_local
+  host: <%= ENV['POSTGRES_HOST'] %>
+  username: <%= ENV['POSTGRES_USER'] || `whoami` %>
+  password: <%= ENV['POSTGRES_PASSWORD'] %>
+
 development:
   <<: *default
-  username: <%= `whoami` %>
+  <<: *default_local
   database: caseflow_efolder_development
 
 staging:
   <<: *default
-  username: <%= `whoami` %>
+  <<: *default_local
   database: caseflow_efolder_staging
 
 test:
   <<: *default
-  username: <%= `whoami` %>
+  <<: *default_local
   database: caseflow_efolder_test
 
 production:
