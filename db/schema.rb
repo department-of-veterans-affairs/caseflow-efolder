@@ -11,8 +11,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171115193142) do
 
+ActiveRecord::Schema.define(version: 20171127190302) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -75,7 +75,6 @@ ActiveRecord::Schema.define(version: 20171115193142) do
     t.integer  "user_id"
     t.integer  "zipfile_size",             limit: 8
     t.boolean  "from_api",                           default: false
-    t.datetime "vva_fetched_at"
     t.datetime "manifest_vva_fetched_at"
     t.datetime "manifest_vbms_fetched_at"
   end
@@ -85,7 +84,7 @@ ActiveRecord::Schema.define(version: 20171115193142) do
   add_index "downloads", ["manifest_fetched_at"], name: "downloads_manifest_fetched_at", using: :btree
   add_index "downloads", ["user_id"], name: "index_downloads_on_user_id", using: :btree
 
-  create_table "manifest_statuses", force: :cascade do |t|
+  create_table "manifest_sources", force: :cascade do |t|
     t.integer  "manifest_id"
     t.integer  "status",      default: 0
     t.string   "source"
@@ -107,7 +106,7 @@ ActiveRecord::Schema.define(version: 20171115193142) do
   add_index "manifests", ["file_number"], name: "index_manifests_on_file_number", using: :btree
 
   create_table "records", force: :cascade do |t|
-    t.integer  "manifest_id"
+    t.integer  "manifest_source_id"
     t.integer  "status",               default: 0
     t.string   "external_document_id"
     t.string   "mime_type"
@@ -115,8 +114,8 @@ ActiveRecord::Schema.define(version: 20171115193142) do
     t.string   "type_description"
     t.string   "type_id"
     t.integer  "size"
-    t.string   "vva_jro"
-    t.string   "vva_source"
+    t.string   "jro"
+    t.string   "source"
     t.datetime "created_at",                       null: false
     t.datetime "updated_at",                       null: false
   end

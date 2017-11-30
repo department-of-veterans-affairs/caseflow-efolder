@@ -38,6 +38,8 @@ class ExternalApi::BGSService
     # Fetch current_user from global thread
     current_user = RequestStore[:current_user]
 
+    forward_proxy_url = FeatureToggle.enabled?(:bgs_forward_proxy) ? ENV["RUBY_BGS_PROXY_BASE_URL"] : nil
+
     # We hardcode the ip since all clients show up as a single IP anyway.
     BGS::Services.new(
       env: Rails.application.config.bgs_environment,
@@ -48,6 +50,7 @@ class ExternalApi::BGSService
       ssl_cert_key_file: ENV["BGS_KEY_LOCATION"],
       ssl_cert_file: ENV["BGS_CERT_LOCATION"],
       ssl_ca_cert: ENV["BGS_CA_CERT_LOCATION"],
+      forward_proxy_url: forward_proxy_url,
       log: true
     )
   end
