@@ -62,7 +62,7 @@ describe Manifest do
 
     let(:veteran_record) do
       {
-        "veteran_first_name" => "June",
+        "veteran_first_name" => name_from_bgs,
         "veteran_last_name" => "Juniper",
         "veteran_last_four_ssn" => "6789"
       }
@@ -76,17 +76,28 @@ describe Manifest do
 
     context "when veteran first name is empty string" do
       let(:name) { "" }
+      let(:name_from_bgs) { "June" }
 
       it "should not set the veteran_first_name" do
         expect(manifest.reload.veteran_first_name).to eq ""
       end
     end
 
-    context "when veteran first name is nil" do
+    context "when veteran first name is nil and the name from BGS is not nil" do
       let(:name) { nil }
+      let(:name_from_bgs) { "June" }
 
       it "should set the veteran_first_name" do
         expect(manifest.reload.veteran_first_name).to eq "June"
+      end
+    end
+
+    context "when veteran first name is nil and the name from BGS is nil" do
+      let(:name) { nil }
+      let(:name_from_bgs) { nil }
+
+      it "should set the veteran_first_name to an empty string" do
+        expect(manifest.reload.veteran_first_name).to eq ""
       end
     end
   end
