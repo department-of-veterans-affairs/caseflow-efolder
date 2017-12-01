@@ -22,11 +22,6 @@ class Veteran
     bgs_record != :not_found
   end
 
-  # def accessible?
-  #   @accessible = self.class.bgs.can_access?(file_number) if @accessible.nil?
-  #   @accessible
-  # end
-
   private
 
   # TODO: mimic what we have in Caseflow

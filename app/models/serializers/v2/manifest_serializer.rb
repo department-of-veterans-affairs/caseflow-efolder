@@ -6,6 +6,16 @@ class Serializers::V2::ManifestSerializer < ActiveModel::Serializer
   attribute :created_at
   attribute :updated_at
 
+  attribute :sources do
+    object.sources.map do |source|
+      {
+        source: source.source,
+        status: source.status,
+        fetched_at: source.fetched_at
+      }
+    end
+  end
+
   attribute :records do
     object.records.order(:id).map do |document|
       {
