@@ -58,7 +58,7 @@ describe Manifest do
   end
 
   context "#veteran_first_name" do
-    let(:manifest) { Manifest.create(file_number: "445566", veteran_first_name: name) }
+    let(:manifest) { Manifest.create(file_number: "445566", veteran_first_name: veteran_first_name) }
 
     let(:veteran_record) do
       {
@@ -74,30 +74,32 @@ describe Manifest do
 
     subject { manifest.veteran_first_name }
 
-    context "when veteran first name is empty string" do
-      let(:name) { "" }
+    context "when veteran first name is an empty string" do
+      let(:veteran_first_name) { "" }
       let(:name_from_bgs) { "June" }
 
-      it "should not set the veteran_first_name" do
+      it "should not re-set the veteran first name" do
         expect(manifest.reload.veteran_first_name).to eq ""
       end
     end
 
-    context "when veteran first name is nil and the name from BGS is not nil" do
-      let(:name) { nil }
-      let(:name_from_bgs) { "June" }
+    context "when veteran first name is nil" do
+      let(:veteran_first_name) { nil }
 
-      it "should set the veteran_first_name" do
-        expect(manifest.reload.veteran_first_name).to eq "June"
+      context "and the BGS name is not nil" do
+        let(:name_from_bgs) { "June" }
+
+        it "should set the veteran first name to the BGS name" do
+          expect(manifest.reload.veteran_first_name).to eq "June"
+        end
       end
-    end
 
-    context "when veteran first name is nil and the name from BGS is nil" do
-      let(:name) { nil }
-      let(:name_from_bgs) { nil }
+      context "and the name from BGS is nil" do
+        let(:name_from_bgs) { nil }
 
-      it "should set the veteran_first_name to an empty string" do
-        expect(manifest.reload.veteran_first_name).to eq ""
+        it "should set the veteran first name to an empty string" do
+          expect(manifest.reload.veteran_first_name).to eq ""
+        end
       end
     end
   end
