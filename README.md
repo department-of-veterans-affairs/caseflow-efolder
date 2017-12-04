@@ -9,13 +9,16 @@ FOIA Requests that give veterans access to their own VA files take **way** too l
 
 ## First Time Development Setup
 
-You'll need Ruby 2.3.0, Postgres, and Redis if you don't have them.
+You'll need Ruby 2.3.0, Postgres, Redis, and ImageMagick 6.7.8-9 if you don't have them.
 
 > $ rbenv install 2.3.0
 
 > $ brew install postgresql
 
 > $ brew install redis
+
+> $ brew install imagemagick
+
 
 You may want to have Redis and Postgres run on startup. Let brew tell you how to do that:
 
