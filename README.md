@@ -19,7 +19,6 @@ You'll need Ruby 2.3.0, Postgres, Redis, and ImageMagick 6.7.8-9 if you don't ha
 
 > $ brew install imagemagick
 
-
 You may want to have Redis and Postgres run on startup. Let brew tell you how to do that:
 
 > $ brew info redis
