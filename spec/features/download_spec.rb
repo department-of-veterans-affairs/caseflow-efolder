@@ -268,6 +268,12 @@ RSpec.feature "Downloads" do
     expect(page).to have_current_path(root_path)
   end
 
+  scenario "Download with manifest_fetch_error status" do
+    download = @user_download.create(status: :manifest_fetch_error)
+    visit download_path(download)
+    expect(page).to have_content "We couldn't find this efolder."
+  end
+
   scenario "Confirming download" do
     Fakes::BGSService.veteran_info = {
       "3456" => {
