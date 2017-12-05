@@ -11,6 +11,11 @@ def APP_NAME = 'efolder';
 // See http://docs.ansible.com/ansible/git_module.html version field
 def APP_VERSION = env.APP_VERSION ?: 'HEAD';
 
+def DEPLOY_MESSAGE = null
+
+// Allows appeals-deployment branch (defaults to master) to be overridden for
+// testing purposes
+def DEPLOY_BRANCH = (env.DEPLOY_BRANCH != null) ? env.DEPLOY_BRANCH : 'master'
 
 /************************ Common Pipeline boilerplate ************************/
 
@@ -33,24 +38,31 @@ node('deploy') {
       step([$class: 'WsCleanup'])
     }
 
+    if (env.APP_ENV == 'prod') {
+      stage('deploy-message') {
+        checkout scm
+        DEPLOY_MESSAGE = sh (
+          // this script will:
+          // get the latest `deployed` release created by: https://github.com/department-of-veterans-affairs/appeals-deployment/blob/master/ansible/utility-roles/deployed-version/files/tag_deployed_commit.py
+          // compare current HEAD commit to the last deployed release
+          // save the message to be announced in Slack by the pipeline
+          script: "git log \$(git ls-remote --tags https://${env.GIT_CREDENTIAL}@github.com/department-of-veterans-affairs/caseflow-efolder.git \
+                   | awk '{print \$2}' | grep -E 'deployed' \
+                   | sort -t/ -nk4 \
+                   | awk -F\"/\" '{print \$0}' \
+                   | tail -n 1 \
+                   | awk '{print \$1}')..HEAD --pretty='format:%h %<(15)%an %s'",
+          returnStdout: true
+        ).trim()
+      }
+    }
+
     // Checkout the deployment repo for the ansible script. This is needed
     // since the deployment scripts are separated from the source code.
-    stage ('checkout-deploy-repo') {
-      sh "git clone https://${env.GIT_CREDENTIAL}@github.com/department-of-veterans-affairs/appeals-deployment"
+    stage ('pull-deploy-repo') {
+
+      sh "git clone -b $DEPLOY_BRANCH https://${env.GIT_CREDENTIAL}@github.com/department-of-veterans-affairs/appeals-deployment"
       dir ('./appeals-deployment/ansible') {
-        // For prod deploys we want to pull the latest `stable` tag; the logic here will pass it to ansible git module as APP_VERSION
-        if (env.APP_ENV == 'prod') {
-          APP_VERSION = sh (
-            // magical shell script that will find the latest tag for the repository
-            // 1. get remote tags + shas
-            // 2. drop the shas
-            // 3. get only manual or stable tags
-            // 4. sort by date column
-            // 5. get the last line
-            script: "git ls-remote --tags https://${env.GIT_CREDENTIAL}@github.com/department-of-veterans-affairs/caseflow-efolder.git | awk '{print \$2}' | grep -E 'manual|stable' | sort -t/ -nk4 | awk -F\"/\" '{print \$0}' | tail -n 1",
-            returnStdout: true
-            ).trim()
-        }
         // The commmon pipeline script should kick off the deployment.
         commonPipeline = load "../jenkins/common-pipeline.groovy"
       }
@@ -61,4 +73,4 @@ node('deploy') {
 // Execute the common pipeline.
 // Note that this must be outside of the node block since the common pipeline
 // runs another set of stages.
-commonPipeline.deploy(APP_NAME, APP_VERSION);
+commonPipeline.deploy(APP_NAME, APP_VERSION, DEPLOY_MESSAGE);
