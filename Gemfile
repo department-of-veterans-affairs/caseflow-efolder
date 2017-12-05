@@ -73,8 +73,8 @@ gem 'request_store'
 
 gem "mini_magick"
 
-gem 'connect_vbms', git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "e43d22a7c72849a722581a102fc395225c7f1afa"
-gem 'connect_vva', git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "32bb9962eb422c17049d085cf505ce5008d6f057"
+gem 'connect_vbms', git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "5dda05573d424d557be7a09052ab24b0dc6a5c5f"
+gem 'connect_vva', git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "f7036e7d3c17aae6e66e345051ea61c6badc5de2"
 gem 'bgs', git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", :branch => 'faad830fe463e88f21bdb4a1af7422c2e529aab8'
 
 # Use ActiveModel has_secure_password
