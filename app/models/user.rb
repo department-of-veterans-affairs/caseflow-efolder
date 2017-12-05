@@ -6,8 +6,6 @@ class User < ActiveRecord::Base
   has_many :user_manifests
   has_many :manifests, through: :user_manifests
 
-  before_save { |u| u.email.try(:strip!) }
-
   NO_EMAIL = "No Email Recorded".freeze
 
   attr_accessor :name, :roles, :ip_address
@@ -42,31 +40,21 @@ class User < ActiveRecord::Base
   end
 
   class << self
-    def from_session(session, request)
+    def from_session_and_request(session, request)
       return nil unless session["user"]
-      user = session["user"]
-      find_or_create_by(css_id: user["css_id"], station_id: user["station_id"]).tap do |u|
-        u.name = user["name"]
-        u.email = user["email"]
-        u.roles = user["roles"]
+      visitor = AuthenticatedVisitor.new(session["user"])
+      find_or_create_by(css_id: visitor.css_id, station_id: visitor.station_id).tap do |u|
+        u.name = visitor.name
+        u.email = visitor.email
+        u.roles = visitor.roles
         u.ip_address = request.remote_ip
         u.save
       end
     end
 
-    def from_css_auth_hash(auth_hash)
-      raw_css_response = auth_hash.extra.raw_info
-      first_name = raw_css_response["http://vba.va.gov/css/common/fName"]
-      last_name = raw_css_response["http://vba.va.gov/css/common/lName"]
-
-      {
-        id: auth_hash.uid,
-        css_id: auth_hash.uid,
-        email: raw_css_response["http://vba.va.gov/css/common/emailAddress"],
-        name: "#{first_name} #{last_name}",
-        roles: raw_css_response.attributes["http://vba.va.gov/css/caseflow/role"],
-        station_id: raw_css_response["http://vba.va.gov/css/common/stationId"]
-      }
+    def from_css_id_and_station(params)
+      visitor = AuthenticatedVisitor.new(css_id: params[:css_id], station_id: params[:station_id])
+      find_or_create_by(css_id: visitor.css_id, station_id: visitor.station_id)
     end
   end
 end
