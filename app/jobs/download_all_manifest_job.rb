@@ -25,8 +25,8 @@ class DownloadAllManifestJob < ActiveJob::Base
     end
     external_documents
 
-    # efolder issue #675: Set the download's status to manifest_fetch_error
-    # if this job fails and the download's status == fetching_manifest.
+    # efolder #675: Catch all errors and change the status so that the database row reflects
+    # that an erorr occurred and the efolder UI does not display a spinner forever.
   rescue StandardError => e
     download.update_attributes!(status: :manifest_fetch_error) if download.fetching_manifest?
     raise e

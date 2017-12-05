@@ -97,7 +97,6 @@ describe DownloadAllManifestJob do
     end
 
     context "when we encounter an unexpected error fetching manifests" do
-      # Mock a failure to one of the service-specific manifest fetches to mimic an unexpected error in the job.
       before { allow(DownloadManifestJob).to receive(:perform_now).and_raise(StandardError) }
       it "saves download status as :manifest_fetch_error" do
         expect { DownloadAllManifestJob.perform_now(download) }.to raise_error(StandardError)
