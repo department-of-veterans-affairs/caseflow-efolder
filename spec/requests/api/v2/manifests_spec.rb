@@ -16,14 +16,6 @@ describe "Manifests API v2", type: :request do
       veteran_last_name: "Washington"
     )
   end
-  # let!(:record) do
-  #   manifest.records.create(
-  #     external_document_id: "{3333-3333}",
-  #     received_at: Time.utc(2015, 9, 6, 1, 0, 0),
-  #     type_id: "825",
-  #     mime_type: "application/pdf"
-  #   )
-  # end
   let(:token) do
     "token"
   end
