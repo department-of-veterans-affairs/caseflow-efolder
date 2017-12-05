@@ -1,9 +1,9 @@
 # TODO: create Api::V2::ApplicationController
 class Api::V2::ManifestsController < Api::V1::ApplicationController
-  before_action :can_access?
+  before_action :validate_header
+  before_action :validate_access
 
   def index
-    return missing_header("File Number") unless file_number
     render json: json_manifests
   end
 
@@ -22,11 +22,24 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
     request.headers["HTTP_FILE_NUMBER"]
   end
 
-  def can_access?
-    forbidden("sensitive record") unless BGSService.new.check_sensitivity(file_number)
+  def validate_access
+    forbidden("sensitive record") unless bgs_service.check_sensitivity(file_number)
+  end
+
+  def validate_header
+    return missing_header("File Number") unless file_number
+    invalid_file_number unless bgs_service.valid_file_number?(file_number)
   end
 
   def manifest
     @manifest ||= Manifest.find_or_create_by_user(user: current_user, file_number: file_number)
+  end
+
+  def bgs_service
+    @bgs_service ||= BGSService.new
+  end
+
+  def invalid_file_number
+    render json: { status: "invalid File Number" }, status: 400
   end
 end
