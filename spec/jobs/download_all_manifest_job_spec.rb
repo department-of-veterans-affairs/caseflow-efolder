@@ -95,5 +95,13 @@ describe DownloadAllManifestJob do
         expect(download.reload).to be_pending_confirmation
       end
     end
+
+    context "when we encounter an unexpected error fetching manifests" do
+      before { allow(DownloadManifestJob).to receive(:perform_now).and_raise(StandardError) }
+      it "saves download status as :manifest_fetch_error" do
+        expect { DownloadAllManifestJob.perform_now(download) }.to raise_error(StandardError)
+        expect(download.status).to eq("manifest_fetch_error")
+      end
+    end
   end
 end
