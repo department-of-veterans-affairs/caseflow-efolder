@@ -24,5 +24,11 @@ class DownloadAllManifestJob < ActiveJob::Base
       download.update_attributes!(status: :pending_confirmation)
     end
     external_documents
+
+    # efolder #675: Catch all errors and change the status so that the database row reflects
+    # that an erorr occurred and the efolder UI does not display a spinner forever.
+  rescue StandardError => e
+    download.update_attributes!(status: :manifest_fetch_error) if download.fetching_manifest?
+    raise e
   end
 end

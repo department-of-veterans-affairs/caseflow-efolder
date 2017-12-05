@@ -43,6 +43,11 @@
       </div>
     </div>
 
+  <% elsif @download.manifest_fetch_error? %>
+      <h1 class="cf-msg-screen-heading cf-error">We couldn't find this efolder.</h1>
+      <p class="cf-msg-screen-text">You can return to the home page and <%= link_to "Search for another efolder", root_path %>.<br />
+      If you continue to experience problems, please use the <a href="<%= feedback_url %>" target="_blank">Send feedback</a> link to contact Caseflow Support.</p>
+
   <% elsif @download.pending_confirmation? %>
     <% if vva_feature_enabled? %>
       <p>

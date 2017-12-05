@@ -10,7 +10,8 @@ class Download < ActiveRecord::Base
     complete_success: 5,
     complete_with_errors: 6,
     vbms_connection_error: 7,
-    vva_connection_error: 8
+    vva_connection_error: 8,
+    manifest_fetch_error: 9
   }
 
   TIMEOUT = 10.minutes
