@@ -33,4 +33,23 @@ describe ExternalApi::BGSService do
       it { is_expected.to eq("FirstName") }
     end
   end
+
+  context "#valid_file_number?" do
+    subject { bgs_service.valid_file_number?(file_number) }
+
+    context "when valid" do
+      let(:file_number) { "123456789" }
+      it { is_expected.to eq true }
+    end
+
+    context "when not a number" do
+      let(:file_number) { "123K456789" }
+      it { is_expected.to eq false }
+    end
+
+    context "when shorter than 8 char" do
+      let(:file_number) { "456789" }
+      it { is_expected.to eq false }
+    end
+  end
 end
