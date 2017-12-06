@@ -1,9 +1,9 @@
 class ManifestFetcher
   include ActiveModel::Model
 
-  EXCEPTIONS = [VBMS::ClientError, VVA::ClientError].freeze
-
   attr_accessor :manifest_source
+
+  EXCEPTIONS = [VBMS::ClientError, VVA::ClientError].freeze
 
   def process
     manifest_source.update(status: :pending)
