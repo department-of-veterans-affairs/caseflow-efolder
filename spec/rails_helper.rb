@@ -66,7 +66,7 @@ module StubbableUser
       self.stub = nil
     end
 
-    def from_session(session, request)
+    def from_session_and_request(session, request)
       @stub || super(session, request)
     end
   end

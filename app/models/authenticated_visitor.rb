@@ -17,9 +17,7 @@ class AuthenticatedVisitor
   end
 
   class << self
-    def from_css
-      auth_hash = css_auth_hash
-
+    def from_css_auth_hash(auth_hash)
       raw_css_response = auth_hash.extra.raw_info
       first_name = raw_css_response["http://vba.va.gov/css/common/fName"]
       last_name = raw_css_response["http://vba.va.gov/css/common/lName"]
@@ -31,11 +29,5 @@ class AuthenticatedVisitor
           roles: raw_css_response.attributes["http://vba.va.gov/css/caseflow/role"],
           station_id: raw_css_response["http://vba.va.gov/css/common/stationId"])
     end
-  end
-
-  protected
-
-  def css_auth_hash
-    request.env["omniauth.auth"]
   end
 end
