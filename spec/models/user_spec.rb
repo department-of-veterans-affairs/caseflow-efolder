@@ -65,4 +65,18 @@ describe User do
       it { is_expected.to be_nil }
     end
   end
+
+  context ".from_api_authenticated_values" do
+    let(:css_id) { "lowercase_id" }
+    let(:uppercased_css_id) { css_id.upcase }
+    let(:station_id) { "919" }
+
+    context "when both css_id and station_id are defined" do
+      subject { User.from_api_authenticated_values(css_id: css_id, station_id: station_id) }
+      it "creates a new User object with an uppercase css_id" do
+        expect(subject.id).not_to be_nil
+        expect(subject.css_id).to eq(uppercased_css_id)
+      end
+    end
+  end
 end
