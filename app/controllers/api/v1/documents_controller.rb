@@ -1,5 +1,6 @@
 class Api::V1::DocumentsController < Api::V1::ApplicationController
   before_action :can_access?
+  before_action :client_has_cached?
 
   def show
     # Enable document caching for a month.
@@ -16,6 +17,10 @@ class Api::V1::DocumentsController < Api::V1::ApplicationController
   end
 
   private
+
+  def client_has_cached?
+    render nothing: true, status: 304 if request.headers["If-None-Match"] || request.headers["If-Modified-Since"]
+  end
 
   def document_download_failed(error_kind)
     status = 500
