@@ -40,25 +40,6 @@ describe User do
     end
   end
 
-  context "save" do
-    let(:css_id) { Random.rand(9_999) + 1 }
-    let(:station_id) { Random.rand(499) + 1 }
-    let(:email_without_spaces) { "king_bongo@zombo.com" }
-    let(:email) { "    #{email_without_spaces}   " }
-    subject { User.create(email: email, css_id: css_id, station_id: station_id) }
-
-    it "strips leading and trailing spaces from email address" do
-      expect(subject.email).to eq(email_without_spaces)
-    end
-
-    context "when email is nil" do
-      let(:email) { nil }
-      it "saves to database without error" do
-        expect(subject.email).to eq(nil)
-      end
-    end
-  end
-
   context ".from_session_and_request" do
     let(:request) { OpenStruct.new(remote_ip: "123.123.222.222") }
     let(:session) do
