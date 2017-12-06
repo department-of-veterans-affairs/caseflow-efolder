@@ -1,6 +1,5 @@
 class Api::V1::DocumentsController < Api::V1::ApplicationController
-  before_action :can_access?
-  before_action :client_has_cached?
+  before_action :client_has_cached?, :can_access?
 
   def show
     # Enable document caching for a month.
