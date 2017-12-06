@@ -52,8 +52,8 @@ class User < ActiveRecord::Base
       end
     end
 
-    def from_css_id_and_station(params)
-      visitor = AuthenticatedVisitor.new(css_id: params[:css_id], station_id: params[:station_id])
+    def from_api_authenticated_values(css_id:, station_id:)
+      visitor = AuthenticatedVisitor.new(css_id: css_id, station_id: station_id)
       find_or_create_by(css_id: visitor.css_id, station_id: visitor.station_id)
     end
   end

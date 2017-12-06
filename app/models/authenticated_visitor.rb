@@ -5,11 +5,11 @@ class AuthenticatedVisitor
   attr_accessor :id, :css_id, :email, :name, :roles, :station_id
 
   def email=(value)
-    @email = value.try(:strip)
+    @email = value && value.strip
   end
 
   def css_id=(value)
-    @css_id = value.try(:upcase)
+    @css_id = value && value.upcase
   end
 
   def attributes
