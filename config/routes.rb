@@ -32,6 +32,7 @@ Rails.application.routes.draw do
 
     namespace :v2 do
       resources :manifests, only: :index
+      resources :records, only: :show
     end
   end
 
