@@ -69,7 +69,7 @@ describe User do
   context ".from_api_authenticated_values" do
     let(:css_id) { "lowercase_id" }
     let(:uppercased_css_id) { css_id.upcase }
-    let(:station_id) { "919" }
+    let(:station_id) { Random.rand(499) + 1 }
 
     context "when both css_id and station_id are defined" do
       subject { User.from_api_authenticated_values(css_id: css_id, station_id: station_id) }

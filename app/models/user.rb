@@ -42,7 +42,7 @@ class User < ActiveRecord::Base
   class << self
     def from_session_and_request(session, request)
       return nil unless session["user"]
-      visitor = AuthenticatedVisitor.new(session["user"])
+      visitor = CssAuthenticationSession.new(session["user"])
       find_or_create_by(css_id: visitor.css_id, station_id: visitor.station_id).tap do |u|
         u.name = visitor.name
         u.email = visitor.email
@@ -53,7 +53,7 @@ class User < ActiveRecord::Base
     end
 
     def from_api_authenticated_values(css_id:, station_id:)
-      visitor = AuthenticatedVisitor.new(css_id: css_id, station_id: station_id)
+      visitor = CssAuthenticationSession.new(css_id: css_id, station_id: station_id)
       find_or_create_by(css_id: visitor.css_id, station_id: visitor.station_id)
     end
   end

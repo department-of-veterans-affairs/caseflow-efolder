@@ -3,7 +3,7 @@ class SessionsController < ApplicationController
   skip_before_action :authenticate, only: [:create]
 
   def create
-    session["user"] = AuthenticatedVisitor.from_css_auth_hash(css_auth_hash).as_json
+    session["user"] = CssAuthenticationSession.from_css_auth_hash(css_auth_hash).as_json
 
     redirect_to session.delete("return_to") || "/"
   end

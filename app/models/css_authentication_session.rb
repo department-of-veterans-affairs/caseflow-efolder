@@ -1,4 +1,4 @@
-class AuthenticatedVisitor
+class CssAuthenticationSession
   include ActiveModel::Model
   include ActiveModel::Serializers::JSON
 
