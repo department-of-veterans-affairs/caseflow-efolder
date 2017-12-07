@@ -1,0 +1,74 @@
+describe RecordFetcher do
+  let(:manifest) { Manifest.create(file_number: "1234") }
+  let(:source) { ManifestSource.create(source: %w(VBMS VVA).sample, manifest: manifest) }
+
+  let(:record) do
+    Record.create(
+      external_document_id: "{3333-3333}",
+      manifest_source: source,
+      received_at: Time.utc(2015, 9, 6, 1, 0, 0),
+      type_id: "825",
+      mime_type: mime_type
+    )
+  end
+
+  let(:mime_type) { "application/pdf" }
+  let(:tiff_file) { Rails.root + "lib/tiffs/0.tiff" }
+  let(:tiff_content) { File.open(tiff_file, "r", &:read) }
+  let(:fake_pdf_content) { "From VBMS" }
+
+  context "#process" do
+    subject { RecordFetcher.new(record: record).process }
+
+    context "when file is in S3" do
+      before do
+        allow(S3Service).to receive(:fetch_content).with(record.s3_filename).and_return("hello there")
+      end
+
+      it "should return the content from S3 and should not update the DB" do
+        expect(subject).to eq "hello there"
+      end
+    end
+
+    context "when file is not in S3" do
+      before do
+        allow(S3Service).to receive(:fetch_content).and_return(nil)
+        allow(Fakes::DocumentService).to receive(:fetch_document_file).and_return(fake_pdf_content)
+      end
+
+      it "should return the content from VBMS" do
+        expect(subject).to eq fake_pdf_content
+      end
+
+      it "should update document DB fields" do
+        subject
+        expect(record.reload.status).to eq "success"
+      end
+
+      context "when VBMS returns a tiff file" do
+        let(:mime_type) { "image/tiff" }
+
+        before do
+          allow(Fakes::DocumentService).to receive(:fetch_document_file).and_return(tiff_content)
+        end
+
+        it "should convert the tiff to pdf and return it" do
+          expect(valid_pdf?(subject)).to be_truthy
+        end
+      end
+    end
+
+    context "when the file is in s3 after it has been cached" do
+      before do
+        allow(S3Service).to receive(:fetch_content).and_return(nil)
+        allow(Fakes::DocumentService).to receive(:fetch_document_file).and_return(fake_pdf_content)
+      end
+
+      it "should cache in s3 from VBMS and then serve from s3" do
+        expect(subject).to eq fake_pdf_content
+        allow(S3Service).to receive(:fetch_content).and_return("from s3")
+        expect(RecordFetcher.new(record: record).process).to eq "from s3"
+      end
+    end
+  end
+end
