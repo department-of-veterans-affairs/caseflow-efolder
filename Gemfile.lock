@@ -7,8 +7,8 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/caseflow-commons
-  revision: c24ad69cf999c30b01deaadc0e8c13f6109c8c54
-  ref: c24ad69cf999c30b01deaadc0e8c13f6109c8c54
+  revision: a8d42e6563277144938f0a513ee601233814ff86
+  ref: a8d42e6563277144938f0a513ee601233814ff86
   specs:
     caseflow (0.1.6)
       aws-sdk (~> 2)
@@ -21,8 +21,8 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/connect_vbms.git
-  revision: 0a91e8d3410665120fb1ab163c49869217cfa640
-  ref: 0a91e8d3410665120fb1ab163c49869217cfa640
+  revision: 5dda05573d424d557be7a09052ab24b0dc6a5c5f
+  ref: 5dda05573d424d557be7a09052ab24b0dc6a5c5f
   specs:
     connect_vbms (1.0.0)
       httpclient (~> 2.8.0)
@@ -35,8 +35,8 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/connect_vva.git
-  revision: 32bb9962eb422c17049d085cf505ce5008d6f057
-  ref: 32bb9962eb422c17049d085cf505ce5008d6f057
+  revision: f7036e7d3c17aae6e66e345051ea61c6badc5de2
+  ref: f7036e7d3c17aae6e66e345051ea61c6badc5de2
   specs:
     connect_vva (0.1)
       savon (~> 2.11, >= 2.11.0)
@@ -294,24 +294,24 @@ GEM
     rb-readline (0.5.3)
     rdoc (4.3.0)
     redis (3.3.2)
-    redis-actionpack (5.0.1)
+    redis-actionpack (5.0.2)
       actionpack (>= 4.0, < 6)
       redis-rack (>= 1, < 3)
-      redis-store (>= 1.1.0, < 1.4.0)
-    redis-activesupport (5.0.1)
+      redis-store (>= 1.1.0, < 2)
+    redis-activesupport (5.0.4)
       activesupport (>= 3, < 6)
-      redis-store (~> 1.2.0)
+      redis-store (>= 1.3, < 2)
     redis-namespace (1.5.2)
       redis (~> 3.0, >= 3.0.4)
-    redis-rack (1.6.0)
-      rack (~> 1.5)
-      redis-store (~> 1.2.0)
-    redis-rails (5.0.1)
-      redis-actionpack (~> 5.0.0)
-      redis-activesupport (~> 5.0.0)
-      redis-store (~> 1.2.0)
-    redis-store (1.2.0)
-      redis (>= 2.2)
+    redis-rack (2.0.3)
+      rack (>= 1.5, < 3)
+      redis-store (>= 1.2, < 2)
+    redis-rails (5.0.2)
+      redis-actionpack (>= 5.0, < 6)
+      redis-activesupport (>= 5.0, < 6)
+      redis-store (>= 1.2, < 2)
+    redis-store (1.4.1)
+      redis (>= 2.2, < 5)
     ref (2.0.0)
     request_store (1.3.2)
     rspec (3.5.0)
@@ -487,7 +487,7 @@ DEPENDENCIES
   rails_stdout_logging
   rb-readline
   redis-namespace
-  redis-rails
+  redis-rails (~> 5.0.2)
   request_store
   rspec
   rspec-rails
