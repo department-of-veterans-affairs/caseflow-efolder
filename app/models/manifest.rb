@@ -2,6 +2,7 @@ class Manifest < ActiveRecord::Base
   has_many :sources, class_name: "ManifestSource"
   has_many :user_manifests
   has_many :records, through: :sources
+  has_many :users, through: :user_manifests
 
   validates :file_number, presence: true, uniqueness: true
 
@@ -27,6 +28,10 @@ class Manifest < ActiveRecord::Base
         self[name]
       end
     end
+  end
+
+  def downloaded_by?(user)
+    users.include?(user)
   end
 
   def veteran

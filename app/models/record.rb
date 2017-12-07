@@ -21,25 +21,32 @@ class Record < ActiveRecord::Base
   delegate :manifest, :service, to: :manifest_source
   delegate :file_number, to: :manifest
 
+  # :nocov:
   def fetch!
     fetcher.process
   end
 
+  # TODO: remove this method when implmenentation of VVA/VBMS service is changed towards v2 API
   def ssn
     file_number
-  end
-
-  def s3_filename
-    "#{external_document_id}.#{preferred_extension}"
   end
 
   # TODO: remove this method when implmenentation of VVA/VBMS service is changed towards v2 API
   def document_id
     external_document_id
   end
+  # :nocov:
+
+  def s3_filename
+    "#{external_document_id}.#{preferred_extension}"
+  end
 
   def preferred_extension
     mime ? mime.preferred_extension : ""
+  end
+
+  def accessible_by?(user)
+    user && manifest.downloaded_by?(user)
   end
 
   def self.create_from_external_document(manifest_source, document)

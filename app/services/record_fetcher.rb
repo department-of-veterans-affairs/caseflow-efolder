@@ -12,7 +12,7 @@ class RecordFetcher
     S3Service.store_file(record.s3_filename, content)
     record.update(status: :success)
     content
-  rescue *EXCEPTIONS => e
+  rescue *EXCEPTIONS
     record.update(status: :failed)
     nil
   end

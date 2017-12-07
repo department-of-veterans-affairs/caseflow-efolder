@@ -34,7 +34,7 @@ class Api::V2::RecordsController < Api::V1::ApplicationController
   end
 
   def validate_access
-    forbidden("sensitive record") unless BGSService.new.check_sensitivity(record.file_number)
+    forbidden("sensitive record") unless record.accessible_by?(current_user)
   rescue ActiveRecord::RecordNotFound
     record_not_found
   end
