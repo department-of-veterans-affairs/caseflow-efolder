@@ -49,7 +49,7 @@ class Api::V1::ApplicationController < BaseController
       return missing_header("Station ID") unless station_id
       return missing_header("CSS ID") unless css_id
 
-      self.current_user = User.find_or_create_by(css_id: css_id, station_id: station_id)
+      self.current_user = User.from_api_authenticated_values(css_id: css_id, station_id: station_id)
     elsif !user_has_role
       unauthorized
     end
