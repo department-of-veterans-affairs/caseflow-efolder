@@ -4,7 +4,7 @@ describe CssAuthenticationSession do
   let(:email) { "Han.Solo@va.gov" }
   let(:name) { "Han Solo" }
   let(:roles) { "Reader" }
-  let(:station_id) { Random.rand(499) + 1 }
+  let(:station_id) { "112" }
   let(:arguments) do
     { id: id,
       css_id: css_id,
@@ -18,7 +18,7 @@ describe CssAuthenticationSession do
   context "when creating a new object via .new" do
     context "with a lowercase css_id" do
       let(:css_id) { "rey" }
-      let(:uppercased_css_id) { css_id.upcase }
+      let(:uppercased_css_id) { "REY" }
 
       subject { CssAuthenticationSession.new(arguments) }
 

@@ -68,7 +68,7 @@ describe User do
 
   context ".from_api_authenticated_values" do
     let(:css_id) { "lowercase_id" }
-    let(:uppercased_css_id) { css_id.upcase }
+    let(:uppercased_css_id) { "LOWERCASE_ID" }
     let(:station_id) { Random.rand(499) + 1 }
 
     context "when both css_id and station_id are defined" do
