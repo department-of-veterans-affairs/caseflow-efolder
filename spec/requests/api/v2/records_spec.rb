@@ -33,7 +33,7 @@ describe "Records API v2", type: :request do
       expect(response.code).to eq("404")
     end
 
-    context "when user owns corresponding download record" do
+    context "when user owns corresponding manifest record" do
       let!(:user_manifest) { UserManifest.create(user: current_user, manifest: manifest) }
 
       it "returns a document" do
@@ -45,8 +45,8 @@ describe "Records API v2", type: :request do
       end
 
       it "returns 502 if there is a VBMS/VVA error" do
-        allow(Fakes::DocumentService).to receive(:fetch_document_file)
-          .and_raise([VBMS::ClientError, VVA::ClientError].sample)
+        allow_any_instance_of(RecordFetcher).to receive(:process).and_return(nil)
+        record.update(status: :failed)
 
         get "/api/v2/records/#{record.id}"
 

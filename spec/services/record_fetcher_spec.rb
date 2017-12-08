@@ -30,6 +30,18 @@ describe RecordFetcher do
       end
     end
 
+    context "when VBMS/VVA returns an error" do
+      before do
+        allow(S3Service).to receive(:fetch_content).and_return(nil)
+        allow(Fakes::DocumentService).to receive(:fetch_document_file).and_raise([VBMS::ClientError, VVA::ClientError].sample)
+      end
+
+      it "should return nil and update status" do
+        expect(subject).to eq nil
+        expect(record.reload.status).to eq "failed"
+      end
+    end
+
     context "when file is not in S3" do
       before do
         allow(S3Service).to receive(:fetch_content).and_return(nil)
