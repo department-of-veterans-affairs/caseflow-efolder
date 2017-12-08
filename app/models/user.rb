@@ -42,19 +42,19 @@ class User < ActiveRecord::Base
   class << self
     def from_session_and_request(session, request)
       return nil unless session["user"]
-      session = CssAuthenticationSession.new(session["user"])
-      find_or_create_by(css_id: session.css_id, station_id: session.station_id).tap do |u|
-        u.name = session.name
-        u.email = session.email
-        u.roles = session.roles
+      sesh = CssAuthenticationSession.new(session["user"])
+      find_or_create_by(css_id: sesh.css_id, station_id: sesh.station_id).tap do |u|
+        u.name = sesh.name
+        u.email = sesh.email
+        u.roles = sesh.roles
         u.ip_address = request.remote_ip
         u.save
       end
     end
 
     def from_api_authenticated_values(css_id:, station_id:)
-      session = CssAuthenticationSession.new(css_id: css_id, station_id: station_id)
-      find_or_create_by(css_id: session.css_id, station_id: session.station_id)
+      sesh = CssAuthenticationSession.new(css_id: css_id, station_id: station_id)
+      find_or_create_by(css_id: sesh.css_id, station_id: sesh.station_id)
     end
   end
 end
