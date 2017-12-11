@@ -107,6 +107,18 @@ describe "Documents API v1", type: :request do
       end
     end
 
+    context "returns 304" do
+      it "when If-None-Match header is sent" do
+        get "/api/v1/documents/#{document.id}", nil, "If-None-Match": "something"
+        expect(response.code).to eq("304")
+      end
+
+      it "when If-Modified-Since header is sent" do
+        get "/api/v1/documents/#{document.id}", nil, "If-Modified-Since": "something"
+        expect(response.code).to eq("304")
+      end
+    end
+
     it "returns 500 on any other error" do
       allow_any_instance_of(Fetcher).to receive(:content).and_raise("Much random error")
       expect(Raven).to receive(:capture_exception)
