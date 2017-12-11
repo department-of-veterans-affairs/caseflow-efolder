@@ -64,6 +64,11 @@ describe User do
       let(:session) { { "user" => nil } }
       it { is_expected.to be_nil }
     end
+
+    context "when session user does not contain css_id" do
+      let(:session) { { "user" => { "roles" => ["Certify Appeal", "Establish Claim"], "station_id" => "283", "email" => "america@example.com", "name" => "Cave Johnson" } } }
+      it { is_expected.to be_nil }
+    end
   end
 
   context ".from_api_authenticated_values" do

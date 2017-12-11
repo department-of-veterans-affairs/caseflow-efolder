@@ -42,7 +42,10 @@ class User < ActiveRecord::Base
   class << self
     def from_session_and_request(session, request)
       return nil unless session["user"]
+
       sesh = CssAuthenticationSession.new(session["user"])
+      return nil unless sesh.css_id && sesh.station_id
+
       find_or_create_by(css_id: sesh.css_id, station_id: sesh.station_id).tap do |u|
         u.name = sesh.name
         u.email = sesh.email
