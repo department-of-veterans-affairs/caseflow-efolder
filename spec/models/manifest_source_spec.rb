@@ -24,6 +24,7 @@ describe ManifestSource do
   context "#start!" do
     before do
       allow(V2::DownloadManifestJob).to receive(:perform_now)
+      allow(V2::SaveFilesInS3Job).to receive(:perform_later)
     end
 
     let(:manifest) { Manifest.create(file_number: "1234") }
@@ -35,6 +36,7 @@ describe ManifestSource do
       it "starts the manifest job" do
         subject
         expect(V2::DownloadManifestJob).to have_received(:perform_now)
+        expect(V2::SaveFilesInS3Job).to have_received(:perform_later)
       end
     end
 
@@ -46,6 +48,7 @@ describe ManifestSource do
       it "starts the manifest job" do
         subject
         expect(V2::DownloadManifestJob).to have_received(:perform_now)
+        expect(V2::SaveFilesInS3Job).to have_received(:perform_later)
       end
     end
 
@@ -57,6 +60,7 @@ describe ManifestSource do
       it "starts the manifest job" do
         subject
         expect(V2::DownloadManifestJob).to have_received(:perform_now)
+        expect(V2::SaveFilesInS3Job).to have_received(:perform_later)
       end
     end
 
@@ -68,6 +72,7 @@ describe ManifestSource do
       it "does not start the manifest job" do
         subject
         expect(V2::DownloadManifestJob).to_not have_received(:perform_now)
+        expect(V2::SaveFilesInS3Job).to_not have_received(:perform_later)
       end
     end
   end
