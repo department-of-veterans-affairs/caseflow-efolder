@@ -3,7 +3,7 @@ class SessionsController < ApplicationController
   skip_before_action :authenticate, only: [:create]
 
   def create
-    session["user"] = User.from_css_auth_hash auth_hash
+    session["user"] = CssAuthenticationSession.from_css_auth_hash(css_auth_hash).as_json
 
     redirect_to session.delete("return_to") || "/"
   end
@@ -15,7 +15,7 @@ class SessionsController < ApplicationController
 
   protected
 
-  def auth_hash
+  def css_auth_hash
     request.env["omniauth.auth"]
   end
 end

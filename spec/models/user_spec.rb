@@ -40,29 +40,19 @@ describe User do
     end
   end
 
-  context "save" do
-    let(:css_id) { Random.rand(9_999) + 1 }
-    let(:station_id) { Random.rand(499) + 1 }
-    let(:email_without_spaces) { "king_bongo@zombo.com" }
-    let(:email) { "    #{email_without_spaces}   " }
-    subject { User.create(email: email, css_id: css_id, station_id: station_id) }
-
-    it "strips leading and trailing spaces from email address" do
-      expect(subject.email).to eq(email_without_spaces)
-    end
-
-    context "when email is nil" do
-      let(:email) { nil }
-      it "saves to database without error" do
-        expect(subject.email).to eq(nil)
-      end
-    end
-  end
-
-  context ".from_session" do
+  context ".from_session_and_request" do
     let(:request) { OpenStruct.new(remote_ip: "123.123.222.222") }
-    let(:session) { { "user" => user.as_json.merge("roles" => user.roles, "name" => user.name) } }
-    subject { User.from_session(session, request) }
+    let(:session) do
+      { "user" =>
+        { "css_id" => user.css_id,
+          "email" => user.email,
+          "station_id" => user.station_id,
+          "roles" => user.roles,
+          "name" => user.name
+        }
+      }
+    end
+    subject { User.from_session_and_request(session, request) }
 
     it "returns a user from session and request" do
       expect(subject.name).to eq("Billy Bob Thorton")
@@ -76,37 +66,17 @@ describe User do
     end
   end
 
-  context ".from_css_auth_hash" do
-    let(:auth_hash) do
-      OpenStruct.new(
-        uid: "UID",
-        extra: OpenStruct.new(raw_info: auth_hash_data)
-      )
-    end
+  context ".from_api_authenticated_values" do
+    let(:css_id) { "lowercase_id" }
+    let(:uppercased_css_id) { "LOWERCASE_ID" }
+    let(:station_id) { Random.rand(499) + 1 }
 
-    let(:auth_hash_data) do
-      data = {
-        "http://vba.va.gov/css/common/fName" => "Kanye",
-        "http://vba.va.gov/css/common/lName" => "West",
-        "http://vba.va.gov/css/common/emailAddress" => "kanye@va.gov",
-        "http://vba.va.gov/css/common/stationId" => "123"
-      }
-
-      data.define_singleton_method(:attributes) do
-        { "http://vba.va.gov/css/caseflow/role" => ["Download eFolder"] }
+    context "when both css_id and station_id are defined" do
+      subject { User.from_api_authenticated_values(css_id: css_id, station_id: station_id) }
+      it "creates a new User object with an uppercase css_id" do
+        expect(subject.id).not_to be_nil
+        expect(subject.css_id).to eq(uppercased_css_id)
       end
-
-      data
-    end
-
-    subject { User.from_css_auth_hash(auth_hash) }
-
-    it "returns a user with the correct attributes" do
-      expect(subject[:css_id]).to eq("UID")
-      expect(subject[:name]).to eq("Kanye West")
-      expect(subject[:email]).to eq("kanye@va.gov")
-      expect(subject[:roles]).to eq(["Download eFolder"])
-      expect(subject[:station_id]).to eq("123")
     end
   end
 end
