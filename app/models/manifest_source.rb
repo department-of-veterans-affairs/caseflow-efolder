@@ -17,7 +17,7 @@ class ManifestSource < ActiveRecord::Base
     # TODO: If it is pending, don't make another request
     # https://bibwild.wordpress.com/2013/06/03/activerecord-atomic-check-and-update-through-optimistic-locking/
     V2::DownloadManifestJob.perform_now(self)
-    # TODO: start downloading records from VBMS and save to S3
+    V2::SaveFilesInS3Job.perform_later(self)
   end
 
   def service
