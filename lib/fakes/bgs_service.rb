@@ -34,7 +34,7 @@ class Fakes::BGSService
   end
 
   def valid_file_number?(file_number)
-    return true if file_number.strip =~ /^DEMO/
+    return true if demo?(file_number.strip)
   end
 
   def check_sensitivity(file_number)
