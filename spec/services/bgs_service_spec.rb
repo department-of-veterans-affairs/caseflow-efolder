@@ -47,6 +47,11 @@ describe ExternalApi::BGSService do
       it { is_expected.to eq false }
     end
 
+    context "when longer than 9 chars" do
+      let(:file_number) { "1234567891" }
+      it { is_expected.to eq false }
+    end
+
     context "when shorter than 8 char" do
       let(:file_number) { "456789" }
       it { is_expected.to eq false }

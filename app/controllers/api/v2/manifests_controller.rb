@@ -40,6 +40,6 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
   end
 
   def invalid_file_number
-    render json: { status: "invalid File Number" }, status: 400
+    render json: { status: "File Number is invalid, must be 8 or 9 digits" }, status: 400
   end
 end
