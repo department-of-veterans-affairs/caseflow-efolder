@@ -109,6 +109,7 @@ class DownloadDocuments
 
     Zip::File.open(zip_path, Zip::File::CREATE) do |zipfile|
       @download.documents.success.each_with_index do |document, index|
+        document.build_filepath_with(index)
         fetch_from_s3(document)
         zipfile.add(document.unique_filename(index), document.filepath)
       end

@@ -92,7 +92,7 @@ class Document < ActiveRecord::Base
   end
 
   def save_locally(content, index)
-    filepath = File.join(download.download_dir, unique_filename(index))
+    build_filepath_with(index)
 
     if preferred_extension == "pdf"
       PdfService.write(filepath, content, pdf_attributes)
@@ -101,7 +101,10 @@ class Document < ActiveRecord::Base
         f.write(content)
       end
     end
-    update_attributes!(filepath: filepath)
+  end
+
+  def build_filepath_with(index)
+    update_attributes!(filepath: File.join(download.download_dir, unique_filename(index)))
   end
 
   def pdf_attributes
