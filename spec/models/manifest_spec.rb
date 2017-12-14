@@ -1,7 +1,7 @@
 describe Manifest do
   context "#start!" do
     before do
-      allow(V2::DownloadManifestJob).to receive(:perform_now)
+      allow(V2::DownloadManifestJob).to receive(:perform_later)
     end
 
     let(:manifest) { Manifest.create(file_number: "1234") }
