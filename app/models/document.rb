@@ -29,6 +29,10 @@ class Document < ActiveRecord::Base
     Zaru.sanitize! "#{cropped_type_name}-#{filename_date}-#{filename_doc_id}.#{preferred_extension}"
   end
 
+  def path
+    @path ||= File.join(download.download_dir, id.to_s)
+  end
+
   def fetch_content!(save_document_metadata:)
     return {
       content: fetcher.content(save_document_metadata: save_document_metadata),
@@ -91,20 +95,14 @@ class Document < ActiveRecord::Base
     @fetcher ||= Fetcher.new(document: self, external_service: external_service)
   end
 
-  def save_locally(content, index)
-    build_filepath_with(index)
-
+  def save_locally(content)
     if preferred_extension == "pdf"
-      PdfService.write(filepath, content, pdf_attributes)
+      PdfService.write(path, content, pdf_attributes)
     else
-      File.open(filepath, "wb") do |f|
+      File.open(path, "wb") do |f|
         f.write(content)
       end
     end
-  end
-
-  def build_filepath_with(index)
-    update_attributes!(filepath: File.join(download.download_dir, unique_filename(index)))
   end
 
   def pdf_attributes
