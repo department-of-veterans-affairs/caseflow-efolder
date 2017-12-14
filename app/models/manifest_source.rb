@@ -1,23 +1,21 @@
 class ManifestSource < ActiveRecord::Base
   enum status: {
-    pending: 0,
-    success: 1,
-    failed: 2
+    initialized: 0,
+    pending: 1,
+    success: 2,
+    failed: 3
   }
 
   belongs_to :manifest
-  has_many :records
+  has_many :records, dependent: :destroy
 
   validates :manifest, :source, presence: true
   validates :manifest, uniqueness: { scope: :source }
   validates :source, inclusion: { in: %w(VBMS VVA) }
 
   def start!
-    return if current?
-    # TODO: If it is pending, don't make another request
-    # https://bibwild.wordpress.com/2013/06/03/activerecord-atomic-check-and-update-through-optimistic-locking/
-    V2::DownloadManifestJob.perform_now(self)
-    V2::SaveFilesInS3Job.perform_later(self)
+    return if current? || pending?
+    V2::DownloadManifestJob.perform_later(self)
   end
 
   def service
