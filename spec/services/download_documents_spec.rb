@@ -22,6 +22,7 @@ describe DownloadDocuments do
   let(:first_document_id) { generate_id }
   let(:second_document_id) { generate_id }
   let(:third_document_id) { generate_id }
+  let(:fourth_document_id) { generate_id }
 
   let(:external_documents) do
     [
@@ -30,7 +31,8 @@ describe DownloadDocuments do
                      mime_type: "application/pdf", type_description: "VA 9 Appeal to Board of Appeals"),
       OpenStruct.new(document_id: second_document_id, received_at: 1.hour.ago),
       OpenStruct.new(document_id: third_document_id, received_at: 5.hours.ago, downloaded_from: "VVA"),
-      OpenStruct.new(document_id: generate_id, received_at: 3.hours.ago, downloaded_from: "VVA")
+      OpenStruct.new(document_id: generate_id, received_at: 3.hours.ago, downloaded_from: "VVA"),
+      OpenStruct.new(document_id: fourth_document_id, received_at: 5.hours.ago, downloaded_from: "VVA")
     ]
   end
 
@@ -44,7 +46,7 @@ describe DownloadDocuments do
     end
 
     it "persists info about each document and sets manifest_fetched_at" do
-      expect(Document.count).to equal(4)
+      expect(Document.count).to equal(5)
 
       document = Document.first
       expect(document.document_id).to eq(first_document_id)
@@ -77,7 +79,7 @@ describe DownloadDocuments do
       end
 
       it "updates the metadata of old documents and adds any new documents" do
-        expect(Document.count).to eq(5)
+        expect(Document.count).to eq(6)
         expect(Document.first.type_id).to eq("124")
       end
     end
@@ -99,6 +101,7 @@ describe DownloadDocuments do
         allow(Fakes::DocumentService).to receive(:fetch_document_file) do |document|
           fail VBMS::ClientError, "Failure" if document.document_id == second_document_id
           fail VVA::ClientError, "Failure" if document.document_id == third_document_id
+          fail MiniMagick::Error, "Failure" if document.document_id == fourth_document_id
           file
         end
 
@@ -124,6 +127,11 @@ describe DownloadDocuments do
         expect(vva_errored_document).to be_failed
         expect(vva_errored_document.started_at).to eq(Time.zone.now)
         expect(vva_errored_document.error_message).to match(/VVA.+Failure/)
+
+        mini_magick_errored_document = Document.fifth
+        expect(mini_magick_errored_document).to be_failed
+        expect(mini_magick_errored_document.started_at).to eq(Time.zone.now)
+        expect(mini_magick_errored_document.error_message).to match(/MiniMagick/)
       end
 
       it "stores successful document in s3" do
@@ -142,7 +150,7 @@ describe DownloadDocuments do
         download_documents.download_contents(save_locally: false)
 
         expect(Dir[Rails.root + "tmp/files/#{download.id}/*"].size).to eq(0)
-        expect(S3Service).to have_received(:store_file).exactly(4).times
+        expect(S3Service).to have_received(:store_file).exactly(5).times
       end
     end
 
