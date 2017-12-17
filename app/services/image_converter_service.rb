@@ -13,7 +13,9 @@ class ImageConverterService
   # If the converter converts this mime_type then this returns the converted type
   # otherwise it just returns the original type.
   def self.converted_mime_type(mime_type)
-    return "application/pdf" if mime_type == "image/tiff"
+    if FeatureToggle.enabled?(:convert_tiff_images)
+      return "application/pdf" if mime_type == "image/tiff"
+    end
 
     mime_type
   end
