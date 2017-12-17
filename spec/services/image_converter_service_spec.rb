@@ -9,6 +9,10 @@ describe ImageConverterService do
   let(:image_converter) { ImageConverterService.new(image: tiff_content, mime_type: mime_type) }
 
   context "#process" do
+    before do
+      FeatureToggle.enable!(:convert_tiff_images)
+    end
+
     context "when image is a tiff" do
       it "converts it" do
         expect(valid_pdf?(image_converter.process)).to be_truthy

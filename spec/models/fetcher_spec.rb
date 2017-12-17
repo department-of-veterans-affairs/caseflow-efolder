@@ -54,6 +54,10 @@ describe Fetcher do
       end
 
       context "when VBMS returns a tiff file" do
+        before do
+          FeatureToggle.enable!(:convert_tiff_images)
+        end
+
         let(:document) do
           download.documents.build(
             id: "1234",

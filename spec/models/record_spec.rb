@@ -71,6 +71,10 @@ describe Record do
     end
 
     context "when passed image/tiff" do
+      before do
+        FeatureToggle.enable!(:convert_tiff_images)
+      end
+
       let(:mime_type) { "image/tiff" }
       it "returns pdf" do
         expect(record.preferred_extension).to eq("pdf")
