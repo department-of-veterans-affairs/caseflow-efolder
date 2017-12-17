@@ -247,9 +247,26 @@ describe Document do
     end
 
     context "when passed image/tiff" do
-      let(:mime_type) { "image/tiff" }
-      it "returns pdf" do
-        expect(document.preferred_extension).to eq("pdf")
+      context "when convert_tiff_images feature toggle is on" do
+        before do
+          FeatureToggle.enable!(:convert_tiff_images)
+        end
+
+        let(:mime_type) { "image/tiff" }
+        it "returns pdf" do
+          expect(document.preferred_extension).to eq("pdf")
+        end
+      end
+
+      context "when convert_tiff_images feature toggle is off" do
+        before do
+          FeatureToggle.disable!(:convert_tiff_images)
+        end
+
+        let(:mime_type) { "image/tiff" }
+        it "returns tiff" do
+          expect(document.preferred_extension).to eq("tiff")
+        end
       end
     end
 
