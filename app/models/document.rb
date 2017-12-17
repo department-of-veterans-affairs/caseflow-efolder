@@ -47,6 +47,9 @@ class Document < ActiveRecord::Base
   rescue ActiveRecord::StaleObjectError
     Rails.logger.info "Duplicate download detected. Document ID: #{id}"
     return { content: nil, error_kind: :caseflow_efolder_error }
+  rescue MiniMagick::Error => e
+    update_with_error "MiniMagick::Error::#{e.message}\n#{e.backtrace.join("\n")}"
+    return { content: nil, error_kind: :caseflow_efolder_error }
   end
 
   # Since Windows has the maximum length for a path, we crop type_name if the filename is longer than set maximum (issue #371)
