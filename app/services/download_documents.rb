@@ -68,10 +68,10 @@ class DownloadDocuments
       return false
     end
 
-    @download.documents.where(download_status: 0).each_with_index do |document, index|
+    @download.documents.where(download_status: 0).each do |document|
       before_document_download(document)
       fetch_result = document.fetch_content!(save_document_metadata: true)
-      document.save_locally(fetch_result[:content], index) if save_locally && !fetch_result[:error_kind]
+      document.save_locally(fetch_result[:content]) if save_locally && !fetch_result[:error_kind]
 
       return false if fetch_result[:error_kind] == :caseflow_efolder_error
       @download.touch
@@ -80,9 +80,9 @@ class DownloadDocuments
 
   def fetch_from_s3(document)
     # if the file exists on the filesystem, skip
-    return if document.filepath && File.exist?(document.filepath)
+    return if File.exist?(document.path)
 
-    S3Service.fetch_file(document.s3_filename, document.filepath)
+    S3Service.fetch_file(document.s3_filename, document.path)
   end
 
   def zip_exists_locally?
@@ -110,7 +110,7 @@ class DownloadDocuments
     Zip::File.open(zip_path, Zip::File::CREATE) do |zipfile|
       @download.documents.success.each_with_index do |document, index|
         fetch_from_s3(document)
-        zipfile.add(document.unique_filename(index), document.filepath)
+        zipfile.add(document.unique_filename(index), document.path)
       end
     end
 

@@ -149,7 +149,7 @@ describe "Manifests API v2", type: :request do
         get "/api/v2/manifests", nil, headers
         expect(response.code).to eq("400")
         body = JSON.parse(response.body)
-        expect(body["status"]).to match(/invalid.+File.+Number/)
+        expect(body["status"]).to match(/File.+Number.+invalid.+must.+8.+9.+digits/)
       end
     end
   end

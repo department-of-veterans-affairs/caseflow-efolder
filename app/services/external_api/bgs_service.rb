@@ -34,7 +34,7 @@ class ExternalApi::BGSService
 
   def valid_file_number?(file_number)
     number = (file_number || "").strip
-    return true if /^\d+$/ =~ number && number.length >= 8
+    return true if /^\d+$/ =~ number && number.length >= 8 && number.length <= 9
     false
   end
 

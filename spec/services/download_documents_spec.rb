@@ -108,8 +108,9 @@ describe DownloadDocuments do
 
       it "saves download state for each document" do
         successful_document = Document.first
+        successful_document.save!
         expect(successful_document).to be_success
-        expect(successful_document.filepath).to eq((Rails.root + "tmp/files/#{download.id}/00010-VA 9 Appeal to Board of Appeals-20150101-#{first_document_id}.pdf").to_s)
+        expect(successful_document.path).to eq((Rails.root + "tmp/files/#{download.id}/#{successful_document.id}").to_s)
         expect(successful_document.started_at).to eq(Time.zone.now)
         expect(successful_document.completed_at).to eq(Time.zone.now)
         expect(successful_document.error_message).to eq nil
@@ -166,27 +167,27 @@ describe DownloadDocuments do
       it "saves download state for each document" do
         expect(Dir[Rails.root + "tmp/files/#{download.id}/*"].size).to eq(2)
 
-        download.documents.each_with_index do |document, i|
+        download.documents.each_with_index do |document, _i|
+          document.save!
           expect(document).to be_success
-          expect(document.filepath).to eq((Rails.root + "tmp/files/#{download.id}/000#{i + 1}0-VA 21-4185 Report of Income from Property or Business-20150101-#{i + 1}.pdf").to_s)
-          expect(File.exist?(document.filepath)).to be_truthy
+          expect(document.path).to eq((Rails.root + "tmp/files/#{download.id}/#{document.id}").to_s)
+          expect(File.exist?(document.path)).to be_truthy
         end
       end
     end
   end
 
   context "#fetch_from_s3" do
+    let(:download) { Download.create(file_number: (rand(50_000) + 1).to_s) }
     let(:document) do
-      Document.new(
+      download.documents.build(
+        id: "test",
         document_id: "{3333-3333}",
         received_at: Time.utc(2015, 9, 6, 1, 0, 0),
         type_id: "825",
-        mime_type: "application/pdf",
-        filepath: filepath
+        mime_type: "application/pdf"
       )
     end
-
-    let(:filepath) { Rails.root + "tmp/files/#{download.id}/test" }
 
     before do
       allow(S3Service).to receive(:fetch_file)
@@ -290,7 +291,7 @@ describe DownloadDocuments do
       before do
         expect(download_documents).to receive(:before_package_contents) do
           Document.all.each do |document|
-            FileUtils.rm_rf(document.filepath)
+            FileUtils.rm_rf(document.path)
           end
         end
       end

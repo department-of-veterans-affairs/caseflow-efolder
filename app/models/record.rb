@@ -21,7 +21,6 @@ class Record < ActiveRecord::Base
   delegate :manifest, :service, to: :manifest_source
   delegate :file_number, to: :manifest
 
-  # :nocov:
   def fetch!
     fetcher.process
   end
@@ -35,7 +34,6 @@ class Record < ActiveRecord::Base
   def document_id
     external_document_id
   end
-  # :nocov:
 
   def s3_filename
     "#{external_document_id}.#{preferred_extension}"
