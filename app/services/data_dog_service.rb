@@ -22,7 +22,7 @@ class DataDogService
 
   private_class_method def self.get_tags(app_name, attrs)
     extra_tags = attrs.reduce([]) do |tags, (key, val)|
-      tags + "#{key}:#{val}"
+      tags + ["#{key}:#{val}"]
     end
     [
       "app:#{app_name}",
