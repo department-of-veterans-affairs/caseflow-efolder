@@ -37,8 +37,11 @@ gem "sentry-raven"
 
 gem 'newrelic_rpm'
 
+<<<<<<< HEAD
 gem "dogstatsd-ruby" 
 
+=======
+>>>>>>> master
 # SSOI
 gem 'omniauth-saml-va', git: 'https://github.com/department-of-veterans-affairs/omniauth-saml-va', branch: 'paultag/css'
 
