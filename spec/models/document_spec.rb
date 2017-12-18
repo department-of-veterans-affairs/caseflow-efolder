@@ -227,15 +227,17 @@ describe Document do
 
     it "creates a file in the correct directory and returns filename" do
       file_contents = IO.binread(Rails.root + "spec/support/test.pdf")
-      document.save_locally(file_contents, 3)
-      expected_filepath = Rails.root + "tmp/files/#{download.id}/00040-VA 21-0166 VA Letter to Beneficiary-20150906-3333-3333.pdf"
+      document.save!
+      document.save_locally(file_contents)
+      expected_filepath = Rails.root + "tmp/files/#{download.id}/#{document.id}"
       expect(File.exist?(expected_filepath)).to be_truthy
-      expect(document.filepath).to eq(expected_filepath.to_s)
+      expect(document.path).to eq(expected_filepath.to_s)
     end
 
     it "handles non-pdf files correctly" do
-      txt_document.save_locally("Howdy", 3)
-      expect(IO.read(txt_document.filepath)).to eq("Howdy")
+      txt_document.save!
+      txt_document.save_locally("Howdy")
+      expect(IO.read(txt_document.path)).to eq("Howdy")
     end
   end
 
@@ -245,9 +247,26 @@ describe Document do
     end
 
     context "when passed image/tiff" do
-      let(:mime_type) { "image/tiff" }
-      it "returns pdf" do
-        expect(document.preferred_extension).to eq("pdf")
+      context "when convert_tiff_images feature toggle is on" do
+        before do
+          FeatureToggle.enable!(:convert_tiff_images)
+        end
+
+        let(:mime_type) { "image/tiff" }
+        it "returns pdf" do
+          expect(document.preferred_extension).to eq("pdf")
+        end
+      end
+
+      context "when convert_tiff_images feature toggle is off" do
+        before do
+          FeatureToggle.disable!(:convert_tiff_images)
+        end
+
+        let(:mime_type) { "image/tiff" }
+        it "returns tiff" do
+          expect(document.preferred_extension).to eq("tiff")
+        end
       end
     end
 
