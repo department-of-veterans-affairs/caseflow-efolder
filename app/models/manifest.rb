@@ -1,6 +1,6 @@
 class Manifest < ActiveRecord::Base
-  has_many :sources, class_name: "ManifestSource"
-  has_many :user_manifests
+  has_many :sources, class_name: "ManifestSource", dependent: :destroy
+  has_many :user_manifests, dependent: :destroy
   has_many :records, through: :sources
   has_many :users, through: :user_manifests
 
