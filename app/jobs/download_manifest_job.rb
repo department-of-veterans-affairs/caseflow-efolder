@@ -33,16 +33,11 @@ class DownloadManifestJob < ActiveJob::Base
     download.update_attributes!(manifest_fetched_at_name => Time.zone.now)
     return nil, external_documents
   rescue client_error => e
-    capture_error(e)
+    ExceptionLogger.capture(e)
     return connection_error_tag, nil
   end
 
   private
-
-  def capture_error(e)
-    Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
-    Raven.capture_exception(e)
-  end
 
   def create_documents(download, external_documents)
     download_documents = DownloadDocuments.new(
