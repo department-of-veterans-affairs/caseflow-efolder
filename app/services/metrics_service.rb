@@ -3,9 +3,9 @@ require "benchmark"
 # see https://dropwizard.github.io/metrics/3.1.0/getting-started/ for abstractions on metric types
 class MetricsService
   # rubocop:disable Metrics/MethodLength
+  @app = "eFolder"
   def self.record(description, service: nil, name: "unknown")
     return_value = nil
-    app = "eFolder"
 
     Rails.logger.info("STARTED #{description}")
     stopwatch = Benchmark.measure do
@@ -15,8 +15,18 @@ class MetricsService
     if service
       metric = PrometheusService.send("#{service}_request_latency".to_sym)
 
-      metric.set({ app: app, name: name }, stopwatch.real)
-
+      latency = stopwatch.real
+      metric.set({ app: @app, name: name }, latency)
+      DataDogService.emit_gauge(
+        metric_group: "service",
+        metric_name: "request_latency",
+        metric_value: latency,
+        app_name: @app,
+        attrs: {
+          service: service,
+          endpoint: name
+        }
+      )
     end
 
     Rails.logger.info("FINISHED #{description}: #{stopwatch}")
@@ -24,16 +34,30 @@ class MetricsService
   rescue
     if service
       metric = PrometheusService.send("#{service}_request_error_counter".to_sym)
-      metric.increment(app: app, name: name)
+      metric.increment(app: @app, name: name)
+      increment_datadog_counter("request_error", service, name)
     end
 
-    # Reraise the same error. We don't want to interfere at all in normal error handling
-    # this is just to capture the metric
+    # Re-raise the same error. We don't want to interfere at all in normal error handling.
+    # This is just to capture the metric.
     raise
   ensure
     if service
       metric = PrometheusService.send("#{service}_request_attempt_counter".to_sym)
-      metric.increment(app: app, name: name)
+      metric.increment(app: @app, name: name)
+      increment_datadog_counter("request_attempt", service, name)
     end
+  end
+
+  private_class_method def self.increment_datadog_counter(metric_name, service, endpoint_name)
+    DataDogService.increment_counter(
+      metric_group: "service",
+      metric_name: metric_name,
+      app_name: @app,
+      attrs: {
+        service: service,
+        endpoint: endpoint_name
+      }
+    )
   end
 end

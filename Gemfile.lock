@@ -173,6 +173,7 @@ GEM
     database_cleaner (1.5.3)
     diff-lcs (1.2.5)
     docile (1.1.5)
+    dogstatsd-ruby (3.1.0)
     dotenv (2.2.1)
     dotenv-rails (2.2.1)
       dotenv (= 2.2.1)
@@ -469,6 +470,7 @@ DEPENDENCIES
   connect_vbms!
   connect_vva!
   database_cleaner
+  dogstatsd-ruby
   dotenv-rails
   jbuilder (~> 2.0)
   jquery-rails
