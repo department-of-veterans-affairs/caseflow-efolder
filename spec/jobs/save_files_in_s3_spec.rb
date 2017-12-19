@@ -17,7 +17,7 @@ describe SaveFilesInS3Job do
     let!(:document) do
       download.documents.create(
         id: 34,
-        document_id: "{3333-3333}",
+        document_id: "{1090-3333}",
         received_at: Time.utc(2015, 9, 6, 1, 0, 0),
         type_id: "825",
         mime_type: "application/pdf"
