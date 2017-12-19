@@ -1,11 +1,7 @@
 describe DownloadAllManifestJob do
   context "#perform" do
-    let(:file_number) { 1 + rand(999_999_999) }
-
     before do
       FeatureToggle.enable!(:vva_service)
-      allow(Fakes::BGSService).to receive(:veteran_info).and_return(file_number => { "veteran_first_name" => "Nick", "veteran_last_name" => "Saban" })
-      allow(Fakes::BGSService).to receive(:sensitive_files).and_return(file_number => true)
     end
     let(:download) { Download.create }
 
