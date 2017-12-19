@@ -29,6 +29,7 @@ describe "Manifests API v2", type: :request do
   end
 
   before do
+    User.unauthenticate!
     Fakes::BGSService.sensitive_files = { veteran_id.to_s => false }
     Timecop.freeze(Time.utc(2015, 1, 1, 17, 0, 0))
   end
