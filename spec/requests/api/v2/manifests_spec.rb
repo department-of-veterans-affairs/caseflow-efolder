@@ -1,4 +1,6 @@
 describe "Manifests API v2", type: :request do
+  include ActiveJob::TestHelper
+
   let!(:current_user) do
     User.authenticate!
   end
@@ -68,9 +70,11 @@ describe "Manifests API v2", type: :request do
     end
 
     it "returns empty array" do
-      get "/api/v2/manifests", nil, headers
-      expect(response.code).to eq("200")
-      expect(response.body).to eq(response_body)
+      perform_enqueued_jobs do
+        get "/api/v2/manifests", nil, headers
+        expect(response.code).to eq("200")
+        expect(response.body).to eq(response_body)
+      end
     end
   end
 
