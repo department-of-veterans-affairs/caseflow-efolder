@@ -214,6 +214,9 @@ RSpec.feature "Downloads" do
 
     search = Search.where(user: @user).first
     expect(search).to be_access_denied
+
+    Fakes::BGSService.sensitive_files = nil
+    Fakes::BGSService.veteran_info = nil
   end
 
   scenario "Attempting to view download created by another user" do
@@ -370,6 +373,14 @@ RSpec.feature "Downloads" do
     visit download_path(download)
     expect(page).to have_css ".cf-tab.cf-active", text: "Progress (0)"
 
+    # If this test scenario is run after another scenario where a download_url for a download with the same ID as this
+    # download, capybara will not make the request to /downloads/1 (for example), and will instead serve the webdriver's
+    # cached version of that page. However, when this test scenario is run and no cached versions of the page exist
+    # DownloadsController.start_download_files() will update the download's updated_at value in the database causing a
+    # StaleObjectError when we attempt to update the status below. Re-fetch the download record from the database after
+    # we have updated the updated_at value in order to avoid this error.
+    download = Download.find(download.id)
+
     download.update_attributes(status: :complete_with_errors)
     page.execute_script("window.DownloadProgress.reload();")
     expect(page).to have_css ".cf-tab.cf-active", text: "Completed (1)"
@@ -387,6 +398,8 @@ RSpec.feature "Downloads" do
 
     visit download_path(download)
     expect(page).to have_css ".cf-tab.cf-active", text: "Progress (0)"
+
+    download = Download.find(download.id)
 
     download.update_attributes(status: :complete_with_errors)
     page.execute_script("window.DownloadProgress.reload();")
