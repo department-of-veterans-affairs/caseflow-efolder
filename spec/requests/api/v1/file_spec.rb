@@ -40,6 +40,7 @@ describe "File API v1", type: :request do
   end
 
   before do
+    User.unauthenticate!
     Fakes::BGSService.sensitive_files = { veteran_id.to_s => false }
     FeatureToggle.enable!(:reader_api)
     FeatureToggle.enable!(:vva_service)
