@@ -37,7 +37,7 @@ gem "sentry-raven"
 
 gem 'newrelic_rpm'
 
-gem "dogstatsd-ruby" 
+gem "dogstatsd-ruby"
 
 # SSOI
 gem 'omniauth-saml-va', git: 'https://github.com/department-of-veterans-affairs/omniauth-saml-va', branch: 'paultag/css'
@@ -77,7 +77,7 @@ gem "mini_magick"
 
 gem 'connect_vbms', git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "5dda05573d424d557be7a09052ab24b0dc6a5c5f"
 gem 'connect_vva', git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "f7036e7d3c17aae6e66e345051ea61c6badc5de2"
-gem 'bgs', git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", :branch => 'faad830fe463e88f21bdb4a1af7422c2e529aab8'
+gem 'bgs', git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", :branch => '9266698668bf361bf5df06990d06da59abb7c608'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
