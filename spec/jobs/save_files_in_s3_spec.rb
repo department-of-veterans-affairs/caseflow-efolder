@@ -26,9 +26,8 @@ describe SaveFilesInS3Job do
         mime_type: "application/pdf"
       )
     end
-
-    before do
-      Fakes::BGSService.veteran_info = {
+    let(:veteran_info) do
+      {
         "21011" => {
           "veteran_first_name" => "Stan",
           "veteran_last_name" => "Lee",
@@ -36,6 +35,8 @@ describe SaveFilesInS3Job do
         }
       }
     end
+
+    before { allow_any_instance_of(Fakes::BGSService).to receive(:veteran_info).and_return(veteran_info) }
 
     it "saves files in S3" do
       allow(S3Service).to receive(:store_file).and_return(nil)
