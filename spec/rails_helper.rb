@@ -79,11 +79,25 @@ module StubbableUser
 end
 User.prepend(StubbableUser)
 
+module RandomHelper
+  def self.valid_document_id
+    "{#{hex_str_of_length(8).upcase}-#{hex_str_of_length(4).upcase}-#{hex_str_of_length(4).upcase}-#{hex_str_of_length(4).upcase}-#{hex_str_of_length(12).upcase}}".upcase
+  end
+
+  def self.hex_str_of_length(len = 8)
+    SecureRandom.hex[0..len].to_s
+  end
+end
+
 RSpec.configure do |config|
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
   config.use_transactional_fixtures = false
+
+  config.before(:all) do
+    User.unauthenticate!
+  end
 
   config.after(:each) do
     Rails.cache.clear
