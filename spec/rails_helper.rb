@@ -81,11 +81,7 @@ User.prepend(StubbableUser)
 
 module RandomHelper
   def self.valid_document_id
-    "{#{hex_str_of_length(8).upcase}-#{hex_str_of_length(4).upcase}-#{hex_str_of_length(4).upcase}-#{hex_str_of_length(4).upcase}-#{hex_str_of_length(12).upcase}}".upcase
-  end
-
-  def self.hex_str_of_length(len = 8)
-    SecureRandom.hex[0..len].to_s
+    "{#{SecureRandom.uuid.upcase}}"
   end
 end
 
