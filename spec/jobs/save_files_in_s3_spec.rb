@@ -14,9 +14,7 @@ describe SaveFilesInS3Job do
         veteran_last_name: "Washington"
       )
     end
-    let(:document_id) do
-      "{#{random_int_of_length(4)}-#{random_int_of_length(4)}}"
-    end
+    let(:document_id) { RandomHelper.valid_document_id }
     let!(:document) do
       download.documents.create(
         id: 34,
@@ -45,8 +43,4 @@ describe SaveFilesInS3Job do
       expect(S3Service).to have_received(:store_file).with(document.s3_filename, anything)
     end
   end
-end
-
-def random_int_of_length(len = 8)
-  (Array.new(len) { ("0".."9").to_a.sample }).join
 end
