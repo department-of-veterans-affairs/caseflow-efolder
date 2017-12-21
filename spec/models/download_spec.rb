@@ -175,11 +175,9 @@ describe "Download" do
 
       expect(download.reload).to be_pending_documents
       expect(@documents.first.reload).to be_pending
-      expect(@documents.first.filepath).to be_nil
       expect(@documents.first.completed_at).to eq nil
       expect(@documents.first.pending?).to eq true
       expect(@documents.last.reload).to be_pending
-      expect(@documents.last.filepath).to be_nil
       expect(@documents.last.completed_at).to eq nil
       expect(@documents.last.pending?).to eq true
     end
