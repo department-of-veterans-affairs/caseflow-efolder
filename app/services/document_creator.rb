@@ -39,6 +39,6 @@ class DocumentCreator
 
   # Override the getter to return only non-restricted documents
   def external_documents
-    @external_documents.reject { |document| RESTRICTED_TYPES.include?(document.type_id) || document.restricted? }
+    @external_documents.reject { |document| RESTRICTED_TYPES.include?(document.type_id) || document.try(:restricted?) }
   end
 end
