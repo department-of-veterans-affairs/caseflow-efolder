@@ -6,16 +6,19 @@ describe "Download" do
   let(:veteran_last_four_ssn) { "0987" }
   let(:file_number) { "1234" }
 
-  before do
-    Timecop.freeze(Time.utc(2015, 1, 1, 12, 0, 0))
-
-    Fakes::BGSService.veteran_info = {
+  let(:veteran_info) do
+    {
       file_number => {
         "veteran_first_name" => veteran_first_name,
         "veteran_last_name" => veteran_last_name,
         "veteran_last_four_ssn" => veteran_last_four_ssn
       }
     }
+  end
+
+  before do
+    Timecop.freeze(Time.utc(2015, 1, 1, 12, 0, 0))
+    allow_any_instance_of(Fakes::BGSService).to receive(:veteran_info).and_return(veteran_info)
     FeatureToggle.enable!(:vva_service)
   end
   after { Timecop.return }
@@ -26,16 +29,6 @@ describe "Download" do
     subject { Download.new(file_number: file_number) }
 
     context "when file number is set" do
-      before do
-        Fakes::BGSService.veteran_info = {
-          file_number => {
-            "veteran_first_name" => veteran_first_name,
-            "veteran_last_name" => veteran_last_name,
-            "veteran_last_four_ssn" => veteran_last_four_ssn
-          }
-        }
-      end
-
       it "indicates that veteran info is missing if it is" do
         # veteran names & ssn are fetched right before persistance
         # to the db, so before save is called, that info won't be
@@ -175,11 +168,9 @@ describe "Download" do
 
       expect(download.reload).to be_pending_documents
       expect(@documents.first.reload).to be_pending
-      expect(@documents.first.filepath).to be_nil
       expect(@documents.first.completed_at).to eq nil
       expect(@documents.first.pending?).to eq true
       expect(@documents.last.reload).to be_pending
-      expect(@documents.last.filepath).to be_nil
       expect(@documents.last.completed_at).to eq nil
       expect(@documents.last.pending?).to eq true
     end

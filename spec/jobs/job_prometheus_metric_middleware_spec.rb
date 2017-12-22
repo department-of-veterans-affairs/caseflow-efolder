@@ -16,18 +16,21 @@ describe JobPrometheusMetricMiddleware do
     let(:call) { @middleware.call(nil, @msg, :default) { @yield_called = true } }
 
     it "always increments attempts counter" do
-      expect(PrometheusService.background_jobs_attempt_counter.values[@labels]).to eq(nil)
+      attempt_cnt_before = PrometheusService.background_jobs_attempt_counter.values[@labels]
+
       expect(@yield_called).to be_falsey
       call
       expect(@yield_called).to be_truthy
-      expect(PrometheusService.background_jobs_attempt_counter.values[@labels]).to eq(1)
+      expect(PrometheusService.background_jobs_attempt_counter.values[@labels]).to eq(attempt_cnt_before.to_f + 1)
     end
 
     it "increments error counter on error" do
+      err_msg = "test"
+
       expect(PrometheusService.background_jobs_error_counter.values[@labels]).to eq(nil)
       expect do
-        @middleware.call(nil, @msg, :default) { fail("test") }
-      end.to raise_error
+        @middleware.call(nil, @msg, :default) { fail(err_msg) }
+      end.to raise_error(err_msg)
 
       expect(PrometheusService.background_jobs_error_counter.values[@labels]).to eq(1)
     end
