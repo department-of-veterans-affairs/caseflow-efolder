@@ -14,18 +14,18 @@ describe SaveFilesInS3Job do
         veteran_last_name: "Washington"
       )
     end
+    let(:document_id) { RandomHelper.valid_document_id }
     let!(:document) do
       download.documents.create(
         id: 34,
-        document_id: "{3333-3333}",
+        document_id: document_id,
         received_at: Time.utc(2015, 9, 6, 1, 0, 0),
         type_id: "825",
         mime_type: "application/pdf"
       )
     end
-
-    before do
-      Fakes::BGSService.veteran_info = {
+    let(:veteran_info) do
+      {
         "21011" => {
           "veteran_first_name" => "Stan",
           "veteran_last_name" => "Lee",
@@ -33,6 +33,8 @@ describe SaveFilesInS3Job do
         }
       }
     end
+
+    before { allow_any_instance_of(Fakes::BGSService).to receive(:veteran_info).and_return(veteran_info) }
 
     it "saves files in S3" do
       allow(S3Service).to receive(:store_file).and_return(nil)

@@ -15,7 +15,7 @@ describe Veteran do
     end
 
     before do
-      Fakes::BGSService.veteran_info = { "445566" => veteran_record }
+      allow_any_instance_of(Fakes::BGSService).to receive(:veteran_info).and_return("445566" => veteran_record)
     end
 
     context "when veteran does not exist in BGS" do

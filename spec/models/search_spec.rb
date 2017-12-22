@@ -46,14 +46,13 @@ describe Search do
     subject { search.perform! }
 
     before do
-      Fakes::BGSService.veteran_info =
-        { "22223333" =>
+      veteran_info = { "22223333" =>
           {
             "veteran_first_name" => "John",
             "veteran_last_name" => "McJohn"
           }
         }
-      Fakes::BGSService.sensitive_files = {}
+      allow_any_instance_of(Fakes::BGSService).to receive(:veteran_info).and_return(veteran_info)
       allow(DownloadAllManifestJob).to receive(:perform_later)
 
       Download.delete_all
@@ -136,7 +135,7 @@ describe Search do
 
     context "when user cannot access file with that file_number" do
       before do
-        Fakes::BGSService.sensitive_files = { "22223333" => true }
+        allow_any_instance_of(Fakes::BGSService).to receive(:sensitive_files).and_return("22223333" => true)
       end
 
       it "sets search to access_denied and returns false" do
