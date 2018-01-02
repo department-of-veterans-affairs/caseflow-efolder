@@ -3,10 +3,10 @@ class ManifestFetcher
 
   attr_accessor :manifest_source
 
-  EXCEPTIONS = [VBMS::ClientError, VVA::ClientError].freeze
+  # Catch StandardError in case there is an error to avoid manifests being stuck in pending state
+  EXCEPTIONS = [VBMS::ClientError, VVA::ClientError, StandardError].freeze
 
   def process
-    manifest_source.update(status: :pending)
     documents = manifest_source.service.fetch_documents_for(manifest_source.manifest)
     manifest_source.update(status: :success, fetched_at: Time.zone.now)
     documents
