@@ -1,4 +1,5 @@
 describe "Documents API v1", type: :request do
+  before { User.unauthenticate! }
   context "Document by document ID" do
     let!(:current_user) do
       User.authenticate!(roles: ["Reader"])

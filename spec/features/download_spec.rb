@@ -221,6 +221,9 @@ RSpec.feature "Downloads" do
 
     search = Search.where(user: @user).first
     expect(search).to be_access_denied
+
+    Fakes::BGSService.sensitive_files = nil
+    Fakes::BGSService.veteran_info = nil
   end
 
   scenario "Attempting to view download created by another user" do
