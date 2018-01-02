@@ -40,7 +40,7 @@ describe "File API v1", type: :request do
   end
 
   before do
-    Fakes::BGSService.sensitive_files = { veteran_id.to_s => false }
+    allow_any_instance_of(Fakes::BGSService).to receive(:sensitive_files).and_return(veteran_id.to_s => false)
     FeatureToggle.enable!(:reader_api)
     FeatureToggle.enable!(:vva_service)
   end
@@ -227,7 +227,7 @@ describe "File API v1", type: :request do
 
   context "When sensitivity is higher than permissions" do
     before do
-      Fakes::BGSService.sensitive_files = { veteran_id.to_s => true }
+      allow_any_instance_of(Fakes::BGSService).to receive(:sensitive_files).and_return(veteran_id.to_s => true)
     end
 
     it "returns 403" do
