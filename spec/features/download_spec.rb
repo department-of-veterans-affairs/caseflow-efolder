@@ -56,13 +56,14 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Creating a download" do
-    Fakes::BGSService.veteran_info = {
+    veteran_info = {
       "12341234" => {
         "veteran_first_name" => "Stan",
         "veteran_last_name" => "Lee",
         "veteran_last_four_ssn" => "2222"
       }
     }
+    allow_any_instance_of(Fakes::BGSService).to receive(:veteran_info).and_return(veteran_info)
 
     visit "/"
     expect(page).to_not have_content "Recent Searches"
@@ -71,7 +72,7 @@ RSpec.feature "Downloads" do
     click_button "Search"
 
     # Test that Caseflow caches veteran name for a download
-    Fakes::BGSService.veteran_info = {}
+    allow_any_instance_of(Fakes::BGSService).to receive(:veteran_info).and_return(nil)
 
     @download = @user_download.last
     expect(@download).to_not be_nil
@@ -91,13 +92,14 @@ RSpec.feature "Downloads" do
   end
 
   scenario ": initial wait" do
-    Fakes::BGSService.veteran_info = {
+    veteran_info = {
       "1234" => {
         "veteran_first_name" => "Stan",
         "veteran_last_name" => "Lee",
         "veteran_last_four_ssn" => "2222"
       }
     }
+    allow_any_instance_of(Fakes::BGSService).to receive(:veteran_info).and_return(veteran_info)
 
     visit "/"
 
@@ -110,13 +112,14 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Searching for an errored download tries again" do
-    Fakes::BGSService.veteran_info = {
+    veteran_info = {
       "55555555" => {
         "veteran_first_name" => "Stan",
         "veteran_last_name" => "Lee",
         "veteran_last_four_ssn" => "2222"
       }
     }
+    allow_any_instance_of(Fakes::BGSService).to receive(:veteran_info).and_return(veteran_info)
 
     @user_download.create!(
       file_number: "55555555",
@@ -147,13 +150,14 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Extraneous spaces in search input" do
-    Fakes::BGSService.veteran_info = {
+    veteran_info = {
       "12341234" => {
         "veteran_first_name" => "Stan",
         "veteran_last_name" => "Lee",
         "veteran_last_four_ssn" => "2222"
       }
     }
+    allow_any_instance_of(Fakes::BGSService).to receive(:veteran_info).and_return(veteran_info)
 
     visit "/"
     expect(page).to_not have_content "Recent Searches"
@@ -203,8 +207,11 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Sensitive download error" do
-    Fakes::BGSService.veteran_info = { "88888888" => { "veteran_first_name" => "Nick", "veteran_last_name" => "Saban" } }
-    Fakes::BGSService.sensitive_files = { "88888888" => true }
+    veteran_info = { "88888888" => { "veteran_first_name" => "Nick", "veteran_last_name" => "Saban" } }
+    sensitive_files = { "88888888" => true }
+
+    allow_any_instance_of(Fakes::BGSService).to receive(:veteran_info).and_return(veteran_info)
+    allow_any_instance_of(Fakes::BGSService).to receive(:sensitive_files).and_return(sensitive_files)
 
     visit "/"
     fill_in "Search for a Veteran ID number below to get started.", with: "88888888"
@@ -278,13 +285,14 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Confirming download" do
-    Fakes::BGSService.veteran_info = {
+    veteran_info = {
       "3456" => {
         "veteran_first_name" => "Steph",
         "veteran_last_name" => "Curry",
         "veteran_last_four_ssn" => "2345"
       }
     }
+    allow_any_instance_of(Fakes::BGSService).to receive(:veteran_info).and_return(veteran_info)
     download = @user_download.create(file_number: "3456", status: :fetching_manifest)
 
     visit download_path(download)
@@ -400,6 +408,7 @@ RSpec.feature "Downloads" do
     expect(page).to have_css ".cf-tab.cf-active", text: "Progress (0)"
 
     download = Download.find(download.id)
+
     download.update_attributes(status: :complete_with_errors)
     page.execute_script("window.DownloadProgress.reload();")
 
@@ -438,13 +447,14 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Completed download" do
-    Fakes::BGSService.veteran_info = {
+    veteran_info = {
       "12" => {
         "veteran_first_name" => "Stan",
         "veteran_last_name" => "Lee",
         "veteran_last_four_ssn" => "2222"
       }
     }
+    allow_any_instance_of(Fakes::BGSService).to receive(:veteran_info).and_return(veteran_info)
     # clean files
     FileUtils.rm_rf(Rails.application.config.download_filepath)
 

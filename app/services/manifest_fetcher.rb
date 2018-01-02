@@ -12,12 +12,7 @@ class ManifestFetcher
     documents
   rescue *EXCEPTIONS => e
     manifest_source.update(status: :failed)
-    log_error(e)
+    ExceptionLogger.capture(e)
     []
-  end
-
-  def log_error(e)
-    Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
-    Raven.capture_exception(e)
   end
 end

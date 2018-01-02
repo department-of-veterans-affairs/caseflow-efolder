@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171211194628) do
+ActiveRecord::Schema.define(version: 20171221184002) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,7 +37,6 @@ ActiveRecord::Schema.define(version: 20171211194628) do
     t.integer  "download_status",  default: 0
     t.string   "document_id"
     t.string   "vbms_filename"
-    t.string   "filepath"
     t.string   "source"
     t.string   "mime_type"
     t.datetime "received_at"

@@ -1,9 +1,6 @@
 class Fakes::BGSService
   include ActiveModel::Model
 
-  cattr_accessor :veteran_info
-  cattr_accessor :sensitive_files
-
   def demo?(file_number)
     !!(file_number =~ /^DEMO/)
   end
@@ -40,4 +37,9 @@ class Fakes::BGSService
   def check_sensitivity(file_number)
     !(sensitive_files || {})[file_number]
   end
+
+  # Methods to be stubbed out in tests:
+  def veteran_info; end
+
+  def sensitive_files; end
 end

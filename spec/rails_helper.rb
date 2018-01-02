@@ -79,11 +79,21 @@ module StubbableUser
 end
 User.prepend(StubbableUser)
 
+module RandomHelper
+  def self.valid_document_id
+    "{#{SecureRandom.uuid.upcase}}"
+  end
+end
+
 RSpec.configure do |config|
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
   config.use_transactional_fixtures = false
+
+  config.before(:all) do
+    User.unauthenticate!
+  end
 
   config.after(:each) do
     Rails.cache.clear
