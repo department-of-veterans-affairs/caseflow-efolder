@@ -42,6 +42,8 @@ class ImageConverterService
     end
 
     curl.body
+  rescue Curl::Err::ConnectionFailedError
+    raise ImageConverterError
   end
   # :nocov:
 end
