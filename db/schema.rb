@@ -92,6 +92,15 @@ ActiveRecord::Schema.define(version: 20171221184002) do
     t.datetime "updated_at",              null: false
   end
 
+  create_table "manifest_statuses", force: :cascade do |t|
+    t.integer  "manifest_id"
+    t.integer  "status",      default: 0
+    t.string   "source"
+    t.datetime "fetched_at"
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
+
   create_table "manifests", force: :cascade do |t|
     t.string   "file_number"
     t.string   "veteran_last_name"

@@ -168,6 +168,7 @@ GEM
     coffee-script-source (1.12.2)
     concurrent-ruby (1.0.4)
     connection_pool (2.2.1)
+    curb (0.9.4)
     d3-rails (4.10.2)
       railties (>= 3.1)
     database_cleaner (1.5.3)
@@ -469,6 +470,7 @@ DEPENDENCIES
   coffee-rails (~> 4.1.0)
   connect_vbms!
   connect_vva!
+  curb
   database_cleaner
   dogstatsd-ruby
   dotenv-rails

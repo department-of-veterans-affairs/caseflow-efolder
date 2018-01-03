@@ -44,7 +44,7 @@ class Fakes::DocumentService
     },
     "DEMODEFAULT" => {
       manifest_load: 4,
-      num_docs: 10,
+      num_docs: 1,
       max_file_load: 3
     }
   }.freeze
@@ -61,7 +61,7 @@ class Fakes::DocumentService
     sleep(rand(max_time))
     fail VBMS::ClientError if errors && rand(5) == 3
     fail VVA::ClientError if errors && rand(5) == 2
-
+    # binding.pry
     if document.mime_type == "application/pdf"
       IO.binread(Rails.root + "lib/pdfs/#{document.id % 5}.pdf")
     else
@@ -85,7 +85,7 @@ class Fakes::DocumentService
 
   # Randomly send a pdf or tiff
   def self.document_type
-    return { ext: "pdf", mime_type: "application/pdf" } if rand(2)
+    # return { ext: "pdf", mime_type: "application/pdf" } if rand(2)
     { ext: "tiff", mime_type: "image/tiff" }
   end
 

@@ -1,5 +1,7 @@
 # Converts images to PDFs
 class ImageConverterService
+  class ImageConverterError < StandardError; end
+
   include ActiveModel::Model
   attr_accessor :image, :mime_type
 
@@ -7,7 +9,7 @@ class ImageConverterService
     # If we do not handle converting this mime_type, don't do any processing.
     return image if self.class.converted_mime_type(mime_type) == mime_type
 
-    convert_tiff_to_pdf if mime_type == "image/tiff" && tiff?
+    convert_tiff_to_pdf if mime_type == "image/tiff"
   end
 
   # If the converter converts this mime_type then this returns the converted type
@@ -22,34 +24,24 @@ class ImageConverterService
 
   private
 
-  # Adding a magic number check based on this recommendation: https://imagetragick.com/
-  def tiff?
-    "MM\u0000*" == image[0..3] || "II*\u0000" == image[0..3]
-  end
-
   def convert_tiff_to_pdf
+    url = "http://localhost:5000/tiff-convert"
+
+    curl = Curl::Easy.new(url)
+    curl.multipart_form_post = true
+
     MetricsService.record("Image Magick: Convert tiff to pdf",
                           service: :image_magick,
                           name: "image_magick_convert_tiff_to_pdf") do
-      base_path = File.join(Rails.application.config.download_filepath, "tiff_convert")
-      FileUtils.mkdir_p(base_path) unless File.exist?(base_path)
-
-      filename = SecureRandom.hex[0..16].to_s
-
-      tiff_name = File.join(base_path, "#{filename}.tiff")
-
-      File.open(tiff_name, "wb") do |f|
-        f.write(image)
+      Tempfile.open(["tiff_to_convert", ".tiff"]) do |file|
+        file.binmode
+        file.write(image)
+        curl.http_post(Curl::PostField.file("file", file.path))
       end
 
-      pdf_name = File.join(base_path, "#{filename}.pdf")
-
-      MiniMagick::Tool::Convert.new do |convert|
-        convert << tiff_name
-        convert << pdf_name
-      end
-
-      File.open(pdf_name, "r", &:read)
+      fail ImageConverterError if true # curl.status != "200 OK"
     end
+
+    curl.body
   end
 end

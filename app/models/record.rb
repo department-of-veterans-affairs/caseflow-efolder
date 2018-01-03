@@ -35,8 +35,8 @@ class Record < ActiveRecord::Base
     external_document_id
   end
 
-  def s3_filename
-    "#{external_document_id}.#{preferred_extension}"
+  def s3_filename(extension: preferred_extension)
+    "#{external_document_id}.#{extension}"
   end
 
   def preferred_extension
@@ -68,7 +68,7 @@ class Record < ActiveRecord::Base
   end
 
   def mime
-    MIME::Types[ImageConverterService.converted_mime_type(mime_type)].first
+    MIME::Types[mime_type].first
   end
 
   def adjust_mime_type
