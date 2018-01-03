@@ -4,7 +4,7 @@ RSpec.feature "Out of Service" do
   context "Out of service is disabled" do
     scenario "Visit root page" do
       visit "/"
-      expect(page).not_to have_content("Technical Difficulties")
+      expect(page).not_to have_content("We are having technical difficulties...")
     end
   end
 
@@ -15,7 +15,7 @@ RSpec.feature "Out of Service" do
 
     scenario "Visit root page" do
       visit "/"
-      expect(page).to have_content("Technical Difficulties")
+      expect(page).to have_content("We are having technical difficulties...")
     end
   end
 end
