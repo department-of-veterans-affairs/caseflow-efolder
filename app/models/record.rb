@@ -40,8 +40,8 @@ class Record < ActiveRecord::Base
     external_document_id
   end
 
-  def s3_filename(extension: preferred_extension)
-    "#{external_document_id}.#{extension}"
+  def s3_filename
+    "#{external_document_id}.#{preferred_extension}"
   end
 
   def preferred_extension

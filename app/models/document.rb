@@ -39,10 +39,8 @@ class Document < ActiveRecord::Base
   attr_writer :converted_mime_type
 
   def fetch_content!(save_document_metadata:)
-    image = fetcher.content(save_document_metadata: save_document_metadata)
-
     return {
-      content: image,
+      content: fetcher.content(save_document_metadata: save_document_metadata),
       error_kind: nil
     }
   rescue VBMS::ClientError => e
