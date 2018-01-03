@@ -13,8 +13,9 @@ describe ImageConverterService do
 
   context "#process" do
     context "when image is a tiff" do
-      it "converts it" do
-        expect(valid_pdf?(image_converter.process)).to be_truthy
+      it "calls service" do
+        allow_any_instance_of(ImageConverterService).to receive(:convert_tiff_to_pdf).and_return(pdf_content)
+        expect(image_converter.process).to eq(pdf_content)
       end
     end
 

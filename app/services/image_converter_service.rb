@@ -22,8 +22,7 @@ class ImageConverterService
     mime_type
   end
 
-  private
-
+  # :nocov:
   def convert_tiff_to_pdf
     url = "http://localhost:5000/tiff-convert"
 
@@ -39,9 +38,10 @@ class ImageConverterService
         curl.http_post(Curl::PostField.file("file", file.path))
       end
 
-      fail ImageConverterError if true # curl.status != "200 OK"
+      fail ImageConverterError if curl.status != "200 OK"
     end
 
     curl.body
   end
+  # :nocov:
 end
