@@ -38,6 +38,8 @@ class MetricsService
       increment_datadog_counter("request_error", service, name)
     end
 
+    Rails.logger.info("RESCUED #{description}")
+
     # Re-raise the same error. We don't want to interfere at all in normal error handling.
     # This is just to capture the metric.
     raise

@@ -21,10 +21,10 @@ class Record < ActiveRecord::Base
   delegate :manifest, :service, to: :manifest_source
   delegate :file_number, to: :manifest
 
-  def converted_mime_type
-    @converted_mime_type || mime_type
+  def s3_stored_file_mime_type
+    @s3_stored_file_mime_type || mime_type
   end
-  attr_writer :converted_mime_type
+  attr_writer :s3_stored_file_mime_type
 
   def fetch!
     fetcher.process
@@ -73,7 +73,7 @@ class Record < ActiveRecord::Base
   end
 
   def mime
-    MIME::Types[converted_mime_type].first
+    MIME::Types[s3_stored_file_mime_type].first
   end
 
   def adjust_mime_type

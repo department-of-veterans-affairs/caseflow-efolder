@@ -33,10 +33,10 @@ class Document < ActiveRecord::Base
     @path ||= File.join(download.download_dir, id.to_s)
   end
 
-  def converted_mime_type
-    @converted_mime_type || mime_type
+  def s3_stored_file_mime_type
+    @s3_stored_file_mime_type || mime_type
   end
-  attr_writer :converted_mime_type
+  attr_writer :s3_stored_file_mime_type
 
   def fetch_content!(save_document_metadata:)
     return {
@@ -132,7 +132,7 @@ class Document < ActiveRecord::Base
   end
 
   def preferred_extension
-    mime = MIME::Types[converted_mime_type].first
+    mime = MIME::Types[s3_stored_file_mime_type].first
     mime ? mime.preferred_extension : ""
   end
 
