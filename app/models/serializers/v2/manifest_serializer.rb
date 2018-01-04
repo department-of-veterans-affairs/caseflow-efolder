@@ -22,7 +22,9 @@ class Serializers::V2::ManifestSerializer < ActiveModel::Serializer
         id: document.id,
         type_id: document.type_id,
         received_at: document.received_at,
-        external_document_id: document.external_document_id
+        external_document_id: document.external_document_id,
+        created_at: document.created_at,
+        updated_at: document.updated_at
       }
     end
   end
