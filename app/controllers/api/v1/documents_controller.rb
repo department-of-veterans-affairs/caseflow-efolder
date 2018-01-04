@@ -2,11 +2,12 @@ class Api::V1::DocumentsController < Api::V1::ApplicationController
   before_action :can_access?
 
   def show
+    fetch_result = document.fetch_content!(save_document_metadata: false)
+    return document_download_failed(fetch_result[:error_kind]) if fetch_result[:error_kind]
+
     # Enable document caching for a month.
     expires_in 30.days, public: true
 
-    fetch_result = document.fetch_content!(save_document_metadata: false)
-    return document_download_failed(fetch_result[:error_kind]) if fetch_result[:error_kind]
     send_data(
       fetch_result[:content],
       type: document.mime_type,
