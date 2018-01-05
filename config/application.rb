@@ -49,6 +49,8 @@ module CaseflowEfolder
         end
     end
 
+    config.exceptions_app = self.routes
+
     config.active_job.queue_adapter = :sidekiq
 
     config.cache_store = :redis_store, Rails.application.secrets.redis_url_cache, { expires_in: 24.hours }

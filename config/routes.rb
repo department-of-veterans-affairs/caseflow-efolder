@@ -36,8 +36,9 @@ Rails.application.routes.draw do
     end
   end
 
-
   get '/stats(/:interval)', to: 'stats#show', as: 'stats'
+
+  match "/server_error", :to => "errors#server_error", :via => :all
 
   require "sidekiq/web"
   require "sidekiq/cron/web"
