@@ -76,8 +76,18 @@ describe Record do
       end
 
       let(:mime_type) { "image/tiff" }
-      it "returns pdf" do
-        expect(record.preferred_extension).to eq("pdf")
+      it "returns tiff" do
+        expect(record.preferred_extension).to eq("tiff")
+      end
+
+      context "and conversion_status is :conversion_success" do
+        let(:record) do
+          Record.new(external_document_id: "{TEST}", mime_type: mime_type, conversion_status: :conversion_success)
+        end
+
+        it "returns pdf" do
+          expect(record.preferred_extension).to eq("pdf")
+        end
       end
     end
 

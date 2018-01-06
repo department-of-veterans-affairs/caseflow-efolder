@@ -10,6 +10,12 @@ class Record < ActiveRecord::Base
     failed: 2
   }
 
+  enum conversion_status: {
+    not_converted: 0,
+    conversion_success: 1,
+    conversion_failed: 2
+  }
+
   # It is expected that some of the documents may have a MIME type of "application/octet-stream".
   # However, there is not a guarantee that all documents of this type can be opened as PDFs.
   # The "application/octet-stream" MIME type could represent arbitrary data, mislabeled PDFs, etc.
@@ -20,11 +26,6 @@ class Record < ActiveRecord::Base
 
   delegate :manifest, :service, to: :manifest_source
   delegate :file_number, to: :manifest
-
-  def s3_stored_file_mime_type
-    @s3_stored_file_mime_type || mime_type
-  end
-  attr_writer :s3_stored_file_mime_type
 
   def fetch!
     fetcher.process
@@ -73,7 +74,7 @@ class Record < ActiveRecord::Base
   end
 
   def mime
-    MIME::Types[s3_stored_file_mime_type].first
+    MIME::Types[conversion_success? ? ImageConverterService.converted_mime_type(mime_type) : mime_type].first
   end
 
   def adjust_mime_type

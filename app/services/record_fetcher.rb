@@ -6,7 +6,7 @@ class RecordFetcher
   EXCEPTIONS = [VBMS::ClientError, VVA::ClientError].freeze
 
   def process
-    return cached_converted_or_original_content if cached_converted_or_original_content
+    return cached_content if cached_content
     content = record.service.fetch_document_file(record)
     content = convert_to_pdf(content)
     S3Service.store_file(record.s3_filename, content)
@@ -20,39 +20,22 @@ class RecordFetcher
   private
 
   def convert_to_pdf(content)
-    record.s3_stored_file_mime_type = converted_mime_type
-    ImageConverterService.new(image: content, mime_type: record.mime_type).process
+    # Every time we can't find the file in S3 and are asked to convert the version from
+    # VBMS, we try to do the conversion, even if it failed last time in case some change
+    # has enabled it to be converted this time.
+    converted_content = ImageConverterService.new(image: content, mime_type: record.mime_type).process
+    record.update_attributes!(conversion_status: :conversion_success)
+    converted_content
   rescue ImageConverterService::ImageConverterError
-    record.s3_stored_file_mime_type = record.mime_type
+    record.update_attributes!(conversion_status: :conversion_failed)
     content
   end
 
-  def converted_mime_type
-    ImageConverterService.converted_mime_type(record.mime_type)
-  end
-
   def cached_content
-    MetricsService.record("S3: fetch content for: #{record.s3_filename}",
-                          service: :s3,
-                          name: "fetch_content") do
+    @cached_content ||= MetricsService.record("S3: fetch content for: #{record.s3_filename}",
+                                              service: :s3,
+                                              name: "fetch_content") do
       S3Service.fetch_content(record.s3_filename)
     end
-  end
-
-  def cached_converted_content
-    # Don't need to do anything if the mime_type is not converted.
-    return if converted_mime_type == record.mime_type
-
-    record.s3_stored_file_mime_type = converted_mime_type
-    @cached_converted_content ||= cached_content
-  end
-
-  def cached_original_content
-    record.s3_stored_file_mime_type = record.mime_type
-    @cached_original_content ||= cached_content
-  end
-
-  def cached_converted_or_original_content
-    @cached_converted_or_original_content ||= (cached_converted_content || cached_original_content)
   end
 end

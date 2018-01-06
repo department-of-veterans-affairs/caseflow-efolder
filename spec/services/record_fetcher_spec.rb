@@ -67,8 +67,9 @@ describe RecordFetcher do
         end
         after { FeatureToggle.disable!(:convert_tiff_images) }
 
-        it "should convert the tiff to pdf and return it" do
+        it "should convert the tiff to pdf, return it, and mark conversion as success" do
           expect(subject).to eq fake_pdf_content
+          expect(record.conversion_success?).to be true
         end
 
         context "when the tiff file cannot be converted" do
@@ -77,8 +78,9 @@ describe RecordFetcher do
               .and_raise(ImageConverterService::ImageConverterError)
           end
 
-          it "should return the tiff" do
+          it "should return the tiff and mark conversion as failed" do
             expect(subject).to eq tiff_content
+            expect(record.conversion_failed?).to be true
           end
         end
       end

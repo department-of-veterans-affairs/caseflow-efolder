@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171221184002) do
+ActiveRecord::Schema.define(version: 20180106211625) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -92,6 +92,15 @@ ActiveRecord::Schema.define(version: 20171221184002) do
     t.datetime "updated_at",              null: false
   end
 
+  create_table "manifest_statuses", force: :cascade do |t|
+    t.integer  "manifest_id"
+    t.integer  "status",      default: 0
+    t.string   "source"
+    t.datetime "fetched_at"
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
+
   create_table "manifests", force: :cascade do |t|
     t.string   "file_number"
     t.string   "veteran_last_name"
@@ -117,6 +126,7 @@ ActiveRecord::Schema.define(version: 20171221184002) do
     t.string   "source"
     t.datetime "created_at",                       null: false
     t.datetime "updated_at",                       null: false
+    t.integer  "conversion_status"
   end
 
   add_index "records", ["manifest_source_id", "external_document_id"], name: "index_records_on_manifest_source_id_and_external_document_id", using: :btree
