@@ -1,10 +1,12 @@
 class Api::V2::RecordsController < Api::V1::ApplicationController
   before_action :validate_access
-  before_action :enable_caching
 
   def show
     result = record.fetch!
     return document_failed if record.failed?
+
+    # Only cache if we're not returning an error
+    enable_caching
 
     send_data(
       result,
