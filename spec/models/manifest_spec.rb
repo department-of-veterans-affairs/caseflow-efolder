@@ -50,10 +50,7 @@ describe Manifest do
 
       Manifest.find_or_create_by_user(user: user, file_number: "1234")
       expect(Manifest.count).to eq 1
-      expect(UserManifest.count).to eq 2
-      user_manifest = UserManifest.second
-      expect(user_manifest.user).to eq user
-      expect(user_manifest.manifest).to eq manifest
+      expect(UserManifest.count).to eq 1
     end
   end
 

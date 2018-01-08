@@ -32,7 +32,7 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
   end
 
   def manifest
-    @manifest ||= Manifest.find_or_create_by_user(user: current_user, file_number: file_number)
+    Manifest.find_or_create_by_user(user: current_user, file_number: file_number)
   end
 
   def bgs_service

@@ -31,7 +31,9 @@ Rails.application.routes.draw do
     end
 
     namespace :v2 do
-      resources :manifests, only: :index
+      resources :manifests, only: :index do
+        resources :records, only: :index
+      end
       resources :records, only: :show
     end
   end

@@ -1,4 +1,6 @@
 describe "Records API v2", type: :request do
+  include ActiveJob::TestHelper
+
   context "Record by document ID" do
     let!(:current_user) do
       User.authenticate!(roles: ["Reader"])
@@ -18,12 +20,12 @@ describe "Records API v2", type: :request do
       )
     end
 
-    context "returns 401 if user does not have Reader role" do
+    context "when user does not have Reader role" do
       let!(:current_user) do
         User.authenticate!(roles: [""])
       end
 
-      it do
+      it "returns 401 " do
         get "/api/v2/records/8888"
         expect(response.code).to eq("401")
       end
@@ -34,7 +36,7 @@ describe "Records API v2", type: :request do
       expect(response.code).to eq("404")
     end
 
-    context "when user owns corresponding manifest record" do
+    context "when user has access to the corresponding manifest record" do
       let!(:user_manifest) { UserManifest.create(user: current_user, manifest: manifest) }
 
       it "returns a document" do
@@ -96,6 +98,73 @@ describe "Records API v2", type: :request do
         expect(response.code).to eq("403")
         body = JSON.parse(response.body)
         expect(body["status"]).to match(/sensitive/)
+      end
+    end
+  end
+
+  context "Records by manifest ID" do
+    let!(:current_user) do
+      User.authenticate!(roles: ["Reader"])
+    end
+
+    let(:manifest) { Manifest.create(file_number: "1234") }
+    let(:source) { ManifestSource.create(source: %w[VBMS VVA].sample, manifest: manifest) }
+
+    let!(:records) do
+      [Record.create(
+        external_document_id: "{3333-3333}",
+        manifest_source: source,
+        received_at: Time.utc(2015, 9, 6, 1, 0, 0),
+        type_id: "825",
+        mime_type: "application/pdf"
+      ),
+       Record.create(
+         external_document_id: "{3333-66666}",
+         manifest_source: source,
+         received_at: Time.utc(2012, 9, 6, 1, 0, 0),
+         type_id: "825",
+         mime_type: "application/pdf"
+       )]
+    end
+
+    it "returns 404 if manifest ID is not found" do
+      get "/api/v2/manifests/8888/records"
+      expect(response.code).to eq("404")
+    end
+
+    context "when VBMS/VVA is up and running" do
+      let!(:user_manifest) { UserManifest.create(user: current_user, manifest: manifest) }
+      before do
+        allow(S3Service).to receive(:fetch_content).and_return(nil)
+        allow(Fakes::DocumentService).to receive(:fetch_document_file).and_return("stuff")
+      end
+
+      it "returns status finished with all documents with successful statuses" do
+        perform_enqueued_jobs do
+          get "/api/v2/manifests/#{manifest.id}/records"
+        end
+        expect(response.code).to eq("200")
+        response_body = JSON.parse(response.body)["data"]["attributes"]
+        expect(response_body["status"]).to eq "finished"
+        expect(response_body["records"].collect { |r| r["status"] }).to eq %w[success success]
+      end
+    end
+
+    context "when VBMS/VVA is down" do
+      let!(:user_manifest) { UserManifest.create(user: current_user, manifest: manifest) }
+      before do
+        allow(S3Service).to receive(:fetch_content).and_return(nil)
+        allow(Fakes::DocumentService).to receive(:fetch_document_file).and_raise([VBMS::ClientError, VVA::ClientError].sample)
+      end
+
+      it "returns status finished with all documents with failed statuses" do
+        perform_enqueued_jobs do
+          get "/api/v2/manifests/#{manifest.id}/records"
+        end
+        expect(response.code).to eq("200")
+        response_body = JSON.parse(response.body)["data"]["attributes"]
+        expect(response_body["status"]).to eq "finished"
+        expect(response_body["records"].collect { |r| r["status"] }).to eq %w[failed failed]
       end
     end
   end

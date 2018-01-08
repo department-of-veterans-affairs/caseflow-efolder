@@ -3,8 +3,7 @@ class ManifestFetcher
 
   attr_accessor :manifest_source
 
-  # Catch StandardError in case there is an error to avoid manifests being stuck in pending state
-  EXCEPTIONS = [VBMS::ClientError, VVA::ClientError, StandardError].freeze
+  EXCEPTIONS = [VBMS::ClientError, VVA::ClientError].freeze
 
   def process
     documents = manifest_source.service.v2_fetch_documents_for(manifest_source.manifest)

@@ -17,7 +17,7 @@ class Serializers::V2::ManifestSerializer < ActiveModel::Serializer
   end
 
   attribute :records do
-    object.records.order(:id).map do |document|
+    object.records.map do |document|
       {
         id: document.id,
         type_id: document.type_id,

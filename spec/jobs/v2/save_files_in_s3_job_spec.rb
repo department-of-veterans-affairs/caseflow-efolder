@@ -1,4 +1,4 @@
-describe SaveFilesInS3Job do
+describe V2::SaveFilesInS3Job do
   context "#perform" do
     let(:manifest) { Manifest.create(file_number: "1234") }
     let(:source) { ManifestSource.create(source: %w[VBMS VVA].sample, manifest: manifest) }
