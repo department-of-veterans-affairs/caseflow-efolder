@@ -1,4 +1,4 @@
-describe ImageConverterService, focus: true do
+describe ImageConverterService do
   let(:tiff_file) { Rails.root + "lib/tiffs/0.tiff" }
   let(:tiff_content) { File.open(tiff_file, "r", &:read) }
 
