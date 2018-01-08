@@ -12,48 +12,19 @@ class Fetcher
 
   private
 
-  def converted_mime_type
-    ImageConverterService.converted_mime_type(document.mime_type)
-  end
-
   def cached_content
-    MetricsService.record("S3: fetch content for: #{document.s3_filename}",
+    @cached_content ||= MetricsService.record("S3: fetch content for: #{document.s3_filename}",
                           service: :s3,
                           name: "fetch_content") do
       S3Service.fetch_content(document.s3_filename)
     end
   end
 
-  def cached_converted_content
-    # Don't need to do anything if the mime_type is not converted.
-    return if converted_mime_type == document.mime_type
-
-    document.s3_stored_file_mime_type = converted_mime_type
-    @cached_converted_content ||= cached_content
-  end
-
-  def cached_original_content
-    document.s3_stored_file_mime_type = document.mime_type
-    @cached_original_content ||= cached_content
-  end
-
-  def cached_converted_or_original_content
-    @cached_converted_or_original_content ||= (cached_converted_content || cached_original_content)
-  end
-
   def download_from_service
-    return cached_converted_or_original_content if cached_converted_or_original_content
+    return cached_content if cached_content
 
-    content_from_service = external_service.fetch_document_file(document)
-
-    begin
-      document.s3_stored_file_mime_type = converted_mime_type
-      converted_image = ImageConverterService.new(
-        image: content_from_service, mime_type: document.mime_type).process
-    rescue ImageConverterService::ImageConverterError
-      document.s3_stored_file_mime_type = document.mime_type
-      converted_image = content_from_service
-    end
+    converted_image = ImageConverterService.new(
+      image: external_service.fetch_document_file(document), record: document).process
     S3Service.store_file(document.s3_filename, converted_image)
 
     converted_image

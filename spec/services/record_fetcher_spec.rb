@@ -63,7 +63,7 @@ describe RecordFetcher do
         before do
           FeatureToggle.enable!(:convert_tiff_images)
           allow(Fakes::DocumentService).to receive(:fetch_document_file).and_return(tiff_content)
-          allow_any_instance_of(ImageConverterService).to receive(:convert_tiff_to_pdf).and_return(fake_pdf_content)
+          allow_any_instance_of(ImageConverterService).to receive(:convert).and_return(fake_pdf_content)
         end
         after { FeatureToggle.disable!(:convert_tiff_images) }
 
@@ -74,7 +74,7 @@ describe RecordFetcher do
 
         context "when the tiff file cannot be converted" do
           before do
-            allow_any_instance_of(ImageConverterService).to receive(:convert_tiff_to_pdf)
+            allow_any_instance_of(ImageConverterService).to receive(:convert)
               .and_raise(ImageConverterService::ImageConverterError)
           end
 

@@ -11,6 +11,12 @@ class Document < ActiveRecord::Base
 
   enum download_status: { pending: 0, success: 1, failed: 2 }
 
+  enum conversion_status: {
+    not_converted: 0,
+    conversion_success: 1,
+    conversion_failed: 2
+  }
+
   after_initialize { |document| document.vbms_filename ||= "" }
 
   # It is expected that some of the documents may have a MIME type of "application/octet-stream".
@@ -32,11 +38,6 @@ class Document < ActiveRecord::Base
   def path
     @path ||= File.join(download.download_dir, id.to_s)
   end
-
-  def s3_stored_file_mime_type
-    @s3_stored_file_mime_type || mime_type
-  end
-  attr_writer :s3_stored_file_mime_type
 
   def fetch_content!(save_document_metadata:)
     return {
@@ -132,7 +133,7 @@ class Document < ActiveRecord::Base
   end
 
   def preferred_extension
-    mime = MIME::Types[s3_stored_file_mime_type].first
+    mime = MIME::Types[conversion_success? ? ImageConverterService.converted_mime_type(mime_type) : mime_type].first
     mime ? mime.preferred_extension : ""
   end
 

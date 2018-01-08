@@ -3,13 +3,19 @@ class ImageConverterService
   class ImageConverterError < StandardError; end
 
   include ActiveModel::Model
-  attr_accessor :image, :mime_type
+  attr_accessor :image, :record
 
   def process
     # If we do not handle converting this mime_type, don't do any processing.
-    return image if self.class.converted_mime_type(mime_type) == mime_type
+    return image if self.class.converted_mime_type(record.mime_type) == record.mime_type
 
-    convert_tiff_to_pdf if mime_type == "image/tiff"
+    converted_image = convert
+    record.update_attributes!(conversion_status: :conversion_success)
+    converted_image
+  rescue ImageConverterError
+    record.update_attributes!(conversion_status: :conversion_failed)
+
+    image
   end
 
   # If the converter converts this mime_type then this returns the converted type
@@ -22,7 +28,8 @@ class ImageConverterService
     mime_type
   end
 
-  # :nocov:
+  private
+
   def convert_tiff_to_pdf
     url = "http://localhost:5000/tiff-convert"
 
@@ -45,5 +52,13 @@ class ImageConverterService
   rescue Curl::Err::ConnectionFailedError
     raise ImageConverterError
   end
-  # :nocov:
+
+  def convert
+    case record.mime_type
+    when "image/tiff"
+      return convert_tiff_to_pdf
+    else
+      return image
+    end
+  end
 end
