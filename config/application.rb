@@ -46,6 +46,13 @@ module CaseflowEfolder
             # Content-Type, Expires, Last-Modified, Pragma are exposed. PDF.js requires some additional headers to be sent as well
             expose:      ['content-range, content-length, accept-ranges'], # Headers to send in response
             credentials: true
+          resource '/api/v2/*',
+            headers:     :any, # Headers to allow in the request
+            methods:     :get,
+            # when making a cross-origin request, only Cache-Control, Content-Language, 
+            # Content-Type, Expires, Last-Modified, Pragma are exposed. PDF.js requires some additional headers to be sent as well
+            expose:      ['content-range, content-length, accept-ranges'], # Headers to send in response
+            credentials: true
         end
     end
 
