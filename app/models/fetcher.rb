@@ -14,8 +14,8 @@ class Fetcher
 
   def cached_content
     @cached_content ||= MetricsService.record("S3: fetch content for: #{document.s3_filename}",
-                          service: :s3,
-                          name: "fetch_content") do
+                                              service: :s3,
+                                              name: "fetch_content") do
       S3Service.fetch_content(document.s3_filename)
     end
   end

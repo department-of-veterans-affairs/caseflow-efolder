@@ -79,9 +79,10 @@ class DownloadDocuments
   end
 
   def fetch_from_s3(document)
-    # All the content should already be in S3.
-    fetch_result = document.fetch_content!(save_document_metadata: true)
-    document.save_locally(fetch_result[:content])
+    # if the file exists on the filesystem, skip
+    return if File.exist?(document.path)
+
+    S3Service.fetch_file(document.s3_filename, document.path)
   end
 
   def zip_exists_locally?

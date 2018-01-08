@@ -66,23 +66,12 @@ describe Fetcher do
 
         before do
           allow(Fakes::DocumentService).to receive(:fetch_document_file).and_return(tiff_content)
-          allow_any_instance_of(ImageConverterService).to receive(:convert).and_return(fake_pdf_content)
+          allow_any_instance_of(ImageConverterService).to receive(:convert_tiff_to_pdf).and_return(fake_pdf_content)
           FeatureToggle.enable!(:convert_tiff_images)
         end
 
-        it "should ask the ImageConverterService to convert the image" do
+        it "should convert the tiff to pdf and return it" do
           expect(subject).to eq fake_pdf_content
-        end
-
-        context "when the tiff file cannot be converted" do
-          before do
-            allow_any_instance_of(ImageConverterService).to receive(:convert)
-              .and_raise(ImageConverterService::ImageConverterError)
-          end
-
-          it "should return the tiff" do
-            expect(subject).to eq tiff_content
-          end
         end
       end
     end
