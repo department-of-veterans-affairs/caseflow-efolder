@@ -1,4 +1,4 @@
-describe ImageConverterService do
+describe ImageConverterService, focus: true do
   let(:tiff_file) { Rails.root + "lib/tiffs/0.tiff" }
   let(:tiff_content) { File.open(tiff_file, "r", &:read) }
 
@@ -7,7 +7,7 @@ describe ImageConverterService do
 
   let(:manifest) { Manifest.create(file_number: "1234") }
   let(:source) { ManifestSource.create(source: %w(VBMS VVA).sample, manifest: manifest) }
-  let(:record) { Record.new(external_document_id: "TEST", manifest_source: source, mime_type: "image/tiff") }
+  let(:record) { Record.create(external_document_id: "TEST", manifest_source: source, mime_type: "image/tiff") }
   let(:image_converter) { ImageConverterService.new(image: tiff_content, record: record) }
 
   before { FeatureToggle.enable!(:convert_tiff_images) }
@@ -32,7 +32,7 @@ describe ImageConverterService do
     end
 
     context "when image is a pdf" do
-      let(:record) { Record.new(mime_type: "application/pdf") }
+      let(:record) { Record.create(external_document_id: "TEST", manifest_source: source, mime_type: "application/pdf") }
       let(:image_converter) { ImageConverterService.new(image: pdf_content, record: record) }
 
       it "doesn't change it and marks record as not_converted" do
