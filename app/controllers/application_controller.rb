@@ -39,22 +39,6 @@ class ApplicationController < BaseController
     render "out_of_service", layout: "application" if Rails.cache.read("out_of_service")
   end
 
-  def on_bgs_error
-    respond_to do |format|
-      format.html do
-        @error_title = "BGS Failure"
-        @error_subtitle = "Unable to communicate with the BGS system at this time."
-        @error_retry_external_service = "BGS"
-        render "errors/server_error", layout: "application", status: 500
-      end
-
-      format.json do
-        render json: {
-          errors: ["Internal Server Error"] }, status: 500
-      end
-    end
-  end
-
   def feedback_url
     unless ENV["CASEFLOW_FEEDBACK_URL"]
       return "https://vaww.vaco.portal.va.gov/sites/BVA/olkm/DigitalService/Lists/Feedback/NewForm.aspx"
