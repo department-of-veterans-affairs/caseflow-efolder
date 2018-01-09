@@ -30,6 +30,7 @@ class ImageConverterService
 
   private
 
+  # :nocov:
   def convert_tiff_to_pdf
     url = "http://localhost:5000/tiff-convert"
 
@@ -52,6 +53,7 @@ class ImageConverterService
   rescue Curl::Err::ConnectionFailedError
     raise ImageConverterError
   end
+  # :nocov:
 
   def convert
     case record.mime_type
