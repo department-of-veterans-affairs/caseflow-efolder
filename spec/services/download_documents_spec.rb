@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "fileutils"
 require "zip"
 require "rails_helper"

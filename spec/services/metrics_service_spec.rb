@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 describe MetricsService do
   context ".timer" do
     let(:labels) { { app: "eFolder", name: "ListDocuments" } }

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 describe DocumentCreator do
   let(:manifest) { Manifest.create(file_number: "1234") }
   let(:source) { ManifestSource.create(source: %w[VVA VBMS].sample, manifest: manifest) }

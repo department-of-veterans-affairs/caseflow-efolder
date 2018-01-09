@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module TimeUtil
   # Determines the closest increment of time to now
   # Eg: if you pass in 30 seconds, it will return the closest

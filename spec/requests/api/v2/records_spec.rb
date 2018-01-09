@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 describe "Records API v2", type: :request do
   context "Record by document ID" do
     let!(:current_user) do

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 describe Manifest do
   context "#start!" do
     before do

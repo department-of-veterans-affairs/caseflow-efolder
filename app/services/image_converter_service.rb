@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # Converts images to PDFs
 class ImageConverterService
   include ActiveModel::Model

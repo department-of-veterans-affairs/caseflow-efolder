@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 describe SaveFilesInS3Job do
   context "#perform" do
     let(:manifest) { Manifest.create(file_number: "1234") }

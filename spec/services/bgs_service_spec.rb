@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 describe ExternalApi::BGSService do
   let(:bgs_service) { ExternalApi::BGSService.new }
 

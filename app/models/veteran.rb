@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # Represents a veteran with values fetched from BGS
 class Veteran
   include ActiveModel::Model

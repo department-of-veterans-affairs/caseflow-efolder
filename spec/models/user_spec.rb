@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 describe User do
   let(:name) { "Billy Bob Thorton" }
   let(:roles) { ["Download eFolder"] }

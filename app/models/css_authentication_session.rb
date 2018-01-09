@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class CssAuthenticationSession
   include ActiveModel::Model
   include ActiveModel::Serializers::JSON

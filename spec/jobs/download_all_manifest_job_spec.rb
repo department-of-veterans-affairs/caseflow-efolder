@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 describe DownloadAllManifestJob do
   context "#perform" do
     before do

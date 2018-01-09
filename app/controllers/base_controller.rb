@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class BaseController < ActionController::Base
   force_ssl if: :ssl_enabled?
   before_action :strict_transport_security

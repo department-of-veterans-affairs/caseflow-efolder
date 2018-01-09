@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class ExceptionLogger
   DEPENDENCY_MAINTENANCE = [/Could not get JDBC Connection/, /Maintenance.+VBMS/, /upstream connect error or disconnect/].freeze
 

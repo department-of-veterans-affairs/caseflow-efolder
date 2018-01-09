@@ -1,6 +1,4 @@
-# frozen_string_literal: true
-
-class Manifest < ApplicationRecord
+class Manifest < ActiveRecord::Base
   has_many :sources, class_name: "ManifestSource", dependent: :destroy
   has_many :user_manifests, dependent: :destroy
   has_many :records, through: :sources

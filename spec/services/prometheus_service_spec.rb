@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 describe PrometheusService do
   context "PrometheusGaugeSummary" do
     before do

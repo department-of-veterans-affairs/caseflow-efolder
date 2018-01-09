@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class User < ApplicationRecord
+class User < ActiveRecord::Base
   has_many :searches
   has_many :downloads
   # v2 relationship

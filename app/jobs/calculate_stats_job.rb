@@ -1,6 +1,4 @@
-# frozen_string_literal: true
-
-class CalculateStatsJob < ApplicationJob
+class CalculateStatsJob < ActiveJob::Base
   queue_as :default
 
   def perform

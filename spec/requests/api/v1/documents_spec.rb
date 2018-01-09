@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 describe "Documents API v1", type: :request do
   context "Document by document ID" do
     let!(:current_user) do
@@ -102,7 +100,7 @@ describe "Documents API v1", type: :request do
       end
 
       it "returns 403" do
-        get "/api/v1/documents/#{document.id}", params: nil, headers: headers
+        get "/api/v1/documents/#{document.id}", nil, headers
         expect(response.code).to eq("403")
         body = JSON.parse(response.body)
         expect(body["status"]).to match(/sensitive/)

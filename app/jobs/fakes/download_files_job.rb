@@ -1,6 +1,4 @@
-# frozen_string_literal: true
-
-class Fakes::DownloadFilesJob < ApplicationJob
+class Fakes::DownloadFilesJob < ActiveJob::Base
   queue_as :default
 
   def perform(download)

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 describe ManifestSource do
   context "#source" do
     let(:manifest) { Manifest.create(file_number: "1234") }

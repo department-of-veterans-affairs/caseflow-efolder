@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 RSpec.feature "Help" do
   scenario "Visiting the Help/FAQ page" do
     User.authenticate!

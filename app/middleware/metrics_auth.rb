@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # Perform basic auth on the Prometheus /metrics endpoint so that we do not
 # expose sensitive data in the open.
 class MetricsAuth < Rack::Auth::Basic

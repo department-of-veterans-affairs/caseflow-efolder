@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 ##
 # Stats is an interface to quickly access statistics for eFolder Express
 # it is responsible for aggregating and caching statistics.

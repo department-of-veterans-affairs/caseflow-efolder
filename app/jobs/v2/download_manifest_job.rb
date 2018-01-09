@@ -1,6 +1,4 @@
-# frozen_string_literal: true
-
-class V2::DownloadManifestJob < ApplicationJob
+class V2::DownloadManifestJob < ActiveJob::Base
   queue_as :default
 
   def perform(manifest_source)

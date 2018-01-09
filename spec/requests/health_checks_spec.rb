@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 describe "Health Check API" do
   it "returns meta info about the app" do
     Rails.application.config.build_version = { deployed_at: "the best day ever" }

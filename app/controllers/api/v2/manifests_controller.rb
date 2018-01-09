@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # TODO: create Api::V2::ApplicationController
 class Api::V2::ManifestsController < Api::V1::ApplicationController
   before_action :validate_header

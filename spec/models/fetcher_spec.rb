@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 describe Fetcher do
   let(:download) { Download.create(file_number: "21012") }
   let(:document) do

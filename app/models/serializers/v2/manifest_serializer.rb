@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class Serializers::V2::ManifestSerializer < ActiveModel::Serializer
   type :manifest
 

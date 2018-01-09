@@ -1,11 +1,9 @@
-# frozen_string_literal: true
-
 require "fileutils"
 
 ##
 # Cleans all files in the temporary download files directory
 #
-class CleanDownloadFilesJob < ApplicationJob
+class CleanDownloadFilesJob < ActiveJob::Base
   queue_as :default
 
   def perform

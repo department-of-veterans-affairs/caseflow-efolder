@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 describe CssAuthenticationSession do
   let(:id) { "VACOSOLOH" }
   let(:css_id) { "VACOSOLOH" }

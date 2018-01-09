@@ -1,11 +1,9 @@
-# frozen_string_literal: true
-
 ##
 # Search represents any instance of a user searching for a
 # veteran's eFolder, successfully or unsuccessfully. If successful,
 # it performs logic required to initialize the subsequent download.
 #
-class Search < ApplicationRecord
+class Search < ActiveRecord::Base
   belongs_to :download
   belongs_to :user
 

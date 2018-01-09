@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 describe ExceptionLogger do
   subject { ExceptionLogger.capture(error) }
 

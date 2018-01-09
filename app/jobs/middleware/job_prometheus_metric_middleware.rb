@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class JobPrometheusMetricMiddleware
   def call(_worker, msg, _queue)
     name = msg["args"][0]["job_class"]

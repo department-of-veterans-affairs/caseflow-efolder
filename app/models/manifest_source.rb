@@ -1,6 +1,4 @@
-# frozen_string_literal: true
-
-class ManifestSource < ApplicationRecord
+class ManifestSource < ActiveRecord::Base
   enum status: {
     initialized: 0,
     pending: 1,

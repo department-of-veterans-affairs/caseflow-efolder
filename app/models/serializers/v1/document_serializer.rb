@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class Serializers::V1::DocumentSerializer < ActiveModel::Serializer
   type :document
 

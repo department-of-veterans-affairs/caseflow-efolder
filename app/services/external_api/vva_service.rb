@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "vva"
 
 # Thin interface to talk to Virtual VA
