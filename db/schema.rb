@@ -118,7 +118,7 @@ ActiveRecord::Schema.define(version: 20180108170052) do
     t.string   "source"
     t.datetime "created_at",                       null: false
     t.datetime "updated_at",                       null: false
-    t.integer  "conversion_status"
+    t.integer  "conversion_status",    default: 0
   end
 
   add_index "records", ["manifest_source_id", "external_document_id"], name: "index_records_on_manifest_source_id_and_external_document_id", using: :btree

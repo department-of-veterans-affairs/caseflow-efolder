@@ -12,7 +12,7 @@ class Document < ActiveRecord::Base
   enum download_status: { pending: 0, success: 1, failed: 2 }
 
   enum conversion_status: {
-    not_converted: 0,
+    not_converted: nil,
     conversion_success: 1,
     conversion_failed: 2
   }
