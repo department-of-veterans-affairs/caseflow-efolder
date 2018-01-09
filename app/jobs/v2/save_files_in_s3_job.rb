@@ -1,4 +1,6 @@
-class V2::SaveFilesInS3Job < ActiveJob::Base
+# frozen_string_literal: true
+
+class V2::SaveFilesInS3Job < ApplicationJob
   queue_as :default
 
   def perform(manifest_source)

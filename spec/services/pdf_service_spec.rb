@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe PdfService do
   context "#write_attributes_file" do
     let(:pdf_attributes) do

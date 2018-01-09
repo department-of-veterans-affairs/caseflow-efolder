@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class HealthChecksController < ApplicationController
   skip_before_action :authenticate
   newrelic_ignore_apdex

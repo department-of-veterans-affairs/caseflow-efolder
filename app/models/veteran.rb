@@ -1,10 +1,10 @@
+# frozen_string_literal: true
+
 # Represents a veteran with values fetched from BGS
 class Veteran
   include ActiveModel::Model
 
-  BGS_ATTRIBUTES = %i(
-    file_number first_name last_name last_four_ssn
-  ).freeze
+  BGS_ATTRIBUTES = [:file_number, :first_name, :last_name, :last_four_ssn].freeze
 
   attr_accessor(*BGS_ATTRIBUTES)
   attr_accessor :file_number

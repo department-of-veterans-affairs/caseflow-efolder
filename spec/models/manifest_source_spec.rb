@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe ManifestSource do
   context "#source" do
     let(:manifest) { Manifest.create(file_number: "1234") }
@@ -27,7 +29,7 @@ describe ManifestSource do
     end
 
     let(:manifest) { Manifest.create(file_number: "1234") }
-    let(:source) { ManifestSource.create(source: %w(VBMS VVA).sample, manifest: manifest) }
+    let(:source) { ManifestSource.create(source: %w[VBMS VVA].sample, manifest: manifest) }
 
     subject { source.start! }
 

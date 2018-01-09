@@ -1,4 +1,6 @@
-class ManifestSource < ActiveRecord::Base
+# frozen_string_literal: true
+
+class ManifestSource < ApplicationRecord
   enum status: {
     initialized: 0,
     pending: 1,
@@ -11,7 +13,7 @@ class ManifestSource < ActiveRecord::Base
 
   validates :manifest, :source, presence: true
   validates :manifest, uniqueness: { scope: :source }
-  validates :source, inclusion: { in: %w(VBMS VVA) }
+  validates :source, inclusion: { in: %w[VBMS VVA] }
 
   def start!
     return if current? || pending?

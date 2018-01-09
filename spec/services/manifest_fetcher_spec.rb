@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe ManifestFetcher do
   let(:manifest) { Manifest.create(file_number: "1234") }
   let(:source) { ManifestSource.create(source: name, manifest: manifest) }

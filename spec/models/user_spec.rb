@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe User do
   let(:name) { "Billy Bob Thorton" }
   let(:roles) { ["Download eFolder"] }
@@ -48,9 +50,7 @@ describe User do
           "email" => user.email,
           "station_id" => user.station_id,
           "roles" => user.roles,
-          "name" => user.name
-        }
-      }
+          "name" => user.name } }
     end
     subject { User.from_session_and_request(session, request) }
 
@@ -74,7 +74,7 @@ describe User do
   context ".from_api_authenticated_values" do
     let(:css_id) { "lowercase_id" }
     let(:uppercased_css_id) { "LOWERCASE_ID" }
-    let(:station_id) { Random.rand(499) + 1 }
+    let(:station_id) { Random.rand(1..499) }
 
     context "when both css_id and station_id are defined" do
       subject { User.from_api_authenticated_values(css_id: css_id, station_id: station_id) }

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Serializers::V1::DownloadSerializer < ActiveModel::Serializer
   type :file
 

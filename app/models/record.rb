@@ -1,4 +1,6 @@
-class Record < ActiveRecord::Base
+# frozen_string_literal: true
+
+class Record < ApplicationRecord
   belongs_to :manifest_source
 
   validates :manifest_source, :external_document_id, presence: true

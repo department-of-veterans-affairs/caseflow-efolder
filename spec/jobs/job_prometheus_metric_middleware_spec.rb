@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe JobPrometheusMetricMiddleware do
   before do
     @middleware = JobPrometheusMetricMiddleware.new
@@ -29,7 +31,7 @@ describe JobPrometheusMetricMiddleware do
 
       expect(PrometheusService.background_jobs_error_counter.values[@labels]).to eq(nil)
       expect do
-        @middleware.call(nil, @msg, :default) { fail(err_msg) }
+        @middleware.call(nil, @msg, :default) { raise(err_msg) }
       end.to raise_error(err_msg)
 
       expect(PrometheusService.background_jobs_error_counter.values[@labels]).to eq(1)

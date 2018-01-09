@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "vbms"
 
 class RailsVBMSLogger
@@ -39,7 +41,7 @@ class ExternalApi::VBMSService
                 VBMS::Requests::FetchDocumentById.new(document.document_id)
               end
     result = send_and_log_request(document.document_id, request)
-    result && result.content
+    result&.content
   end
 
   def self.init_client

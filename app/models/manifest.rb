@@ -1,4 +1,6 @@
-class Manifest < ActiveRecord::Base
+# frozen_string_literal: true
+
+class Manifest < ApplicationRecord
   has_many :sources, class_name: "ManifestSource", dependent: :destroy
   has_many :user_manifests, dependent: :destroy
   has_many :records, through: :sources
@@ -21,7 +23,7 @@ class Manifest < ActiveRecord::Base
 
   # If we do not yet have the veteran info saved in Caseflow's DB, then
   # we want to fetch it from BGS, save it to the DB, then return it
-  %w(veteran_first_name veteran_last_name veteran_last_four_ssn).each do |name|
+  %w[veteran_first_name veteran_last_name veteran_last_four_ssn].each do |name|
     define_method(name) do
       self[name] || begin
         update_veteran_info

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rails_helper"
 
 describe Search do
@@ -50,8 +52,7 @@ describe Search do
           {
             "veteran_first_name" => "John",
             "veteran_last_name" => "McJohn"
-          }
-        }
+          } }
       allow_any_instance_of(Fakes::BGSService).to receive(:veteran_info).and_return(veteran_info)
       allow(DownloadAllManifestJob).to receive(:perform_later)
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Api::V1::ApplicationController < BaseController
   protect_from_forgery with: :null_session
   before_action :authenticate_or_authorize

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Fetcher
   include ActiveModel::Model
   attr_accessor :document, :external_service
@@ -24,7 +26,8 @@ class Fetcher
     return cached_content if cached_content
 
     converted_image = ImageConverterService.new(
-      image: external_service.fetch_document_file(document), mime_type: document.mime_type).process
+      image: external_service.fetch_document_file(document), mime_type: document.mime_type
+    ).process
     S3Service.store_file(document.s3_filename, converted_image)
 
     converted_image

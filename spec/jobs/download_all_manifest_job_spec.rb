@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe DownloadAllManifestJob do
   context "#perform" do
     before do
@@ -33,7 +35,8 @@ describe DownloadAllManifestJob do
           [
             OpenStruct.new(document_id: "1"),
             OpenStruct.new(document_id: "2")
-          ])
+          ]
+        )
         allow(VVAService).to receive(:fetch_documents_for).and_return([])
         DownloadAllManifestJob.perform_now(download)
       end
@@ -61,7 +64,8 @@ describe DownloadAllManifestJob do
           [
             OpenStruct.new(document_id: "1"),
             OpenStruct.new(document_id: "2")
-          ])
+          ]
+        )
         allow(VVAService).to receive(:fetch_documents_for).and_raise(VVA::ClientError)
 
         DownloadAllManifestJob.perform_now(download)
@@ -79,13 +83,15 @@ describe DownloadAllManifestJob do
           [
             OpenStruct.new(document_id: "1"),
             OpenStruct.new(document_id: "2")
-          ])
+          ]
+        )
 
         allow(VVAService).to receive(:fetch_documents_for).and_return(
           [
             OpenStruct.new(document_id: "3"),
             OpenStruct.new(document_id: "4")
-          ])
+          ]
+        )
 
         DownloadAllManifestJob.perform_now(download)
       end

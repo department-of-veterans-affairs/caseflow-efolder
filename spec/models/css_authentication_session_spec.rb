@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe CssAuthenticationSession do
   let(:id) { "VACOSOLOH" }
   let(:css_id) { "VACOSOLOH" }
@@ -11,8 +13,7 @@ describe CssAuthenticationSession do
       email: email,
       name: name,
       roles: roles,
-      station_id: station_id
-    }
+      station_id: station_id }
   end
 
   context "when creating a new object via .new" do

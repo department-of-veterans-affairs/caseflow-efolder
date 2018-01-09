@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "benchmark"
 
 # see https://dropwizard.github.io/metrics/3.1.0/getting-started/ for abstractions on metric types
@@ -31,7 +33,7 @@ class MetricsService
 
     Rails.logger.info("FINISHED #{description}: #{stopwatch}")
     return_value
-  rescue
+  rescue StandardError
     if service
       metric = PrometheusService.send("#{service}_request_error_counter".to_sym)
       metric.increment(app: @app, name: name)
@@ -48,6 +50,7 @@ class MetricsService
       increment_datadog_counter("request_attempt", service, name)
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   private_class_method def self.increment_datadog_counter(metric_name, service, endpoint_name)
     DataDogService.increment_counter(

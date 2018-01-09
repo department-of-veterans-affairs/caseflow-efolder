@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "vva"
 
 # Thin interface to talk to Virtual VA
@@ -26,7 +28,7 @@ class ExternalApi::VVAService
         ssn: document.ssn
       )
     end
-    result && result.content
+    result&.content
   end
 
   def self.init_client

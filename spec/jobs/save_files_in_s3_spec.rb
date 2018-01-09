@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe SaveFilesInS3Job do
   context "#perform" do
     let(:user) do

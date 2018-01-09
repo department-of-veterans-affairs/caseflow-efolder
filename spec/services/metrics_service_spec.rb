@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe MetricsService do
   context ".timer" do
     let(:labels) { { app: "eFolder", name: "ListDocuments" } }
@@ -32,7 +34,7 @@ describe MetricsService do
       current_counter = counter.values[labels] || 0
 
       expect do
-        MetricsService.record("fake api call", service: "vbms", name: "ListDocuments") { fail("hi") }
+        MetricsService.record("fake api call", service: "vbms", name: "ListDocuments") { raise("hi") }
       end.to raise_error("hi")
 
       expect(counter.values[labels]).to eq(current_counter + 1)

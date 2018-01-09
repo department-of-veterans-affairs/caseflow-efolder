@@ -1,12 +1,13 @@
 # frozen_string_literal: true
-class User < ActiveRecord::Base
+
+class User < ApplicationRecord
   has_many :searches
   has_many :downloads
   # v2 relationship
   has_many :user_manifests
   has_many :manifests, through: :user_manifests
 
-  NO_EMAIL = "No Email Recorded".freeze
+  NO_EMAIL = "No Email Recorded"
 
   attr_accessor :name, :roles, :ip_address
 

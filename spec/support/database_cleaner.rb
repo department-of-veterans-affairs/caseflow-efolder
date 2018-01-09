@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "capybara/rspec"
 
 RSpec.configure do |config|
@@ -5,7 +7,7 @@ RSpec.configure do |config|
 
   config.before(:suite) do
     if config.use_transactional_fixtures?
-      fail(<<-MSG)
+      raise(<<-MSG)
         Delete line `config.use_transactional_fixtures = true` from rails_helper.rb
         (or set it to false) to prevent uncommitted transactions being used in
         JavaScript-dependent specs.

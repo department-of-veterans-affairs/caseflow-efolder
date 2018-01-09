@@ -1,4 +1,6 @@
-class RestartStalledDownloadsJob < ActiveJob::Base
+# frozen_string_literal: true
+
+class RestartStalledDownloadsJob < ApplicationJob
   queue_as :default
 
   def perform

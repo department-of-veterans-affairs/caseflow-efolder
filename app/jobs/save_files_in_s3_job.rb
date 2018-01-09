@@ -1,4 +1,6 @@
-class SaveFilesInS3Job < ActiveJob::Base
+# frozen_string_literal: true
+
+class SaveFilesInS3Job < ApplicationJob
   queue_as :default
 
   def perform(download)

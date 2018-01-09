@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "vbms"
 require "vva"
 
@@ -59,8 +61,8 @@ class Fakes::DocumentService
 
   def self.fetch_document_file(document)
     sleep(rand(max_time))
-    fail VBMS::ClientError if errors && rand(5) == 3
-    fail VVA::ClientError if errors && rand(5) == 2
+    raise VBMS::ClientError if errors && rand(5) == 3
+    raise VVA::ClientError if errors && rand(5) == 2
 
     if document.mime_type == "application/pdf"
       IO.binread(Rails.root + "lib/pdfs/#{document.id % 5}.pdf")
@@ -71,7 +73,7 @@ class Fakes::DocumentService
 
   # can be overridden by child classes to provide more specific error
   def self.raise_error
-    fail "Could not obtain docs"
+    raise "Could not obtain docs"
   end
 
   def self.check_and_raise_errors(demo)

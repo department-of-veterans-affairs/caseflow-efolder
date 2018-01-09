@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BaseController < ActionController::Base
   force_ssl if: :ssl_enabled?
   before_action :strict_transport_security
@@ -6,7 +8,7 @@ class BaseController < ActionController::Base
   private
 
   def ssl_enabled?
-    Rails.env.production? && !(request.path =~ /health-check/)
+    Rails.env.production? && request.path !~ /health-check/
   end
 
   def strict_transport_security

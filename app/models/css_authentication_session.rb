@@ -1,15 +1,18 @@
+# frozen_string_literal: true
+
 class CssAuthenticationSession
   include ActiveModel::Model
   include ActiveModel::Serializers::JSON
 
-  attr_accessor :id, :css_id, :email, :name, :roles, :station_id
+  attr_accessor :id, :name, :roles, :station_id
+  attr_reader :css_id, :email
 
   def email=(value)
-    @email = value && value.strip
+    @email = value&.strip
   end
 
   def css_id=(value)
-    @css_id = value && value.upcase
+    @css_id = value&.upcase
   end
 
   def attributes

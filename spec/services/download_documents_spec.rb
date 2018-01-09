@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "fileutils"
 require "zip"
 require "rails_helper"
@@ -97,8 +99,8 @@ describe DownloadDocuments do
     context "when one file errors" do
       before do
         allow(Fakes::DocumentService).to receive(:fetch_document_file) do |document|
-          fail VBMS::ClientError, "Failure" if document.document_id == second_document_id
-          fail VVA::ClientError, "Failure" if document.document_id == third_document_id
+          raise VBMS::ClientError, "Failure" if document.document_id == second_document_id
+          raise VVA::ClientError, "Failure" if document.document_id == third_document_id
           file
         end
 
@@ -178,7 +180,7 @@ describe DownloadDocuments do
   end
 
   context "#fetch_from_s3" do
-    let(:download) { Download.create(file_number: (rand(50_000) + 1).to_s) }
+    let(:download) { Download.create(file_number: rand(1..50_000).to_s) }
     let(:document) do
       download.documents.build(
         id: "test",
@@ -219,7 +221,7 @@ describe DownloadDocuments do
       FileUtils.rm_rf(Rails.application.config.download_filepath)
 
       allow(VBMSService).to receive(:fetch_document_file) do |document|
-        fail VBMS::ClientError if document.document_id != "1"
+        raise VBMS::ClientError if document.document_id != "1"
         file
       end
     end

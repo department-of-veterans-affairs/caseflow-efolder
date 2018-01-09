@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe "Manifests API v2", type: :request do
   include ActiveJob::TestHelper
 
@@ -71,7 +73,7 @@ describe "Manifests API v2", type: :request do
 
     it "returns empty array" do
       perform_enqueued_jobs do
-        get "/api/v2/manifests", nil, headers
+        get "/api/v2/manifests", params: nil, headers: headers
         expect(response.code).to eq("200")
         expect(response.body).to eq(response_body)
       end
@@ -82,7 +84,7 @@ describe "Manifests API v2", type: :request do
     let(:token) { "bad token" }
 
     it "returns 401" do
-      get "/api/v2/manifests", nil, headers
+      get "/api/v2/manifests", params: nil, headers: headers
       expect(response.code).to eq("401")
     end
   end
@@ -98,7 +100,7 @@ describe "Manifests API v2", type: :request do
       end
 
       it "returns 400" do
-        get "/api/v2/manifests", nil, headers
+        get "/api/v2/manifests", params: nil, headers: headers
         expect(response.code).to eq("400")
         body = JSON.parse(response.body)
         expect(body["status"]).to match(/missing.+CSS.+ID/)
@@ -115,7 +117,7 @@ describe "Manifests API v2", type: :request do
       end
 
       it "returns 400" do
-        get "/api/v2/manifests", nil, headers
+        get "/api/v2/manifests", params: nil, headers: headers
         expect(response.code).to eq("400")
         body = JSON.parse(response.body)
         expect(body["status"]).to match(/missing.+Station.+ID/)
@@ -132,7 +134,7 @@ describe "Manifests API v2", type: :request do
       end
 
       it "returns 400" do
-        get "/api/v2/manifests", nil, headers
+        get "/api/v2/manifests", params: nil, headers: headers
         expect(response.code).to eq("400")
         body = JSON.parse(response.body)
         expect(body["status"]).to match(/missing.+File.+Number/)
@@ -150,7 +152,7 @@ describe "Manifests API v2", type: :request do
       end
 
       it "returns 400" do
-        get "/api/v2/manifests", nil, headers
+        get "/api/v2/manifests", params: nil, headers: headers
         expect(response.code).to eq("400")
         body = JSON.parse(response.body)
         expect(body["status"]).to match(/File.+Number.+invalid.+must.+8.+9.+digits/)
@@ -164,7 +166,7 @@ describe "Manifests API v2", type: :request do
     end
 
     it "returns 403" do
-      get "/api/v2/manifests", nil, headers
+      get "/api/v2/manifests", params: nil, headers: headers
       expect(response.code).to eq("403")
       body = JSON.parse(response.body)
       expect(body["status"]).to match(/sensitive/)

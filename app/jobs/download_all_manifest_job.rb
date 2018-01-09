@@ -1,4 +1,6 @@
-class DownloadAllManifestJob < ActiveJob::Base
+# frozen_string_literal: true
+
+class DownloadAllManifestJob < ApplicationJob
   queue_as :default
 
   def perform(download)

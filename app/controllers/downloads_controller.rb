@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DownloadsController < ApplicationController
   before_action :authorize
 

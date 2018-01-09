@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DownloadVVAManifestJob < DownloadManifestJob
   queue_as :default
 

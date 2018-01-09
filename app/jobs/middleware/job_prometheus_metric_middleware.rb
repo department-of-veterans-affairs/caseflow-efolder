@@ -1,10 +1,11 @@
+# frozen_string_literal: true
+
 class JobPrometheusMetricMiddleware
   def call(_worker, msg, _queue)
     name = msg["args"][0]["job_class"]
 
     yield
-
-  rescue
+  rescue StandardError
     PrometheusService.background_jobs_error_counter.increment(name: name)
 
     # reraise the same error. This lets Sidekiq's retry logic kick off
