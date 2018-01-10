@@ -1,6 +1,6 @@
 describe RecordFetcher do
   let(:manifest) { Manifest.create(file_number: "1234") }
-  let(:source) { ManifestSource.create(source: %w(VBMS VVA).sample, manifest: manifest) }
+  let(:source) { ManifestSource.create(source: %w[VBMS VVA].sample, manifest: manifest) }
 
   let(:record) do
     Record.create(

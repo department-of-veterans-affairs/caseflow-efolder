@@ -11,7 +11,7 @@ class ManifestSource < ActiveRecord::Base
 
   validates :manifest, :source, presence: true
   validates :manifest, uniqueness: { scope: :source }
-  validates :source, inclusion: { in: %w(VBMS VVA) }
+  validates :source, inclusion: { in: %w[VBMS VVA] }
 
   def start!
     return if current? || pending?

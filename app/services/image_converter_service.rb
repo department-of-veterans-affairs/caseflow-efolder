@@ -24,7 +24,7 @@ class ImageConverterService
 
   # Adding a magic number check based on this recommendation: https://imagetragick.com/
   def tiff?
-    "MM\u0000*" == image[0..3] || "II*\u0000" == image[0..3]
+    image[0..3] == "MM\u0000*" || image[0..3] == "II*\u0000"
   end
 
   def convert_tiff_to_pdf
