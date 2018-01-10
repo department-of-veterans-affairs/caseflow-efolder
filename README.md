@@ -9,15 +9,13 @@ FOIA Requests that give veterans access to their own VA files take **way** too l
 
 ## First Time Development Setup
 
-You'll need Ruby 2.3.0, Postgres, Redis and ImageMagick if you don't have them.
+You'll need Ruby 2.3.0, Postgres and Redis if you don't have them.
 
 > $ rbenv install 2.3.0
 
 > $ brew install postgresql
 
 > $ brew install redis
-
-> $ brew install imagemagick
 
 You may want to have Redis and Postgres run on startup. Let brew tell you how to do that:
 
@@ -44,6 +42,10 @@ Now start both the rails server,
 And in a seperate terminal, start a jobs worker
 
 > $ bundle exec sidekiq
+
+If you want to convert TIFF files to PDFs then you also need to run the image converter service. You can
+do this by cloning the appeals-deployment repo, navigating to `ansible/utility-roles/imagemagick/files`
+and running `docker-compose up`. By default if this is not running, TIFFs will gracefully not convert.
 
 If you want to test out the DEMO flow (without VBMS connection),
 

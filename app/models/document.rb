@@ -12,6 +12,12 @@ class Document < ActiveRecord::Base
 
   enum download_status: { pending: 0, success: 1, failed: 2 }
 
+  enum conversion_status: {
+    not_converted: nil,
+    conversion_success: 1,
+    conversion_failed: 2
+  }
+
   after_initialize { |document| document.vbms_filename ||= "" }
 
   # It is expected that some of the documents may have a MIME type of "application/octet-stream".
@@ -128,7 +134,7 @@ class Document < ActiveRecord::Base
   end
 
   def preferred_extension
-    mime = MIME::Types[ImageConverterService.converted_mime_type(mime_type)].first
+    mime = MIME::Types[conversion_success? ? ImageConverterService.converted_mime_type(mime_type) : mime_type].first
     mime ? mime.preferred_extension : ""
   end
 

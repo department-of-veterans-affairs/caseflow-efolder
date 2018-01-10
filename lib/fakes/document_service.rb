@@ -85,7 +85,7 @@ class Fakes::DocumentService
 
   # Randomly send a pdf or tiff
   def self.document_type
-    return { ext: "pdf", mime_type: "application/pdf" } if rand(2)
+    return { ext: "pdf", mime_type: "application/pdf" } if rand(2) == 1
     { ext: "tiff", mime_type: "image/tiff" }
   end
 

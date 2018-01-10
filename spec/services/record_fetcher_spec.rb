@@ -63,11 +63,12 @@ describe RecordFetcher do
         before do
           FeatureToggle.enable!(:convert_tiff_images)
           allow(Fakes::DocumentService).to receive(:fetch_document_file).and_return(tiff_content)
+          allow_any_instance_of(ImageConverterService).to receive(:convert_tiff_to_pdf).and_return(fake_pdf_content)
         end
         after { FeatureToggle.disable!(:convert_tiff_images) }
 
         it "should convert the tiff to pdf and return it" do
-          expect(valid_pdf?(subject)).to be_truthy
+          expect(subject).to eq fake_pdf_content
         end
       end
     end

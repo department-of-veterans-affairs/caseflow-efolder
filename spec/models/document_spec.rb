@@ -7,13 +7,15 @@ describe Document do
   end
 
   let(:mime_type) { "application/pdf" }
+  let(:conversion_status) { :not_converted }
   let(:download) { Download.create(file_number: "21012") }
   let(:document) do
     download.documents.build(
       document_id: "{3333-3333}",
       received_at: Time.utc(2015, 9, 6, 1, 0, 0),
       type_id: "825",
-      mime_type: mime_type
+      mime_type: mime_type,
+      conversion_status: conversion_status
     )
   end
 
@@ -253,8 +255,16 @@ describe Document do
         end
 
         let(:mime_type) { "image/tiff" }
-        it "returns pdf" do
-          expect(document.preferred_extension).to eq("pdf")
+        it "returns tiff when conversion_status is not_converted" do
+          expect(document.preferred_extension).to eq("tiff")
+        end
+
+        context "when conversion_status is conversion_success" do
+          let(:conversion_status) { :conversion_success }
+
+          it "returns tiff when not_converted? is true" do
+            expect(document.preferred_extension).to eq("pdf")
+          end
         end
       end
 
