@@ -46,7 +46,7 @@ class ImageConverterService
         curl.http_post(Curl::PostField.file("file", file.path))
       end
 
-      fail ImageConverterError if curl.status != "200 OK"
+      raise ImageConverterError if curl.status != "200 OK"
     end
 
     curl.body
@@ -58,9 +58,9 @@ class ImageConverterService
   def convert
     case record.mime_type
     when "image/tiff"
-      return convert_tiff_to_pdf
+      convert_tiff_to_pdf
     else
-      return image
+      image
     end
   end
 end
