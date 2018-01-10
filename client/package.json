@@ -1,0 +1,26 @@
+{
+  "name": "efolder-express-ui",
+  "private": true,
+  "version": "1.0.0",
+  "license": "UNLICENSED",
+  "main": "index.jsx",
+  "scripts": {
+    "build": "webpack --config webpack.config.js"
+  },
+  "dependencies": {
+    "babel-loader": "^7.1.2",
+    "prop-types": "^15.6.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-redux": "^5.0.6",
+    "redux": "^3.7.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-3": "^6.24.1",
+    "webpack": "^3.10.0"
+  }
+}

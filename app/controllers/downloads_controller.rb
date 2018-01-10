@@ -17,6 +17,15 @@ class DownloadsController < ApplicationController
     end
   end
 
+  def react
+    render "_react", layout: false
+  end
+
+  def initial_react_data
+    { text: "placeholder text" }.to_json
+  end
+  helper_method :initial_react_data
+
   def start
     @download = downloads.find(params[:id])
     @download.update_attributes!(status: :pending_documents)
