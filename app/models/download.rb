@@ -79,11 +79,13 @@ class Download < ActiveRecord::Base
       # Calling update can result in infinite recursion if not all fields are defined
       # by BGS. Therefore we set a variable once we've fetched the data.
       @veteran_info_fetched = true
-      update_attributes!(
-        veteran_first_name: veteran_info["veteran_first_name"],
-        veteran_last_name: veteran_info["veteran_last_name"],
-        veteran_last_four_ssn: veteran_info["veteran_last_four_ssn"]
-      ) if veteran_info
+      if veteran_info
+        update_attributes!(
+          veteran_first_name: veteran_info["veteran_first_name"],
+          veteran_last_name: veteran_info["veteran_last_name"],
+          veteran_last_four_ssn: veteran_info["veteran_last_four_ssn"]
+        )
+      end
     end
   end
 
@@ -115,7 +117,7 @@ class Download < ActiveRecord::Base
 
   def case_exists?
     !bgs_service.fetch_veteran_info(file_number).nil?
-  rescue
+  rescue StandardError
     false
   end
 
@@ -128,7 +130,7 @@ class Download < ActiveRecord::Base
   end
 
   def complete_documents
-    documents.select { |d| !d.pending? }
+    documents.reject(&:pending?)
   end
 
   def progress_percentage
@@ -317,3 +319,4 @@ class Download < ActiveRecord::Base
     current_doc.started_at + (historical_rate * documents_left)
   end
 end
+# rubocop:enable Metrics/ClassLength

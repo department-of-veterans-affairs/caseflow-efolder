@@ -39,9 +39,7 @@ module StubbableUser
     end
 
     def authenticate!(options = {})
-      if options[:roles] && options[:roles].include?("System Admin")
-        Functions.grant!("System Admin", users: ["123123"])
-      end
+      Functions.grant!("System Admin", users: ["123123"]) if options[:roles]&.include?("System Admin")
 
       self.stub = find_or_create_by(css_id: "123123", station_id: "116").tap do |u|
         u.name = "first last"
