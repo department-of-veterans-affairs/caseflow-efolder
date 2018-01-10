@@ -8,8 +8,8 @@ describe DocumentCreator do
     context "when there are external documents" do
       let(:documents) do
         [
-          OpenStruct.new(document_id: "1"),
-          OpenStruct.new(document_id: "2")
+          OpenStruct.new(document_id: "1", series_id: "3"),
+          OpenStruct.new(document_id: "2", series_id: "4")
         ]
       end
       it "creates the documents" do
@@ -32,8 +32,8 @@ describe DocumentCreator do
     context "when there are restricted document types" do
       let(:documents) do
         [
-          OpenStruct.new(document_id: "1", type_id: DocumentCreator::RESTRICTED_TYPES.sample),
-          OpenStruct.new(document_id: "2", type_id: "554")
+          OpenStruct.new(document_id: "1", series_id: "3", type_id: DocumentCreator::RESTRICTED_TYPES.sample),
+          OpenStruct.new(document_id: "2", series_id: "4", type_id: "554")
         ]
       end
 
@@ -41,7 +41,8 @@ describe DocumentCreator do
         expect(source.records).to eq []
         subject
         expect(source.reload.records.size).to eq 1
-        expect(source.reload.records.first.external_document_id).to eq "2"
+        expect(source.reload.records.first.version_id).to eq "2"
+        expect(source.reload.records.first.series_id).to eq "4"
       end
     end
   end

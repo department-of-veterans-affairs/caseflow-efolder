@@ -57,6 +57,10 @@ class Fakes::DocumentService
     list_fake_documents(download.file_number)
   end
 
+  def self.v2_fetch_documents_for(download)
+    fetch_documents_for(download)
+  end
+
   def self.fetch_document_file(document)
     sleep(rand(max_time))
     raise VBMS::ClientError if errors && rand(5) == 3
@@ -67,6 +71,10 @@ class Fakes::DocumentService
     else
       IO.binread(Rails.root + "lib/tiffs/#{document.id % 5}.tiff")
     end
+  end
+
+  def self.v2_fetch_document_file(document)
+    fetch_document_file(document)
   end
 
   # can be overridden by child classes to provide more specific error
@@ -96,6 +104,9 @@ class Fakes::DocumentService
       vbms_filename: "happy-thursday-#{SecureRandom.hex}.#{type[:ext]}",
       type_id: Document::TYPES.keys.sample,
       document_id: "{#{SecureRandom.hex(4).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(6).upcase}}",
+      version_id: "{#{SecureRandom.hex(4).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(6).upcase}}",
+      series_id: "{#{SecureRandom.hex(4).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(6).upcase}}",
+      version: rand(10).to_s,
       mime_type: type[:mime_type],
       received_at: (i * 2).days.ago,
       downloaded_from: service_type
