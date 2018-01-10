@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file is used by Rack-based servers to start the application.
 
 require ::File.expand_path("../config/environment", __FILE__)
@@ -17,7 +19,7 @@ end
 
 # use gzip for the '/metrics' route, since it can get big.
 use Rack::Deflater,
-    if: -> (env, _status, _headers, _body) { env["PATH_INFO"] == "/metrics" }
+    if: ->(env, _status, _headers, _body) { env["PATH_INFO"] == "/metrics" }
 
 # Customized collector for our own metrics
 use MetricsCollector

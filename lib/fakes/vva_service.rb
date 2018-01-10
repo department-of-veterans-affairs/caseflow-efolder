@@ -4,6 +4,6 @@ class Fakes::VVAService < Fakes::DocumentService
   end
 
   def self.raise_error
-    fail VVA::ClientError
+    raise VVA::ClientError
   end
 end

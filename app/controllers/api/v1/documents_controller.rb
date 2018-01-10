@@ -22,7 +22,7 @@ class Api::V1::DocumentsController < Api::V1::ApplicationController
     status = 500
     message = "Caseflow eFolder failed to fetch document contents."
 
-    if error_kind == :vva_error || error_kind == :vbms_error
+    if [:vva_error, :vbms_error].include?(error_kind)
       status = 502
       message = "An upstream dependency failed to fetch document contents."
     end

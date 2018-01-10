@@ -1,7 +1,8 @@
 # frozen_string_literal: true
+
 # rubocop:disable Metrics/ModuleLength
 module ApplicationHelper
-  ALERT_ICON = <<-HTML.freeze
+  ALERT_ICON = <<-HTML
     <svg width="72px" height="72px" class="cf-icon-alert"
       xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72">
       <title>alert</title>
@@ -14,7 +15,7 @@ module ApplicationHelper
     </svg>
   HTML
 
-  FAILED_ICON = <<-HTML.freeze
+  FAILED_ICON = <<-HTML
     <svg width="55" height="55" class="cf-icon-missing"
     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 55 55">
       <title>failed</title>
@@ -26,7 +27,7 @@ module ApplicationHelper
     </svg>
   HTML
 
-  SUCCESS_ICON = <<-HTML.freeze
+  SUCCESS_ICON = <<-HTML
     <svg width="55" height="55" class="cf-icon-found"
     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 50">
       <title>success</title>
@@ -37,11 +38,11 @@ module ApplicationHelper
     </svg>
   HTML
 
-  SPACER_ICON = <<-HTML.freeze
+  SPACER_ICON = <<-HTML
     <span class="cf-spacer-icon"></span>
   HTML
 
-  CLOSE_ICON = <<-HTML.freeze
+  CLOSE_ICON = <<-HTML
     <svg style="pointer-events:none;" width="55" height="55" class="cf-icon-close"
     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 55 55">
     <title>close</title>
@@ -52,7 +53,7 @@ module ApplicationHelper
     </svg>
   HTML
 
-  PAGE_LOADING_ICON_FRONT = <<-HTML.freeze
+  PAGE_LOADING_ICON_FRONT = <<-HTML
     <svg
       width="200"
       height="200"
@@ -83,7 +84,7 @@ module ApplicationHelper
     </svg>
   HTML
 
-  PAGE_LOADING_ICON_BACK = <<-HTML.freeze
+  PAGE_LOADING_ICON_BACK = <<-HTML
     <svg
       width="200"
       height="200"
@@ -114,7 +115,7 @@ module ApplicationHelper
     </svg>
   HTML
 
-  PILL_LOADING_ICON_FRONT = <<-HTML.freeze
+  PILL_LOADING_ICON_FRONT = <<-HTML
     <svg
       xmlns:dc="http://purl.org/dc/elements/1.1/"
       xmlns:cc="http://creativecommons.org/ns#"
@@ -133,7 +134,7 @@ module ApplicationHelper
     </svg>
   HTML
 
-  PILL_LOADING_ICON_BACK = <<-HTML.freeze
+  PILL_LOADING_ICON_BACK = <<-HTML
     <svg
       xmlns:dc="http://purl.org/dc/elements/1.1/"
       xmlns:cc="http://creativecommons.org/ns#"
@@ -152,7 +153,7 @@ module ApplicationHelper
     </svg>
   HTML
 
-  PROGRESS_ICON = <<-HTML.freeze
+  PROGRESS_ICON = <<-HTML
     <svg
       width="394"
       height="364"
@@ -178,7 +179,7 @@ module ApplicationHelper
     </svg>
   HTML
 
-  COPY_ICON = <<-HTML.freeze
+  COPY_ICON = <<-HTML
     <svg width="16" height="16" class="cf-icon-appeal-id"
     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 21">
     <title>appeal</title>
@@ -258,3 +259,4 @@ module ApplicationHelper
     "&nbsp &#124; &nbsp ".html_safe + "Dashboard"
   end
 end
+# rubocop:enable Metrics/ModuleLength

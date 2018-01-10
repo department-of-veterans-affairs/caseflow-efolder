@@ -4,7 +4,6 @@ require File.expand_path("../../config/environment", __FILE__)
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require "spec_helper"
-require "utility_functions"
 require "rspec/rails"
 require_relative "support/database_cleaner"
 # Add additional requires below this line. Rails is not loaded until this point!
@@ -40,9 +39,7 @@ module StubbableUser
     end
 
     def authenticate!(options = {})
-      if options[:roles] && options[:roles].include?("System Admin")
-        Functions.grant!("System Admin", users: ["123123"])
-      end
+      Functions.grant!("System Admin", users: ["123123"]) if options[:roles]&.include?("System Admin")
 
       self.stub = find_or_create_by(css_id: "123123", station_id: "116").tap do |u|
         u.name = "first last"

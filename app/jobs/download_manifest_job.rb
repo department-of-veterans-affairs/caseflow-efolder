@@ -3,15 +3,15 @@ class DownloadManifestJob < ActiveJob::Base
 
   # these must be implemented by child classes
   def get_service(_download)
-    fail "get_service must be implemented by a child class of DownloadManifestJob"
+    raise "get_service must be implemented by a child class of DownloadManifestJob"
   end
 
   def service_name
-    fail "service_name must be implemented by a child class of DownloadManifestJob"
+    raise "service_name must be implemented by a child class of DownloadManifestJob"
   end
 
   def client_error
-    fail "client_error must be implemented by a child class of DownloadManifestJob"
+    raise "client_error must be implemented by a child class of DownloadManifestJob"
   end
 
   def manifest_fetched_at_name

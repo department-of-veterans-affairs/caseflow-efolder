@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Document < ActiveRecord::Base
   include Caseflow::DocumentTypes
 
@@ -6,10 +7,16 @@ class Document < ActiveRecord::Base
 
   AVERAGE_DOWNLOAD_RATE_LIMIT = 100
   AVERAGE_DOWNLOAD_RATE_CACHE_EXPIRATION = 30.seconds
-  AVERAGE_DOWNLOAD_RATE_CACHE_KEY = "historical-average-download-rate".freeze
+  AVERAGE_DOWNLOAD_RATE_CACHE_KEY = "historical-average-download-rate"
   MAXIMUM_FILENAME_LENGTH = 100
 
   enum download_status: { pending: 0, success: 1, failed: 2 }
+
+  enum conversion_status: {
+    not_converted: nil,
+    conversion_success: 1,
+    conversion_failed: 2
+  }
 
   after_initialize { |document| document.vbms_filename ||= "" }
 
@@ -52,7 +59,7 @@ class Document < ActiveRecord::Base
   # Since Windows has the maximum length for a path, we crop type_name if the filename is longer than set maximum (issue #371)
   def cropped_type_name
     over_limit = (Zaru.sanitize! "#{type_name}-#{filename_date}-#{filename_doc_id}.#{preferred_extension}").size - MAXIMUM_FILENAME_LENGTH
-    end_index = (over_limit <= 0) ? -1 : -1 - over_limit
+    end_index = over_limit <= 0 ? -1 : -1 - over_limit
     type_name[0..end_index]
   end
 
@@ -127,7 +134,7 @@ class Document < ActiveRecord::Base
   end
 
   def preferred_extension
-    mime = MIME::Types[ImageConverterService.converted_mime_type(mime_type)].first
+    mime = MIME::Types[conversion_success? ? ImageConverterService.converted_mime_type(mime_type) : mime_type].first
     mime ? mime.preferred_extension : ""
   end
 

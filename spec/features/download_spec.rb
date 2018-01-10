@@ -329,18 +329,21 @@ RSpec.feature "Downloads" do
       vbms_filename: "yawn.pdf",
       mime_type: "application/pdf",
       started_at: 1.minute.ago,
-      download_status: :pending)
+      download_status: :pending
+    )
     download.documents.create(
       vbms_filename: "yawn.pdf",
       mime_type: "application/pdf",
       started_at: 1.minute.ago,
-      download_status: :pending)
+      download_status: :pending
+    )
     download.documents.create(
       vbms_filename: "smiley.pdf",
       mime_type: "application/pdf",
       started_at: 2.minutes.ago,
       completed_at: 1.minute.ago,
-      download_status: :success)
+      download_status: :success
+    )
     download.documents.create(
       type_id: "129",
       document_id: "{1234-1234-1234-5555}",
@@ -416,7 +419,7 @@ RSpec.feature "Downloads" do
     within first(".usa-alert-body") do
       click_on "Download anyway"
     end
-    expect(page).to have_selector('#confirm-download-anyway')
+    expect(page).to have_selector("#confirm-download-anyway")
 
     click_on "Go back"
   end

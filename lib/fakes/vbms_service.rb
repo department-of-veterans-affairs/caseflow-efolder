@@ -4,6 +4,6 @@ class Fakes::VBMSService < Fakes::DocumentService
   end
 
   def self.raise_error
-    fail VBMS::ClientError
+    raise VBMS::ClientError
   end
 end

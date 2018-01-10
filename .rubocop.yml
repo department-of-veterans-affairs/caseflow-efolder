@@ -1,5 +1,6 @@
 AllCops:
   TargetRubyVersion: 2.3
+  TargetRailsVersion: 4.2
   Include:
     - '**/config.ru'
     - '**/Rakefile'
@@ -14,6 +15,30 @@ Rails/Output:
   Exclude:
     - 'lib/**/*.rb'
 
+Rails/SkipsModelValidations:
+  Enabled: false
+
+Rails/FilePath:
+  Enabled: false
+
+Rails/HasManyOrHasOneDependent:
+  Enabled: false
+
+Rails/UnknownEnv:
+  Enabled: false
+
+Rails/OutputSafety:
+  Enabled: false
+
+Rails/InverseOf:
+  Enabled: false
+
+Style/GuardClause:
+  Enabled: false
+
+Style/SymbolArray:
+  EnforcedStyle: brackets
+
 Style/StringLiterals:
   EnforcedStyle: double_quotes
 
@@ -23,8 +48,14 @@ Style/ClassAndModuleChildren:
 Style/Documentation:
   Enabled: false
 
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
 Metrics/LineLength:
   Max: 200
+
+Metrics/BlockLength:
+  Enabled: false
 
 Metrics/MethodLength:
   Max: 20
@@ -42,4 +73,10 @@ Rails:
   Enabled: true
 
 Style/NegatedIf:
+  Enabled: false
+
+Naming/FileName:
+  Enabled: false
+ 
+Naming/HeredocDelimiterNaming:
   Enabled: false
