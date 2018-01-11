@@ -77,7 +77,7 @@ gem "request_store"
 
 gem "mini_magick"
 
-gem "curb"
+gem "httpclient"
 
 gem "bgs", git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", branch: "9266698668bf361bf5df06990d06da59abb7c608"
 gem "connect_vbms", git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "e7fc3e6825f45176950c0b7ce37b38068ec5aea8"

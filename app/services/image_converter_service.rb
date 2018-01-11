@@ -34,8 +34,8 @@ class ImageConverterService
   def convert_tiff_to_pdf
     url = "http://localhost:5000/tiff-convert"
 
-    curl = Curl::Easy.new(url)
-    curl.multipart_form_post = true
+    clnt = HTTPClient.new
+    response = nil
 
     MetricsService.record("Image Magick: Convert tiff to pdf",
                           service: :image_magick,
@@ -43,14 +43,17 @@ class ImageConverterService
       Tempfile.open(["tiff_to_convert", ".tiff"]) do |file|
         file.binmode
         file.write(image)
-        curl.http_post(Curl::PostField.file("file", file.path))
+        file.rewind
+
+        body = { "file" => file }
+        response = clnt.post(url, body)
       end
 
-      raise ImageConverterError if curl.status != "200 OK"
+      raise ImageConverterError if response.status != 200
     end
 
-    curl.body
-  rescue Curl::Err::ConnectionFailedError
+    response.body
+  rescue Errno::ECONNREFUSED
     raise ImageConverterError
   end
   # :nocov:
