@@ -11,6 +11,8 @@ describe Record do
     let(:external_document) do
       OpenStruct.new(
         document_id: "12345",
+        series_id: "6789",
+        version: "2",
         type_id: "777",
         type_description: "VA 8 Certification of Appeal",
         mime_type: "application/pdf",
@@ -22,7 +24,9 @@ describe Record do
 
     it "creates a record" do
       expect(subject.manifest_source).to eq source
-      expect(subject.external_document_id).to eq "12345"
+      expect(subject.version_id).to eq "12345"
+      expect(subject.series_id).to eq "6789"
+      expect(subject.version).to eq 2
       expect(subject.type_id).to eq "777"
       expect(subject.type_description).to eq "VA 8 Certification of Appeal"
       expect(subject.received_at).to eq 2.days.ago
@@ -35,7 +39,7 @@ describe Record do
     subject { record.s3_filename }
 
     let(:record) do
-      Record.new(external_document_id: "{TEST}", mime_type: "application/pdf")
+      Record.new(version_id: "{TEST}", mime_type: "application/pdf")
     end
 
     it { is_expected.to eq("{TEST}.pdf") }
@@ -46,7 +50,8 @@ describe Record do
       subject do
         Record.create(
           mime_type: mime_type,
-          external_document_id: "1234",
+          version_id: "1234",
+          series_id: "5678",
           manifest_source: source
         ).mime_type
       end
@@ -61,7 +66,7 @@ describe Record do
 
   context "#preferred_extension" do
     let(:record) do
-      Record.new(external_document_id: "{TEST}", mime_type: mime_type)
+      Record.new(version_id: "{TEST}", mime_type: mime_type)
     end
 
     context "when passed application/pdf" do
@@ -83,7 +88,7 @@ describe Record do
 
       context "and conversion_status is :conversion_success" do
         let(:record) do
-          Record.new(external_document_id: "{TEST}", mime_type: mime_type, conversion_status: :conversion_success)
+          Record.new(version_id: "{TEST}", mime_type: mime_type, conversion_status: :conversion_success)
         end
 
         it "returns pdf" do
@@ -102,7 +107,7 @@ describe Record do
 
   context "#accessible_by?" do
     let(:user) { User.create(css_id: "123", station_id: "456") }
-    let(:record) { Record.create(manifest_source: source) }
+    let(:record) { Record.new(manifest_source: source) }
 
     subject { record.accessible_by?(user) }
 

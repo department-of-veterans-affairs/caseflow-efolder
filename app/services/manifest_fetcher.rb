@@ -7,7 +7,7 @@ class ManifestFetcher
   EXCEPTIONS = [VBMS::ClientError, VVA::ClientError, StandardError].freeze
 
   def process
-    documents = manifest_source.service.fetch_documents_for(manifest_source.manifest)
+    documents = manifest_source.service.v2_fetch_documents_for(manifest_source.manifest)
     manifest_source.update(status: :success, fetched_at: Time.zone.now)
     documents
   rescue *EXCEPTIONS => e

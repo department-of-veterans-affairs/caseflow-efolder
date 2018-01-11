@@ -38,8 +38,12 @@ Rails.application.routes.draw do
     end
   end
 
-
   get '/stats(/:interval)', to: 'stats#show', as: 'stats'
+
+  %w( 500 ).each do |code|
+    get code, :to => "errors#show", :status_code => code
+  end
+
 
   require "sidekiq/web"
   require "sidekiq/cron/web"

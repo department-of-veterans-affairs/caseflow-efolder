@@ -77,6 +77,10 @@ Style/NegatedIf:
 
 Naming/FileName:
   Enabled: false
- 
+
 Naming/HeredocDelimiterNaming:
   Enabled: false
+
+Rails/DynamicFindBy:
+  Enabled: false
+

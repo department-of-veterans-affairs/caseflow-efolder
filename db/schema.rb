@@ -11,8 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180108170052) do
-
+ActiveRecord::Schema.define(version: 20180109194733) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -107,8 +106,8 @@ ActiveRecord::Schema.define(version: 20180108170052) do
 
   create_table "records", force: :cascade do |t|
     t.integer  "manifest_source_id"
-    t.integer  "status",               default: 0
-    t.string   "external_document_id"
+    t.integer  "status",             default: 0
+    t.string   "version_id"
     t.string   "mime_type"
     t.datetime "received_at"
     t.string   "type_description"
@@ -116,12 +115,14 @@ ActiveRecord::Schema.define(version: 20180108170052) do
     t.integer  "size"
     t.string   "jro"
     t.string   "source"
-    t.datetime "created_at",                       null: false
-    t.datetime "updated_at",                       null: false
     t.integer  "conversion_status",    default: 0
+    t.string   "series_id"
+    t.integer  "version"
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
   end
 
-  add_index "records", ["manifest_source_id", "external_document_id"], name: "index_records_on_manifest_source_id_and_external_document_id", using: :btree
+  add_index "records", ["manifest_source_id", "version_id"], name: "index_records_on_manifest_source_id_and_version_id", using: :btree
 
   create_table "searches", force: :cascade do |t|
     t.integer  "download_id"
@@ -139,9 +140,10 @@ ActiveRecord::Schema.define(version: 20180108170052) do
   create_table "user_manifests", force: :cascade do |t|
     t.integer  "manifest_id"
     t.integer  "user_id"
-    t.integer  "status",      default: 0
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.integer  "status",           default: 0
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.datetime "fetched_files_at"
   end
 
   add_index "user_manifests", ["manifest_id", "user_id"], name: "index_user_manifests_on_manifest_id_and_user_id", using: :btree

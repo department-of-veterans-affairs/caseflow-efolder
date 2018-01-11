@@ -21,8 +21,8 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/connect_vbms.git
-  revision: e7fc3e6825f45176950c0b7ce37b38068ec5aea8
-  ref: e7fc3e6825f45176950c0b7ce37b38068ec5aea8
+  revision: 7b3da0fa5ee6732d3c8ad2f557e425e770b1f435
+  ref: 7b3da0fa5ee6732d3c8ad2f557e425e770b1f435
   specs:
     connect_vbms (1.0.0)
       httpclient (~> 2.8.0)
@@ -35,8 +35,8 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/connect_vva.git
-  revision: f7036e7d3c17aae6e66e345051ea61c6badc5de2
-  ref: f7036e7d3c17aae6e66e345051ea61c6badc5de2
+  revision: 5af0ad0e2538c1039bce75dbc6c4019b3e0c3312
+  ref: 5af0ad0e2538c1039bce75dbc6c4019b3e0c3312
   specs:
     connect_vva (0.1)
       savon (~> 2.11, >= 2.11.0)
@@ -168,7 +168,6 @@ GEM
     coffee-script-source (1.12.2)
     concurrent-ruby (1.0.4)
     connection_pool (2.2.1)
-    curb (0.9.4)
     d3-rails (4.10.2)
       railties (>= 3.1)
     database_cleaner (1.5.3)
@@ -473,10 +472,10 @@ DEPENDENCIES
   coffee-rails (~> 4.1.0)
   connect_vbms!
   connect_vva!
-  curb
   database_cleaner
   dogstatsd-ruby
   dotenv-rails
+  httpclient
   jbuilder (~> 2.0)
   jquery-rails
   launchy

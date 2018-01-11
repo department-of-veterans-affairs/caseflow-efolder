@@ -20,11 +20,17 @@ class ExternalApi::VBMSService
   def self.fetch_documents_for(download)
     @vbms_client ||= init_client
 
-    request = if FeatureToggle.enabled?(:vbms_efolder_service_v1)
-                VBMS::Requests::FindDocumentVersionReference.new(download.file_number)
-              else
-                VBMS::Requests::ListDocuments.new(download.file_number)
-              end
+    request = VBMS::Requests::ListDocuments.new(download.file_number)
+
+    documents = send_and_log_request(download.file_number, request)
+    Rails.logger.info("VBMS Document list length: #{documents.length}")
+    documents
+  end
+
+  def self.v2_fetch_documents_for(download)
+    @vbms_client ||= init_client
+
+    request = VBMS::Requests::FindDocumentVersionReference.new(download.file_number)
     documents = send_and_log_request(download.file_number, request)
     Rails.logger.info("VBMS Document list length: #{documents.length}")
     documents
@@ -33,11 +39,15 @@ class ExternalApi::VBMSService
   def self.fetch_document_file(document)
     @vbms_client ||= init_client
 
-    request = if FeatureToggle.enabled?(:vbms_efolder_service_v1)
-                VBMS::Requests::GetDocumentContent.new(document.document_id)
-              else
-                VBMS::Requests::FetchDocumentById.new(document.document_id)
-              end
+    request = VBMS::Requests::FetchDocumentById.new(document.document_id)
+    result = send_and_log_request(document.document_id, request)
+    result&.content
+  end
+
+  def self.v2_fetch_document_file(document)
+    @vbms_client ||= init_client
+
+    request = VBMS::Requests::GetDocumentContent.new(document.document_id)
     result = send_and_log_request(document.document_id, request)
     result&.content
   end
