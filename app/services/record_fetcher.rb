@@ -7,7 +7,7 @@ class RecordFetcher
 
   def process
     return cached_content if cached_content
-    content = record.service.fetch_document_file(record)
+    content = record.service.v2_fetch_document_file(record)
     content = ImageConverterService.new(image: content, record: record).process
     S3Service.store_file(record.s3_filename, content)
     record.update(status: :success)

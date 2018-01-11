@@ -4,8 +4,8 @@ describe ManifestFetcher do
 
   let(:documents) do
     [
-      OpenStruct.new(document_id: "1"),
-      OpenStruct.new(document_id: "2")
+      OpenStruct.new(document_id: "1", series_id: "3"),
+      OpenStruct.new(document_id: "2", series_id: "4")
     ]
   end
 
@@ -17,7 +17,7 @@ describe ManifestFetcher do
 
       context "when VBMS client returns manifest" do
         before do
-          allow(VBMSService).to receive(:fetch_documents_for).and_return(documents)
+          allow(VBMSService).to receive(:v2_fetch_documents_for).and_return(documents)
         end
 
         it "saves manifest status as success and updated fetched at" do
@@ -29,7 +29,7 @@ describe ManifestFetcher do
 
       context "when VBMS client returns error" do
         before do
-          allow(VBMSService).to receive(:fetch_documents_for).and_raise(VBMS::ClientError)
+          allow(VBMSService).to receive(:v2_fetch_documents_for).and_raise(VBMS::ClientError)
         end
 
         it "saves manifest status as failed" do
@@ -45,7 +45,7 @@ describe ManifestFetcher do
 
       context "when VVA client returns manifest" do
         before do
-          allow(VVAService).to receive(:fetch_documents_for).and_return(documents)
+          allow(VVAService).to receive(:v2_fetch_documents_for).and_return(documents)
         end
 
         it "saves manifest status as success and updated fetched at" do
@@ -57,7 +57,7 @@ describe ManifestFetcher do
 
       context "when VVA client returns error" do
         before do
-          allow(VVAService).to receive(:fetch_documents_for).and_raise(VVA::ClientError)
+          allow(VVAService).to receive(:v2_fetch_documents_for).and_raise(VVA::ClientError)
         end
 
         it "saves manifest status as failed" do

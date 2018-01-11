@@ -4,7 +4,8 @@ describe RecordFetcher do
 
   let(:record) do
     Record.create(
-      external_document_id: "{3333-3333}",
+      version_id: "{3333-3333}",
+      series_id: "{4444-4444}",
       manifest_source: source,
       received_at: Time.utc(2015, 9, 6, 1, 0, 0),
       type_id: "825",
