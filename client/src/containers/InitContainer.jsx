@@ -5,7 +5,8 @@ import { UPDATE_TEXTAREA } from '../actionTypes';
 
 class InitContainer extends React.Component {
   onTextareaChange(event) {
-    this.props.dispatch({ type: UPDATE_TEXTAREA, payload: event.target.value })
+    this.props.dispatch({ type: UPDATE_TEXTAREA,
+      payload: event.target.value });
   }
 
   render() {
@@ -16,12 +17,12 @@ class InitContainer extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
-    text : state.text
-  }
-}
+    text: state.text
+  };
+};
 
 export default connect(
   mapStateToProps
-)(InitContainer)
+)(InitContainer);

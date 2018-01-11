@@ -7,12 +7,13 @@ import reducer from './reducer';
 import InitContainer from './containers/InitContainer';
 
 module.exports = {
-  init: function(props) {
-    var initState = { text: "some text" };
-    var store = createStore(reducer, {...initState, ...props});
+  init(props) {
+    const initState = { text: 'some text' };
+    const store = createStore(reducer, { ...initState,
+      ...props });
 
-    render( <Provider store={store}>
+    render(<Provider store={store}>
       <InitContainer />
-    </Provider>, document.getElementById("efx_app_v2") );
-  },
+    </Provider>, document.getElementById('efx_app_v2'));
+  }
 };
