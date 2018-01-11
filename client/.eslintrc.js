@@ -5,5 +5,8 @@ module.exports = {
   },
   extends: [
     '@department-of-veterans-affairs/eslint-config-appeals'
-  ]
+  ],
+  rules: {
+    'prefer-const': 'warn'
+  }
 };
