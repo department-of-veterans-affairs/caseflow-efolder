@@ -71,7 +71,7 @@ describe "Manifests API v2", type: :request do
 
     it "returns empty array" do
       perform_enqueued_jobs do
-        get "/api/v2/manifests", nil, headers
+        post "/api/v2/manifests", nil, headers
         expect(response.code).to eq("200")
         expect(response.body).to eq(response_body)
       end

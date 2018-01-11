@@ -1,7 +1,7 @@
 class Manifest < ActiveRecord::Base
   has_many :sources, class_name: "ManifestSource", dependent: :destroy
   has_many :files_downloads, dependent: :destroy
-  has_many :users, through: :user_manifests
+  has_many :users, through: :files_downloads
 
   # Sort by receipt date; documents with same date ordered as sent by vbms
   has_many :records, -> { order(received_at: :desc, id: :asc) }, through: :sources

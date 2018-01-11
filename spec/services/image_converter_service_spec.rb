@@ -6,7 +6,7 @@ describe ImageConverterService do
   let(:pdf_content) { File.open(tiff_file, "r", &:read) }
 
   let(:manifest) { Manifest.create(file_number: "1234") }
-  let(:source) { ManifestSource.create(source: %w(VBMS VVA).sample, manifest: manifest) }
+  let(:source) { ManifestSource.create(source: %w[VBMS VVA].sample, manifest: manifest) }
   let(:record) { Record.create(version_id: "TEST", series_id: "5555", manifest_source: source, mime_type: "image/tiff") }
   let(:image_converter) { ImageConverterService.new(image: tiff_content, record: record) }
 

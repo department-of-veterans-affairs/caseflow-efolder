@@ -11,7 +11,8 @@ class Serializers::V2::FilesDownloadSerializer < ActiveModel::Serializer
         type_id: document.type_id,
         status: document.status,
         received_at: document.received_at,
-        external_document_id: document.external_document_id,
+        version_id: document.version_id,
+        series_id: document.series_id,
         created_at: document.created_at,
         updated_at: document.updated_at
       }

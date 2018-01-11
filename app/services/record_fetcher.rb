@@ -34,4 +34,3 @@ class RecordFetcher
     end
   end
 end
-

@@ -2,24 +2,24 @@ describe V2::PackageFilesJob do
   context "#perform" do
     let(:user) { User.create(css_id: "Foo", station_id: "112") }
     let(:manifest) { Manifest.find_or_create_by_user(user: user, file_number: "1234") }
-    let(:user_manifest) { manifest.user_manifests.last }
+    let(:files_download) { manifest.files_downloads.last }
     let(:source) { ManifestSource.create(source: %w[VBMS VVA].sample, manifest: manifest) }
 
     let!(:records) do
       [
-        source.records.create(external_document_id: "1234"),
-        source.records.create(external_document_id: "5678")
+        source.records.create(version_id: "1234", series_id: "4321"),
+        source.records.create(version_id: "5678", series_id: "8765")
       ]
     end
 
-    subject { V2::PackageFilesJob.perform_now(user_manifest) }
+    subject { V2::PackageFilesJob.perform_now(files_download) }
 
     context "when VBMS/VVA requests are successful" do
       it "sets status to finished" do
         allow(S3Service).to receive(:store_file).and_return(nil)
         subject
         expect(S3Service).to have_received(:store_file).twice
-        expect(user_manifest.status).to eq "finished"
+        expect(files_download.status).to eq "finished"
       end
     end
 
@@ -29,7 +29,7 @@ describe V2::PackageFilesJob do
         allow(Fakes::DocumentService).to receive(:fetch_document_file).and_raise([VBMS::ClientError, VVA::ClientError].sample)
         subject
         expect(S3Service).to_not have_received(:store_file)
-        expect(user_manifest.status).to eq "finished"
+        expect(files_download.status).to eq "finished"
       end
     end
 
@@ -37,7 +37,7 @@ describe V2::PackageFilesJob do
       it "sets status to failed" do
         allow_any_instance_of(Record).to receive(:fetch!).and_raise("Application error")
         expect { subject }.to raise_error("Application error")
-        expect(user_manifest.status).to eq "failed"
+        expect(files_download.status).to eq "failed"
       end
     end
   end
