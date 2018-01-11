@@ -5,8 +5,8 @@ describe SaveFilesInS3Job do
 
     let!(:records) do
       [
-        source.records.create(external_document_id: "1234"),
-        source.records.create(external_document_id: "5678")
+        source.records.create(version_id: "1234", series_id: "4321"),
+        source.records.create(version_id: "5678", series_id: "8765")
       ]
     end
 

@@ -1,8 +1,8 @@
 class Record < ActiveRecord::Base
   belongs_to :manifest_source
 
-  validates :manifest_source, :external_document_id, presence: true
-  validates :external_document_id, uniqueness: true
+  validates :manifest_source, :version_id, :series_id, presence: true
+  validates :version_id, :series_id, uniqueness: true
 
   enum status: {
     pending: 0,
@@ -38,11 +38,11 @@ class Record < ActiveRecord::Base
 
   # TODO: remove this method when implmenentation of VVA/VBMS service is changed towards v2 API
   def document_id
-    external_document_id
+    version_id
   end
 
   def s3_filename
-    "#{external_document_id}.#{preferred_extension}"
+    "#{version_id}.#{preferred_extension}"
   end
 
   def preferred_extension
@@ -54,13 +54,15 @@ class Record < ActiveRecord::Base
   end
 
   def self.create_from_external_document(manifest_source, document)
-    find_or_initialize_by(manifest_source: manifest_source, external_document_id: document.document_id).tap do |t|
+    find_or_initialize_by(manifest_source: manifest_source, series_id: document.series_id).tap do |t|
       t.assign_attributes(
         type_id: document.type_id,
-        type_description: document.try(:type_description),
+        version_id: document.document_id,
+        version: document.version.to_i,
+        type_description: document.type_description,
         mime_type: document.mime_type,
         received_at: document.received_at,
-        jro: document.try(:jro),
+        jro: document.jro,
         source: document.source
       )
       t.save!

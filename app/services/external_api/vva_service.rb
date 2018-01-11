@@ -13,6 +13,11 @@ class ExternalApi::VVAService
     documents
   end
 
+  # TODO: remove when switched to VBMS eFolder API
+  def self.v2_fetch_documents_for(download)
+    fetch_documents_for(download)
+  end
+
   def self.fetch_document_file(document)
     @vva_client ||= init_client
     result ||= MetricsService.record("VVA: fetch document content for: #{document.document_id}",
@@ -27,6 +32,11 @@ class ExternalApi::VVAService
       )
     end
     result&.content
+  end
+
+  # TODO: remove when switched to VBMS eFolder API
+  def self.v2_fetch_document_file(document)
+    fetch_document_file(document)
   end
 
   def self.init_client

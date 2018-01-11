@@ -5,8 +5,8 @@ describe DownloadManifestJob do
 
     let(:documents) do
       [
-        OpenStruct.new(document_id: "1"),
-        OpenStruct.new(document_id: "2")
+        OpenStruct.new(document_id: "1", series_id: "1234"),
+        OpenStruct.new(document_id: "2", series_id: "5678")
       ]
     end
 
