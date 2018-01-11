@@ -7,4 +7,3 @@ class ErrorsController < ApplicationController
     render template: template_name, status: status_code, format: :html
   end
 end
-
