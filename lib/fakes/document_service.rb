@@ -97,6 +97,7 @@ class Fakes::DocumentService
     { ext: "tiff", mime_type: "image/tiff" }
   end
 
+  # rubocop:disable Metrics/AbcSize
   def self.create_document(i)
     type = document_type
 
@@ -112,6 +113,7 @@ class Fakes::DocumentService
       downloaded_from: service_type
     )
   end
+  # rubocop:enable Metrics/AbcSize
 
   def self.list_fake_documents(file_number)
     demo = DEMOS[file_number]
