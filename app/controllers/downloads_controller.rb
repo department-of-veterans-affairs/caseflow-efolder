@@ -18,13 +18,25 @@ class DownloadsController < ApplicationController
   end
 
   def react
-    render "_react", layout: false
+    if can_access_react_app?
+      render "_react", layout: false
+    else
+      redirect_to "/"
+    end
   end
 
   def initial_react_data
     { text: "placeholder text" }.to_json
   end
   helper_method :initial_react_data
+
+  def can_access_react_app?
+    if FeatureToggle.enabled?(:efolder_react_app, user: current_user) || Rails.env.development?
+      true
+    else
+      false
+    end
+  end
 
   def start
     @download = downloads.find(params[:id])
