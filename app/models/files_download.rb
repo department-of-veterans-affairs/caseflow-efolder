@@ -1,4 +1,4 @@
-class UserManifest < ActiveRecord::Base
+class FilesDownload < ActiveRecord::Base
   belongs_to :user
   belongs_to :manifest
   has_many :sources, through: :manifest
@@ -13,7 +13,7 @@ class UserManifest < ActiveRecord::Base
     failed: 3
   }
 
-  def save_files_and_package!
+  def start!
     return if current? || pending?
     update(status: :pending)
     V2::PackageFilesJob.perform_later(self)

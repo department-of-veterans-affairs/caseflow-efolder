@@ -1,5 +1,5 @@
-class Serializers::V2::UserManifestSerializer < ActiveModel::Serializer
-  type :user_manifest
+class Serializers::V2::FilesDownloadSerializer < ActiveModel::Serializer
+  type :files_download
 
   attribute :status
   attribute :fetched_files_at

@@ -3,15 +3,18 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
   before_action :validate_header
   before_action :validate_access
 
-  def index
+  def start
+    manifest.start!
+    render json: json_manifests
+  end
+
+  def progress
     render json: json_manifests
   end
 
   private
 
   def json_manifests
-    manifest.start!
-
     ActiveModelSerializers::SerializableResource.new(
       manifest,
       each_serializer: Serializers::V2::ManifestSerializer
@@ -32,7 +35,7 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
   end
 
   def manifest
-    Manifest.find_or_create_by_user(user: current_user, file_number: file_number)
+    @manifest ||= Manifest.find_or_create_by_user(user: current_user, file_number: file_number)
   end
 
   def bgs_service

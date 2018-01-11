@@ -1,6 +1,6 @@
 class Manifest < ActiveRecord::Base
   has_many :sources, class_name: "ManifestSource", dependent: :destroy
-  has_many :user_manifests, dependent: :destroy
+  has_many :files_downloads, dependent: :destroy
   has_many :users, through: :user_manifests
 
   # Sort by receipt date; documents with same date ordered as sent by vbms
@@ -42,7 +42,7 @@ class Manifest < ActiveRecord::Base
 
   def self.find_or_create_by_user(user:, file_number:)
     manifest = Manifest.find_or_create_by(file_number: file_number)
-    manifest.user_manifests.find_or_create_by(user: user)
+    manifest.files_downloads.find_or_create_by(user: user)
     manifest
   end
 
