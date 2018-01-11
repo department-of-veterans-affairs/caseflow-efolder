@@ -3,7 +3,7 @@ describe Record do
     Timecop.freeze(Time.utc(2015, 1, 1, 12, 0, 0))
   end
   let(:manifest) { Manifest.create(file_number: "1234") }
-  let(:source) { ManifestSource.create(source: %w(VBMS VVA).sample, manifest: manifest) }
+  let(:source) { ManifestSource.create(source: %w[VBMS VVA].sample, manifest: manifest) }
 
   context ".create_from_external_document" do
     subject { Record.create_from_external_document(source, external_document) }
@@ -16,7 +16,8 @@ describe Record do
         mime_type: "application/pdf",
         received_at: 2.days.ago,
         jro: "786",
-        source: "VACOLS")
+        source: "VACOLS"
+      )
     end
 
     it "creates a record" do
@@ -76,8 +77,18 @@ describe Record do
       end
 
       let(:mime_type) { "image/tiff" }
-      it "returns pdf" do
-        expect(record.preferred_extension).to eq("pdf")
+      it "returns tiff" do
+        expect(record.preferred_extension).to eq("tiff")
+      end
+
+      context "and conversion_status is :conversion_success" do
+        let(:record) do
+          Record.new(external_document_id: "{TEST}", mime_type: mime_type, conversion_status: :conversion_success)
+        end
+
+        it "returns pdf" do
+          expect(record.preferred_extension).to eq("pdf")
+        end
       end
     end
 

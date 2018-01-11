@@ -26,7 +26,7 @@ class ExternalApi::VVAService
         ssn: document.ssn
       )
     end
-    result && result.content
+    result&.content
   end
 
   def self.init_client

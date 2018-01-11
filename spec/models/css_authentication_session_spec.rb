@@ -11,8 +11,7 @@ describe CssAuthenticationSession do
       email: email,
       name: name,
       roles: roles,
-      station_id: station_id
-    }
+      station_id: station_id }
   end
 
   context "when creating a new object via .new" do

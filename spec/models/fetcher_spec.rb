@@ -54,10 +54,6 @@ describe Fetcher do
       end
 
       context "when VBMS returns a tiff file" do
-        before do
-          FeatureToggle.enable!(:convert_tiff_images)
-        end
-
         let(:document) do
           download.documents.build(
             id: "1234",
@@ -70,10 +66,12 @@ describe Fetcher do
 
         before do
           allow(Fakes::DocumentService).to receive(:fetch_document_file).and_return(tiff_content)
+          allow_any_instance_of(ImageConverterService).to receive(:convert_tiff_to_pdf).and_return(fake_pdf_content)
+          FeatureToggle.enable!(:convert_tiff_images)
         end
 
         it "should convert the tiff to pdf and return it" do
-          expect(valid_pdf?(subject)).to be_truthy
+          expect(subject).to eq fake_pdf_content
         end
       end
     end
