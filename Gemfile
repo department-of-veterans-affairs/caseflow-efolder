@@ -83,6 +83,9 @@ gem "bgs", git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git"
 gem "connect_vbms", git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "e7fc3e6825f45176950c0b7ce37b38068ec5aea8"
 gem "connect_vva", git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "f7036e7d3c17aae6e66e345051ea61c6badc5de2"
 
+# catch problematic migrations
+gem "zero_downtime_migrations"
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
@@ -109,9 +112,6 @@ group :development, :test do
   gem "dotenv-rails"
   gem "rubocop", "~> 0.52.1", require: false
   gem "scss_lint", require: false
-
-  # catch problematic migrations at development/test time
-  gem "zero_downtime_migrations"
 end
 
 group :test do
