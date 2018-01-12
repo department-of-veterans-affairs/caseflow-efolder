@@ -1,4 +1,6 @@
 describe "Records API v2", type: :request do
+  include ActiveJob::TestHelper
+
   context "Record by document ID" do
     let!(:current_user) do
       User.authenticate!(roles: ["Reader"])
@@ -18,12 +20,12 @@ describe "Records API v2", type: :request do
       )
     end
 
-    context "returns 401 if user does not have Reader role" do
+    context "when user does not have Reader role" do
       let!(:current_user) do
         User.authenticate!(roles: [""])
       end
 
-      it do
+      it "returns 401 " do
         get "/api/v2/records/8888"
         expect(response.code).to eq("401")
       end
@@ -34,8 +36,8 @@ describe "Records API v2", type: :request do
       expect(response.code).to eq("404")
     end
 
-    context "when user owns corresponding manifest record" do
-      let!(:user_manifest) { UserManifest.create(user: current_user, manifest: manifest) }
+    context "when user has access to the corresponding manifest record" do
+      let!(:files_download) { FilesDownload.create(user: current_user, manifest: manifest) }
 
       it "returns a document" do
         allow(S3Service).to receive(:fetch_content).and_return("hello there")

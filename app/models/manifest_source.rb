@@ -31,6 +31,7 @@ class ManifestSource < ActiveRecord::Base
   private
 
   def current?
+    # TODO: expiration duration is going to be determined whether it is UI or Reader API
     success? && fetched_at && fetched_at > 3.hours.ago
   end
 end

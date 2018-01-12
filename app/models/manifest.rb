@@ -1,8 +1,10 @@
 class Manifest < ActiveRecord::Base
   has_many :sources, class_name: "ManifestSource", dependent: :destroy
-  has_many :user_manifests, dependent: :destroy
-  has_many :records, through: :sources
-  has_many :users, through: :user_manifests
+  has_many :files_downloads, dependent: :destroy
+  has_many :users, through: :files_downloads
+
+  # Sort by receipt date; documents with same date ordered as sent by vbms
+  has_many :records, -> { order(received_at: :desc, id: :asc) }, through: :sources
 
   validates :file_number, presence: true, uniqueness: true
 
@@ -40,8 +42,7 @@ class Manifest < ActiveRecord::Base
 
   def self.find_or_create_by_user(user:, file_number:)
     manifest = Manifest.find_or_create_by(file_number: file_number)
-    # Create a record every time for auditing purposes
-    manifest.user_manifests.create(user: user)
+    manifest.files_downloads.find_or_create_by(user: user)
     manifest
   end
 
