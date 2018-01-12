@@ -4,8 +4,8 @@ class User < ActiveRecord::Base
   has_many :searches
   has_many :downloads
   # v2 relationship
-  has_many :user_manifests
-  has_many :manifests, through: :user_manifests
+  has_many :files_downloads
+  has_many :manifests, through: :files_downloads
 
   NO_EMAIL = "No Email Recorded"
 

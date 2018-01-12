@@ -112,7 +112,7 @@ describe Record do
     subject { record.accessible_by?(user) }
 
     context "when user downloaded the manifest" do
-      let!(:user_manifest) { UserManifest.create(manifest: manifest, user: user) }
+      let!(:files_download) { FilesDownload.create(manifest: manifest, user: user) }
       it { is_expected.to eq(true) }
     end
 

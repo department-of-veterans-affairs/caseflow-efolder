@@ -31,7 +31,10 @@ Rails.application.routes.draw do
     end
 
     namespace :v2 do
-      resources :manifests, only: :index
+      post "manifests", to: "manifests#start"
+      get "manifests", to: "manifests#progress"
+      post "manifests/:manifest_id/files_downloads", to: "files_downloads#start"
+      get "manifests/:manifest_id/files_downloads", to: "files_downloads#progress"
       resources :records, only: :show
     end
   end

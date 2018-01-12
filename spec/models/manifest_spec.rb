@@ -43,17 +43,14 @@ describe Manifest do
     it "creates manifest and user manifest records" do
       subject
       manifest = Manifest.first
-      user_manifest = UserManifest.first
+      files_download = FilesDownload.first
       expect(manifest.file_number).to eq "1234"
-      expect(user_manifest.user).to eq user
-      expect(user_manifest.manifest).to eq manifest
+      expect(files_download.user).to eq user
+      expect(files_download.manifest).to eq manifest
 
       Manifest.find_or_create_by_user(user: user, file_number: "1234")
       expect(Manifest.count).to eq 1
-      expect(UserManifest.count).to eq 2
-      user_manifest = UserManifest.second
-      expect(user_manifest.user).to eq user
-      expect(user_manifest.manifest).to eq manifest
+      expect(FilesDownload.count).to eq 1
     end
   end
 

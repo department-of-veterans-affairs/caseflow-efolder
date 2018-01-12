@@ -5,8 +5,12 @@ class V2::DownloadManifestJob < ActiveJob::Base
     documents = ManifestFetcher.new(manifest_source: manifest_source).process
     return if documents.blank?
     DocumentCreator.new(manifest_source: manifest_source, external_documents: documents).create
-    # start caching files in s3 when manifest is fetched succesfully
-    V2::SaveFilesInS3Job.perform_later(manifest_source)
+  # TODO: start downloading files if it is Reader job
+  # V2::SaveFilesInS3Job.perform_later(manifest_source)
+  # Catch StandardError in case there is an error to avoid manifests being stuck in pending state
+  rescue StandardError => e
+    manifest_source.update!(status: :failed)
+    raise e
   end
 
   def max_attempts

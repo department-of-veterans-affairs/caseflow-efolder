@@ -3,15 +3,18 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
   before_action :validate_header
   before_action :validate_access
 
-  def index
+  def start
+    manifest.start!
+    render json: json_manifests
+  end
+
+  def progress
     render json: json_manifests
   end
 
   private
 
   def json_manifests
-    manifest.start!
-
     ActiveModelSerializers::SerializableResource.new(
       manifest,
       each_serializer: Serializers::V2::ManifestSerializer
