@@ -31,11 +31,7 @@ class DownloadsController < ApplicationController
   helper_method :initial_react_data
 
   def can_access_react_app?
-    if FeatureToggle.enabled?(:efolder_react_app, user: current_user) || Rails.env.development?
-      true
-    else
-      false
-    end
+    FeatureToggle.enabled?(:efolder_react_app, user: current_user) || Rails.env.development?
   end
 
   def start
