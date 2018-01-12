@@ -28,9 +28,8 @@ before_install:
   # Travis has an old version of yarn installed at /usr/local/bin, and that comes first in the PATH,
   # so we need to explicitly point to the version of Yarn we just installed.
   - export YARN=/usr/bin/yarn
-  
-  - $YARN --version
-  - $YARN --frozen-lockfile
+  - cd ./client && $YARN --frozen-lockfile
+  - cd ..
 
 before_script:
   - RAILS_ENV=test bundle exec rake db:create
