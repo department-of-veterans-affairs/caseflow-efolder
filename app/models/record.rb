@@ -5,9 +5,10 @@ class Record < ActiveRecord::Base
   validates :version_id, :series_id, uniqueness: true
 
   enum status: {
-    pending: 0,
-    success: 1,
-    failed: 2
+    initialized: 0,
+    pending: 1,
+    success: 2,
+    failed: 3
   }
 
   enum conversion_status: {

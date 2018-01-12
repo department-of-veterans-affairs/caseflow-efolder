@@ -39,7 +39,18 @@ describe RecordFetcher do
 
       it "should return nil and update status" do
         expect(subject).to eq nil
-        expect(record.reload.status).to eq "failed"
+        expect(record.status).to eq "failed"
+      end
+    end
+
+    context "when application error" do
+      before do
+        allow(S3Service).to receive(:fetch_content).and_raise("application error")
+      end
+
+      it "should return raise error and update status" do
+        expect { subject }.to raise_error("application error")
+        expect(record.status).to eq "failed"
       end
     end
 
