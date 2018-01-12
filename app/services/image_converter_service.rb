@@ -30,6 +30,8 @@ class ImageConverterService
 
   private
 
+  EXCEPTIONS = [Errno::ECONNREFUSED, HTTPClient::ReceiveTimeoutError].freeze
+
   # :nocov:
   def convert_tiff_to_pdf
     url = "http://localhost:5000/tiff-convert"
@@ -53,7 +55,7 @@ class ImageConverterService
     end
 
     response.body
-  rescue Errno::ECONNREFUSED
+  rescue *EXCEPTIONS
     raise ImageConverterError
   end
   # :nocov:
