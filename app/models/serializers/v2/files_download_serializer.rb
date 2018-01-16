@@ -1,8 +1,10 @@
 class Serializers::V2::FilesDownloadSerializer < ActiveModel::Serializer
-  type :files_download
+  type :manifest
 
-  attribute :status
+  attribute :fetched_files_status
   attribute :fetched_files_at
+  attribute :number_successful_documents
+  attribute :number_failed_documents
 
   attribute :records do
     object.records.map do |document|

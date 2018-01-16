@@ -1,8 +1,6 @@
 class Api::V2::RecordsController < Api::V1::ApplicationController
   before_action :validate_access
 
-  # /api/v2/records/:id
-  # This API returns document content
   def show
     result = record.fetch!
     return document_failed if record.failed?

@@ -55,12 +55,14 @@ describe "Manifests API v2", type: :request do
               {
                 source: "VBMS",
                 status: "success",
-                fetched_at: "2015-01-01T17:00:00.000Z"
+                fetched_at: "2015-01-01T17:00:00.000Z",
+                number_of_documents: 0
               },
               {
                 source: "VVA",
                 status: "success",
-                fetched_at: "2015-01-01T17:00:00.000Z"
+                fetched_at: "2015-01-01T17:00:00.000Z",
+                number_of_documents: 0
               }
             ],
             records: []

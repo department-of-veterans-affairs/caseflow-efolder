@@ -24,7 +24,7 @@ We think this structure has three main advantages:
 2) We will deprecate eX stats page so we will not worry about it at this point. We will work with Chris Given to determine the value of the stats page and we will work with Alan Ning to find tools that can accoplish the same task.
 3) Table names are different from the previous version. This will make it easier to create new models/DB tables without conflicts.
 4) We will deprecate `searches` table.
-5) We don't need to expire `manifests`. We will have `user_manifests` and `records` tables that will have all the necessary information to answer questions such as "this user downloaded XYZ documents on XXX date".
+5) We don't need to expire `manifests`. We will have `files_downloads` and `records` tables that will have all the necessary information to answer questions such as "this user downloaded XYZ documents on XXX date".
 
 
 # Tables
@@ -36,6 +36,8 @@ We think this structure has three main advantages:
     t.string   "veteran_first_name"
     t.string   "veteran_last_four_ssn"
     t.integer  "zipfile_size",  limit: 8  # The value will be updated based on the changes to the documents
+    t.datetime "files_fetched_at"
+    t.integer  "files_fetched_status", default: 0         # Statuses for fetching files
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -55,11 +57,11 @@ We think this structure has three main advantages:
 
 ```
   # For audit purposes, both the API and the UI will use this table.
-  create_table "user_manifests" do |t|
+  create_table "files_downloads" do |t|
     t.integer  "manifest_id"
     t.integer  "user_id"
-    t.integer  "status", default: 0         # UI specific statuses: fetching_manifest, no_documents, etc
-    t.datetime "created_at", null: false    # We can use this field to display user's history in the UI
+    t.datetime "requested_zip_at"
+    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 ```

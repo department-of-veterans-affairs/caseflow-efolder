@@ -8,9 +8,27 @@ class Manifest < ActiveRecord::Base
 
   validates :file_number, presence: true, uniqueness: true
 
+  enum fetched_files_status: {
+    initialized: 0,
+    pending: 1,
+    finished: 2,
+    failed: 3
+  }
+
   def start!
     vbms_source.start!
     vva_source.start!
+  end
+
+  def download_and_package_files!
+    return if pending? || recently_downloaded_files?
+    update(fetched_files_status: :pending)
+    reset_records
+    V2::PackageFilesJob.perform_later(self)
+  end
+
+  def reset_records
+    records.where.not(status: 1).update_all(status: 0)
   end
 
   def vbms_source
@@ -19,6 +37,14 @@ class Manifest < ActiveRecord::Base
 
   def vva_source
     sources.find_or_create_by(source: "VVA")
+  end
+
+  def number_successful_documents
+    records.success.count
+  end
+
+  def number_failed_documents
+    records.failed.count
   end
 
   # If we do not yet have the veteran info saved in Caseflow's DB, then
@@ -47,6 +73,10 @@ class Manifest < ActiveRecord::Base
   end
 
   private
+
+  def recently_downloaded_files?
+    finished? && fetched_files_at && fetched_files_at > 3.days.ago
+  end
 
   def update_veteran_info
     return unless veteran
