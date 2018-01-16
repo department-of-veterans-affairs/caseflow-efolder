@@ -1,4 +1,6 @@
 class Record < ActiveRecord::Base
+  include Caseflow::DocumentTypes
+
   belongs_to :manifest_source
 
   validates :manifest_source, :version_id, :series_id, presence: true
@@ -28,6 +30,8 @@ class Record < ActiveRecord::Base
   delegate :manifest, :service, to: :manifest_source
   delegate :file_number, to: :manifest
 
+  MAXIMUM_FILENAME_LENGTH = 100
+
   def fetch!
     fetcher.process
   end
@@ -44,6 +48,14 @@ class Record < ActiveRecord::Base
 
   def s3_filename
     "#{version_id}.#{preferred_extension}"
+  end
+
+  def filename
+    Zaru.sanitize! "#{cropped_type_name}-#{filename_date}-#{filename_doc_id}.#{preferred_extension}"
+  end
+
+  def type_description
+    super || TYPES[type_id.to_i]
   end
 
   def preferred_extension
@@ -74,6 +86,21 @@ class Record < ActiveRecord::Base
 
   def fetcher
     @fetcher ||= RecordFetcher.new(record: self)
+  end
+
+  # Since Windows has the maximum length for a path, we crop type_name if the filename is longer than set maximum (issue #371)
+  def cropped_type_name
+    over_limit = (Zaru.sanitize! "#{type_description}-#{filename_date}-#{filename_doc_id}.#{preferred_extension}").size - MAXIMUM_FILENAME_LENGTH
+    end_index = over_limit <= 0 ? -1 : -1 - over_limit
+    type_description[0..end_index]
+  end
+
+  def filename_date
+    received_at ? received_at.to_formatted_s(:filename) : "00000000"
+  end
+
+  def filename_doc_id
+    (version_id || "").gsub(/[}{]/, "")
   end
 
   def mime

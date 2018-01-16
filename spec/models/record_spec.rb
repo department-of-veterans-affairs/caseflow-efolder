@@ -45,6 +45,49 @@ describe Record do
     it { is_expected.to eq("{TEST}.pdf") }
   end
 
+  context "#filename" do
+    subject { document.filename }
+
+    context "all the components are present" do
+      let(:document) do
+        Record.new(
+          received_at: Time.utc(2015, 1, 3, 17, 0, 0),
+          type_id: "89",
+          version_id: "{ABC123-DEF123-GHI456}",
+          mime_type: "application/pdf"
+        )
+      end
+
+      it { is_expected.to eq("STR-20150103-ABC123-DEF123-GHI456.pdf") }
+    end
+
+    context "when filename length equals 100" do
+      let(:document) do
+        Record.new(
+          received_at: Time.utc(2015, 1, 3, 17, 0, 0),
+          type_id: "497",
+          version_id: "{ABC123-DEF123-GHI456A}",
+          mime_type: "application/pdf"
+        )
+      end
+
+      it { is_expected.to eq("VA 27-0820b Report of Nursing Home or Assisted Living Information-20150103-ABC123-DEF123-GHI456A.pdf") }
+    end
+
+    context "when filename length is greater than 100 (101)" do
+      let(:document) do
+        Record.new(
+          received_at: Time.utc(2015, 1, 3, 17, 0, 0),
+          type_id: "497",
+          version_id: "{ABC123-DEF123-GHI456AB}",
+          mime_type: "application/pdf"
+        )
+      end
+
+      it { is_expected.to eq("VA 27-0820b Report of Nursing Home or Assisted Living Informatio-20150103-ABC123-DEF123-GHI456AB.pdf") }
+    end
+  end
+
   context ".create" do
     context "mime_type" do
       subject do
