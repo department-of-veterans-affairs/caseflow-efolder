@@ -41,6 +41,7 @@ class RecordFetcher
     content = record.service.v2_fetch_document_file(record)
     content = ImageConverterService.new(image: content, record: record).process
     S3Service.store_file(record.s3_filename, content)
+    content
   end
 
   def content_from_s3
