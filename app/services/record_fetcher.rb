@@ -4,6 +4,7 @@ class RecordFetcher
   attr_accessor :record
 
   EXCEPTIONS = [VBMS::ClientError, VVA::ClientError].freeze
+  TRIES = 40
 
   def process
     wait_while_pending
@@ -30,7 +31,7 @@ class RecordFetcher
   private
 
   def wait_while_pending
-    20.times do
+    TRIES.times do
       # reload the record from the DB to get the latest status
       break unless record.reload.pending?
       sleep 1
