@@ -30,9 +30,9 @@ class RecordFetcher
   private
 
   def wait_while_pending
-    return if Rails.env.test?
     20.times do
-      break unless record.pending?
+      # reload the record from the DB to get the latest status
+      break unless record.reload.pending?
       sleep 1
     end
   end
