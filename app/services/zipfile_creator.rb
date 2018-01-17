@@ -14,14 +14,16 @@ class ZipfileCreator
 
     Zip::OutputStream.open(t.path) do |z|
       records.each do |record|
-        z.put_next_entry(unique_filename(record, index))
         content = record.fetch!
-        z.print(content) and index += 1 if content
+        next unless content
+        z.put_next_entry(unique_filename(record, index))
+        z.print(content) and index += 1
       end
     end
     S3Service.store_file(manifest.s3_filename, t.path, :filepath)
     manifest.update(zipfile_size: File.size(t.path))
     t.close
+    t.unlink
   end
 
   private
