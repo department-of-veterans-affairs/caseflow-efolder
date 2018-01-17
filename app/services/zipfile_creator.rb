@@ -1,4 +1,4 @@
-require 'zip'
+require "zip"
 
 class ZipfileCreator
   include ActiveModel::Model
@@ -17,7 +17,7 @@ class ZipfileCreator
         content = record.fetch!
         next unless content
         z.put_next_entry(unique_filename(record, index))
-        z.print(content) and index += 1
+        z.print(content) && (index += 1)
       end
     end
     S3Service.store_file(manifest.s3_filename, t.path, :filepath)

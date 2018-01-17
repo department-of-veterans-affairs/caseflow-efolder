@@ -5,6 +5,10 @@ describe ZipfileCreator do
     allow(S3Service).to receive(:fetch_content).and_return(nil)
   end
 
+  after do
+    FileUtils.rm_rf(dir_path)
+  end
+
   let(:manifest) { Manifest.create(file_number: "1234") }
   let(:dir_path) { Rails.root + "tmp/files/" }
   let(:zip_path) { "#{dir_path}/#{manifest.s3_filename}" }
@@ -34,7 +38,8 @@ describe ZipfileCreator do
             type_description: "test2",
             version_id: "{CBA123-DEF123-GHI456A}",
             series_id: "{CBA321-DEF123-GHI456A}",
-            mime_type: "application/pdf")
+            mime_type: "application/pdf"
+          )
         ]
       end
 
@@ -74,7 +79,8 @@ describe ZipfileCreator do
             type_description: "test2",
             version_id: "{CBA123-DEF123-GHI456A}",
             series_id: "{CBA321-DEF123-GHI456A}",
-            mime_type: "application/pdf")
+            mime_type: "application/pdf"
+          )
         ]
       end
 
@@ -113,7 +119,8 @@ describe ZipfileCreator do
             type_description: "test2",
             version_id: "{CBA123-DEF123-GHI456A}",
             series_id: "{CBA321-DEF123-GHI456A}",
-            mime_type: "application/pdf")
+            mime_type: "application/pdf"
+          )
         ]
       end
 

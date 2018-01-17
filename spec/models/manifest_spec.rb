@@ -62,7 +62,8 @@ describe Manifest do
           type_id: "567",
           version_id: "{CBA123-DEF123-GHI456A}",
           series_id: "{CBA321-DEF123-GHI456A}",
-          mime_type: "application/pdf")
+          mime_type: "application/pdf"
+        )
       ]
     end
     it "should be ordered by the received_at date" do

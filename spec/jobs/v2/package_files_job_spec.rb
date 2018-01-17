@@ -14,10 +14,10 @@ describe V2::PackageFilesJob do
           mime_type: "application/pdf"
         ),
         source.records.create(received_at: Time.utc(2015, 1, 3, 17, 0, 0),
-          type_id: "497",
-          version_id: "{CBA123-DEF123-GHI456A}",
-          series_id: "{CBA321-DEF123-GHI456A}",
-          mime_type: "application/pdf")
+                              type_id: "497",
+                              version_id: "{CBA123-DEF123-GHI456A}",
+                              series_id: "{CBA321-DEF123-GHI456A}",
+                              mime_type: "application/pdf")
       ]
     end
 
