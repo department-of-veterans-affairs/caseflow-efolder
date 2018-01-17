@@ -33,10 +33,17 @@ Rails.application.routes.draw do
     end
 
     namespace :v2 do
-      post "manifests", to: "manifests#start"
-      get "manifests", to: "manifests#progress"
-      post "manifests/:manifest_id/files_downloads", to: "files_downloads#start"
-      get "manifests/:manifest_id/files_downloads", to: "files_downloads#progress"
+      post :manifests, to: "manifests#start"
+      get :manifests, to: "manifests#progress"
+      resources :manifests, only: [] do
+        post :files_downloads, to: "files_downloads#start"
+        get :files_downloads, to: "files_downloads#progress"
+        get :zip, to: "files_downloads#zip"
+      end
+
+      # post "manifests/:manifest_id/files_downloads", to: "files_downloads#start"
+      # get "manifests/:manifest_id/files_downloads", to: "files_downloads#progress"
+      # get "manifests/:manifest_id/zip", to: "files_downloads#zip"
       resources :records, only: :show
     end
   end

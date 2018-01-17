@@ -51,6 +51,14 @@ class Manifest < ActiveRecord::Base
     "#{id}-manifest.zip"
   end
 
+  def package_filename
+    "#{veteran_last_name}, #{veteran_first_name} - #{veteran_last_four_ssn}.zip"
+  end
+
+  def stream_zip!
+    S3Service.stream_content(s3_filename)
+  end
+
   # If we do not yet have the veteran info saved in Caseflow's DB, then
   # we want to fetch it from BGS, save it to the DB, then return it
   %w[veteran_first_name veteran_last_name veteran_last_four_ssn].each do |name|
