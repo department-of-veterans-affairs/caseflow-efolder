@@ -1,0 +1,10 @@
+<html>
+  <head>
+    <title>eFolder Express</title>
+    <%= javascript_include_tag 'react-app.js' %>
+  </head>
+  <body>
+    <div id="efx_app_v2"></div>
+    <script>efx.init(<%= raw( initial_react_data ) %>);</script>
+  </body>
+</html>

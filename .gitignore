@@ -24,3 +24,9 @@
 .idea/*
 
 test
+
+# Generated js bundles
+node_modules
+app/assets/javascripts/react-app.js
+.eslintcache
+yarn-error.log
