@@ -48,7 +48,7 @@ class Manifest < ActiveRecord::Base
   end
 
   def s3_filename
-    "#{id}.zip"
+    "#{id}-manifest.zip"
   end
 
   # If we do not yet have the veteran info saved in Caseflow's DB, then
