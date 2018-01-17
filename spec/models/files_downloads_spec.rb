@@ -1,4 +1,4 @@
-describe Manifest do
+describe FilesDownload do
   context "#start!" do
     before do
       allow(V2::PackageFilesJob).to receive(:perform_later)
@@ -12,23 +12,34 @@ describe Manifest do
 
     context "when never downloaded the files" do
       it "starts the jobs" do
-        expect(files_download.status).to eq "initialized"
+        expect(manifest.fetched_files_status).to eq "initialized"
         subject
-        expect(files_download.status).to eq "pending"
+        expect(manifest.fetched_files_status).to eq "pending"
         expect(V2::PackageFilesJob).to have_received(:perform_later).once
+        expect(files_download.requested_zip_at).to_not eq nil
       end
     end
 
     context "when recently downloaded the files" do
       it "does not start the job" do
-        files_download.update(status: :finished, fetched_files_at: 2.hours.ago)
+        manifest.update(fetched_files_status: :finished, fetched_files_at: 2.hours.ago)
+        subject
         expect(V2::PackageFilesJob).to_not have_received(:perform_later)
+      end
+    end
+
+    context "when files are expired" do
+      it "starts the job" do
+        manifest.update(fetched_files_status: :finished, fetched_files_at: 4.days.ago)
+        subject
+        expect(manifest.fetched_files_status).to eq "pending"
+        expect(V2::PackageFilesJob).to have_received(:perform_later)
       end
     end
 
     context "when previously failed to download the files" do
       it "starts the job" do
-        files_download.update(status: :failed, fetched_files_at: 2.hours.ago)
+        manifest.update(fetched_files_status: :failed, fetched_files_at: 2.hours.ago)
         subject
         expect(V2::PackageFilesJob).to have_received(:perform_later).once
       end

@@ -4,16 +4,20 @@ class RecordFetcher
   attr_accessor :record
 
   EXCEPTIONS = [VBMS::ClientError, VVA::ClientError].freeze
+  TRIES = 40
 
   def process
-    if cached_content
+    wait_while_pending
+
+    if content_from_s3
       record.update(status: :success)
-      return cached_content
+      return content_from_s3
     end
-    content = record.service.v2_fetch_document_file(record)
-    content = ImageConverterService.new(image: content, record: record).process
-    S3Service.store_file(record.s3_filename, content)
+
+    record.update(status: :pending)
+    content = content_from_vbms
     record.update(status: :success)
+
     content
   rescue *EXCEPTIONS
     record.update(status: :failed)
@@ -26,10 +30,25 @@ class RecordFetcher
 
   private
 
-  def cached_content
-    @cached_content ||= MetricsService.record("S3: fetch content for: #{record.s3_filename}",
-                                              service: :s3,
-                                              name: "fetch_content") do
+  def wait_while_pending
+    TRIES.times do
+      # reload the record from the DB to get the latest status
+      break unless record.reload.pending?
+      sleep 1
+    end
+  end
+
+  def content_from_vbms
+    content = record.service.v2_fetch_document_file(record)
+    content = ImageConverterService.new(image: content, record: record).process
+    S3Service.store_file(record.s3_filename, content)
+    content
+  end
+
+  def content_from_s3
+    @content_from_s3 ||= MetricsService.record("S3: fetch content for: #{record.s3_filename}",
+                                               service: :s3,
+                                               name: "content_from_s3") do
       S3Service.fetch_content(record.s3_filename)
     end
   end

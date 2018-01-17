@@ -47,7 +47,7 @@ describe "Files Downloads API v2", type: :request do
         get "/api/v2/manifests/#{manifest.id}/files_downloads"
         expect(response.code).to eq("200")
         response_body = JSON.parse(response.body)["data"]["attributes"]
-        expect(response_body["status"]).to eq "finished"
+        expect(response_body["fetched_files_status"]).to eq "finished"
         expect(response_body["records"].collect { |r| r["status"] }).to eq %w[success success]
       end
     end
@@ -66,7 +66,7 @@ describe "Files Downloads API v2", type: :request do
         get "/api/v2/manifests/#{manifest.id}/files_downloads"
         expect(response.code).to eq("200")
         response_body = JSON.parse(response.body)["data"]["attributes"]
-        expect(response_body["status"]).to eq "finished"
+        expect(response_body["fetched_files_status"]).to eq "finished"
         expect(response_body["records"].collect { |r| r["status"] }).to eq %w[failed failed]
       end
     end

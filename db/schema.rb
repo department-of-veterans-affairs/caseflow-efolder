@@ -11,7 +11,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180111163415) do
+ActiveRecord::Schema.define(version: 20180112193720) do
+
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -86,10 +87,9 @@ ActiveRecord::Schema.define(version: 20180111163415) do
   create_table "files_downloads", force: :cascade do |t|
     t.integer  "manifest_id"
     t.integer  "user_id"
-    t.integer  "status",           default: 0
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
-    t.datetime "fetched_files_at"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+    t.datetime "requested_zip_at"
   end
 
   add_index "files_downloads", ["manifest_id", "user_id"], name: "index_files_downloads_on_manifest_id_and_user_id", using: :btree
@@ -109,8 +109,10 @@ ActiveRecord::Schema.define(version: 20180111163415) do
     t.string   "veteran_first_name"
     t.string   "veteran_last_four_ssn"
     t.integer  "zipfile_size",          limit: 8
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
+    t.integer  "fetched_files_status",            default: 0
+    t.datetime "fetched_files_at"
   end
 
   add_index "manifests", ["file_number"], name: "index_manifests_on_file_number", using: :btree
@@ -126,11 +128,11 @@ ActiveRecord::Schema.define(version: 20180111163415) do
     t.integer  "size"
     t.string   "jro"
     t.string   "source"
-    t.integer  "conversion_status",    default: 0
-    t.string   "series_id"
-    t.integer  "version"
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
+    t.integer  "conversion_status",  default: 0
+    t.string   "series_id"
+    t.integer  "version"
   end
 
   add_index "records", ["manifest_source_id", "version_id"], name: "index_records_on_manifest_source_id_and_version_id", using: :btree

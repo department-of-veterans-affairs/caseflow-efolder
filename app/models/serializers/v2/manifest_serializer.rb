@@ -11,7 +11,8 @@ class Serializers::V2::ManifestSerializer < ActiveModel::Serializer
       {
         source: source.source,
         status: source.status,
-        fetched_at: source.fetched_at
+        fetched_at: source.fetched_at,
+        number_of_documents: source.records.count
       }
     end
   end
