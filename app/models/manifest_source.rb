@@ -1,4 +1,6 @@
 class ManifestSource < ActiveRecord::Base
+  include ApplicationHelper
+
   enum status: {
     initialized: 0,
     pending: 1,
@@ -18,7 +20,7 @@ class ManifestSource < ActiveRecord::Base
   def start!
     return if current? || pending?
     update(status: :pending)
-    V2::DownloadManifestJob.perform_later(self)
+    V2::DownloadManifestJob.perform_later(self, ui_user?)
   end
 
   def service
@@ -30,10 +32,7 @@ class ManifestSource < ActiveRecord::Base
     end
   end
 
-  private
-
   def current?
-    # TODO: expiration duration is going to be determined whether it is UI or Reader API
-    success? && fetched_at && fetched_at > 3.hours.ago
+    success? && fetched_at && fetched_at > (ui_user? ? 72 : 3).hours.ago
   end
 end

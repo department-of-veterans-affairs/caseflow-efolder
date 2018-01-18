@@ -4,39 +4,20 @@ class RecordFetcher
   attr_accessor :record
 
   EXCEPTIONS = [VBMS::ClientError, VVA::ClientError].freeze
-  TRIES = 40
+  SECONDS_TO_AUTO_UNLOCK = 90
 
   def process
-    wait_while_pending
-
-    if content_from_s3
-      record.update(status: :success)
-      return content_from_s3
-    end
-
-    record.update(status: :pending)
-    content = content_from_vbms
-    record.update(status: :success)
-
-    content
+    s = Redis::Semaphore.new("record_#{record.id}".to_s,
+                             connection: Rails.application.secrets.redis_url_sidekiq)
+    s.lock(SECONDS_TO_AUTO_UNLOCK)
+    content_from_s3 || content_from_vbms
   rescue *EXCEPTIONS
-    record.update(status: :failed)
     nil
-  # Catch StandardError in case there is an error to avoid records being stuck in pending state
-  rescue StandardError => e
-    record.update(status: :failed)
-    raise e
+  ensure
+    s.unlock
   end
 
   private
-
-  def wait_while_pending
-    TRIES.times do
-      # reload the record from the DB to get the latest status
-      break unless record.reload.pending?
-      sleep 1
-    end
-  end
 
   def content_from_vbms
     content = record.service.v2_fetch_document_file(record)
