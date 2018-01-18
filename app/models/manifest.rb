@@ -47,6 +47,10 @@ class Manifest < ActiveRecord::Base
     records.failed.count
   end
 
+  def s3_filename
+    "#{id}-manifest.zip"
+  end
+
   # If we do not yet have the veteran info saved in Caseflow's DB, then
   # we want to fetch it from BGS, save it to the DB, then return it
   %w[veteran_first_name veteran_last_name veteran_last_four_ssn].each do |name|

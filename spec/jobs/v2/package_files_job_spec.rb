@@ -6,8 +6,18 @@ describe V2::PackageFilesJob do
 
     let!(:records) do
       [
-        source.records.create(version_id: "1234", series_id: "4321"),
-        source.records.create(version_id: "5678", series_id: "8765")
+        source.records.create(
+          received_at: Time.utc(2015, 1, 3, 17, 0, 0),
+          type_id: "497",
+          version_id: "{ABC123-DEF123-GHI456A}",
+          series_id: "{ABC321-DEF123-GHI456A}",
+          mime_type: "application/pdf"
+        ),
+        source.records.create(received_at: Time.utc(2015, 1, 3, 17, 0, 0),
+                              type_id: "497",
+                              version_id: "{CBA123-DEF123-GHI456A}",
+                              series_id: "{CBA321-DEF123-GHI456A}",
+                              mime_type: "application/pdf")
       ]
     end
 
@@ -17,7 +27,8 @@ describe V2::PackageFilesJob do
       it "sets status to finished" do
         allow(S3Service).to receive(:store_file).and_return(nil)
         subject
-        expect(S3Service).to have_received(:store_file).twice
+        # 2 times for uploading documents and 1 time for uploading a zip file
+        expect(S3Service).to have_received(:store_file).exactly(3).times
         expect(manifest.fetched_files_status).to eq "finished"
       end
     end
@@ -27,7 +38,8 @@ describe V2::PackageFilesJob do
         allow(S3Service).to receive(:store_file).and_return(nil)
         allow(Fakes::DocumentService).to receive(:fetch_document_file).and_raise([VBMS::ClientError, VVA::ClientError].sample)
         subject
-        expect(S3Service).to_not have_received(:store_file)
+        # 1 time for uploading a zip file
+        expect(S3Service).to have_received(:store_file).once
         expect(manifest.fetched_files_status).to eq "finished"
       end
     end

@@ -1,6 +1,7 @@
 describe Manifest do
   context "#start!" do
     before do
+      Timecop.freeze(Time.utc(2015, 12, 2, 17, 0, 0))
       allow(V2::DownloadManifestJob).to receive(:perform_later)
     end
 
@@ -33,6 +34,42 @@ describe Manifest do
         subject
         expect(V2::DownloadManifestJob).to have_received(:perform_later).once
       end
+    end
+  end
+
+  context "#records" do
+    let(:manifest) { Manifest.create(file_number: "1234") }
+    subject { manifest.records }
+
+    let!(:records) do
+      [
+        manifest.vbms_source.records.create(
+          received_at: Time.utc(2015, 1, 3, 17, 0, 0),
+          type_id: "123",
+          version_id: "{ABC123-DEF123-GHI456A}",
+          series_id: "{ABC321-DEF123-GHI456A}",
+          mime_type: "application/pdf"
+        ),
+        manifest.vva_source.records.create(
+          received_at: Time.utc(2017, 1, 3, 17, 0, 0),
+          type_id: "345",
+          version_id: "{FDC123-DEF123-GHI456A}",
+          series_id: "{KYC321-DEF123-GHI456A}",
+          mime_type: "application/pdf"
+        ),
+        manifest.vbms_source.records.create(
+          received_at: Time.utc(2016, 1, 3, 17, 0, 0),
+          type_id: "567",
+          version_id: "{CBA123-DEF123-GHI456A}",
+          series_id: "{CBA321-DEF123-GHI456A}",
+          mime_type: "application/pdf"
+        )
+      ]
+    end
+    it "should be ordered by the received_at date" do
+      expect(subject[0].type_id).to eq "345"
+      expect(subject[1].type_id).to eq "567"
+      expect(subject[2].type_id).to eq "123"
     end
   end
 
