@@ -56,7 +56,7 @@ class Manifest < ActiveRecord::Base
   end
 
   def stream_zip!
-    S3Service.stream_content(s3_filename)
+    S3Service.stream_content(s3_filename) if recently_downloaded_files?
   end
 
   # If we do not yet have the veteran info saved in Caseflow's DB, then

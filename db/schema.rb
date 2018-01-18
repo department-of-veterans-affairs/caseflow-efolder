@@ -111,7 +111,7 @@ ActiveRecord::Schema.define(version: 20180117181843) do
     t.integer  "zipfile_size",          limit: 8
     t.datetime "created_at",                      null: false
     t.datetime "updated_at",                      null: false
-    t.integer  "fetched_files_status"
+    t.integer  "fetched_files_status",  default: 0
     t.datetime "fetched_files_at"
   end
 

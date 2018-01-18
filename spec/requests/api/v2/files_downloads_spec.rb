@@ -71,4 +71,48 @@ describe "Files Downloads API v2", type: :request do
       end
     end
   end
+
+  context "Zip Download by Manifest ID" do
+    let!(:current_user) do
+      User.authenticate!(roles: ["Reader"])
+    end
+
+    let(:manifest) do
+      Manifest.create(
+        file_number: "1234",
+        fetched_files_status: :finished,
+        fetched_files_at: 2.hours.ago
+      )
+    end
+    let!(:files_download) do
+      FilesDownload.create(
+        user: current_user,
+        manifest: manifest
+      )
+    end
+
+    context "when there is content" do
+      before do
+        allow(S3Service).to receive(:stream_content).and_return("content")
+      end
+
+      it "should download the content" do
+        get "/api/v2/manifests/#{manifest.id}/zip"
+        expect(response.code).to eq("200")
+        expect(response.body).to eq "content"
+      end
+    end
+
+    context "when there is no content" do
+      before do
+        allow(S3Service).to receive(:stream_content).and_return(nil)
+      end
+
+      it "should return empty string" do
+        get "/api/v2/manifests/#{manifest.id}/zip"
+        expect(response.code).to eq("200")
+        expect(response.body).to eq ""
+      end
+    end
+  end
 end

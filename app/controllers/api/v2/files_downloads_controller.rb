@@ -12,7 +12,7 @@ class Api::V2::FilesDownloadsController < Api::V1::ApplicationController
 
   def zip
     streaming_headers
-    self.response_body = manifest.stream_zip!
+    self.response_body = manifest.stream_zip! || ""
   end
 
   private
