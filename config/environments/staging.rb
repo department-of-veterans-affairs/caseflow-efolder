@@ -39,7 +39,7 @@ Rails.application.configure do
   config.bgs_environment = "beplinktest"
   config.vva_wsdl = "https://vbaphid521ldb.vba.va.gov:7002/VABFI/services/vva?wsdl"
 
-  config.s3_enabled = ENV['AWS_ACCESS_KEY_ID'].present?
+  config.s3_enabled = true
   config.s3_bucket_name = "dsva-appeals-efolder-uat"
 
   config.api_key = "token"
