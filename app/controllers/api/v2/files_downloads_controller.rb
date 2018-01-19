@@ -1,5 +1,5 @@
 class Api::V2::FilesDownloadsController < Api::V1::ApplicationController
-  before_action :set_files_download
+  before_action :files_download_exists?
 
   def start
     files_download.start!
@@ -17,7 +17,7 @@ class Api::V2::FilesDownloadsController < Api::V1::ApplicationController
 
   private
 
-  def set_files_download
+  def files_download_exists?
     return record_not_found unless files_download
   end
 
