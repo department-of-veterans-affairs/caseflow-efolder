@@ -77,9 +77,8 @@ Rails.application.configure do
   config.bgs_environment = ENV["BGS_ENVIRONMENT"] || "beplinktest"
   config.vva_wsdl = ENV["VVA_WSDL"]
 
-  # Demo doesn't use S3, but that might change
-  config.s3_enabled = ENV["AWS_BUCKET_NAME"].present?
-  config.s3_bucket_name = ENV["AWS_BUCKET_NAME"]
+  config.s3_enabled = true
+  config.s3_bucket_name = "dsva-appeals-efolder-demo"
 
   config.api_key = "token"
 

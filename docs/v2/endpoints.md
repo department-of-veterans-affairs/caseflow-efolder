@@ -33,3 +33,11 @@ GET "/api/v2/manifests/:manifest_id/files_downloads", to: "files_downloads#progr
 ```
 GET /api/v2/records/:id, to "records#show"
 ```
+
+6. To download manifest zip:
+
+```
+GET "/api/v2/manifests/:manifest_id/zip", to: "files_downloads#zip"
+```
+
+
