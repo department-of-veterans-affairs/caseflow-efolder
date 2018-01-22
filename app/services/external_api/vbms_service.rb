@@ -27,11 +27,11 @@ class ExternalApi::VBMSService
     documents
   end
 
-  def self.v2_fetch_documents_for(download)
+  def self.v2_fetch_documents_for(source)
     @vbms_client ||= init_client
 
-    request = VBMS::Requests::FindDocumentVersionReference.new(download.file_number)
-    documents = send_and_log_request(download.file_number, request)
+    request = VBMS::Requests::FindDocumentVersionReference.new(source.file_number)
+    documents = send_and_log_request(source.file_number, request)
     Rails.logger.info("VBMS Document list length: #{documents.length}")
     documents
   end

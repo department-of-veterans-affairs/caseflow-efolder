@@ -34,7 +34,7 @@ describe RecordFetcher do
     context "when VBMS/VVA returns an error" do
       before do
         allow(S3Service).to receive(:fetch_content).and_return(nil)
-        allow(Fakes::DocumentService).to receive(:fetch_document_file).and_raise([VBMS::ClientError, VVA::ClientError].sample)
+        allow(Fakes::DocumentService).to receive(:v2_fetch_document_file).and_raise([VBMS::ClientError, VVA::ClientError].sample)
       end
 
       it "should return nil and update status" do
@@ -57,7 +57,7 @@ describe RecordFetcher do
     context "when file is not in S3" do
       before do
         allow(S3Service).to receive(:fetch_content).and_return(nil)
-        allow(Fakes::DocumentService).to receive(:fetch_document_file).and_return(fake_pdf_content)
+        allow(Fakes::DocumentService).to receive(:v2_fetch_document_file).and_return(fake_pdf_content)
       end
 
       it "should return the content from VBMS" do
@@ -74,7 +74,7 @@ describe RecordFetcher do
 
         before do
           FeatureToggle.enable!(:convert_tiff_images)
-          allow(Fakes::DocumentService).to receive(:fetch_document_file).and_return(tiff_content)
+          allow(Fakes::DocumentService).to receive(:v2_fetch_document_file).and_return(tiff_content)
           allow_any_instance_of(ImageConverterService).to receive(:convert_tiff_to_pdf).and_return(fake_pdf_content)
         end
         after { FeatureToggle.disable!(:convert_tiff_images) }

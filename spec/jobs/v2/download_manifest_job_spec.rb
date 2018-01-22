@@ -18,7 +18,7 @@ describe V2::DownloadManifestJob do
 
     context "when document list is empty" do
       before do
-        allow_any_instance_of(ManifestFetcher).to receive(:process).and_return([])
+        allow(Fakes::DocumentService).to receive(:v2_fetch_documents_for).and_return([])
       end
 
       it "does not create any records and does not start caching files in s3" do
@@ -41,7 +41,7 @@ describe V2::DownloadManifestJob do
 
     context "when document list is not empty" do
       before do
-        allow_any_instance_of(ManifestFetcher).to receive(:process).and_return(documents)
+        allow(Fakes::DocumentService).to receive(:v2_fetch_documents_for).and_return(documents)
       end
 
       it "creates document records and starts caching files in s3" do

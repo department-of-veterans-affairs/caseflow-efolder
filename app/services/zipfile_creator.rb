@@ -21,7 +21,13 @@ class ZipfileCreator
       end
     end
     S3Service.store_file(manifest.s3_filename, t.path, :filepath)
-    manifest.update(zipfile_size: File.size(t.path))
+
+    manifest.update(
+      zipfile_size: File.size(t.path),
+      fetched_files_status: :finished,
+      fetched_files_at: Time.zone.now
+    )
+
     t.close
     t.unlink
   end
