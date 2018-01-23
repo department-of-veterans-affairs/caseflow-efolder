@@ -34,7 +34,7 @@ class DocumentCreator
 
   def create
     ManifestSource.transaction do
-      external_documents.each do |document|
+      (external_documents || []).each do |document|
         Record.create_from_external_document(manifest_source, document)
       end
     end
