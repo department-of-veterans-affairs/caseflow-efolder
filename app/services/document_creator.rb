@@ -34,7 +34,7 @@ class DocumentCreator
 
   def create
     ManifestSource.transaction do
-      (external_documents || []).each do |document|
+      external_documents.each do |document|
         Record.create_from_external_document(manifest_source, document)
       end
     end
@@ -42,6 +42,6 @@ class DocumentCreator
 
   # Override the getter to return only non-restricted documents
   def external_documents
-    @external_documents.reject { |document| RESTRICTED_TYPES.include?(document.type_id) || document.try(:restricted?) }
+    (@external_documents || []).reject { |document| RESTRICTED_TYPES.include?(document.type_id) || document.try(:restricted?) }
   end
 end
