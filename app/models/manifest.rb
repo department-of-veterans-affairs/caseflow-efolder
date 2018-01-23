@@ -27,16 +27,20 @@ class Manifest < ActiveRecord::Base
     V2::PackageFilesJob.perform_later(self)
   end
 
+  def recently_downloaded_files?
+    finished? && fetched_files_at && fetched_files_at > 3.days.ago
+  end
+
   def reset_records
-    records.where.not(status: 1).update_all(status: 0)
+    records.update_all(status: 0)
   end
 
   def vbms_source
-    sources.find_or_create_by(source: "VBMS")
+    sources.find_or_create_by(name: "VBMS")
   end
 
   def vva_source
-    sources.find_or_create_by(source: "VVA")
+    sources.find_or_create_by(name: "VVA")
   end
 
   def number_successful_documents
@@ -85,10 +89,6 @@ class Manifest < ActiveRecord::Base
   end
 
   private
-
-  def recently_downloaded_files?
-    finished? && fetched_files_at && fetched_files_at > 3.days.ago
-  end
 
   def update_veteran_info
     return unless veteran

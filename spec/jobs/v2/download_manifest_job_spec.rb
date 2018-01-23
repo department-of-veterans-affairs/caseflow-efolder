@@ -1,7 +1,8 @@
 describe V2::DownloadManifestJob do
   context "#perform" do
     let(:manifest) { Manifest.create(file_number: "1234") }
-    let(:source) { ManifestSource.create(source: %w[VBMS VVA].sample, manifest: manifest) }
+    let(:source) { ManifestSource.create(name: %w[VBMS VVA].sample, manifest: manifest) }
+    let(:ui_user) { false }
 
     let(:documents) do
       [
@@ -10,7 +11,7 @@ describe V2::DownloadManifestJob do
       ]
     end
 
-    subject { V2::DownloadManifestJob.perform_now(source) }
+    subject { V2::DownloadManifestJob.perform_now(source, ui_user) }
 
     before do
       allow(V2::SaveFilesInS3Job).to receive(:perform_later)
@@ -44,11 +45,24 @@ describe V2::DownloadManifestJob do
         allow(Fakes::DocumentService).to receive(:v2_fetch_documents_for).and_return(documents)
       end
 
-      it "creates document records and starts caching files in s3" do
-        subject
-        expect(manifest.records.size).to eq 2
-        # TODO: uncomment this line
-        # expect(V2::SaveFilesInS3Job).to have_received(:perform_later)
+      context "when user is not a UI user" do
+        let(:ui_user) { false }
+
+        it "creates document records and starts caching files in s3" do
+          subject
+          expect(manifest.records.size).to eq 2
+          expect(V2::SaveFilesInS3Job).to have_received(:perform_later)
+        end
+      end
+
+      context "when user is a UI user" do
+        let(:ui_user) { true }
+
+        it "creates document records and does not start caching files in s3" do
+          subject
+          expect(manifest.records.size).to eq 2
+          expect(V2::SaveFilesInS3Job).to_not have_received(:perform_later)
+        end
       end
     end
   end

@@ -3,7 +3,7 @@ describe Record do
     Timecop.freeze(Time.utc(2015, 1, 1, 12, 0, 0))
   end
   let(:manifest) { Manifest.create(file_number: "1234") }
-  let(:source) { ManifestSource.create(source: %w[VBMS VVA].sample, manifest: manifest) }
+  let(:source) { ManifestSource.create(name: %w[VBMS VVA].sample, manifest: manifest) }
 
   context ".create_from_external_document" do
     subject { Record.create_from_external_document(source, external_document) }

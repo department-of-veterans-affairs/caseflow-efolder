@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180117181843) do
+ActiveRecord::Schema.define(version: 20180123192853) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -97,7 +97,7 @@ ActiveRecord::Schema.define(version: 20180117181843) do
   create_table "manifest_sources", force: :cascade do |t|
     t.integer  "manifest_id"
     t.integer  "status",      default: 0
-    t.string   "source"
+    t.string   "name"
     t.datetime "fetched_at"
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
@@ -109,9 +109,9 @@ ActiveRecord::Schema.define(version: 20180117181843) do
     t.string   "veteran_first_name"
     t.string   "veteran_last_four_ssn"
     t.integer  "zipfile_size",          limit: 8
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
-    t.integer  "fetched_files_status",  default: 0
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
+    t.integer  "fetched_files_status",            default: 0
     t.datetime "fetched_files_at"
   end
 
@@ -128,11 +128,11 @@ ActiveRecord::Schema.define(version: 20180117181843) do
     t.integer  "size"
     t.string   "jro"
     t.string   "source"
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
     t.integer  "conversion_status",  default: 0
     t.string   "series_id"
     t.integer  "version"
-    t.datetime "created_at",                     null: false
-    t.datetime "updated_at",                     null: false
   end
 
   add_index "records", ["manifest_source_id", "series_id"], name: "index_records_on_manifest_source_id_and_series_id", using: :btree

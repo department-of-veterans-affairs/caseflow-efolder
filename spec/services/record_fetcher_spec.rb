@@ -1,6 +1,6 @@
 describe RecordFetcher do
   let(:manifest) { Manifest.create(file_number: "1234") }
-  let(:source) { ManifestSource.create(source: %w[VBMS VVA].sample, manifest: manifest) }
+  let(:source) { ManifestSource.create(name: %w[VBMS VVA].sample, manifest: manifest) }
 
   let(:record) do
     Record.create(
@@ -26,7 +26,7 @@ describe RecordFetcher do
         allow(S3Service).to receive(:fetch_content).with(record.s3_filename).and_return("hello there")
       end
 
-      it "should return the content from S3 and should not update the DB" do
+      it "should return the content from S3" do
         expect(subject).to eq "hello there"
       end
     end
@@ -37,20 +37,8 @@ describe RecordFetcher do
         allow(Fakes::DocumentService).to receive(:v2_fetch_document_file).and_raise([VBMS::ClientError, VVA::ClientError].sample)
       end
 
-      it "should return nil and update status" do
+      it "should return nil" do
         expect(subject).to eq nil
-        expect(record.status).to eq "failed"
-      end
-    end
-
-    context "when application error" do
-      before do
-        allow(S3Service).to receive(:fetch_content).and_raise("application error")
-      end
-
-      it "should return raise error and update status" do
-        expect { subject }.to raise_error("application error")
-        expect(record.status).to eq "failed"
       end
     end
 
@@ -62,11 +50,6 @@ describe RecordFetcher do
 
       it "should return the content from VBMS" do
         expect(subject).to eq fake_pdf_content
-      end
-
-      it "should update document DB fields" do
-        subject
-        expect(record.reload.status).to eq "success"
       end
 
       context "when VBMS returns a tiff file" do

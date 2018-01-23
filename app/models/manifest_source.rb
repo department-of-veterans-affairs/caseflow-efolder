@@ -1,4 +1,6 @@
 class ManifestSource < ActiveRecord::Base
+  include ApplicationHelper
+
   enum status: {
     initialized: 0,
     pending: 1,
@@ -9,20 +11,20 @@ class ManifestSource < ActiveRecord::Base
   belongs_to :manifest
   has_many :records, dependent: :destroy
 
-  validates :manifest, :source, presence: true
-  validates :manifest, uniqueness: { scope: :source }
-  validates :source, inclusion: { in: %w[VBMS VVA] }
+  validates :manifest, :name, presence: true
+  validates :manifest, uniqueness: { scope: :name }
+  validates :name, inclusion: { in: %w[VBMS VVA] }
 
   delegate :file_number, to: :manifest
 
   def start!
     return if current? || pending?
     update(status: :pending)
-    V2::DownloadManifestJob.perform_later(self)
+    V2::DownloadManifestJob.perform_later(self, ui_user?)
   end
 
   def service
-    case source
+    case name
     when "VBMS"
       VBMSService
     when "VVA"
@@ -30,10 +32,7 @@ class ManifestSource < ActiveRecord::Base
     end
   end
 
-  private
-
   def current?
-    # TODO: expiration duration is going to be determined whether it is UI or Reader API
-    success? && fetched_at && fetched_at > 3.hours.ago
+    success? && fetched_at && fetched_at > (ui_user? ? 72 : 3).hours.ago
   end
 end

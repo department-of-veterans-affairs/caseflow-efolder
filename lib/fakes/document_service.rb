@@ -54,7 +54,9 @@ class Fakes::DocumentService
     demo = DEMOS[source.file_number] || DEMOS["DEMODEFAULT"]
     return [] if !demo || demo[:num_docs] <= 0
 
-    sleep_and_check_for_error(demo, source.source)
+    sleep_and_check_for_error(demo, source.name)
+
+    return [] if source.records.count == demo[:num_docs]
 
     (1..(demo[:num_docs] || 0)).to_a.map do |i|
       create_document(i)

@@ -46,6 +46,8 @@ describe ZipfileCreator do
       it "should create a zip file with all files" do
         subject
         expect(manifest.zipfile_size).to_not eq nil
+        expect(manifest.number_successful_documents).to eq 3
+        expect(manifest.number_failed_documents).to eq 0
         S3Service.fetch_file(manifest.s3_filename, zip_path)
         Zip::File.open(zip_path) do |zip_file|
           expect(zip_file.size).to eq 3
@@ -86,6 +88,8 @@ describe ZipfileCreator do
 
       it "should create a zip file with VBMS documents only" do
         subject
+        expect(manifest.number_successful_documents).to eq 2
+        expect(manifest.number_failed_documents).to eq 1
         S3Service.fetch_file(manifest.s3_filename, zip_path)
         Zip::File.open(zip_path) do |zip_file|
           expect(zip_file.size).to eq 2
@@ -126,6 +130,8 @@ describe ZipfileCreator do
 
       it "should create a zip file with VVA documents only" do
         subject
+        expect(manifest.number_successful_documents).to eq 1
+        expect(manifest.number_failed_documents).to eq 2
         S3Service.fetch_file(manifest.s3_filename, zip_path)
         Zip::File.open(zip_path) do |zip_file|
           expect(zip_file.size).to eq 1
