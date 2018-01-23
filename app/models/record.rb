@@ -8,9 +8,8 @@ class Record < ActiveRecord::Base
 
   enum status: {
     initialized: 0,
-    pending: 1,
-    success: 2,
-    failed: 3
+    success: 1,
+    failed: 2
   }
 
   enum conversion_status: {

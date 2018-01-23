@@ -241,6 +241,11 @@ module ApplicationHelper
     "#{format('%.2f', seconds / 60)} <span class=\"ee-stat-unit\">min</span>".html_safe
   end
 
+  def ui_user?
+    return false unless RequestStore[:current_user]
+    (RequestStore[:current_user].roles || []).include?("Download eFolder")
+  end
+
   def current_ga_path
     full_path = request.env["PATH_INFO"]
 

@@ -74,6 +74,7 @@ gem "zaru"
 gem "active_model_serializers"
 
 gem "redis-namespace"
+gem "redis-semaphore"
 
 gem "request_store"
 
