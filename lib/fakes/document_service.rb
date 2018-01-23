@@ -49,16 +49,49 @@ class Fakes::DocumentService
     }
   }.freeze
 
+  ### Fakes v2 START
+  def self.v2_fetch_documents_for(source)
+    demo = DEMOS[source.file_number] || DEMOS["DEMODEFAULT"]
+    return [] if !demo || demo[:num_docs] <= 0
+
+    sleep_and_check_for_error(demo, source.source)
+
+    (1..(demo[:num_docs] || 0)).to_a.map do |i|
+      create_document(i)
+    end
+  end
+
+  def self.sleep_and_check_for_error(demo, source_name)
+    sleep(demo[:manifest_load] || 0)
+
+    raise VBMS::ClientError if source_name == "VBMS" && demo[:error_type] == "VBMS"
+    raise VVA::ClientError if source_name == "VVA" && demo[:error_type] == "VVA"
+  end
+
+  def self.v2_fetch_document_file(record)
+    demo = DEMOS[record.file_number] || DEMOS["DEMODEFAULT"]
+
+    sleep(rand(demo[:max_file_load] || 5))
+    raise [VBMS::ClientError, VVA::ClientError].sample if demo[:error] && rand(5) == 3
+
+    file_content(record)
+  end
+
+  def self.file_content(record)
+    if record.mime_type == "application/pdf"
+      IO.binread(Rails.root + "lib/pdfs/#{record.id % 5}.pdf")
+    else
+      IO.binread(Rails.root + "lib/tiffs/#{record.id % 5}.tiff")
+    end
+  end
+  ### Fakes v2 END
+
   def self.service_type
     "Document"
   end
 
   def self.fetch_documents_for(download)
     list_fake_documents(download.file_number)
-  end
-
-  def self.v2_fetch_documents_for(download)
-    fetch_documents_for(download)
   end
 
   def self.fetch_document_file(document)
@@ -71,10 +104,6 @@ class Fakes::DocumentService
     else
       IO.binread(Rails.root + "lib/tiffs/#{document.id % 5}.tiff")
     end
-  end
-
-  def self.v2_fetch_document_file(document)
-    fetch_document_file(document)
   end
 
   # can be overridden by child classes to provide more specific error

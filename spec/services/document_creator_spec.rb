@@ -19,6 +19,16 @@ describe DocumentCreator do
       end
     end
 
+    context "when external documents are nil" do
+      let(:documents) { nil }
+
+      it "does not create any documents" do
+        expect(source.records).to eq []
+        subject
+        expect(source.reload.records.size).to eq 0
+      end
+    end
+
     context "when there are no external documents" do
       let(:documents) { [] }
 

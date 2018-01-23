@@ -13,9 +13,15 @@ class ExternalApi::VVAService
     documents
   end
 
-  # TODO: remove when switched to VBMS eFolder API
-  def self.v2_fetch_documents_for(download)
-    fetch_documents_for(download)
+  def self.v2_fetch_documents_for(source)
+    @vva_client ||= init_client
+    documents ||= MetricsService.record("VVA: get document list for: #{source.file_number}",
+                                        service: :vva,
+                                        name: "document_list.get_by_claim_number") do
+      @vva_client.document_list.get_by_claim_number(source.file_number)
+    end
+    Rails.logger.info("VVA Document list length: #{documents.length}")
+    documents
   end
 
   def self.fetch_document_file(document)

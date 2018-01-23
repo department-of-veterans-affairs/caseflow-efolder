@@ -13,6 +13,8 @@ class ManifestSource < ActiveRecord::Base
   validates :manifest, uniqueness: { scope: :source }
   validates :source, inclusion: { in: %w[VBMS VVA] }
 
+  delegate :file_number, to: :manifest
+
   def start!
     return if current? || pending?
     update(status: :pending)

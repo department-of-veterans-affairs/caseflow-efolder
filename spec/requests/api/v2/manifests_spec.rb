@@ -37,8 +37,8 @@ describe "Manifests API v2", type: :request do
 
   context "When the manifest has no records" do
     before do
-      allow(VBMSService).to receive(:fetch_documents_for).and_return([])
-      allow(VVAService).to receive(:fetch_documents_for).and_return([])
+      allow(VBMSService).to receive(:v2_fetch_documents_for).and_return([])
+      allow(VVAService).to receive(:v2_fetch_documents_for).and_return([])
     end
 
     let!(:response_body) do
