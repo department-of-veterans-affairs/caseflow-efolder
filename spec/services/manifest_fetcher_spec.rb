@@ -1,6 +1,6 @@
 describe ManifestFetcher do
   let(:manifest) { Manifest.create(file_number: "1234") }
-  let(:source) { ManifestSource.create(source: name, manifest: manifest) }
+  let(:source) { ManifestSource.create(name: name, manifest: manifest) }
 
   let(:documents) do
     [

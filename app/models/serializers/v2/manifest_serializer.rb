@@ -9,7 +9,7 @@ class Serializers::V2::ManifestSerializer < ActiveModel::Serializer
   attribute :sources do
     object.sources.map do |source|
       {
-        source: source.source,
+        source: source.name,
         status: source.status,
         fetched_at: source.fetched_at,
         number_of_documents: source.records.count

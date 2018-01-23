@@ -1,6 +1,6 @@
 describe DocumentCreator do
   let(:manifest) { Manifest.create(file_number: "1234") }
-  let(:source) { ManifestSource.create(source: %w[VVA VBMS].sample, manifest: manifest) }
+  let(:source) { ManifestSource.create(name: %w[VVA VBMS].sample, manifest: manifest) }
 
   context "#create" do
     subject { DocumentCreator.new(manifest_source: source, external_documents: documents).create }
