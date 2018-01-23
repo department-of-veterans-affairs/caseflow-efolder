@@ -36,8 +36,8 @@ class WelcomeContainer extends React.Component {
               </div>
             </form>
             <p className="cf-txt-c"><i>
-              Note: eFolder Express now includes Virtual VA documents from the
-              <span id="vva-tour-1">Legacy Content Manager</span> Documents tab in VBMS.</i></p>
+Note: eFolder Express now includes Virtual VA documents from the Legacy Content Manager Documents tab in VBMS.
+            </i></p>
           </div>
           <RecentDownloadsContainer />
         </div>

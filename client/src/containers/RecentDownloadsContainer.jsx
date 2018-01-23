@@ -1,14 +1,28 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import RecentDownloadRow from '../components/RecentDownloadRow';
+
 class RecentDownloadsContainer extends React.Component {
   render() {
-    if (this.props.recentDownloads.length == 0) {
-      return null;  
+    if (this.props.recentDownloads.length === 0) {
+      return null;
     }
 
-
-    return <h2 class="ee-recent-searches">History</h2>;
+    return <div>
+      <h2 className="ee-recent-searches">History</h2>
+      <table className="usa-table-borderless" summary="List of recent downloads and links to download their contents">
+        <thead>
+          <tr className="usa-sr-only">
+            <th scope="col">File Number</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {this.props.recentDownloads.map((dl, i) => <RecentDownloadRow download={dl} key={i} />)}
+        </tbody>
+      </table>
+    </div>;
   }
 }
 
