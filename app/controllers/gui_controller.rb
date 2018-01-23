@@ -1,20 +1,48 @@
-class DownloadsController < ApplicationController
+class GuiController < ApplicationController
   before_action :authorize
 
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
 
-  def new
-    @search = Search.new
+  def react
+    if can_access_react_app?
+      render "_react", layout: false
+    else
+      redirect_to "/"
+    end
   end
 
-  def create
-    @search = Search.new(user: current_user, file_number: params[:file_number])
+  def initial_react_data
+    {
+      authenticityToken: form_authenticity_token,
+      dropdownUrls: dropdown_urls,
+      feedbackUrl: feedback_url,
+      recentDownloads: recent_downloads.sort_by(&:created_at).reverse,
+      userDisplayName: current_user.display_name
+    }.to_json
+  end
+  helper_method :initial_react_data
 
-    if @search.valid_file_number? && @search.perform!
-      redirect_to download_url(@search.download)
-    else
-      render("new")
-    end
+  def dropdown_urls
+    [
+      {
+        title: "Help",
+        link: url_for(controller: "/help", action: "show")
+      },
+      {
+        title: "Send Feedback",
+        link: feedback_url,
+        target: "_blank"
+      },
+      {
+        title: "Sign out",
+        link: url_for(controller: "/sessions", action: "destroy")
+      }
+    ]
+  end
+  helper_method :dropdown_urls
+
+  def can_access_react_app?
+    FeatureToggle.enabled?(:efolder_react_app, user: current_user) || Rails.env.development?
   end
 
   def start
