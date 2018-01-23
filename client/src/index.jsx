@@ -8,7 +8,7 @@ import InitContainer from './containers/InitContainer';
 
 module.exports = {
   init(props) {
-    const initState = { text: 'some text' };
+    const initState = {};
     const store = createStore(reducer, { ...initState,
       ...props });
 

@@ -26,9 +26,34 @@ class DownloadsController < ApplicationController
   end
 
   def initial_react_data
-    { text: "placeholder text" }.to_json
+    {
+      authenticityToken: form_authenticity_token,
+      dropdownUrls: dropdown_urls,
+      feedbackUrl: feedback_url,
+      recentDownloads: recent_downloads,
+      userDisplayName: current_user.display_name
+    }.to_json
   end
   helper_method :initial_react_data
+
+  def dropdown_urls
+    [
+      {
+        title: "Help",
+        link: url_for(controller: "/help", action: "show")
+      },
+      {
+        title: "Send Feedback",
+        link: feedback_url,
+        target: "_blank"
+      },
+      {
+        title: "Sign out",
+        link: url_for(controller: "/sessions", action: "destroy")
+      }
+    ]
+  end
+  helper_method :dropdown_urls
 
   def can_access_react_app?
     FeatureToggle.enabled?(:efolder_react_app, user: current_user) || Rails.env.development?
