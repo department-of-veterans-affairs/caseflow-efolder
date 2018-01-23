@@ -32,11 +32,11 @@ class Manifest < ActiveRecord::Base
   end
 
   def vbms_source
-    sources.find_or_create_by(source: "VBMS")
+    sources.find_or_create_by(name: "VBMS")
   end
 
   def vva_source
-    sources.find_or_create_by(source: "VVA")
+    sources.find_or_create_by(name: "VVA")
   end
 
   def number_successful_documents

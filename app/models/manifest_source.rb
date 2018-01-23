@@ -9,9 +9,9 @@ class ManifestSource < ActiveRecord::Base
   belongs_to :manifest
   has_many :records, dependent: :destroy
 
-  validates :manifest, :source, presence: true
-  validates :manifest, uniqueness: { scope: :source }
-  validates :source, inclusion: { in: %w[VBMS VVA] }
+  validates :manifest, :name, presence: true
+  validates :manifest, uniqueness: { scope: :name }
+  validates :name, inclusion: { in: %w[VBMS VVA] }
 
   delegate :file_number, to: :manifest
 
@@ -22,7 +22,7 @@ class ManifestSource < ActiveRecord::Base
   end
 
   def service
-    case source
+    case name
     when "VBMS"
       VBMSService
     when "VVA"

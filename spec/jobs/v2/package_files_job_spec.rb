@@ -2,7 +2,7 @@ describe V2::PackageFilesJob do
   context "#perform" do
     let(:user) { User.create(css_id: "Foo", station_id: "112") }
     let(:manifest) { Manifest.find_or_create_by_user(user: user, file_number: "1234") }
-    let(:source) { ManifestSource.create(source: %w[VBMS VVA].sample, manifest: manifest) }
+    let(:source) { ManifestSource.create(name: %w[VBMS VVA].sample, manifest: manifest) }
 
     let!(:records) do
       [
