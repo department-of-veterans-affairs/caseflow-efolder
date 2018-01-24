@@ -1,28 +1,39 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { BrowserRouter, Route } from 'react-router-dom';
 
-import { UPDATE_TEXTAREA } from '../actionTypes';
+import Footer from '@department-of-veterans-affairs/appeals-frontend-toolkit/components/Footer';
+import NavigationBar from '@department-of-veterans-affairs/appeals-frontend-toolkit/components/NavigationBar';
 
-class InitContainer extends React.Component {
-  onTextareaChange(event) {
-    this.props.dispatch({ type: UPDATE_TEXTAREA,
-      payload: event.target.value });
-  }
+import WelcomeContainer from './WelcomeContainer';
 
+class InitContainer extends React.PureComponent {
   render() {
-    return <div>
-      <textarea defaultValue={this.props.text} onChange={this.onTextareaChange.bind(this)} />
-      <h1>{this.props.text.length}</h1>
-    </div>;
+    return <BrowserRouter>
+      <div>
+        <NavigationBar
+          appName="eFolder Express"
+          logoProps={{
+            accentColor: '#F0835e',
+            overlapColor: '#F0835e'
+          }}
+          userDisplayName={this.props.userDisplayName}
+          dropdownUrls={this.props.dropdownUrls}
+          defaultUrl="/react">
+          <Route path="/" component={WelcomeContainer} />
+        </NavigationBar>
+        <Footer
+          appName="eFolder Express"
+          feedbackUrl={this.props.feedbackUrl} />
+      </div>
+    </BrowserRouter>;
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    text: state.text
-  };
-};
+const mapStateToProps = (state) => ({
+  dropdownUrls: state.dropdownUrls,
+  feedbackUrl: state.feedbackUrl,
+  userDisplayName: state.userDisplayName
+});
 
-export default connect(
-  mapStateToProps
-)(InitContainer);
+export default connect(mapStateToProps)(InitContainer);
