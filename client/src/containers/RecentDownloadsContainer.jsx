@@ -19,7 +19,7 @@ class RecentDownloadsContainer extends React.PureComponent {
           </tr>
         </thead>
         <tbody>
-          {this.props.recentDownloads.map((dl, i) => <RecentDownloadRow download={dl} key={i} />)}
+          { this.props.recentDownloads.map((download) => <RecentDownloadRow download={download} key={download.id} />) }
         </tbody>
       </table>
     </div>;
