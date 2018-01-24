@@ -40,6 +40,7 @@ class User < ActiveRecord::Base
     Functions.denied?(thing, css_id)
   end
 
+  # v2 method
   def recent_downloads
     files_downloads.where(requested_zip_at: Manifest::UI_HOURS_UNTIL_EXPIRY.hours.ago..Time.zone.now)
                    .sort_by(&:requested_zip_at)

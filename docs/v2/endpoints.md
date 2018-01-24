@@ -40,4 +40,10 @@ GET /api/v2/records/:id, to "records#show"
 GET "/api/v2/manifests/:manifest_id/zip", to: "files_downloads#zip"
 ```
 
+7. To view current user's download history:
+
+```
+GET "/api/v2/manifests/history", to: "manifests#history"
+```
+
 
