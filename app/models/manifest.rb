@@ -28,7 +28,7 @@ class Manifest < ActiveRecord::Base
   end
 
   def download_and_package_files!
-    return if pending? || recently_downloaded_files?
+    return if pending?
     update(fetched_files_status: :pending)
     reset_records
     V2::PackageFilesJob.perform_later(self)
