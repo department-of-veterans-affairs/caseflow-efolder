@@ -11,23 +11,17 @@ class InitContainer extends React.PureComponent {
   render() {
     return <BrowserRouter>
       <div>
-        <div className="cf-content">
-          <div className="cf-content-inside">
-            <NavigationBar
-              appName="eFolder Express"
-              logoProps={{
-                accentColor: '#F0835e',
-                overlapColor: '#F0835e'
-              }}
-              userDisplayName={this.props.userDisplayName}
-              dropdownUrls={this.props.dropdownUrls}
-              defaultUrl="/react">
-              <div className="cf-wide-app section--document-list">
-                <Route path="/" component={WelcomeContainer} />
-              </div>
-            </NavigationBar>
-          </div>
-        </div>
+        <NavigationBar
+          appName="eFolder Express"
+          logoProps={{
+            accentColor: '#F0835e',
+            overlapColor: '#F0835e'
+          }}
+          userDisplayName={this.props.userDisplayName}
+          dropdownUrls={this.props.dropdownUrls}
+          defaultUrl="/react">
+          <Route path="/" component={WelcomeContainer} />
+        </NavigationBar>
         <Footer
           appName="eFolder Express"
           feedbackUrl={this.props.feedbackUrl} />
