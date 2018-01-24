@@ -5,7 +5,7 @@ import RecentDownloadRow from '../components/RecentDownloadRow';
 
 class RecentDownloadsContainer extends React.PureComponent {
   render() {
-    if (this.props.recentDownloads.length === 0) {
+    if (!this.props.recentDownloads.length) {
       return null;
     }
 
@@ -26,10 +26,6 @@ class RecentDownloadsContainer extends React.PureComponent {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    recentDownloads: state.recentDownloads
-  };
-};
+const mapStateToProps = (state) => ({ recentDownloads: state.recentDownloads });
 
 export default connect(mapStateToProps)(RecentDownloadsContainer);

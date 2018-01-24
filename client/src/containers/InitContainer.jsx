@@ -36,12 +36,10 @@ class InitContainer extends React.PureComponent {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    dropdownUrls: state.dropdownUrls,
-    feedbackUrl: state.feedbackUrl,
-    userDisplayName: state.userDisplayName
-  };
-};
+const mapStateToProps = (state) => ({
+  dropdownUrls: state.dropdownUrls,
+  feedbackUrl: state.feedbackUrl,
+  userDisplayName: state.userDisplayName
+});
 
 export default connect(mapStateToProps)(InitContainer);

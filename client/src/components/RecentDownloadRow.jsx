@@ -27,7 +27,7 @@ export default class RecentDownloadRow extends React.PureComponent {
       </td>
       <td className="ee-actions-cell">
         <Link to={`/downloads/${this.props.download.id}`}>
-          { downloadEncounteredErrors ? <AlertIcon /> : '' }
+          { downloadEncounteredErrors && <AlertIcon /> }
           { downloadInProgress ? ' View progress »' : ' View results »' }
         </Link>
       </td>

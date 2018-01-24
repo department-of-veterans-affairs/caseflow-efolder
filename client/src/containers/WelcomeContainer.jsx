@@ -46,10 +46,6 @@ Note: eFolder Express now includes Virtual VA documents from the Legacy Content 
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    authenticityToken: state.authenticityToken
-  };
-};
+const mapStateToProps = (state) => ({ authenticityToken: state.authenticityToken });
 
 export default connect(mapStateToProps)(WelcomeContainer);
