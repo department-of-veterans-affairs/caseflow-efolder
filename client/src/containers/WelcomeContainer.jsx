@@ -1,6 +1,5 @@
 import { css } from 'glamor';
 import React from 'react';
-import { connect } from 'react-redux';
 
 import AppSegment from '@department-of-veterans-affairs/appeals-frontend-toolkit/components/AppSegment';
 
@@ -11,10 +10,10 @@ const searchBarNoteTextStyling = css({
   textAlign: 'center'
 });
 
-class WelcomeContainer extends React.PureComponent {
+export default class WelcomeContainer extends React.PureComponent {
   render() {
     return <main className="usa-grid">
-      <AppSegment extraClassNames="ee-new-download" filledBackground>
+      <AppSegment filledBackground>
 
         <div className="ee-heading">
           <h1>Welcome to eFolder Express</h1>
@@ -25,16 +24,7 @@ class WelcomeContainer extends React.PureComponent {
 
         <div className="ee-search">
 
-          <form
-            className="usa-search usa-search-big cf-form"
-            id="new_download"
-            action="/downloads"
-            acceptCharset="UTF-8"
-            method="post">
-            <input
-              type="hidden"
-              name="authenticity_token"
-              value={this.props.authenticityToken} />
+          <form className="usa-search usa-search-big cf-form" id="new_download">
             <div role="search">
               <label className="usa-sr-only" htmlFor="file_number">
                 Search for a Veteran ID number below to get started.
@@ -57,7 +47,3 @@ Note: eFolder Express now includes Virtual VA documents from the Legacy Content 
     </main>;
   }
 }
-
-const mapStateToProps = (state) => ({ authenticityToken: state.authenticityToken });
-
-export default connect(mapStateToProps)(WelcomeContainer);

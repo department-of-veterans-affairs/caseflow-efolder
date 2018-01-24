@@ -11,7 +11,6 @@ class GuiController < ApplicationController
 
   def initial_react_data
     {
-      authenticityToken: form_authenticity_token,
       dropdownUrls: dropdown_urls,
       feedbackUrl: feedback_url,
       recentDownloads: recent_downloads.sort_by(&:created_at).reverse,
