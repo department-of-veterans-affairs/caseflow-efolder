@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import AlertIcon from './AlertIcon';
 
-export default class RecentDownloadRow extends React.Component {
+export default class RecentDownloadRow extends React.PureComponent {
   render() {
     // After efolder issue 813 is merged to master we can address the following todos. manifest_serializer.rb may
     // need to be modified slightly to include some additional fields (expiration_date, pending_documents, etc.)

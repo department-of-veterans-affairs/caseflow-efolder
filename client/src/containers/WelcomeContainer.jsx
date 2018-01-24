@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import RecentDownloadsContainer from './RecentDownloadsContainer';
 
-class WelcomeContainer extends React.Component {
+class WelcomeContainer extends React.PureComponent {
   render() {
     return <main className="usa-grid">
       <div className="cf-app">

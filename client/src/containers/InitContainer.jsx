@@ -7,7 +7,7 @@ import NavigationBar from '@department-of-veterans-affairs/appeals-frontend-tool
 
 import WelcomeContainer from './WelcomeContainer';
 
-class InitContainer extends React.Component {
+class InitContainer extends React.PureComponent {
   render() {
     return <BrowserRouter>
       <div>

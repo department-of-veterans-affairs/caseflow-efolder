@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default class AlertIcon extends React.Component {
+export default class AlertIcon extends React.PureComponent {
   render() {
     return <svg width="72px" height="72px" className="cf-icon-alert"
       xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72">

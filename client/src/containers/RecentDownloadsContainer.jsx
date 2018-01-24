@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import RecentDownloadRow from '../components/RecentDownloadRow';
 
-class RecentDownloadsContainer extends React.Component {
+class RecentDownloadsContainer extends React.PureComponent {
   render() {
     if (this.props.recentDownloads.length === 0) {
       return null;
