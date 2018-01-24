@@ -19,6 +19,9 @@ class Manifest < ActiveRecord::Base
     failed: 3
   }
 
+  UI_HOURS_UNTIL_EXPIRY = 72
+  API_HOURS_UNTIL_EXPIRY = 3
+
   def start!
     vbms_source.start!
     vva_source.start!
@@ -32,7 +35,7 @@ class Manifest < ActiveRecord::Base
   end
 
   def recently_downloaded_files?
-    finished? && fetched_files_at && fetched_files_at > 3.days.ago
+    finished? && fetched_files_at && fetched_files_at > 3.hours.ago
   end
 
   def reset_records
@@ -59,6 +62,11 @@ class Manifest < ActiveRecord::Base
     records.initialized.count * Record::AVERAGE_DOWNLOAD_TIME_IN_SECONDS
   end
 
+  # Zip expiration date will be determined on per user basis
+  def zip_expiration_date
+    requested_zip_at ? (requested_zip_at + UI_HOURS_UNTIL_EXPIRY.hours).strftime("%m/%d") : nil
+  end
+
   def number_failed_documents
     records.failed.count
   end
@@ -72,7 +80,7 @@ class Manifest < ActiveRecord::Base
   end
 
   def stream_zip!
-    S3Service.stream_content(s3_filename) if recently_downloaded_files?
+    S3Service.stream_content(s3_filename)
   end
 
   # If we do not yet have the veteran info saved in Caseflow's DB, then
@@ -101,6 +109,14 @@ class Manifest < ActiveRecord::Base
   end
 
   private
+
+  def file_download
+    files_downloads.find_by(user: RequestStore[:current_user])
+  end
+
+  def requested_zip_at
+    file_download ? file_download.requested_zip_at : nil
+  end
 
   def update_veteran_info
     return unless veteran

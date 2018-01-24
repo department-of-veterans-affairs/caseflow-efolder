@@ -56,7 +56,8 @@ class Fakes::DocumentService
 
     sleep_and_check_for_error(demo, source.name)
 
-    return [] if source.records.count == demo[:num_docs]
+    # clean up existing records
+    source.records.delete_all
 
     (1..(demo[:num_docs] || 0)).to_a.map do |i|
       create_document(i)

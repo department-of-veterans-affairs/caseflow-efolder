@@ -46,6 +46,7 @@ module StubbableUser
         u.email = "test@gmail.com"
         u.roles = options[:roles] || ["Download eFolder"]
         u.save
+        RequestStore.store[:current_user] = u
       end
     end
 
@@ -60,6 +61,7 @@ module StubbableUser
 
     def unauthenticate!
       Functions.delete_all_keys!
+      RequestStore.store[:current_user] = nil
       self.stub = nil
     end
 

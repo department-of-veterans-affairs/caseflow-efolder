@@ -34,7 +34,7 @@ class Api::V2::FilesDownloadsController < Api::V1::ApplicationController
   def json_files_downloads
     ActiveModelSerializers::SerializableResource.new(
       manifest,
-      each_serializer: Serializers::V2::FilesDownloadSerializer
+      each_serializer: Serializers::V2::ManifestSerializer
     ).as_json
   end
 

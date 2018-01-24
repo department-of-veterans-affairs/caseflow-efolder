@@ -32,7 +32,11 @@ class ManifestSource < ActiveRecord::Base
     end
   end
 
+  def expiry_hours
+    ui_user? ? Manifest::UI_HOURS_UNTIL_EXPIRY : Manifest::API_HOURS_UNTIL_EXPIRY
+  end
+
   def current?
-    success? && fetched_at && fetched_at > (ui_user? ? 72 : 3).hours.ago
+    success? && fetched_at && fetched_at > expiry_hours.hours.ago
   end
 end

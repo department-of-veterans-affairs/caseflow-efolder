@@ -111,6 +111,58 @@ describe Manifest do
     end
   end
 
+  context "#zip_expiration_date" do
+    let(:manifest) { Manifest.create(file_number: "1234") }
+    subject { manifest.zip_expiration_date }
+
+    context "when there is no record of files download" do
+      let!(:current_user) { User.authenticate!(roles: ["Reader"]) }
+      it { is_expected.to eq nil }
+    end
+
+    context "when there is no current user" do
+      let!(:current_user) { User.unauthenticate! }
+      it { is_expected.to eq nil }
+    end
+
+    context "when there is a record of files download" do
+      let!(:current_user) { User.authenticate!(roles: ["Reader"]) }
+      let!(:files_download) { FilesDownload.create(manifest: manifest, user: current_user, requested_zip_at: 14.hours.ago) }
+      it { is_expected.to eq "12/05" }
+    end
+  end
+
+  context "#recently_downloaded_files?" do
+    let(:manifest) { Manifest.create(file_number: "1234") }
+
+    subject { manifest.recently_downloaded_files? }
+
+    context "when recently downloaded files" do
+      before do
+        manifest.update(fetched_files_status: :finished, fetched_files_at: 2.hours.ago)
+      end
+      it { is_expected.to be_truthy }
+    end
+
+    context "when downloaded a while ago" do
+      before do
+        manifest.update(fetched_files_status: :finished, fetched_files_at: 12.hours.ago)
+      end
+      it { is_expected.to be_falsy }
+    end
+
+    context "when failed due to an error" do
+      before do
+        manifest.update(fetched_files_status: :failed)
+      end
+      it { is_expected.to be_falsy }
+    end
+
+    context "when never downloaded files" do
+      it { is_expected.to be_falsy }
+    end
+  end
+
   context "#records" do
     let(:manifest) { Manifest.create(file_number: "1234") }
     subject { manifest.records }
