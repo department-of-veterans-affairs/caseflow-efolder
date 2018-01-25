@@ -5,6 +5,7 @@ import { BrowserRouter, Route } from 'react-router-dom';
 import Footer from '@department-of-veterans-affairs/appeals-frontend-toolkit/components/Footer';
 import NavigationBar from '@department-of-veterans-affairs/appeals-frontend-toolkit/components/NavigationBar';
 
+import OutOfServiceContainer from './OutOfServiceContainer';
 import WelcomeContainer from './WelcomeContainer';
 
 class InitContainer extends React.PureComponent {
@@ -20,7 +21,8 @@ class InitContainer extends React.PureComponent {
           userDisplayName={this.props.userDisplayName}
           dropdownUrls={this.props.dropdownUrls}
           defaultUrl="/react">
-          <Route path="/" component={WelcomeContainer} />
+          <Route exact path="/react" component={WelcomeContainer} />
+          <Route exact path="/react/out-of-service" component={OutOfServiceContainer} />
         </NavigationBar>
         <Footer
           appName="eFolder Express"
