@@ -6,6 +6,7 @@ class Serializers::V2::FilesDownloadSerializer < ActiveModel::Serializer
   attribute :number_successful_documents
   attribute :number_failed_documents
   attribute :time_to_complete
+  attribute :seconds_left
 
   attribute :records do
     object.records.map do |document|
