@@ -46,7 +46,7 @@ describe "Manifests API v2", type: :request do
     let!(:files_download2) { FilesDownload.create(manifest: manifest2, user: another_user, requested_zip_at: 2.days.ago) }
     let!(:files_download3) { FilesDownload.create(manifest: manifest3, user: user) }
     let!(:files_download4) { FilesDownload.create(manifest: manifest2, user: user, requested_zip_at: 5.days.ago) }
-    let!(:files_download5) { FilesDownload.create(manifest: manifest4, user: user, requested_zip_at: 1.days.ago) }
+    let!(:files_download5) { FilesDownload.create(manifest: manifest4, user: user, requested_zip_at: 1.day.ago) }
 
     it "returns user's download history" do
       get "/api/v2/manifests/history", nil, headers
