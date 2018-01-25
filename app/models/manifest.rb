@@ -1,4 +1,8 @@
+require 'action_view'
+
 class Manifest < ActiveRecord::Base
+  include ActionView::Helpers::DateHelper
+
   has_many :sources, class_name: "ManifestSource", dependent: :destroy
   has_many :files_downloads, dependent: :destroy
   has_many :users, through: :files_downloads
@@ -47,6 +51,10 @@ class Manifest < ActiveRecord::Base
     records.success.count
   end
 
+  def time_to_complete
+    distance_of_time_in_words(Time.zone.now, Time.zone.now + seconds_left, include_seconds: true)
+  end
+
   def number_failed_documents
     records.failed.count
   end
@@ -89,6 +97,10 @@ class Manifest < ActiveRecord::Base
   end
 
   private
+
+  def seconds_left
+    records.initialized.count * Record::AVERAGE_DOWNLOAD_TIME
+  end
 
   def update_veteran_info
     return unless veteran
