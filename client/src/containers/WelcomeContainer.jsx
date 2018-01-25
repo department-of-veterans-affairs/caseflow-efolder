@@ -1,7 +1,7 @@
 import { css } from 'glamor';
 import React from 'react';
 
-import AppSegment from '@department-of-veterans-affairs/appeals-frontend-toolkit/components/AppSegment';
+import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/AppSegment';
 
 import RecentDownloadsContainer from './RecentDownloadsContainer';
 

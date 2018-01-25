@@ -9,7 +9,7 @@
     "lint:fix": "yarn run lint --fix"
   },
   "dependencies": {
-    "@department-of-veterans-affairs/appeals-frontend-toolkit": "^2.1.0",
+    "@department-of-veterans-affairs/caseflow-frontend-toolkit": "^2.2.0",
     "es5-shim": "^4.5.10",
     "glamor": "^2.20.40",
     "history": "^4.7.2",

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import AppSegment from '@department-of-veterans-affairs/appeals-frontend-toolkit/components/AppSegment';
+import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/AppSegment';
 
 export default class OutOfServiceContainer extends React.PureComponent {
   render() {
