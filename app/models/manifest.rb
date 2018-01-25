@@ -1,4 +1,4 @@
-require 'action_view'
+require "action_view"
 
 class Manifest < ActiveRecord::Base
   include ActionView::Helpers::DateHelper
