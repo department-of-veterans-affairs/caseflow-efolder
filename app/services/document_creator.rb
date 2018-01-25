@@ -38,6 +38,7 @@ class DocumentCreator
       external_documents.each do |document|
         valid_records << Record.create_from_external_document(manifest_source, document)
       end
+      # User can delete documents from VBMS so clean up these records if they were previously created
       remove_deleted_records(valid_records)
     end
   end
