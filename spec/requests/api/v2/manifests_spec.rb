@@ -80,6 +80,8 @@ describe "Manifests API v2", type: :request do
             number_successful_documents: 0,
             number_failed_documents: 0,
             zip_expiration_date: nil,
+            time_to_complete: "less than 5 seconds",
+            seconds_left: 0,
             sources: [
               {
                 source: "VBMS",
