@@ -21,6 +21,28 @@ describe ManifestSource do
     end
   end
 
+  context "#expiry_hours" do
+    let(:manifest) { Manifest.create(file_number: "1234") }
+    let(:source) { ManifestSource.create(name: %w[VBMS VVA].sample, manifest: manifest) }
+
+    subject { source.expiry_hours }
+
+    context "when current user has a Reader role" do
+      let!(:current_user) { User.authenticate!(roles: ["Reader"]) }
+      it { is_expected.to eq Manifest::API_HOURS_UNTIL_EXPIRY }
+    end
+
+    context "when current user has a Download eFolder role" do
+      let!(:current_user) { User.authenticate!(roles: ["Download eFolder"]) }
+      it { is_expected.to eq Manifest::UI_HOURS_UNTIL_EXPIRY }
+    end
+
+    context "when current user has no roles" do
+      let!(:current_user) { User.authenticate!(roles: []) }
+      it { is_expected.to eq Manifest::API_HOURS_UNTIL_EXPIRY }
+    end
+  end
+
   context "#start!" do
     before do
       allow(V2::DownloadManifestJob).to receive(:perform_later)

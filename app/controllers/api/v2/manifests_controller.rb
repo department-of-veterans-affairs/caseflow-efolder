@@ -1,7 +1,7 @@
 # TODO: create Api::V2::ApplicationController
 class Api::V2::ManifestsController < Api::V1::ApplicationController
-  before_action :validate_header
-  before_action :validate_access
+  before_action :validate_header, except: :history
+  before_action :validate_access, except: :history
 
   def start
     manifest.start!
@@ -12,6 +12,10 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
     render json: json_manifests
   end
 
+  def history
+    render json: recent_downloads, each_serializer: Serializers::V2::ManifestSerializer
+  end
+
   private
 
   def json_manifests
@@ -19,6 +23,10 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
       manifest,
       each_serializer: Serializers::V2::ManifestSerializer
     ).as_json
+  end
+
+  def recent_downloads
+    @recent_downloads ||= current_user.recent_downloads
   end
 
   def file_number
