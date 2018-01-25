@@ -220,8 +220,10 @@ table td {
 
 }
 
-.cf-app-footer {
-  margin-top: 150px;
+.not-react {
+  .cf-app-footer {
+    margin-top: 150px;
+  }
 }
 
 
