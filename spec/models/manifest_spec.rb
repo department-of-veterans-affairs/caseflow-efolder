@@ -37,6 +37,80 @@ describe Manifest do
     end
   end
 
+  context "#time_to_complete" do
+    let(:manifest) { Manifest.create(file_number: "1234") }
+
+    subject { manifest.time_to_complete }
+
+    let!(:records) do
+      [
+        manifest.vbms_source.records.create(
+          received_at: Time.utc(2015, 1, 3, 17, 0, 0),
+          type_id: "123",
+          status: :success,
+          version_id: "{ABC123-DEF123-GHI456A}",
+          series_id: "{ABC321-DEF123-GHI456A}",
+          mime_type: "application/pdf"
+        ),
+        manifest.vva_source.records.create(
+          received_at: Time.utc(2017, 1, 3, 17, 0, 0),
+          type_id: "345",
+          version_id: "{FDC123-DEF123-GHI456A}",
+          series_id: "{KYC321-DEF123-GHI456A}",
+          mime_type: "application/pdf"
+        ),
+        manifest.vbms_source.records.create(
+          received_at: Time.utc(2016, 1, 3, 17, 0, 0),
+          type_id: "567",
+          version_id: "{CBA123-DEF123-GHI456A}",
+          series_id: "{CBA321-DEF123-GHI456A}",
+          mime_type: "application/pdf"
+        )
+      ]
+    end
+
+    it "should be determined on the amount of unproccesed documents" do
+      expect(subject).to eq "less than 5 seconds"
+    end
+  end
+
+  context "#seconds_left" do
+    let(:manifest) { Manifest.create(file_number: "1234") }
+
+    subject { manifest.seconds_left }
+
+    let!(:records) do
+      [
+        manifest.vbms_source.records.create(
+          received_at: Time.utc(2015, 1, 3, 17, 0, 0),
+          type_id: "123",
+          status: :success,
+          version_id: "{ABC123-DEF123-GHI456A}",
+          series_id: "{ABC321-DEF123-GHI456A}",
+          mime_type: "application/pdf"
+        ),
+        manifest.vva_source.records.create(
+          received_at: Time.utc(2017, 1, 3, 17, 0, 0),
+          type_id: "345",
+          version_id: "{FDC123-DEF123-GHI456A}",
+          series_id: "{KYC321-DEF123-GHI456A}",
+          mime_type: "application/pdf"
+        ),
+        manifest.vbms_source.records.create(
+          received_at: Time.utc(2016, 1, 3, 17, 0, 0),
+          type_id: "567",
+          version_id: "{CBA123-DEF123-GHI456A}",
+          series_id: "{CBA321-DEF123-GHI456A}",
+          mime_type: "application/pdf"
+        )
+      ]
+    end
+
+    it "should be determined on the amount of unproccesed documents" do
+      expect(subject).to eq 4
+    end
+  end
+
   context "#records" do
     let(:manifest) { Manifest.create(file_number: "1234") }
     subject { manifest.records }

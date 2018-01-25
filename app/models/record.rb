@@ -29,6 +29,8 @@ class Record < ActiveRecord::Base
   delegate :manifest, :service, to: :manifest_source
   delegate :file_number, to: :manifest
 
+  AVERAGE_DOWNLOAD_TIME_IN_SECONDS = 2
+
   MAXIMUM_FILENAME_LENGTH = 100
 
   def fetch!
