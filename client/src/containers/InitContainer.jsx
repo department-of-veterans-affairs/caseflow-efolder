@@ -10,7 +10,7 @@ import WelcomeContainer from './WelcomeContainer';
 
 class InitContainer extends React.PureComponent {
   render() {
-    return <BrowserRouter>
+    return <BrowserRouter basename="/react">
       <div>
         <NavigationBar
           appName="eFolder Express"
@@ -20,9 +20,9 @@ class InitContainer extends React.PureComponent {
           }}
           userDisplayName={this.props.userDisplayName}
           dropdownUrls={this.props.dropdownUrls}
-          defaultUrl="/react">
-          <Route exact path="/react" component={WelcomeContainer} />
-          <Route exact path="/react/out-of-service" component={OutOfServiceContainer} />
+          defaultUrl="/">
+          <Route exact path="/" component={WelcomeContainer} />
+          <Route exact path="/out-of-service" component={OutOfServiceContainer} />
         </NavigationBar>
         <Footer
           appName="eFolder Express"
