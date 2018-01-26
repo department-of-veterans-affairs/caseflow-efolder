@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import AppSegment from '@department-of-veterans-affairs/appeals-frontend-toolkit/components/AppSegment';
+import Link from '@department-of-veterans-affairs/appeals-frontend-toolkit/components/Link';
 
 class HelpContainer extends React.PureComponent {
   render() {
@@ -9,14 +10,14 @@ class HelpContainer extends React.PureComponent {
       <AppSegment extraClassNames="cf-help-content" filledBackground>
 
         <h1 id="#top">Welcome to the eFolder Express Help Page!</h1>
-        <p>Here you will find <a href="#training-videos">Training Videos</a> and answers to the
-          <a href="#faq">Frequently Asked Questions (FAQs)</a> for eFolder Express, as well as links to the
-          <a href={this.props.trainingGuidePath} target="_blank">Training Guide</a> and the
-          <a href={this.props.referenceGuidePath} target="_blank">Quick Reference Guide</a>.
+        <p>Here you will find <Link href="#training-videos">Training Videos</Link> and answers to the&nbsp;
+          <Link href="#faq">Frequently Asked Questions (FAQs)</Link> for eFolder Express, as well as links to the&nbsp;
+          <Link href={this.props.trainingGuidePath} target="_blank">Training Guide</Link> and the&nbsp;
+          <Link href={this.props.referenceGuidePath} target="_blank">Quick Reference Guide</Link>.
           These items are provided to assist you as you access and use eFolder Express.
           If you require further assistance after reviewing these items,
-          please contact the Caseflow Product Support Team by calling (1-844-876-5548) or email
-          <a href="mailto: caseflow@va.gov">(caseflow@va.gov)</a>.
+          please contact the Caseflow Product Support Team by calling (1-844-876-5548) or email&nbsp;
+          <Link href="mailto: caseflow@va.gov">(caseflow@va.gov)</Link>.
           We look forward to assisting you.</p>
         <br />
 
@@ -100,30 +101,32 @@ class HelpContainer extends React.PureComponent {
         <h1 id="faq">Frequently Asked Questions</h1>
         <div className="cf-help-divider"></div>
         <ul id="toc" className="usa-unstyled-list">
-          <li><a href="#what-is-efolder-express">1. What is eFolder Express?</a></li>
-          <li><a href="#How-efolder-was-developed">2. How was eFolder Express developed? Who was involved?</a></li>
-          <li><a href="#how-to-access">3. How do I get access to eFolder Express?</a></li>
-          <li><a href="#browser-compatibility">4. Which browser can I use with eFolder Express?</a></li>
-          <li><a href="#view-efolder">5. After searching for a case, I received the message
-            "You don't have permission to view this efolder." What does this mean?</a></li>
-          <li><a href="#virtual-va">6. Does eFolder Express downloads include Virtual VA documents?</a></li>
-          <li><a href="#efolder-legacy">7. Does eFolder Express downloads include
-            Legacy Content Manager documents?</a></li>
-          <li><a href="#start-retrieving">8. What happens when I click "Start Retrieving eFolder"?</a></li>
-          <li><a href="#retrieval-order">9. In what order does eFolder Express retrieve files from VBMS?</a></li>
-          <li><a href="#cancel-retrieval">10. Can I cancel the file retrieval process after it starts? </a></li>
-          <li><a href="#"selecting-documents>11.  What if I only need to download specific documents from an eFolder?
-            Can I select the documents I want to download?</a></li>
-          <li><a href="#errors-retrieving">12. Why am I getting errors while trying
-            to retrieve documents from an efolder?</a></li>
-          <li><a href="#download-efolder">13. What happens when I click "Download eFolder"?</a></li>
-          <li><a href="#name-downloaded-efolder">14. How does eFolder Express name
-            the downloaded efolder documents?</a></li>
-          <li><a href="#history">15. What is History? How long does an efolder remain in my History?</a></li>
-          <li><a href="#telecommuting">16. Does eFolder Express work while telecommuting?</a></li>
-          <li><a href="#encounter-problems">17. What should I do if I encounter problems?</a></li>
-          <li><a href="#share-feedback">18. How do I share my feedback for improving eFolder Express?</a></li>
-          <li><a href="#need-help">19. What if I still need help?</a></li>
+          <li><Link href="#what-is-efolder-express">1. What is eFolder Express?</Link></li>
+          <li>
+            <Link href="#How-efolder-was-developed">2. How was eFolder Express developed? Who was involved?</Link>
+          </li>
+          <li><Link href="#how-to-access">3. How do I get access to eFolder Express?</Link></li>
+          <li><Link href="#browser-compatibility">4. Which browser can I use with eFolder Express?</Link></li>
+          <li><Link href="#view-efolder">5. After searching for a case, I received the message
+            "You don't have permission to view this efolder." What does this mean?</Link></li>
+          <li><Link href="#virtual-va">6. Does eFolder Express downloads include Virtual VA documents?</Link></li>
+          <li><Link href="#efolder-legacy">7. Does eFolder Express downloads include
+            Legacy Content Manager documents?</Link></li>
+          <li><Link href="#start-retrieving">8. What happens when I click "Start Retrieving eFolder"?</Link></li>
+          <li><Link href="#retrieval-order">9. In what order does eFolder Express retrieve files from VBMS?</Link></li>
+          <li><Link href="#cancel-retrieval">10. Can I cancel the file retrieval process after it starts? </Link></li>
+          <li><Link href="#"selecting-documents>11.  What if I only need to download specific documents from an eFolder?
+            Can I select the documents I want to download?</Link></li>
+          <li><Link href="#errors-retrieving">12. Why am I getting errors while trying
+            to retrieve documents from an efolder?</Link></li>
+          <li><Link href="#download-efolder">13. What happens when I click "Download eFolder"?</Link></li>
+          <li><Link href="#name-downloaded-efolder">14. How does eFolder Express name
+            the downloaded efolder documents?</Link></li>
+          <li><Link href="#history">15. What is History? How long does an efolder remain in my History?</Link></li>
+          <li><Link href="#telecommuting">16. Does eFolder Express work while telecommuting?</Link></li>
+          <li><Link href="#encounter-problems">17. What should I do if I encounter problems?</Link></li>
+          <li><Link href="#share-feedback">18. How do I share my feedback for improving eFolder Express?</Link></li>
+          <li><Link href="#need-help">19. What if I still need help?</Link></li>
         </ul>
         <br />
 
@@ -134,7 +137,7 @@ class HelpContainer extends React.PureComponent {
           from a veteran's VBMS efolder, reducing the need to manually click and save these documents one by one.
           It was built by the Digital Service at VA (DSVA) and will create cost savings and process improvement for
           many areas of the VA such as the Office of General Council and the Records Management Center.
-          Learn more: <a href={this.props.trainingGuidePath} target="_blank">Training Guide</a>.
+          Learn more: <Link href={this.props.trainingGuidePath} target="_blank">Training Guide</Link>.
         </p>
 
         <h2 id="How-efolder-was-developed">2. How was eFolder Express developed? Who was involved?</h2>
@@ -274,7 +277,7 @@ class HelpContainer extends React.PureComponent {
         <p>
           If you encounter any problems while using eFolder Express, you should ask your supervisor for assistance.
           If you and your supervisor are unable to resolve the issue, please reach out to the Caseflow Product Support
-          Team by calling 1-844-876-5548 or emailing <a href="mailto: caseflow@va.gov">caseflow@va.gov.</a>
+          Team by calling 1-844-876-5548 or emailing <Link href="mailto: caseflow@va.gov">caseflow@va.gov.</Link>
         </p>
 
         <h2 id="share-feedback">18. How do I share my feedback for improving eFolder Express?</h2>
@@ -285,16 +288,16 @@ class HelpContainer extends React.PureComponent {
 
         <h2 id="need-help">19. What if I still need help?</h2>
         <p>
-          If you require further assistance after reviewing the <a href="#faq">FAQs</a>,
-          <a href={this.props.referenceGuidePath} target="_blank">Quick Reference Guide</a>,
-          or <a href={this.props.trainingGuidePath} target="_blank">Training Guide</a>,
+          If you require further assistance after reviewing the <Link href="#faq">FAQs</Link>,&nbsp;
+          <Link href={this.props.referenceGuidePath} target="_blank">Quick Reference Guide</Link>,&nbsp;
+          or <Link href={this.props.trainingGuidePath} target="_blank">Training Guide</Link>,
           please contact the Caseflow Product Support Team by phone (1-844-876-5548)
-          or email <a href="mailto: caseflow@va.gov">(caseflow@va.gov).</a> We look forward to assisting you.
+          or email (<Link href="mailto: caseflow@va.gov">caseflow@va.gov</Link>). We look forward to assisting you.
         </p>
 
       </AppSegment>
 
-      <AppSegment><a href ="#top">Back To Top</a></AppSegment>
+      <AppSegment><Link href ="#top">Back To Top</Link></AppSegment>
 
     </main>;
   }
