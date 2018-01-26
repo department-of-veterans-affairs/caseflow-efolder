@@ -34,9 +34,8 @@ class DocumentCreator
 
   def create
     ManifestSource.transaction do
-      valid_records = []
-      external_documents.each do |document|
-        valid_records << Record.create_from_external_document(manifest_source, document)
+      valid_records = external_documents.map do |document|
+        Record.create_from_external_document(manifest_source, document)
       end
       # User can delete documents from VBMS so clean up these records if they were previously created
       remove_deleted_records(valid_records)
@@ -44,7 +43,7 @@ class DocumentCreator
   end
 
   def remove_deleted_records(valid_records)
-    (manifest_source.records - valid_records).each(&:delete)
+    (manifest_source.records - valid_records).each(&:destroy)
   end
 
   # Override the getter to return only non-restricted documents
