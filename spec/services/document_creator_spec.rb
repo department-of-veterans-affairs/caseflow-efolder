@@ -55,5 +55,22 @@ describe DocumentCreator do
         expect(source.reload.records.first.series_id).to eq "4"
       end
     end
+
+    context "documents have been deleted from VBMS but still present in the DB" do
+      let(:documents) do
+        [
+          OpenStruct.new(document_id: "1", series_id: "3"),
+          OpenStruct.new(document_id: "2", series_id: "4")
+        ]
+      end
+
+      it "removes deleted documents from the DB" do
+        source.records.create(version_id: "3", series_id: "5")
+        subject
+        expect(source.reload.records.size).to eq 2
+        expect(source.reload.records.first.series_id).to eq "3"
+        expect(source.reload.records.second.series_id).to eq "4"
+      end
+    end
   end
 end
