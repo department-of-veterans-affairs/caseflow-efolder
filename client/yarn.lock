@@ -54,22 +54,9 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
-"@department-of-veterans-affairs/appeals-frontend-toolkit@^2.1.0":
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/@department-of-veterans-affairs/appeals-frontend-toolkit/-/appeals-frontend-toolkit-2.2.0.tgz#ebe2f37227c518ec060403facb920313265f1c3c"
-  dependencies:
-    classnames "^2.2.5"
-    glamor "^2.20.40"
-    lodash "^4.17.4"
-    react-redux "^5.0.6"
-    react-router-dom "^4.2.2"
-    redux "^3.7.2"
-    redux-perf-middleware "^1.2.2"
-    redux-thunk "^2.2.0"
-
 "@department-of-veterans-affairs/caseflow-frontend-toolkit@^2.2.0":
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/@department-of-veterans-affairs/caseflow-frontend-toolkit/-/caseflow-frontend-toolkit-2.2.0.tgz#3aea5ca147c46171003b79f71a164a58e930e316"
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/@department-of-veterans-affairs/caseflow-frontend-toolkit/-/caseflow-frontend-toolkit-2.4.0.tgz#bce96f46155637a0c5f175adb213d4dd6a3a2c37"
   dependencies:
     classnames "^2.2.5"
     glamor "^2.20.40"

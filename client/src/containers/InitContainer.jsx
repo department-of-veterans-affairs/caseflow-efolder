@@ -2,9 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { BrowserRouter, Route } from 'react-router-dom';
 
-import Footer from '@department-of-veterans-affairs/appeals-frontend-toolkit/components/Footer';
-import NavigationBar from '@department-of-veterans-affairs/appeals-frontend-toolkit/components/NavigationBar';
+import Footer from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/Footer';
+import NavigationBar from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/NavigationBar';
 
+import OutOfServiceContainer from './OutOfServiceContainer';
 import HelpContainer from './HelpContainer';
 import WelcomeContainer from './WelcomeContainer';
 
@@ -22,6 +23,7 @@ class InitContainer extends React.PureComponent {
           dropdownUrls={this.props.dropdownUrls}
           defaultUrl="/">
           <Route exact path="/" component={WelcomeContainer} />
+          <Route exact path="/out-of-service" component={OutOfServiceContainer} />
           <Route exact path="/help" component={HelpContainer} />
         </NavigationBar>
         <Footer

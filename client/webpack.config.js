@@ -2,7 +2,7 @@ const _ = require('lodash');
 const path = require('path');
 
 const baseConfigs = require(
-  '@department-of-veterans-affairs/appeals-frontend-toolkit/config/getWebpackConfig'
+  '@department-of-veterans-affairs/caseflow-frontend-toolkit/config/getWebpackConfig'
 )(__dirname, './src/index');
 
 module.exports = _.merge(baseConfigs, {
