@@ -46,6 +46,10 @@ gem "dogstatsd-ruby"
 # SSOI
 gem "omniauth-saml-va", git: "https://github.com/department-of-veterans-affairs/omniauth-saml-va", branch: "paultag/css"
 
+# Required until downstream dependency upgrades omniauth to 1.3.2 or greater.
+# https://github.com/omniauth/omniauth-saml/blob/89eeb83517b2333666c4cb627d416cef63ac041d/omniauth-saml.gemspec#L16
+gem "omniauth", "~> 1.3.2"
+
 gem "puma"
 
 gem "rack-cors", require: "rack/cors"
