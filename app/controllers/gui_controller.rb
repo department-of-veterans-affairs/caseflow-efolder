@@ -14,7 +14,10 @@ class GuiController < ApplicationController
       dropdownUrls: dropdown_urls,
       feedbackUrl: feedback_url,
       recentDownloads: recent_downloads.sort_by(&:created_at).reverse,
-      userDisplayName: current_user.display_name
+      userDisplayName: current_user.display_name,
+      trainingGuidePath: ActionController::Base.helpers.asset_path("training_guide.pdf"),
+      referenceGuidePath: ActionController::Base.helpers.asset_path("reference_guide.pdf"),
+      efolderAccessImagePath: ActionController::Base.helpers.image_path("help/efolder-access.png")
     }.to_json
   end
   helper_method :initial_react_data

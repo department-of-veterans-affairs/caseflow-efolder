@@ -33,8 +33,11 @@ Rails.application.routes.draw do
     end
 
     namespace :v2 do
-      post :manifests, to: "manifests#start"
-      get :manifests, to: "manifests#progress"
+      namespace :manifests, only: [] do
+        post "/", action: :start
+        get "/", action: :progress
+        get :history
+      end
       resources :manifests, only: [] do
         post :files_downloads, to: "files_downloads#start"
         get :files_downloads, to: "files_downloads#progress"

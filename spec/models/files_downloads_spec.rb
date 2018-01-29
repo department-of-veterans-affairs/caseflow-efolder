@@ -20,20 +20,11 @@ describe FilesDownload do
       end
     end
 
-    context "when recently downloaded the files" do
-      it "does not start the job" do
-        manifest.update(fetched_files_status: :finished, fetched_files_at: 2.hours.ago)
+    context "when the job is already pending" do
+      it "starts the job" do
+        manifest.update(fetched_files_status: :pending, fetched_files_at: 2.hours.ago)
         subject
         expect(V2::PackageFilesJob).to_not have_received(:perform_later)
-      end
-    end
-
-    context "when files are expired" do
-      it "starts the job" do
-        manifest.update(fetched_files_status: :finished, fetched_files_at: 4.days.ago)
-        subject
-        expect(manifest.fetched_files_status).to eq "pending"
-        expect(V2::PackageFilesJob).to have_received(:perform_later)
       end
     end
 

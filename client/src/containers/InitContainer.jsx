@@ -6,6 +6,7 @@ import Footer from '@department-of-veterans-affairs/caseflow-frontend-toolkit/co
 import NavigationBar from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/NavigationBar';
 
 import OutOfServiceContainer from './OutOfServiceContainer';
+import HelpContainer from './HelpContainer';
 import WelcomeContainer from './WelcomeContainer';
 
 class InitContainer extends React.PureComponent {
@@ -23,6 +24,7 @@ class InitContainer extends React.PureComponent {
           defaultUrl="/">
           <Route exact path="/" component={WelcomeContainer} />
           <Route exact path="/out-of-service" component={OutOfServiceContainer} />
+          <Route exact path="/help" component={HelpContainer} />
         </NavigationBar>
         <Footer
           appName="eFolder Express"
