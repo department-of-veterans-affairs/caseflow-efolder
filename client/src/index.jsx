@@ -14,6 +14,6 @@ module.exports = {
 
     render(<Provider store={store}>
       <InitContainer />
-    </Provider>, document.getElementById('efx_app_v2'));
+    </Provider>, document.getElementById('efolder_express_app'));
   }
 };
