@@ -5,11 +5,12 @@ import { BrowserRouter, Route } from 'react-router-dom';
 import Footer from '@department-of-veterans-affairs/appeals-frontend-toolkit/components/Footer';
 import NavigationBar from '@department-of-veterans-affairs/appeals-frontend-toolkit/components/NavigationBar';
 
+import HelpContainer from './HelpContainer';
 import WelcomeContainer from './WelcomeContainer';
 
 class InitContainer extends React.PureComponent {
   render() {
-    return <BrowserRouter>
+    return <BrowserRouter basename="/react">
       <div>
         <NavigationBar
           appName="eFolder Express"
@@ -19,8 +20,9 @@ class InitContainer extends React.PureComponent {
           }}
           userDisplayName={this.props.userDisplayName}
           dropdownUrls={this.props.dropdownUrls}
-          defaultUrl="/react">
-          <Route path="/" component={WelcomeContainer} />
+          defaultUrl="/">
+          <Route exact path="/" component={WelcomeContainer} />
+          <Route exact path="/help" component={HelpContainer} />
         </NavigationBar>
         <Footer
           appName="eFolder Express"

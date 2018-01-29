@@ -9,6 +9,6 @@ module.exports = _.merge(baseConfigs, {
   output: {
     path: path.resolve(__dirname, '..', 'app', 'assets', 'javascripts'),
     filename: 'react-app.js',
-    library: 'efx'
+    library: 'efolderExpress'
   }
 });

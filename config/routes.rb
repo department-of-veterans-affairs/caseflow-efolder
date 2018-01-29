@@ -12,7 +12,7 @@ Rails.application.routes.draw do
 
   post 'increment_vva_coachmarks_status', to: 'downloads#increment_vva_coachmarks_status'
 
-  get 'react', to: 'gui#react'
+  match '/react(/:any)' => 'gui#react', via: [:get]
 
   resources :downloads, only: [:new, :create, :show] do
     post :start, on: :member
