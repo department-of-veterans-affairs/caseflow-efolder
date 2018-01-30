@@ -8,7 +8,7 @@ class RecordFetcher
 
   def process
     s = Redis::Semaphore.new("record_#{record.id}".to_s,
-                             connection: Rails.application.secrets.redis_url_sidekiq)
+                             url: Rails.application.secrets.redis_url_sidekiq)
     s.lock(SECONDS_TO_AUTO_UNLOCK)
     content_from_s3 || content_from_vbms
   rescue *EXCEPTIONS
