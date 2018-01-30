@@ -1,6 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
+import Link from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/Link';
 import StatusMessage from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/StatusMessage';
 
 export default class UnauthorizedContainer extends React.PureComponent {
