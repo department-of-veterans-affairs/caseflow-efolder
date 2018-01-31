@@ -1,5 +1,6 @@
 import { css } from 'glamor';
 import React from 'react';
+import { connect } from 'react-redux';
 import request from 'superagent';
 import nocache from 'superagent-no-cache';
 
@@ -12,7 +13,7 @@ const searchBarNoteTextStyling = css({
   textAlign: 'center'
 });
 
-export default class WelcomeContainer extends React.PureComponent {
+class WelcomeContainer extends React.PureComponent {
   updateSearchInput(event) {
     this.searchInputText = event.target.value;
   }
@@ -28,7 +29,7 @@ export default class WelcomeContainer extends React.PureComponent {
       Accept: 'application/json',
       'Content-Type': 'application/json',
       FILE_NUMBER: this.searchInputText,
-      'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+      'X-CSRF-Token': this.props.csrfToken
     };
 
     request.
@@ -88,3 +89,7 @@ Note: eFolder Express now includes Virtual VA documents from the Legacy Content 
     </main>;
   }
 }
+
+const mapStateToProps = (state) => ({ csrfToken: state.csrfToken });
+
+export default connect(mapStateToProps)(WelcomeContainer);
