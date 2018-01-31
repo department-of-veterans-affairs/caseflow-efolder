@@ -5,7 +5,7 @@ class V2::DownloadManifestJob < ActiveJob::Base
 
   def perform(manifest_source, ui_user)
     s = Redis::Semaphore.new("download_manifest_source_#{manifest_source.id}".to_s,
-                             connection: Rails.application.secrets.redis_url_sidekiq)
+                             url: Rails.application.secrets.redis_url_sidekiq)
 
     s.lock(SECONDS_TO_AUTO_UNLOCK)
     return if manifest_source.current?
