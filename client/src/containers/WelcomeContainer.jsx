@@ -28,8 +28,7 @@ export default class WelcomeContainer extends React.PureComponent {
       Accept: 'application/json',
       'Content-Type': 'application/json',
       FILE_NUMBER: this.searchInputText,
-      'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
-      'X-Requested-With': 'XMLHttpRequest'
+      'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
     };
 
     request.
