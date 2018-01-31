@@ -14,17 +14,11 @@ const searchBarNoteTextStyling = css({
 });
 
 class WelcomeContainer extends React.PureComponent {
-  updateSearchInput(event) {
+  handleInputChange = (event) => {
     this.searchInputText = event.target.value;
   }
 
-  handleKeyPress(event) {
-    if (event.key === 'Enter') {
-      this.submitSearchInput();
-    }
-  }
-
-  submitSearchInput() {
+  handleFormSubmit = () => {
     const headers = {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -60,7 +54,7 @@ class WelcomeContainer extends React.PureComponent {
 
         <div className="ee-search">
 
-          <div className="usa-search usa-search-big cf-form" id="new_download">
+          <form className="usa-search usa-search-big cf-form" id="new_download" onSubmit={this.handleSubmit}>
             <div role="search">
               <label className="usa-sr-only" htmlFor="file_number">
                 Search for a Veteran ID number below to get started.
@@ -69,14 +63,13 @@ class WelcomeContainer extends React.PureComponent {
                 type="search"
                 name="file_number"
                 id="file_number"
-                onChange={this.updateSearchInput.bind(this)}
-                onKeyPress={this.handleKeyPress.bind(this)}
+                onChange={this.handleInputChange}
               />
-              <button type="submit" className="cf-submit" onClick={this.submitSearchInput.bind(this)}>
+              <button type="submit" className="cf-submit" onClick={this.handleFormSubmit}>
                 <span className="usa-search-submit-text">Search</span>
               </button>
             </div>
-          </div>
+          </form>
 
           <p {...searchBarNoteTextStyling}>
 Note: eFolder Express now includes Virtual VA documents from the Legacy Content Manager Documents tab in VBMS.
