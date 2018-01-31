@@ -18,7 +18,7 @@ class WelcomeContainer extends React.PureComponent {
     this.searchInputText = event.target.value;
   }
 
-  handleFormSubmit = () => {
+  handleFormSubmit = (event) => {
     const headers = {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -39,6 +39,8 @@ class WelcomeContainer extends React.PureComponent {
           this.props.history.push(`/downloads/${resp.body.data.id}`);
         }
       );
+
+    event.preventDefault();
   }
 
   render() {
@@ -54,7 +56,7 @@ class WelcomeContainer extends React.PureComponent {
 
         <div className="ee-search">
 
-          <form className="usa-search usa-search-big cf-form" id="new_download" onSubmit={this.handleSubmit}>
+          <form className="usa-search usa-search-big cf-form" id="new_download" onSubmit={this.handleFormSubmit}>
             <div role="search">
               <label className="usa-sr-only" htmlFor="file_number">
                 Search for a Veteran ID number below to get started.
@@ -65,7 +67,7 @@ class WelcomeContainer extends React.PureComponent {
                 id="file_number"
                 onChange={this.handleInputChange}
               />
-              <button type="submit" className="cf-submit" onClick={this.handleFormSubmit}>
+              <button type="submit" className="cf-submit">
                 <span className="usa-search-submit-text">Search</span>
               </button>
             </div>
