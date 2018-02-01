@@ -93,8 +93,6 @@ const mapStateToProps = (state) => ({
   searchInputText: state.searchInputText
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  ...bindActionCreators({ updateSearchInputText }, dispatch)
-});
+const mapDispatchToProps = (dispatch) => bindActionCreators({ updateSearchInputText }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(WelcomeContainer);
