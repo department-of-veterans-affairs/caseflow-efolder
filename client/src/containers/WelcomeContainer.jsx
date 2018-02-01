@@ -1,11 +1,13 @@
 import { css } from 'glamor';
 import React from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import request from 'superagent';
 import nocache from 'superagent-no-cache';
 
 import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/AppSegment';
 
+import { updateSearchInputText } from '../actions';
 import RecentDownloadsContainer from './RecentDownloadsContainer';
 
 const searchBarNoteTextStyling = css({
@@ -15,14 +17,14 @@ const searchBarNoteTextStyling = css({
 
 class WelcomeContainer extends React.PureComponent {
   handleInputChange = (event) => {
-    this.searchInputText = event.target.value;
+    this.props.updateSearchInputText(event.target.value);
   }
 
   handleFormSubmit = (event) => {
     const headers = {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      FILE_NUMBER: this.searchInputText,
+      FILE_NUMBER: this.props.searchInputText,
       'X-CSRF-Token': this.props.csrfToken
     };
 
@@ -65,6 +67,7 @@ class WelcomeContainer extends React.PureComponent {
                 type="search"
                 name="file_number"
                 id="file_number"
+                value={this.props.searchInputText}
                 onChange={this.handleInputChange}
               />
               <button type="submit" className="cf-submit">
@@ -85,6 +88,13 @@ Note: eFolder Express now includes Virtual VA documents from the Legacy Content 
   }
 }
 
-const mapStateToProps = (state) => ({ csrfToken: state.csrfToken });
+const mapStateToProps = (state) => ({
+  csrfToken: state.csrfToken,
+  searchInputText: state.searchInputText
+});
 
-export default connect(mapStateToProps)(WelcomeContainer);
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators({ updateSearchInputText }, dispatch)
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(WelcomeContainer);

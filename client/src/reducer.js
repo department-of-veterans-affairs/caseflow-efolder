@@ -1,10 +1,10 @@
-import * as Constants from './actionTypes';
+import { UPDATE_SEARCH_TEXT } from './actionTypes';
 
-export default function reducer(state, action) {
+export default function reducer(state = {}, action = {}) {
   switch (action.type) {
-  case Constants.UPDATE_TEXTAREA:
+  case UPDATE_SEARCH_TEXT:
     return { ...state,
-      text: action.payload };
+      searchInputText: action.payload };
   default:
     return state;
   }
