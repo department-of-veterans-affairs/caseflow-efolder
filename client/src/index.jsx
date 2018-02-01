@@ -7,9 +7,12 @@ import thunk from 'redux-thunk';
 import reducer from './reducer';
 import InitContainer from './containers/InitContainer';
 
+const initState = { searchInputText: '' };
+
 module.exports = {
   init(props) {
-    const store = createStore(reducer, props, applyMiddleware(thunk));
+    const store = createStore(reducer, { ...initState,
+      ...props }, applyMiddleware(thunk));
 
     render(<Provider store={store}>
       <InitContainer />
