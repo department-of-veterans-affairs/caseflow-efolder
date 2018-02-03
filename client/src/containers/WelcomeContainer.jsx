@@ -7,7 +7,7 @@ import nocache from 'superagent-no-cache';
 
 import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/AppSegment';
 
-import { updateSearchInputText } from '../actions';
+import { setVeteranId, setVeteranName, updateSearchInputText } from '../actions';
 import RecentDownloadsContainer from './RecentDownloadsContainer';
 
 const searchBarNoteTextStyling = css({
@@ -21,6 +21,8 @@ class WelcomeContainer extends React.PureComponent {
   }
 
   handleFormSubmit = (event) => {
+    this.props.setVeteranId(this.props.searchInputText);
+
     const headers = {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -35,9 +37,7 @@ class WelcomeContainer extends React.PureComponent {
       use(nocache).
       then(
         (resp) => {
-          // TODO: We will need to be able to query for the status of the manifest fetch based on the
-          // manifest ID.
-          // https://github.com/department-of-veterans-affairs/caseflow-efolder/blob/master/docs/v2/endpoints.md
+          this.props.setVeteranName(resp.body.data.attributes.veteran_full_name);
           this.props.history.push(`/downloads/${resp.body.data.id}`);
         }
       );
@@ -93,6 +93,10 @@ const mapStateToProps = (state) => ({
   searchInputText: state.searchInputText
 });
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({ updateSearchInputText }, dispatch);
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+  setVeteranId,
+  setVeteranName,
+  updateSearchInputText
+}, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(WelcomeContainer);

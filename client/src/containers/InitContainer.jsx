@@ -7,6 +7,7 @@ import NavigationBar from '@department-of-veterans-affairs/caseflow-frontend-too
 
 import OutOfServiceContainer from './OutOfServiceContainer';
 import HelpContainer from './HelpContainer';
+import DownloadContainer from './DownloadContainer';
 import WelcomeContainer from './WelcomeContainer';
 
 class InitContainer extends React.PureComponent {
@@ -25,6 +26,7 @@ class InitContainer extends React.PureComponent {
           <Route exact path="/" component={WelcomeContainer} />
           <Route exact path="/out-of-service" component={OutOfServiceContainer} />
           <Route exact path="/help" component={HelpContainer} />
+          <Route exact path="/downloads/:manifestId" component={DownloadContainer} />
         </NavigationBar>
         <Footer
           appName="eFolder Express"
