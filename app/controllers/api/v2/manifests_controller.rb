@@ -2,6 +2,7 @@
 class Api::V2::ManifestsController < Api::V1::ApplicationController
   before_action :validate_header, except: :history
   before_action :validate_access, except: :history
+  before_action :set_file_number_header, except: :history
 
   def start
     manifest.start!
@@ -30,7 +31,7 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
   end
 
   def file_number
-    request.headers["HTTP_FILE_NUMBER"]
+    @file_number ||= request.headers["HTTP_FILE_NUMBER"] || params[:id] && Manifest.find(params[:id]).file_number
   end
 
   def validate_access
@@ -40,6 +41,10 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
   def validate_header
     return missing_header("File Number") unless file_number
     invalid_file_number unless bgs_service.valid_file_number?(file_number)
+  end
+
+  def set_file_number_header
+    response.headers["HTTP_FILE_NUMBER"] = file_number
   end
 
   def manifest

@@ -29,13 +29,25 @@ class Serializers::V2::ManifestSerializer < ActiveModel::Serializer
       {
         id: document.id,
         type_id: document.type_id,
+        type_description: document.type_description,
         received_at: document.received_at,
         version_id: document.version_id,
+        source: document.manifest_source.name,
         status: document.status,
         series_id: document.series_id,
         created_at: document.created_at,
         updated_at: document.updated_at
       }
     end
+  end
+
+  attribute :manifest_fetch_complete do
+    status = true
+    object.sources.map { |s| status = false if %w[initialized pending].include? s.status }
+    status
+  end
+
+  attribute :veteran_full_name do
+    "#{object.veteran_first_name} #{object.veteran_last_name}"
   end
 end

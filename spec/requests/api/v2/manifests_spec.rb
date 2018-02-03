@@ -52,6 +52,7 @@ describe "Manifests API v2", type: :request do
       get "/api/v2/manifests/history", nil, headers
       expect(response.code).to eq("200")
       response_body = JSON.parse(response.body)["data"]
+      expect(response_body.class).to eq Array
       expect(response_body.size).to eq 2
       # should be sorted
       expect(response_body.first["id"]).to eq manifest4.id.to_s
@@ -96,7 +97,9 @@ describe "Manifests API v2", type: :request do
                 number_of_documents: 0
               }
             ],
-            records: []
+            records: [],
+            manifest_fetch_complete: true,
+            veteran_full_name: "George Washington"
           }
         }
       }.to_json
@@ -107,6 +110,7 @@ describe "Manifests API v2", type: :request do
         post "/api/v2/manifests", nil, headers
         expect(response.code).to eq("200")
         expect(response.body).to eq(response_body)
+        expect(response.headers["HTTP_FILE_NUMBER"]).to eq(veteran_id)
       end
     end
   end
@@ -164,11 +168,20 @@ describe "Manifests API v2", type: :request do
         }
       end
 
-      it "returns 400" do
-        get "/api/v2/manifests", nil, headers
-        expect(response.code).to eq("400")
-        body = JSON.parse(response.body)
-        expect(body["status"]).to match(/missing.+File.+Number/)
+      context "request to endpoint without ID param" do
+        it "returns 400" do
+          get "/api/v2/manifests", nil, headers
+          expect(response.code).to eq("400")
+          body = JSON.parse(response.body)
+          expect(body["status"]).to match(/missing.+File.+Number/)
+        end
+      end
+
+      context "request to endpoint with ID param" do
+        it "returns 200" do
+          get "/api/v2/manifests/#{manifest.id}", nil, headers
+          expect(response.code).to eq("200")
+        end
       end
     end
 
