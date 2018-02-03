@@ -76,8 +76,6 @@ class DownloadContainer extends React.PureComponent {
       );
   }
 
-  // TODO: Make the DownloadListContainer work.
-
   render() {
     switch (this.props.manifestFetchStatus) {
     case MANIFEST_FETCH_STATUS_LISTED:
