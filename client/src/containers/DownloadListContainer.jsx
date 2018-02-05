@@ -5,7 +5,6 @@ import { bindActionCreators } from 'redux';
 import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/AppSegment';
 
 import { setVeteranId, setVeteranName } from '../actions';
-import DocumentListRow from '../components/DocumentListRow';
 import DownloadPageFooter from '../components/DownloadPageFooter';
 import DownloadPageHeader from '../components/DownloadPageHeader';
 
@@ -65,12 +64,11 @@ class DownloadListContainer extends React.PureComponent {
 
             <tbody className ="ee-document-scroll" >
               { resp.body.data.attributes.records.map((record) => (
-                <DocumentListRow
-                  type={record.type_description}
-                  source={aliasForSource(record.source)}
-                  received_at={formatDateString(record.received_at)}
-                  key={record.id}
-                />)
+                <tr>
+                  <td className="document-col">{record.type_description}</td>
+                  <td className="sources-col">{aliasForSource(record.source)}</td>
+                  <td className="upload-col">{formatDateString(record.received_at)}</td>
+                </tr>)
               )}
             </tbody>
           </table>
