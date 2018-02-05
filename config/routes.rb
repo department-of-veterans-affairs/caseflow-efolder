@@ -36,7 +36,7 @@ Rails.application.routes.draw do
       namespace :manifests, only: [] do
         post "/", action: :start
         get :history
-        get "/(:id)", action: :progress
+        get "/:id", action: :progress
       end
       resources :manifests, only: [] do
         post :files_downloads, to: "files_downloads#start"
