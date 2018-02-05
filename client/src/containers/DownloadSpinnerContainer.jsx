@@ -10,7 +10,7 @@ import PageLoadingIndicator from '../components/PageLoadingIndicator';
 
 class DownloadSpinnerContainer extends React.PureComponent {
   render() {
-    return <main className="usa-grid">
+    return <React.Fragment>
       <DownloadPageHeader veteranId={this.props.veteranId} veteranName={this.props.veteranName} />
 
       <AppSegment filledBackground>
@@ -18,7 +18,7 @@ class DownloadSpinnerContainer extends React.PureComponent {
       </AppSegment>
 
       <DownloadPageFooter label={START_DOWNLOAD_BUTTON_LABEL} />
-    </main>;
+    </React.Fragment>;
   }
 }
 

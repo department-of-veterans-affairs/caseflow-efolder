@@ -33,7 +33,7 @@ class DownloadListContainer extends React.PureComponent {
     const documentCountNote = docSources.map((src) => (
       `${src.number_of_documents} from ${aliasForSource(src.source)}`)).join(' and ');
 
-    return <main className="usa-grid">
+    return <React.Fragment>
       <DownloadPageHeader veteranId={this.props.veteranId} veteranName={this.props.veteranName} />
 
       <AppSegment filledBackground>
@@ -70,7 +70,7 @@ class DownloadListContainer extends React.PureComponent {
       </AppSegment>
 
       <DownloadPageFooter label={START_DOWNLOAD_BUTTON_LABEL} />
-    </main>;
+    </React.Fragment>;
   }
 }
 

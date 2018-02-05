@@ -13,7 +13,7 @@ import WelcomeContainer from './WelcomeContainer';
 class InitContainer extends React.PureComponent {
   render() {
     return <BrowserRouter basename="/react">
-      <div>
+      <React.Fragment>
         <NavigationBar
           appName="eFolder Express"
           logoProps={{
@@ -23,15 +23,17 @@ class InitContainer extends React.PureComponent {
           userDisplayName={this.props.userDisplayName}
           dropdownUrls={this.props.dropdownUrls}
           defaultUrl="/">
-          <Route exact path="/" component={WelcomeContainer} />
-          <Route exact path="/out-of-service" component={OutOfServiceContainer} />
-          <Route exact path="/help" component={HelpContainer} />
-          <Route exact path="/downloads/:manifestId" component={DownloadContainer} />
+          <main className="usa-grid">
+            <Route exact path="/" component={WelcomeContainer} />
+            <Route exact path="/out-of-service" component={OutOfServiceContainer} />
+            <Route exact path="/help" component={HelpContainer} />
+            <Route exact path="/downloads/:manifestId" component={DownloadContainer} />
+          </main>
         </NavigationBar>
         <Footer
           appName="eFolder Express"
           feedbackUrl={this.props.feedbackUrl} />
-      </div>
+      </React.Fragment>
     </BrowserRouter>;
   }
 }

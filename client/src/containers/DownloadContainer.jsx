@@ -91,9 +91,7 @@ class DownloadContainer extends React.PureComponent {
     case MANIFEST_FETCH_STATUS_LISTED:
       return <DownloadListContainer />;
     case MANIFEST_FETCH_STATUS_ERRORED:
-      return <main className="usa-grid">
-        <StatusMessage title="Could not fetch manifest">{this.props.manifestFetchErrorMessage}</StatusMessage>
-      </main>;
+      return <StatusMessage title="Could not fetch manifest">{this.props.manifestFetchErrorMessage}</StatusMessage>;
     // TODO: Add display for in progress.
     // TODO: Add display for download complete.
     // case MANIFEST_FETCH_STATUS_DOWNLOADING:
