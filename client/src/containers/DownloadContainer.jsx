@@ -5,6 +5,12 @@ import request from 'superagent';
 import nocache from 'superagent-no-cache';
 
 import StatusMessage from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/StatusMessage';
+import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/AppSegment';
+
+import { START_DOWNLOAD_BUTTON_LABEL } from '../Constants';
+import DownloadPageFooter from '../components/DownloadPageFooter';
+import DownloadPageHeader from '../components/DownloadPageHeader';
+import PageLoadingIndicator from '../components/PageLoadingIndicator';
 
 import {
   clearManifestFetchState,
@@ -17,7 +23,6 @@ import {
   setVeteranName
 } from '../actions';
 import DownloadListContainer from './DownloadListContainer';
-import DownloadSpinnerContainer from './DownloadSpinnerContainer';
 
 // Reader polls every second for a maximum of 20 seconds. Match that here.
 const MANIFEST_FETCH_SLEEP_TIMEOUT_SECONDS = 1;
@@ -88,15 +93,23 @@ class DownloadContainer extends React.PureComponent {
   // TODO: Add display for in progress.
   // TODO: Add display for download complete.
   render() {
-    // Every manifest we fetch should have at least 2 sources so that is our indicator that manifest fetch is complete.
-    if (this.props.documentSources.length) {
-      return <DownloadListContainer />;
-    }
     if (this.props.errorMessage) {
       return <StatusMessage title="Could not fetch manifest">{this.props.errorMessage}</StatusMessage>;
     }
 
-    return <DownloadSpinnerContainer />;
+    return <React.Fragment>
+      <DownloadPageHeader veteranId={this.props.veteranId} veteranName={this.props.veteranName} />
+
+      {/* Every manifest we fetch should have at least 2 sources
+          so that is our indicator that manifest fetch is complete. */}
+      <AppSegment filledBackground>
+        {this.props.documentSources.length ?
+          <DownloadListContainer /> :
+          <PageLoadingIndicator>We are gathering the list of files in the eFolder now...</PageLoadingIndicator>}
+      </AppSegment>
+
+      <DownloadPageFooter label={START_DOWNLOAD_BUTTON_LABEL} />
+    </React.Fragment>;
   }
 }
 
