@@ -1,10 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 
 import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/AppSegment';
 
-import { setVeteranId, setVeteranName } from '../actions';
 import DownloadPageFooter from '../components/DownloadPageFooter';
 import DownloadPageHeader from '../components/DownloadPageHeader';
 import { START_DOWNLOAD_BUTTON_LABEL } from '../Constants';
@@ -19,11 +17,8 @@ const formatDateString = (str) => {
 
 class DownloadListContainer extends React.PureComponent {
   render() {
-    const resp = this.props.manifestFetchResponse;
-
-    const docSources = resp.body.data.attributes.sources;
-    const totalDocumentsCount = docSources.reduce((cnt, src) => cnt + src.number_of_documents, 0);
-    const documentCountNote = docSources.map((src) => (
+    const totalDocumentsCount = this.props.documentSources.reduce((cnt, src) => cnt + src.number_of_documents, 0);
+    const documentCountNote = this.props.documentSources.map((src) => (
       `${src.number_of_documents} from ${aliasForSource(src.source)}`)).join(' and ');
 
     return <React.Fragment>
@@ -50,11 +45,11 @@ class DownloadListContainer extends React.PureComponent {
             </thead>
 
             <tbody className="ee-document-scroll" >
-              { resp.body.data.attributes.records.map((record) => (
+              { this.props.documents.map((doc) => (
                 <tr>
-                  <td className="document-col">{record.type_description}</td>
-                  <td className="sources-col">{aliasForSource(record.source)}</td>
-                  <td className="upload-col">{formatDateString(record.received_at)}</td>
+                  <td className="document-col">{doc.type_description}</td>
+                  <td className="sources-col">{aliasForSource(doc.source)}</td>
+                  <td className="upload-col">{formatDateString(doc.received_at)}</td>
                 </tr>)
               )}
             </tbody>
@@ -68,14 +63,10 @@ class DownloadListContainer extends React.PureComponent {
 }
 
 const mapStateToProps = (state) => ({
-  manifestFetchResponse: state.manifestFetchResponse,
+  documents: state.documents,
+  documentSources: state.documentSources,
   veteranId: state.veteranId,
   veteranName: state.veteranName
 });
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({
-  setVeteranId,
-  setVeteranName
-}, dispatch);
-
-export default connect(mapStateToProps, mapDispatchToProps)(DownloadListContainer);
+export default connect(mapStateToProps)(DownloadListContainer);

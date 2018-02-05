@@ -8,17 +8,14 @@ import StatusMessage from '@department-of-veterans-affairs/caseflow-frontend-too
 
 import {
   clearManifestFetchState,
-  setManifestFetchErrorMessage,
+  setDocuments,
+  setDocumentSources,
+  setErrorMessage,
   setManifestFetchResponse,
-  setManifestFetchStatus
+  setManifestFetchStatus,
+  setVeteranId,
+  setVeteranName
 } from '../actions';
-import {
-  MANIFEST_FETCH_STATUS_LOADING,
-  MANIFEST_FETCH_STATUS_LISTED,
-  // MANIFEST_FETCH_STATUS_DOWNLOADING,
-  // MANIFEST_FETCH_STATUS_COMPLETE,
-  MANIFEST_FETCH_STATUS_ERRORED
-} from '../Constants';
 import DownloadListContainer from './DownloadListContainer';
 import DownloadSpinnerContainer from './DownloadSpinnerContainer';
 
@@ -71,54 +68,49 @@ class DownloadContainer extends React.PureComponent {
               const sleepLengthSeconds = MAX_MANIFEST_FETCH_RETRIES * MANIFEST_FETCH_SLEEP_TIMEOUT_SECONDS;
               const errMsg = `Failed to fetch list of documents within ${sleepLengthSeconds} second time limit`;
 
-              this.props.setManifestFetchErrorMessage(errMsg);
-              this.props.setManifestFetchStatus(MANIFEST_FETCH_STATUS_ERRORED);
+              this.props.setErrorMessage(errMsg);
             }
           } else {
             this.props.setDocuments(respAttrs.records);
             this.props.setDocumentSources(respAttrs.sources);
             this.props.setVeteranId(respAttrs.file_number);
-            this.props.setVeteranName(`${respAttrs.veteran_first_name} ${respAttrs.veteran_last_name}`)
-            this.props.setManifestFetchStatus(MANIFEST_FETCH_STATUS_LISTED);
+            this.props.setVeteranName(`${respAttrs.veteran_first_name} ${respAttrs.veteran_last_name}`);
           }
         },
         (err) => {
           const errMsg = `${err.response.statusCode} (${err.response.statusText}) ${err.response.body.status}`;
 
-          this.props.setManifestFetchErrorMessage(errMsg);
-          this.props.setManifestFetchStatus(MANIFEST_FETCH_STATUS_ERRORED);
+          this.props.setErrorMessage(errMsg);
         }
       );
   }
 
+  // TODO: Add display for in progress.
+  // TODO: Add display for download complete.
   render() {
-    switch (this.props.manifestFetchStatus) {
-    case MANIFEST_FETCH_STATUS_LISTED:
+    // Every manifest we fetch should have at least 2 sources so that is our indicator that manifest fetch is complete.
+    if (this.props.documentSources.length) {
       return <DownloadListContainer />;
-    case MANIFEST_FETCH_STATUS_ERRORED:
-      return <StatusMessage title="Could not fetch manifest">{this.props.manifestFetchErrorMessage}</StatusMessage>;
-    // TODO: Add display for in progress.
-    // TODO: Add display for download complete.
-    // case MANIFEST_FETCH_STATUS_DOWNLOADING:
-    // case MANIFEST_FETCH_STATUS_COMPLETE:
-    case MANIFEST_FETCH_STATUS_LOADING:
-    default:
-      return <DownloadSpinnerContainer />;
     }
+    if (this.props.errorMessage) {
+      return <StatusMessage title="Could not fetch manifest">{this.props.errorMessage}</StatusMessage>;
+    }
+
+    return <DownloadSpinnerContainer />;
   }
 }
 
 const mapStateToProps = (state) => ({
   csrfToken: state.csrfToken,
-  manifestFetchErrorMessage: state.manifestFetchErrorMessage,
-  manifestFetchStatus: state.manifestFetchStatus
+  documentSources: state.documentSources,
+  errorMessage: state.errorMessage
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   clearManifestFetchState,
   setDocuments,
   setDocumentSources,
-  setManifestFetchErrorMessage,
+  setErrorMessage,
   setManifestFetchResponse,
   setManifestFetchStatus,
   setVeteranId,
