@@ -1,6 +1,8 @@
 # TODO: create Api::V2::ApplicationController
 class Api::V2::ManifestsController < Api::V1::ApplicationController
-  before_action :validate_header, except: :history
+  before_action :set_file_number_from_header, only: :start
+  before_action :set_file_number_from_param, only: :progress
+  before_action :validate_file_number, except: :history
   before_action :validate_access, except: :history
 
   def start
@@ -29,17 +31,25 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
     @recent_downloads ||= current_user.recent_downloads
   end
 
-  def file_number
-    @file_number ||= request.headers["HTTP_FILE_NUMBER"] || params[:id] && Manifest.find(params[:id]).file_number
+  attr_reader :file_number
+
+  def set_file_number_from_param
+    m = Manifest.find(params[:id])
+    return invalid_manifest_id unless params[:id] && m
+    @file_number = m.file_number
+  end
+
+  def set_file_number_from_header
+    return missing_header("File Number") unless request.headers["HTTP_FILE_NUMBER"]
+    @file_number = request.headers["HTTP_FILE_NUMBER"]
+  end
+
+  def validate_file_number
+    invalid_file_number unless bgs_service.valid_file_number?(file_number)
   end
 
   def validate_access
     forbidden("sensitive record") unless bgs_service.check_sensitivity(file_number)
-  end
-
-  def validate_header
-    return missing_header("File Number") unless file_number
-    invalid_file_number unless bgs_service.valid_file_number?(file_number)
   end
 
   def manifest
@@ -52,5 +62,9 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
 
   def invalid_file_number
     render json: { status: "File Number is invalid, must be 8 or 9 digits" }, status: 400
+  end
+
+  def invalid_manifest_id
+    render json: { status: "Manifest ID does not match any existing manifests" }, status: 400
   end
 end
