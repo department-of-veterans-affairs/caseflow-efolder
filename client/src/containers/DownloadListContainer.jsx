@@ -8,18 +8,10 @@ import { setVeteranId, setVeteranName } from '../actions';
 import DownloadPageFooter from '../components/DownloadPageFooter';
 import DownloadPageHeader from '../components/DownloadPageHeader';
 
-const aliasForSource = function(source) {
-  if (source === 'VVA') {
-    return 'VVA/LCM';
-  }
+const aliasForSource = (source) => source === 'VVA' ? 'VVA/LCM' : source;
 
-  return source;
-};
-
-const formatDateString = function(str) {
+const formatDateString = (str) => {
   const date = new Date(str);
-
-  // TODO: Current version of efolder displays months and dates with leading zeroes if < 10.
   return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
 };
 
@@ -62,7 +54,7 @@ class DownloadListContainer extends React.PureComponent {
               </tr>
             </thead>
 
-            <tbody className ="ee-document-scroll" >
+            <tbody className="ee-document-scroll" >
               { resp.body.data.attributes.records.map((record) => (
                 <tr>
                   <td className="document-col">{record.type_description}</td>

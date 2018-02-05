@@ -44,7 +44,7 @@ class DownloadContainer extends React.PureComponent {
     this.pollManifestFetchEndpoint(0);
   }
 
-  pollManifestFetchEndpoint(retryCnt = 0) {
+  pollManifestFetchEndpoint(retryCount = 0) {
     const headers = {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -59,15 +59,15 @@ class DownloadContainer extends React.PureComponent {
       then(
         (resp) => {
           if (manifestFetchInProgress(resp.body.data.attributes)) {
-            if (retryCnt < MAX_MANIFEST_FETCH_RETRIES) {
-              const sleepTime = MANIFEST_FETCH_SLEEP_TIMEOUT_SECONDS * 1000;
+            if (retryCount < MAX_MANIFEST_FETCH_RETRIES) {
+              const sleepTimeMs = MANIFEST_FETCH_SLEEP_TIMEOUT_SECONDS * 1000;
 
               setTimeout(() => {
-                this.pollManifestFetchEndpoint(retryCnt + 1);
-              }, sleepTime);
+                this.pollManifestFetchEndpoint(retryCount + 1);
+              }, sleepTimeMs);
             } else {
               const sleepLengthSeconds = MAX_MANIFEST_FETCH_RETRIES * MANIFEST_FETCH_SLEEP_TIMEOUT_SECONDS;
-              const errMsg = `Manifest fetch timed out after ${sleepLengthSeconds} seconds`;
+              const errMsg = `Failed to fetch list of documents within ${sleepLengthSeconds} second time limit`;
 
               this.props.setManifestFetchErrorMessage(errMsg);
               this.props.setManifestFetchStatus(MANIFEST_FETCH_STATUS_ERRORED);
