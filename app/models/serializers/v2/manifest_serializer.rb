@@ -3,6 +3,7 @@ class Serializers::V2::ManifestSerializer < ActiveModel::Serializer
 
   attribute :veteran_first_name
   attribute :veteran_last_name
+  attribute :file_number
   attribute :created_at
   attribute :updated_at
   attribute :fetched_files_at
@@ -39,15 +40,5 @@ class Serializers::V2::ManifestSerializer < ActiveModel::Serializer
         updated_at: document.updated_at
       }
     end
-  end
-
-  attribute :manifest_fetch_complete do
-    status = true
-    object.sources.map { |s| status = false if %w[initialized pending].include? s.status }
-    status
-  end
-
-  attribute :veteran_full_name do
-    "#{object.veteran_first_name} #{object.veteran_last_name}"
   end
 end

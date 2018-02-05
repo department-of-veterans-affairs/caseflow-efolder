@@ -74,6 +74,7 @@ describe "Manifests API v2", type: :request do
           attributes: {
             veteran_first_name: "George",
             veteran_last_name: "Washington",
+            file_number: veteran_id,
             created_at: "2015-01-01T17:00:00.000Z",
             updated_at: "2015-01-01T17:00:00.000Z",
             fetched_files_at: nil,
@@ -97,9 +98,7 @@ describe "Manifests API v2", type: :request do
                 number_of_documents: 0
               }
             ],
-            records: [],
-            manifest_fetch_complete: true,
-            veteran_full_name: "George Washington"
+            records: []
           }
         }
       }.to_json
@@ -110,7 +109,6 @@ describe "Manifests API v2", type: :request do
         post "/api/v2/manifests", nil, headers
         expect(response.code).to eq("200")
         expect(response.body).to eq(response_body)
-        expect(response.headers["HTTP_FILE_NUMBER"]).to eq(veteran_id)
       end
     end
   end
