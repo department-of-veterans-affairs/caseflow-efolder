@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/AppSegment';
 
+import { START_DOWNLOAD_BUTTON_LABEL } from '../Constants';
 import DownloadPageFooter from '../components/DownloadPageFooter';
 import DownloadPageHeader from '../components/DownloadPageHeader';
 import PageLoadingIndicator from '../components/PageLoadingIndicator';
@@ -16,14 +17,13 @@ class DownloadSpinnerContainer extends React.PureComponent {
         <PageLoadingIndicator>We are gathering the list of files in the eFolder now...</PageLoadingIndicator>
       </AppSegment>
 
-      <DownloadPageFooter label={this.props.startDownloadButtonLabel} />
+      <DownloadPageFooter label={START_DOWNLOAD_BUTTON_LABEL} />
     </main>;
   }
 }
 
 const mapStateToProps = (state) => ({
   veteranId: state.veteranId,
-  startDownloadButtonLabel: state.startDownloadButtonLabel,
   veteranName: state.veteranName
 });
 

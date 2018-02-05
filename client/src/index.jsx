@@ -10,8 +10,6 @@ import InitContainer from './containers/InitContainer';
 // TODO: Should we set up all of our defaults in the GuiController?
 const initState = {
   searchInputText: '',
-  // TODO: Does startDownloadButtonLabel need to be a variable?
-  startDownloadButtonLabel: 'Start retrieving efolder',
   veteranId: '',
   veteranName: ''
 };

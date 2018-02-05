@@ -7,11 +7,13 @@ import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolki
 import { setVeteranId, setVeteranName } from '../actions';
 import DownloadPageFooter from '../components/DownloadPageFooter';
 import DownloadPageHeader from '../components/DownloadPageHeader';
+import { START_DOWNLOAD_BUTTON_LABEL } from '../Constants';
 
 const aliasForSource = (source) => source === 'VVA' ? 'VVA/LCM' : source;
 
 const formatDateString = (str) => {
   const date = new Date(str);
+
   return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
 };
 
@@ -37,11 +39,11 @@ class DownloadListContainer extends React.PureComponent {
       <AppSegment filledBackground>
         <p>eFolder Express found a total of {totalDocumentsCount} documents ({documentCountNote}) for&nbsp;
           {this.props.veteranName} #{this.props.veteranId}. Verify the Veteran ID and click the&nbsp;
-          {this.props.startDownloadButtonLabel} button below to start retrieving the eFolder.
+          {START_DOWNLOAD_BUTTON_LABEL} button below to start retrieving the eFolder.
         </p>
 
         <p>
-          <input className="cf-submit cf-retrieve-button" type="submit" value={this.props.startDownloadButtonLabel} />
+          <input className="cf-submit cf-retrieve-button" type="submit" value={START_DOWNLOAD_BUTTON_LABEL} />
         </p>
 
         <div className="ee-document-list">
@@ -67,14 +69,13 @@ class DownloadListContainer extends React.PureComponent {
         </div>
       </AppSegment>
 
-      <DownloadPageFooter label={this.props.startDownloadButtonLabel} />
+      <DownloadPageFooter label={START_DOWNLOAD_BUTTON_LABEL} />
     </main>;
   }
 }
 
 const mapStateToProps = (state) => ({
   manifestFetchResponse: state.manifestFetchResponse,
-  startDownloadButtonLabel: state.startDownloadButtonLabel,
   veteranId: state.veteranId,
   veteranName: state.veteranName
 });
