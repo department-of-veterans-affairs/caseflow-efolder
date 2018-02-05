@@ -26,6 +26,16 @@ import DownloadSpinnerContainer from './DownloadSpinnerContainer';
 const MANIFEST_FETCH_SLEEP_TIMEOUT_SECONDS = 1;
 const MAX_MANIFEST_FETCH_RETRIES = 20;
 
+const manifestFetchInProgress = (responseAttrs) => {
+  for (const src of responseAttrs.sources) {
+    if (['initialized', 'pending'].includes(src.status)) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
 // TODO: Add modal for confirming that the user wants to download even when the zip does not contain the entire
 // list of all documents.
 class DownloadContainer extends React.PureComponent {
@@ -48,7 +58,7 @@ class DownloadContainer extends React.PureComponent {
       use(nocache).
       then(
         (resp) => {
-          if (resp.body.data.attributes.manifest_fetch_complete === false) {
+          if (manifestFetchInProgress(resp.body.data.attributes)) {
             if (retryCnt < MAX_MANIFEST_FETCH_RETRIES) {
               const sleepTime = MANIFEST_FETCH_SLEEP_TIMEOUT_SECONDS * 1000;
 

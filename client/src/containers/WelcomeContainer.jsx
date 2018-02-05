@@ -37,7 +37,9 @@ class WelcomeContainer extends React.PureComponent {
       use(nocache).
       then(
         (resp) => {
-          this.props.setVeteranName(resp.body.data.attributes.veteran_full_name);
+          const responseAttrs = resp.body.data.attributes;
+
+          this.props.setVeteranName(`${responseAttrs.veteran_first_name} ${responseAttrs.veteran_last_name}`);
           this.props.history.push(`/downloads/${resp.body.data.id}`);
         }
       );
