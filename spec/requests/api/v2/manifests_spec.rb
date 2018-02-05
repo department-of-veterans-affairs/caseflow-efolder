@@ -117,7 +117,7 @@ describe "Manifests API v2", type: :request do
     let(:token) { "bad token" }
 
     it "returns 401" do
-      get "/api/v2/manifests", nil, headers
+      get "/api/v2/manifests/#{manifest.id}", nil, headers
       expect(response.code).to eq("401")
     end
   end
@@ -133,7 +133,7 @@ describe "Manifests API v2", type: :request do
       end
 
       it "returns 400" do
-        get "/api/v2/manifests", nil, headers
+        get "/api/v2/manifests/#{manifest.id}", nil, headers
         expect(response.code).to eq("400")
         body = JSON.parse(response.body)
         expect(body["status"]).to match(/missing.+CSS.+ID/)
@@ -150,7 +150,7 @@ describe "Manifests API v2", type: :request do
       end
 
       it "returns 400" do
-        get "/api/v2/manifests", nil, headers
+        get "/api/v2/manifests/#{manifest.id}", nil, headers
         expect(response.code).to eq("400")
         body = JSON.parse(response.body)
         expect(body["status"]).to match(/missing.+Station.+ID/)
@@ -166,38 +166,20 @@ describe "Manifests API v2", type: :request do
         }
       end
 
-      context "request to endpoint without ID param" do
-        it "returns 400" do
-          get "/api/v2/manifests", nil, headers
-          expect(response.code).to eq("400")
-          body = JSON.parse(response.body)
-          expect(body["status"]).to match(/missing.+File.+Number/)
-        end
-      end
-
-      context "request to endpoint with ID param" do
-        it "returns 200" do
-          get "/api/v2/manifests/#{manifest.id}", nil, headers
-          expect(response.code).to eq("200")
-        end
+      it "returns 200" do
+        get "/api/v2/manifests/#{manifest.id}", nil, headers
+        expect(response.code).to eq("200")
       end
     end
 
-    context "invalid File Number" do
-      let(:headers) do
-        {
-          "HTTP_STATION_ID" => user.station_id,
-          "HTTP_CSS_ID" => user.css_id,
-          "HTTP_AUTHORIZATION" => "Token token=#{token}",
-          "HTTP_FILE_NUMBER" => "123"
-        }
-      end
+    context "invalid manifest ID" do
+      let(:invalid_manifest_id) { 123 }
 
-      it "returns 400" do
-        get "/api/v2/manifests", nil, headers
-        expect(response.code).to eq("400")
+      it "returns 404" do
+        get "/api/v2/manifests/#{invalid_manifest_id}", nil, headers
+        expect(response.code).to eq("404")
         body = JSON.parse(response.body)
-        expect(body["status"]).to match(/File.+Number.+invalid.+must.+8.+9.+digits/)
+        expect(body["errors"][0]["detail"]).to match(/A record with that ID was not found in our systems/)
       end
     end
   end
@@ -208,7 +190,7 @@ describe "Manifests API v2", type: :request do
     end
 
     it "returns 403" do
-      get "/api/v2/manifests", nil, headers
+      get "/api/v2/manifests/#{manifest.id}", nil, headers
       expect(response.code).to eq("403")
       body = JSON.parse(response.body)
       expect(body["status"]).to match(/sensitive/)

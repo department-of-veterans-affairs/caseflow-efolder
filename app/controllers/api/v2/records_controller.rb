@@ -40,13 +40,4 @@ class Api::V2::RecordsController < Api::V1::ApplicationController
   rescue ActiveRecord::RecordNotFound
     record_not_found
   end
-
-  def record_not_found
-    render json: {
-      "errors": [
-        "title": "Record not found",
-        "detail": "A record with that ID was not found in our systems."
-      ]
-    }, status: 404
-  end
 end

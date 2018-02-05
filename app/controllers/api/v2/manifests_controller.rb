@@ -1,7 +1,6 @@
 # TODO: create Api::V2::ApplicationController
 class Api::V2::ManifestsController < Api::V1::ApplicationController
-  before_action :set_file_number_from_header, only: :start
-  before_action :set_file_number_from_param, only: :progress
+  before_action :set_file_number, except: :history
   before_action :validate_file_number, except: :history
   before_action :validate_access, except: :history
 
@@ -33,15 +32,17 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
 
   attr_reader :file_number
 
-  def set_file_number_from_param
-    m = Manifest.find(params[:id])
-    return invalid_manifest_id unless params[:id] && m
-    @file_number = m.file_number
-  end
-
-  def set_file_number_from_header
-    return missing_header("File Number") unless request.headers["HTTP_FILE_NUMBER"]
-    @file_number = request.headers["HTTP_FILE_NUMBER"]
+  def set_file_number
+    if action_name == "start"
+      return missing_header("File Number") unless request.headers["HTTP_FILE_NUMBER"]
+      @file_number = request.headers["HTTP_FILE_NUMBER"]
+    elsif action_name == "progress"
+      begin
+        @file_number = Manifest.find(params[:id]).file_number
+      rescue StandardError
+        return record_not_found
+      end
+    end
   end
 
   def validate_file_number
@@ -62,9 +63,5 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
 
   def invalid_file_number
     render json: { status: "File Number is invalid, must be 8 or 9 digits" }, status: 400
-  end
-
-  def invalid_manifest_id
-    render json: { status: "Manifest ID does not match any existing manifests" }, status: 400
   end
 end
