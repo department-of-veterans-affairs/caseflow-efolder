@@ -3,13 +3,17 @@ import * as Actions from './actionTypes';
 export default function reducer(state = {}, action = {}) {
   switch (action.type) {
 
+  case Actions.SET_DOCUMENT_SOURCES:
+    return { ...state, 
+      documentSources: action.payload };
+
+  case Actions.SET_DOCUMENTS:
+    return { ...state, 
+      documents: action.payload };
+
   case Actions.SET_MANIFEST_FETCH_ERROR_MESSAGE:
     return { ...state,
       manifestFetchErrorMessage: action.payload };
-
-  case Actions.SET_MANIFEST_FETCH_RESPONSE:
-    return { ...state,
-      manifestFetchResponse: action.payload };
 
   case Actions.SET_MANIFEST_FETCH_STATUS:
     return { ...state,

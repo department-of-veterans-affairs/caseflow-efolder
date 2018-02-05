@@ -1,6 +1,7 @@
 import {
+  SET_DOCUMENT_SOURCES,
+  SET_DOCUMENTS,
   SET_MANIFEST_FETCH_ERROR_MESSAGE,
-  SET_MANIFEST_FETCH_RESPONSE,
   SET_MANIFEST_FETCH_STATUS,
   SET_VETERAN_ID,
   SET_VETERAN_NAME,
@@ -8,14 +9,19 @@ import {
 } from './actionTypes';
 import { MANIFEST_FETCH_STATUS_LOADING } from './Constants';
 
+export const setDocuments = (docs) => ({
+  type: SET_DOCUMENTS,
+  payload: docs
+});
+
+export const setDocumentSources = (sources) => ({
+  type: SET_DOCUMENT_SOURCES,
+  payload: sources
+});
+
 export const setManifestFetchErrorMessage = (msg) => ({
   type: SET_MANIFEST_FETCH_ERROR_MESSAGE,
   payload: msg
-});
-
-export const setManifestFetchResponse = (resp) => ({
-  type: SET_MANIFEST_FETCH_RESPONSE,
-  payload: resp
 });
 
 export const setManifestFetchStatus = (status) => ({
@@ -40,6 +46,7 @@ export const updateSearchInputText = (text) => ({
 
 export const clearManifestFetchState = () => (dispatch) => {
   dispatch(setManifestFetchErrorMessage(''));
-  dispatch(setManifestFetchResponse(null));
+  dispatch(setDocuments([]));
+  dispatch(setDocumentSources([]));
   dispatch(setManifestFetchStatus(MANIFEST_FETCH_STATUS_LOADING));
 };

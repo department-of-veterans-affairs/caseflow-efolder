@@ -9,6 +9,8 @@ import InitContainer from './containers/InitContainer';
 
 // TODO: Should we set up all of our defaults in the GuiController?
 const initState = {
+  documents: [],
+  documentSources: [],
   searchInputText: '',
   veteranId: '',
   veteranName: ''

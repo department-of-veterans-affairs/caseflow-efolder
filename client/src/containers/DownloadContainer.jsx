@@ -58,7 +58,9 @@ class DownloadContainer extends React.PureComponent {
       use(nocache).
       then(
         (resp) => {
-          if (manifestFetchInProgress(resp.body.data.attributes)) {
+          const respAttrs = resp.body.data.attributes;
+
+          if (manifestFetchInProgress(respAttrs)) {
             if (retryCount < MAX_MANIFEST_FETCH_RETRIES) {
               const sleepTimeMs = MANIFEST_FETCH_SLEEP_TIMEOUT_SECONDS * 1000;
 
@@ -73,7 +75,10 @@ class DownloadContainer extends React.PureComponent {
               this.props.setManifestFetchStatus(MANIFEST_FETCH_STATUS_ERRORED);
             }
           } else {
-            this.props.setManifestFetchResponse(resp);
+            this.props.setDocuments(respAttrs.records);
+            this.props.setDocumentSources(respAttrs.sources);
+            this.props.setVeteranId(respAttrs.file_number);
+            this.props.setVeteranName(`${respAttrs.veteran_first_name} ${respAttrs.veteran_last_name}`)
             this.props.setManifestFetchStatus(MANIFEST_FETCH_STATUS_LISTED);
           }
         },
@@ -105,16 +110,19 @@ class DownloadContainer extends React.PureComponent {
 
 const mapStateToProps = (state) => ({
   csrfToken: state.csrfToken,
-  manifestFetchResponse: state.manifestFetchResponse,
   manifestFetchErrorMessage: state.manifestFetchErrorMessage,
   manifestFetchStatus: state.manifestFetchStatus
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   clearManifestFetchState,
+  setDocuments,
+  setDocumentSources,
   setManifestFetchErrorMessage,
   setManifestFetchResponse,
-  setManifestFetchStatus
+  setManifestFetchStatus,
+  setVeteranId,
+  setVeteranName
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(DownloadContainer);

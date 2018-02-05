@@ -18,13 +18,6 @@ const formatDateString = (str) => {
 };
 
 class DownloadListContainer extends React.PureComponent {
-  componentDidMount() {
-    const responseAttrs = this.props.manifestFetchResponse.body.data.attributes;
-
-    this.props.setVeteranName(`${responseAttrs.veteran_first_name} ${responseAttrs.veteran_last_name}`);
-    this.props.setVeteranId(responseAttrs.file_number);
-  }
-
   render() {
     const resp = this.props.manifestFetchResponse;
 
