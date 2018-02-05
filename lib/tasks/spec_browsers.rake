@@ -1,12 +1,14 @@
 begin
   require "rspec"
 
-  namespace :spec do
-    desc "Run the feature specs with sauce labs on supported browsers"
+  namespace :efolder do
+    namespace :spec do
+      desc "Run the feature specs with sauce labs on supported browsers"
 
-    RSpec::Core::RakeTask.new(:browsers) do |t|
-      ENV["SAUCE_SPECS"] = "true"
-      t.pattern = "spec/feature/**/*_spec.rb"
+      RSpec::Core::RakeTask.new(:browsers) do |t|
+        ENV["SAUCE_SPECS"] = "true"
+        t.pattern = "spec/feature/**/*_spec.rb"
+      end
     end
   end
   # rubocop:disable Lint/HandleExceptions
