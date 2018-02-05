@@ -9,7 +9,7 @@ export default class DownloadPageHeader extends React.PureComponent {
   render() {
     return <AppSegment extraClassNames="cf-efolder-header">
       <h3 className="cf-push-left cf-name-header cf-efolder-name">{this.props.veteranName}</h3>
-      <div className="cf-txt-uc cf-efolder-id-control cf-push-right ">Veteran ID &nbsp;
+      <div className="cf-txt-uc cf-efolder-id-control cf-push-right">Veteran ID &nbsp;
         <button
           type="submit"
           title="Copy to clipboard"
