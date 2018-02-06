@@ -33,13 +33,14 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
   attr_reader :file_number
 
   def set_file_number
-    if action_name == "start"
+    case action_name
+    when "start"
       return missing_header("File Number") unless request.headers["HTTP_FILE_NUMBER"]
       @file_number = request.headers["HTTP_FILE_NUMBER"]
-    elsif action_name == "progress"
+    when "progress"
       begin
         @file_number = Manifest.find(params[:id]).file_number
-      rescue StandardError
+      rescue ActiveRecord::RecordNotFound
         return record_not_found
       end
     end
