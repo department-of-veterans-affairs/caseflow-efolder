@@ -12,11 +12,9 @@ describe "Manifests API v2", type: :request do
   end
   let(:veteran_id) { "DEMO987" }
   let(:manifest) do
-    Manifest.create(
-      file_number: veteran_id,
-      veteran_first_name: "George",
-      veteran_last_name: "Washington"
-    )
+    m = Manifest.find_or_create_by_user(user: user, file_number: veteran_id)
+    m.update(veteran_first_name: "George", veteran_last_name: "Washington")
+    m
   end
   let(:token) do
     "token"
@@ -36,10 +34,10 @@ describe "Manifests API v2", type: :request do
   end
 
   context "View download history" do
-    let(:manifest1) { Manifest.create(file_number: "123C") }
-    let(:manifest2) { Manifest.create(file_number: "567C") }
-    let(:manifest3) { Manifest.create(file_number: "897C") }
-    let(:manifest4) { Manifest.create(file_number: "935C") }
+    let(:manifest1) { Manifest.find_or_create_by_user(user: user, file_number: "123C") }
+    let(:manifest2) { Manifest.find_or_create_by_user(user: user, file_number: "567C") }
+    let(:manifest3) { Manifest.find_or_create_by_user(user: user, file_number: "897C") }
+    let(:manifest4) { Manifest.find_or_create_by_user(user: user, file_number: "935C") }
 
     let(:another_user) { User.create(css_id: "123C", station_id: "123") }
     let!(:files_download1) { FilesDownload.create(manifest: manifest1, user: user, requested_zip_at: 2.days.ago) }
@@ -52,6 +50,7 @@ describe "Manifests API v2", type: :request do
       get "/api/v2/manifests/history", nil, headers
       expect(response.code).to eq("200")
       response_body = JSON.parse(response.body)["data"]
+      expect(response_body.class).to eq Array
       expect(response_body.size).to eq 2
       # should be sorted
       expect(response_body.first["id"]).to eq manifest4.id.to_s
@@ -73,6 +72,7 @@ describe "Manifests API v2", type: :request do
           attributes: {
             veteran_first_name: "George",
             veteran_last_name: "Washington",
+            file_number: veteran_id,
             created_at: "2015-01-01T17:00:00.000Z",
             updated_at: "2015-01-01T17:00:00.000Z",
             fetched_files_at: nil,
@@ -115,7 +115,7 @@ describe "Manifests API v2", type: :request do
     let(:token) { "bad token" }
 
     it "returns 401" do
-      get "/api/v2/manifests", nil, headers
+      get "/api/v2/manifests/#{manifest.id}", nil, headers
       expect(response.code).to eq("401")
     end
   end
@@ -131,7 +131,7 @@ describe "Manifests API v2", type: :request do
       end
 
       it "returns 400" do
-        get "/api/v2/manifests", nil, headers
+        get "/api/v2/manifests/#{manifest.id}", nil, headers
         expect(response.code).to eq("400")
         body = JSON.parse(response.body)
         expect(body["status"]).to match(/missing.+CSS.+ID/)
@@ -148,7 +148,7 @@ describe "Manifests API v2", type: :request do
       end
 
       it "returns 400" do
-        get "/api/v2/manifests", nil, headers
+        get "/api/v2/manifests/#{manifest.id}", nil, headers
         expect(response.code).to eq("400")
         body = JSON.parse(response.body)
         expect(body["status"]).to match(/missing.+Station.+ID/)
@@ -164,40 +164,33 @@ describe "Manifests API v2", type: :request do
         }
       end
 
-      it "returns 400" do
-        get "/api/v2/manifests", nil, headers
-        expect(response.code).to eq("400")
-        body = JSON.parse(response.body)
-        expect(body["status"]).to match(/missing.+File.+Number/)
+      it "returns 200" do
+        get "/api/v2/manifests/#{manifest.id}", nil, headers
+        expect(response.code).to eq("200")
       end
     end
 
-    context "invalid File Number" do
-      let(:headers) do
-        {
-          "HTTP_STATION_ID" => user.station_id,
-          "HTTP_CSS_ID" => user.css_id,
-          "HTTP_AUTHORIZATION" => "Token token=#{token}",
-          "HTTP_FILE_NUMBER" => "123"
-        }
-      end
+    context "invalid manifest ID" do
+      let(:invalid_manifest_id) { 123 }
 
-      it "returns 400" do
-        get "/api/v2/manifests", nil, headers
-        expect(response.code).to eq("400")
+      it "returns 404" do
+        get "/api/v2/manifests/#{invalid_manifest_id}", nil, headers
+        expect(response.code).to eq("404")
         body = JSON.parse(response.body)
-        expect(body["status"]).to match(/File.+Number.+invalid.+must.+8.+9.+digits/)
+        expect(body["errors"][0]["detail"]).to match(/A record with that ID was not found in our systems/)
       end
     end
   end
 
   context "When sensitivity is higher than permissions" do
+    let(:veteran_id) { "DEMO456" }
+
     before do
       allow_any_instance_of(Fakes::BGSService).to receive(:sensitive_files).and_return(veteran_id.to_s => true)
     end
 
     it "returns 403" do
-      get "/api/v2/manifests", nil, headers
+      post "/api/v2/manifests/", nil, headers
       expect(response.code).to eq("403")
       body = JSON.parse(response.body)
       expect(body["status"]).to match(/sensitive/)

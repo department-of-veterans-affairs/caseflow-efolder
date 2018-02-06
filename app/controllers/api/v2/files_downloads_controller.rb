@@ -45,13 +45,4 @@ class Api::V2::FilesDownloadsController < Api::V1::ApplicationController
   def manifest
     @manifest ||= files_download.manifest
   end
-
-  def record_not_found
-    render json: {
-      "errors": [
-        "title": "Record not found",
-        "detail": "A record with that ID was not found in our systems."
-      ]
-    }, status: 404
-  end
 end
