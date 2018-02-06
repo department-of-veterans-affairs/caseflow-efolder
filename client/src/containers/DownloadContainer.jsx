@@ -88,7 +88,9 @@ class DownloadContainer extends React.PureComponent {
   // TODO: Add display for in progress.
   // TODO: Add display for download complete.
   render() {
-    // Every manifest we fetch should have at least 2 sources so that is our indicator that manifest fetch is complete.
+    // Before the manifest fetch request is complete documentSources will be an empty array. If the request has
+    // completed successfully, we should (at the time of this writing) see two items in that array (one each for VVA
+    // and VBMS). Using the raw length() boolean check here for forward-compatibility.
     if (this.props.documentSources.length) {
       return <DownloadListContainer />;
     }
