@@ -1,5 +1,8 @@
 class ExceptionLogger
-  DEPENDENCY_MAINTENANCE = [/Could not get JDBC Connection/, /Maintenance.+VBMS/, /upstream connect error or disconnect/].freeze
+  DEPENDENCY_MAINTENANCE = [/Could not get JDBC Connection/,
+                            /Maintenance.+VBMS/,
+                            /upstream connect error or disconnect/,
+                            /A system error occurred/].freeze
 
   def self.capture(e)
     Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
