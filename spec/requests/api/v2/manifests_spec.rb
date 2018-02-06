@@ -2,7 +2,7 @@ describe "Manifests API v2", type: :request do
   include ActiveJob::TestHelper
 
   let!(:current_user) do
-    User.authenticate!
+    User.authenticate!(roles: [])
   end
   let(:user) do
     User.create(

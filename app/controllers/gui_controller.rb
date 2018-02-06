@@ -11,13 +11,14 @@ class GuiController < ApplicationController
 
   def initial_react_data
     {
+      csrfToken: form_authenticity_token,
       dropdownUrls: dropdown_urls,
+      efolderAccessImagePath: ActionController::Base.helpers.image_path("help/efolder-access.png"),
       feedbackUrl: feedback_url,
       recentDownloads: recent_downloads.sort_by(&:created_at).reverse,
-      userDisplayName: current_user.display_name,
-      trainingGuidePath: ActionController::Base.helpers.asset_path("training_guide.pdf"),
       referenceGuidePath: ActionController::Base.helpers.asset_path("reference_guide.pdf"),
-      efolderAccessImagePath: ActionController::Base.helpers.image_path("help/efolder-access.png")
+      trainingGuidePath: ActionController::Base.helpers.asset_path("training_guide.pdf"),
+      userDisplayName: current_user.display_name
     }.to_json
   end
   helper_method :initial_react_data
