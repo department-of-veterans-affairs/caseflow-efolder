@@ -12,11 +12,9 @@ describe "Manifests API v2", type: :request do
   end
   let(:veteran_id) { "DEMO987" }
   let(:manifest) do
-    Manifest.create(
-      file_number: veteran_id,
-      veteran_first_name: "George",
-      veteran_last_name: "Washington"
-    )
+    m = Manifest.find_or_create_by_user(user: user, file_number: veteran_id)
+    m.update(veteran_first_name: "George", veteran_last_name: "Washington")
+    m
   end
   let(:token) do
     "token"
@@ -36,10 +34,10 @@ describe "Manifests API v2", type: :request do
   end
 
   context "View download history" do
-    let(:manifest1) { Manifest.create(file_number: "123C") }
-    let(:manifest2) { Manifest.create(file_number: "567C") }
-    let(:manifest3) { Manifest.create(file_number: "897C") }
-    let(:manifest4) { Manifest.create(file_number: "935C") }
+    let(:manifest1) { Manifest.find_or_create_by_user(user: user, file_number: "123C") }
+    let(:manifest2) { Manifest.find_or_create_by_user(user: user, file_number: "567C") }
+    let(:manifest3) { Manifest.find_or_create_by_user(user: user, file_number: "897C") }
+    let(:manifest4) { Manifest.find_or_create_by_user(user: user, file_number: "935C") }
 
     let(:another_user) { User.create(css_id: "123C", station_id: "123") }
     let!(:files_download1) { FilesDownload.create(manifest: manifest1, user: user, requested_zip_at: 2.days.ago) }
@@ -185,12 +183,14 @@ describe "Manifests API v2", type: :request do
   end
 
   context "When sensitivity is higher than permissions" do
+    let(:veteran_id) { "DEMO456" }
+
     before do
       allow_any_instance_of(Fakes::BGSService).to receive(:sensitive_files).and_return(veteran_id.to_s => true)
     end
 
     it "returns 403" do
-      get "/api/v2/manifests/#{manifest.id}", nil, headers
+      post "/api/v2/manifests/", nil, headers
       expect(response.code).to eq("403")
       body = JSON.parse(response.body)
       expect(body["status"]).to match(/sensitive/)
