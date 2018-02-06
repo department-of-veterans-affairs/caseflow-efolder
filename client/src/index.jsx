@@ -7,7 +7,14 @@ import thunk from 'redux-thunk';
 import reducer from './reducer';
 import InitContainer from './containers/InitContainer';
 
-const initState = { searchInputText: '' };
+const initState = {
+  documents: [],
+  documentSources: [],
+  errorMessage: '',
+  searchInputText: '',
+  veteranId: '',
+  veteranName: ''
+};
 
 module.exports = {
   init(props) {
