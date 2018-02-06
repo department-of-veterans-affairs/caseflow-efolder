@@ -46,7 +46,7 @@ class DownloadListContainer extends React.PureComponent {
 
             <tbody className="ee-document-scroll" >
               { this.props.documents.map((doc) => (
-                <tr>
+                <tr key={doc.id}>
                   <td className="document-col">{doc.type_description}</td>
                   <td className="sources-col">{aliasForSource(doc.source)}</td>
                   <td className="upload-col">{formatDateString(doc.received_at)}</td>
