@@ -11,7 +11,7 @@ export default class DownloadPageFooter extends React.PureComponent {
         type="submit"
         value={this.props.label}
       />
-      <Link href="/" className="ee-button-align">Start over</Link>
+      <Link to="/" className="ee-button-align">Start over</Link>
     </AppSegment>;
   }
 }
