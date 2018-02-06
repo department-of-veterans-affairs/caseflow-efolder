@@ -241,7 +241,7 @@ table td {
 
 .ee-document-scroll {
   display: block;
-  height: 600px;
+  max-height: 600px;
   overflow-y: scroll;
 }
 

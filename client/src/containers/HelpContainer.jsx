@@ -6,7 +6,7 @@ import Link from '@department-of-veterans-affairs/caseflow-frontend-toolkit/comp
 
 class HelpContainer extends React.PureComponent {
   render() {
-    return <main className="usa-grid">
+    return <React.Fragment>
       <AppSegment extraClassNames="cf-help-content" filledBackground>
 
         <h1 id="#top">Welcome to the eFolder Express Help Page!</h1>
@@ -299,7 +299,7 @@ class HelpContainer extends React.PureComponent {
 
       <AppSegment><Link href ="#top">Back To Top</Link></AppSegment>
 
-    </main>;
+    </React.Fragment>;
   }
 }
 
