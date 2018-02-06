@@ -33,6 +33,18 @@ const manifestFetchInProgress = (sources) => {
   return false;
 };
 
+const buildErrorMessageFromResponse = (resp) => {
+  let description = '';
+
+  if (resp.body.status) {
+    description = ` ${resp.body.status}`;
+  } else if (resp.body.errors[0].detail) {
+    description = ` ${resp.body.errors[0].detail}`;
+  }
+
+  return `${resp.statusCode} (${resp.statusText})${description}`;
+};
+
 // TODO: Add modal for confirming that the user wants to download even when the zip does not contain the entire
 // list of all documents.
 class DownloadContainer extends React.PureComponent {
@@ -78,9 +90,7 @@ class DownloadContainer extends React.PureComponent {
           }
         },
         (err) => {
-          const errMsg = `${err.response.statusCode} (${err.response.statusText}) ${err.response.body.status}`;
-
-          this.props.setErrorMessage(errMsg);
+          this.props.setErrorMessage(buildErrorMessageFromResponse(err.response));
         }
       );
   }
