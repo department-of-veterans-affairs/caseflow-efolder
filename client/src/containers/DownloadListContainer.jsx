@@ -31,9 +31,9 @@ class DownloadListContainer extends React.PureComponent {
         <table className="usa-table-borderless ee-documents-table" summary="Files in veteran's eFolder">
           <thead>
             <tr>
-              <th className ="document-col" scope="col">Document Type</th>
-              <th className ="sources-col" scope="col">Source</th>
-              <th className ="upload-col" scope="col">Receipt Date</th>
+              <th className="document-col" scope="col">Document Type</th>
+              <th className="sources-col" scope="col">Source</th>
+              <th className="upload-col" scope="col">Receipt Date</th>
             </tr>
           </thead>
 
