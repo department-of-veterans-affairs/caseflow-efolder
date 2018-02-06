@@ -28,6 +28,15 @@ class Api::V1::ApplicationController < BaseController
     render json: { status: "missing header: #{header}" }, status: 400
   end
 
+  def record_not_found
+    render json: {
+      "errors": [
+        "title": "Record not found",
+        "detail": "A record with that ID was not found in our systems."
+      ]
+    }, status: 404
+  end
+
   def authenticate_with_token
     @authenticate_with_token ||= authenticate_with_http_token do |token, _options|
       token == Rails.application.config.api_key

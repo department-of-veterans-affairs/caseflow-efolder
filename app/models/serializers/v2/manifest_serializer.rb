@@ -3,6 +3,7 @@ class Serializers::V2::ManifestSerializer < ActiveModel::Serializer
 
   attribute :veteran_first_name
   attribute :veteran_last_name
+  attribute :file_number
   attribute :created_at
   attribute :updated_at
   attribute :fetched_files_at
@@ -29,8 +30,10 @@ class Serializers::V2::ManifestSerializer < ActiveModel::Serializer
       {
         id: document.id,
         type_id: document.type_id,
+        type_description: document.type_description,
         received_at: document.received_at,
         version_id: document.version_id,
+        source: document.manifest_source.name,
         status: document.status,
         series_id: document.series_id,
         created_at: document.created_at,

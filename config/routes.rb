@@ -12,7 +12,7 @@ Rails.application.routes.draw do
 
   post 'increment_vva_coachmarks_status', to: 'downloads#increment_vva_coachmarks_status'
 
-  match '/react(/:any)' => 'gui#react', via: [:get]
+  match '/react(/*path)' => 'gui#react', via: [:get]
 
   resources :downloads, only: [:new, :create, :show] do
     post :start, on: :member
@@ -35,8 +35,8 @@ Rails.application.routes.draw do
     namespace :v2 do
       namespace :manifests, only: [] do
         post "/", action: :start
-        get "/", action: :progress
         get :history
+        get "/:id", action: :progress
       end
       resources :manifests, only: [] do
         post :files_downloads, to: "files_downloads#start"
