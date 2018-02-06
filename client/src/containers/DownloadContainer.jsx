@@ -23,8 +23,8 @@ import DownloadSpinnerContainer from './DownloadSpinnerContainer';
 const MANIFEST_FETCH_SLEEP_TIMEOUT_SECONDS = 1;
 const MAX_MANIFEST_FETCH_RETRIES = 20;
 
-const manifestFetchInProgress = (responseAttrs) => {
-  for (const src of responseAttrs.sources) {
+const manifestFetchInProgress = (sources) => {
+  for (const src of sources) {
     if (['initialized', 'pending'].includes(src.status)) {
       return true;
     }
@@ -57,7 +57,7 @@ class DownloadContainer extends React.PureComponent {
         (resp) => {
           const respAttrs = resp.body.data.attributes;
 
-          if (manifestFetchInProgress(respAttrs)) {
+          if (manifestFetchInProgress(respAttrs.sources)) {
             if (retryCount < MAX_MANIFEST_FETCH_RETRIES) {
               const sleepTimeMs = MANIFEST_FETCH_SLEEP_TIMEOUT_SECONDS * 1000;
 
