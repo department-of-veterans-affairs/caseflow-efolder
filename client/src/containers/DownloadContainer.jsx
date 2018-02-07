@@ -23,14 +23,22 @@ import DownloadSpinnerContainer from './DownloadSpinnerContainer';
 const MANIFEST_FETCH_SLEEP_TIMEOUT_SECONDS = 1;
 const MAX_MANIFEST_FETCH_RETRIES = 20;
 
-const manifestFetchInProgress = (sources) => {
+// Before the manifest fetch request documentSources will be an empty array. The manifest fetch POST request kicks off
+// a job on the backend that should (at the time of this writing) put two items in the documentSources array (one each
+// for VVA and VBMS). If either of those document sources have anything other than a finished state, the entire
+// manifest fetch is incomplete.
+const manifestFetchComplete = (sources) => {
+  if (!sources) {
+    return false;
+  }
+
   for (const src of sources) {
     if (['initialized', 'pending'].includes(src.status)) {
-      return true;
+      return false;
     }
   }
 
-  return false;
+  return true;
 };
 
 const buildErrorMessageFromResponse = (resp) => {
@@ -49,8 +57,9 @@ const buildErrorMessageFromResponse = (resp) => {
 // list of all documents.
 class DownloadContainer extends React.PureComponent {
   componentDidMount() {
-    this.props.clearManifestFetchState();
-    this.pollManifestFetchEndpoint(0);
+    if (!manifestFetchComplete(this.props.documentSources)) {
+      this.pollManifestFetchEndpoint(0);
+    }
   }
 
   pollManifestFetchEndpoint(retryCount = 0) {
@@ -69,24 +78,22 @@ class DownloadContainer extends React.PureComponent {
         (resp) => {
           const respAttrs = resp.body.data.attributes;
 
-          if (manifestFetchInProgress(respAttrs.sources)) {
-            if (retryCount < MAX_MANIFEST_FETCH_RETRIES) {
-              const sleepTimeMs = MANIFEST_FETCH_SLEEP_TIMEOUT_SECONDS * 1000;
-
-              setTimeout(() => {
-                this.pollManifestFetchEndpoint(retryCount + 1);
-              }, sleepTimeMs);
-            } else {
-              const sleepLengthSeconds = MAX_MANIFEST_FETCH_RETRIES * MANIFEST_FETCH_SLEEP_TIMEOUT_SECONDS;
-              const errMsg = `Failed to fetch list of documents within ${sleepLengthSeconds} second time limit`;
-
-              this.props.setErrorMessage(errMsg);
-            }
-          } else {
+          if (manifestFetchComplete(respAttrs.sources)) {
             this.props.setDocuments(respAttrs.records);
             this.props.setDocumentSources(respAttrs.sources);
             this.props.setVeteranId(respAttrs.file_number);
             this.props.setVeteranName(`${respAttrs.veteran_first_name} ${respAttrs.veteran_last_name}`);
+          } else if (retryCount < MAX_MANIFEST_FETCH_RETRIES) {
+            const sleepTimeMs = MANIFEST_FETCH_SLEEP_TIMEOUT_SECONDS * 1000;
+
+            setTimeout(() => {
+              this.pollManifestFetchEndpoint(retryCount + 1);
+            }, sleepTimeMs);
+          } else {
+            const sleepLengthSeconds = MAX_MANIFEST_FETCH_RETRIES * MANIFEST_FETCH_SLEEP_TIMEOUT_SECONDS;
+            const errMsg = `Failed to fetch list of documents within ${sleepLengthSeconds} second time limit`;
+
+            this.props.setErrorMessage(errMsg);
           }
         },
         (err) => {
@@ -98,10 +105,7 @@ class DownloadContainer extends React.PureComponent {
   // TODO: Add display for in progress.
   // TODO: Add display for download complete.
   render() {
-    // Before the manifest fetch request is complete documentSources will be an empty array. If the request has
-    // completed successfully, we should (at the time of this writing) see two items in that array (one each for VVA
-    // and VBMS). Using the raw length() boolean check here for forward-compatibility.
-    if (this.props.documentSources.length) {
+    if (manifestFetchComplete(this.props.documentSources)) {
       return <DownloadListContainer />;
     }
     if (this.props.errorMessage) {

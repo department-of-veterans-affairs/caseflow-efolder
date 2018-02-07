@@ -7,7 +7,13 @@ import nocache from 'superagent-no-cache';
 
 import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/AppSegment';
 
-import { setVeteranId, setVeteranName, updateSearchInputText } from '../actions';
+import {
+  setDocuments,
+  setDocumentSources,
+  setVeteranId,
+  setVeteranName,
+  updateSearchInputText
+} from '../actions';
 import RecentDownloadsContainer from './RecentDownloadsContainer';
 
 const searchBarNoteTextStyling = css({
@@ -37,9 +43,13 @@ class WelcomeContainer extends React.PureComponent {
       use(nocache).
       then(
         (resp) => {
-          const responseAttrs = resp.body.data.attributes;
+          const respAttrs = resp.body.data.attributes;
 
-          this.props.setVeteranName(`${responseAttrs.veteran_first_name} ${responseAttrs.veteran_last_name}`);
+          this.props.setDocuments(respAttrs.records);
+          this.props.setDocumentSources(respAttrs.sources);
+          this.props.setVeteranId(respAttrs.file_number);
+          this.props.setVeteranName(`${respAttrs.veteran_first_name} ${respAttrs.veteran_last_name}`);
+
           this.props.history.push(`/downloads/${resp.body.data.id}`);
         }
       );
@@ -92,6 +102,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  setDocuments,
+  setDocumentSources,
   setVeteranId,
   setVeteranName,
   updateSearchInputText
