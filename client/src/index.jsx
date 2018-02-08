@@ -1,14 +1,17 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { Provider } from 'react-redux';
-import { applyMiddleware, createStore } from 'redux';
-import thunk from 'redux-thunk';
 
+import ReduxBase from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/ReduxBase';
+
+import { IN_PROGRESS_TAB } from './Constants';
 import reducer from './reducer';
 import InitContainer from './containers/InitContainer';
 
 const initState = {
+  activeDownloadProgressTab: IN_PROGRESS_TAB,
   documents: [],
+  documentsFetchCompletionEstimate: '',
+  documentsFetchStatus: '',
   documentSources: [],
   errorMessage: '',
   searchInputText: '',
@@ -18,11 +21,9 @@ const initState = {
 
 module.exports = {
   init(props) {
-    const store = createStore(reducer, { ...initState,
-      ...props }, applyMiddleware(thunk));
-
-    render(<Provider store={store}>
+    render(<ReduxBase reducer={reducer} initialState={{ ...initState,
+      ...props }}>
       <InitContainer />
-    </Provider>, document.getElementById('efolder_express_app'));
+    </ReduxBase>, document.getElementById('efolder_express_app'));
   }
 };

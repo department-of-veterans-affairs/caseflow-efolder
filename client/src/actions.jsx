@@ -1,15 +1,34 @@
 import {
+  SET_ACTIVE_DOWNLOAD_PROGRESS_TAB,
   SET_DOCUMENT_SOURCES,
   SET_DOCUMENTS,
+  SET_DOCUMENTS_FETCH_COMPLETION_ESTIMATE,
+  SET_DOCUMENTS_FETCH_STATUS,
   SET_ERROR_MESSAGE,
+  SET_MANIFEST_ID,
   SET_VETERAN_ID,
   SET_VETERAN_NAME,
   UPDATE_SEARCH_TEXT
 } from './actionTypes';
 
+export const setActiveDownloadProgressTab = (tab) => ({
+  type: SET_ACTIVE_DOWNLOAD_PROGRESS_TAB,
+  payload: tab
+});
+
 export const setDocuments = (docs) => ({
   type: SET_DOCUMENTS,
   payload: docs
+});
+
+export const setDocumentsFetchCompletionEstimate = (estimate) => ({
+  type: SET_DOCUMENTS_FETCH_COMPLETION_ESTIMATE,
+  payload: estimate
+});
+
+export const setDocumentsFetchStatus = (status) => ({
+  type: SET_DOCUMENTS_FETCH_STATUS,
+  payload: status
 });
 
 export const setDocumentSources = (sources) => ({
@@ -20,6 +39,11 @@ export const setDocumentSources = (sources) => ({
 export const setErrorMessage = (msg) => ({
   type: SET_ERROR_MESSAGE,
   payload: msg
+});
+
+export const setManifestId = (id) => ({
+  type: SET_MANIFEST_ID,
+  payload: id
 });
 
 export const setVeteranId = (id) => ({
@@ -36,9 +60,3 @@ export const updateSearchInputText = (text) => ({
   type: UPDATE_SEARCH_TEXT,
   payload: text
 });
-
-export const clearManifestFetchState = () => (dispatch) => {
-  dispatch(setErrorMessage(''));
-  dispatch(setDocuments([]));
-  dispatch(setDocumentSources([]));
-};

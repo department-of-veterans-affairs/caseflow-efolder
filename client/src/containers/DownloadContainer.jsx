@@ -1,23 +1,21 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import request from 'superagent';
-import nocache from 'superagent-no-cache';
 
+import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/AppSegment';
 import StatusMessage from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/StatusMessage';
 
+import { setErrorMessage, setManifestId } from '../actions';
+import { pollManifestFetchEndpoint } from '../apiActions';
 import {
-  clearManifestFetchState,
-  setDocuments,
-  setDocumentSources,
-  setErrorMessage,
-  setManifestFetchResponse,
-  setManifestFetchStatus,
-  setVeteranId,
-  setVeteranName
-} from '../actions';
+  MANIFEST_DOWNLOAD_NOT_STARTED_STATUS,
+  MANIFEST_SOURCE_FETCH_NOT_STARTED_STATUS,
+  MANIFEST_SOURCE_FETCH_IN_PROGRESS_STATUS
+} from '../Constants';
+import DownloadPageHeader from '../components/DownloadPageHeader';
+import PageLoadingIndicator from '../components/PageLoadingIndicator';
 import DownloadListContainer from './DownloadListContainer';
-import DownloadSpinnerContainer from './DownloadSpinnerContainer';
+import DownloadProgressContainer from './DownloadProgressContainer';
 
 // Reader polls every second for a maximum of 20 seconds. Match that here.
 const MANIFEST_FETCH_SLEEP_TIMEOUT_SECONDS = 1;
@@ -28,12 +26,12 @@ const MAX_MANIFEST_FETCH_RETRIES = 20;
 // for VVA and VBMS). If either of those document sources have anything other than a finished state, the entire
 // manifest fetch is incomplete.
 const manifestFetchComplete = (sources) => {
-  if (!sources) {
+  if (!sources.length) {
     return false;
   }
 
   for (const src of sources) {
-    if (['initialized', 'pending'].includes(src.status)) {
+    if ([MANIFEST_SOURCE_FETCH_NOT_STARTED_STATUS, MANIFEST_SOURCE_FETCH_IN_PROGRESS_STATUS].includes(src.status)) {
       return false;
     }
   }
@@ -41,96 +39,92 @@ const manifestFetchComplete = (sources) => {
   return true;
 };
 
-const buildErrorMessageFromResponse = (resp) => {
-  let description = '';
-
-  if (resp.body.status) {
-    description = ` ${resp.body.status}`;
-  } else if (resp.body.errors[0].detail) {
-    description = ` ${resp.body.errors[0].detail}`;
-  }
-
-  return `${resp.statusCode} (${resp.statusText})${description}`;
-};
+const stopPollingFunction = (resp, dispatch) => manifestFetchComplete(resp.body.data.attributes.sources);
 
 // TODO: Add modal for confirming that the user wants to download even when the zip does not contain the entire
 // list of all documents.
 class DownloadContainer extends React.PureComponent {
-  componentDidMount() {
-    if (!manifestFetchComplete(this.props.documentSources)) {
-      this.pollManifestFetchEndpoint(0);
+  async componentDidMount() {
+    // Clear all previous error messages. The only errors we care about will happen after this component has mounted.
+    this.props.setErrorMessage('');
+
+    // Do not attempt to fetch the manifest until we have set the global manifest ID.
+    const totalRetryCount = await this.setGlobalManifestId(0);
+
+    if (totalRetryCount !== false && !manifestFetchComplete(this.props.documentSources)) {
+      const pollOptions = {
+        csrfToken: this.props.csrfToken,
+        jobDescription: 'fetch list of documents',
+        manifestId: this.props.manifestId,
+        maxRetryCount: MAX_MANIFEST_FETCH_RETRIES,
+        retrySleepSeconds: MANIFEST_FETCH_SLEEP_TIMEOUT_SECONDS,
+        stopPollingFunction
+      };
+
+      this.props.pollManifestFetchEndpoint(totalRetryCount, pollOptions);
     }
   }
 
-  pollManifestFetchEndpoint(retryCount = 0) {
-    const headers = {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      'X-CSRF-Token': this.props.csrfToken
-    };
+  setGlobalManifestId(retryCount = 0) {
+    if (this.props.manifestId) {
+      return retryCount;
+    }
 
-    request.
-      get(`/api/v2/manifests/${this.props.match.params.manifestId}`).
-      set(headers).
-      send().
-      use(nocache).
-      then(
-        (resp) => {
-          const respAttrs = resp.body.data.attributes;
+    if (this.props.match.params.manifestId) {
+      this.props.setManifestId(this.props.match.params.manifestId);
+    }
 
-          if (manifestFetchComplete(respAttrs.sources)) {
-            this.props.setDocuments(respAttrs.records);
-            this.props.setDocumentSources(respAttrs.sources);
-            this.props.setVeteranId(respAttrs.file_number);
-            this.props.setVeteranName(`${respAttrs.veteran_first_name} ${respAttrs.veteran_last_name}`);
-          } else if (retryCount < MAX_MANIFEST_FETCH_RETRIES) {
-            const sleepTimeMs = MANIFEST_FETCH_SLEEP_TIMEOUT_SECONDS * 1000;
+    if (retryCount < MAX_MANIFEST_FETCH_RETRIES) {
+      setTimeout(() => {
+        this.setGlobalManifestId(retryCount + 1);
+      }, MANIFEST_FETCH_SLEEP_TIMEOUT_SECONDS * 1000);
+    } else {
+      this.props.setErrorMessage('Could not get efolder manifest ID from URL');
 
-            setTimeout(() => {
-              this.pollManifestFetchEndpoint(retryCount + 1);
-            }, sleepTimeMs);
-          } else {
-            const sleepLengthSeconds = MAX_MANIFEST_FETCH_RETRIES * MANIFEST_FETCH_SLEEP_TIMEOUT_SECONDS;
-            const errMsg = `Failed to fetch list of documents within ${sleepLengthSeconds} second time limit`;
-
-            this.props.setErrorMessage(errMsg);
-          }
-        },
-        (err) => {
-          this.props.setErrorMessage(buildErrorMessageFromResponse(err.response));
-        }
-      );
+      return false;
+    }
   }
 
-  // TODO: Add display for in progress.
-  // TODO: Add display for download complete.
-  render() {
+  getPageBody() {
+    if (this.props.documentsFetchStatus && this.props.documentsFetchStatus !== MANIFEST_DOWNLOAD_NOT_STARTED_STATUS) {
+      return <DownloadProgressContainer />;
+    }
+
     if (manifestFetchComplete(this.props.documentSources)) {
       return <DownloadListContainer />;
     }
+
+    return <AppSegment filledBackground>
+      <PageLoadingIndicator>We are gathering the list of files in the eFolder now...</PageLoadingIndicator>
+    </AppSegment>;
+  }
+
+  render() {
     if (this.props.errorMessage) {
       return <StatusMessage title="Could not fetch manifest">{this.props.errorMessage}</StatusMessage>;
     }
 
-    return <DownloadSpinnerContainer />;
+    return <React.Fragment>
+      <DownloadPageHeader veteranId={this.props.veteranId} veteranName={this.props.veteranName} />
+      { this.getPageBody() }
+    </React.Fragment>;
   }
 }
 
 const mapStateToProps = (state) => ({
   csrfToken: state.csrfToken,
+  documentsFetchStatus: state.documentsFetchStatus,
   documentSources: state.documentSources,
-  errorMessage: state.errorMessage
+  errorMessage: state.errorMessage,
+  manifestId: state.manifestId,
+  veteranId: state.veteranId,
+  veteranName: state.veteranName
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  clearManifestFetchState,
-  setDocuments,
-  setDocumentSources,
+  pollManifestFetchEndpoint,
   setErrorMessage,
-  setManifestFetchResponse,
-  setManifestFetchStatus,
-  setVeteranId,
-  setVeteranName
+  setManifestId
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(DownloadContainer);
