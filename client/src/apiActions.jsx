@@ -2,6 +2,7 @@ import request from 'superagent';
 import nocache from 'superagent-no-cache';
 
 import {
+  setActiveDownloadProgressTab,
   setDocuments,
   setDocumentsFetchCompletionEstimate,
   setDocumentsFetchStatus,
@@ -11,6 +12,8 @@ import {
   setVeteranId,
   setVeteranName
 } from './actions';
+import { SUCCESS_TAB } from './Constants';
+import { documentDownloadComplete, documentDownloadStarted, manifestFetchComplete } from './Utils';
 
 const setStateFromResponse = (resp) => (dispatch) => {
   const respAttrs = resp.body.data.attributes;
@@ -21,6 +24,10 @@ const setStateFromResponse = (resp) => (dispatch) => {
   dispatch(setDocumentSources(respAttrs.sources));
   dispatch(setVeteranId(respAttrs.file_number));
   dispatch(setVeteranName(`${respAttrs.veteran_first_name} ${respAttrs.veteran_last_name}`));
+
+  if (documentDownloadComplete(respAttrs.fetched_files_status)) {
+    dispatch(setActiveDownloadProgressTab(SUCCESS_TAB));
+  }
 };
 
 const baseRequest = (endpoint, csrfToken, method, options = {}) => {
@@ -50,25 +57,52 @@ const buildErrorMessageFromResponse = (resp) => {
   return `${resp.statusCode} (${resp.statusText})${description}`;
 };
 
+const retryPollManifestFetchEndpoint = (retryCount = 0, options = {}) => (dispatch) => {
+  if (retryCount < options.maxRetryCount) {
+    setTimeout(() => {
+      dispatch(pollManifestFetchEndpoint(retryCount + 1, options)); // eslint-disable-line no-use-before-define
+    }, options.retrySleepSeconds * 1000);
+
+    return true;
+  }
+
+  return false;
+};
+
+const pollDocumentDownload = (retryCount = 0, resp, options = {}) => (dispatch) => {
+  const retryOptions = {
+    ...options,
+    maxRetryCount: 2 * 60 / 5,
+    retrySleepSeconds: 5
+  };
+
+  if (!documentDownloadComplete(resp.body.data.attributes.fetched_files_status)) {
+    dispatch(retryPollManifestFetchEndpoint(retryCount, retryOptions));
+  }
+};
+
+const pollUntilFetchComplete = (retryCount = 0, resp, options = {}) => (dispatch) => {
+  if (manifestFetchComplete(resp.body.data.attributes.sources)) {
+    return true;
+  }
+
+  if (!dispatch(retryPollManifestFetchEndpoint(retryCount, options))) {
+    const sleepLengthSeconds = options.maxRetryCount * options.retrySleepSeconds;
+    const errMsg = `Failed to fetch list of documents within ${sleepLengthSeconds} second time limit`;
+
+    dispatch(setErrorMessage(errMsg));
+  }
+};
+
 export const pollManifestFetchEndpoint = (retryCount = 0, options = {}) => (dispatch) => {
   getRequest(`/api/v2/manifests/${options.manifestId}`, options.csrfToken).
     then(
       (resp) => {
         dispatch(setStateFromResponse(resp));
-
-        if (options.stopPollingFunction(resp, dispatch)) {
-          return true;
-        }
-
-        if (retryCount < options.maxRetryCount) {
-          setTimeout(() => {
-            dispatch(pollManifestFetchEndpoint(retryCount + 1, options));
-          }, options.retrySleepSeconds * 1000);
-        } else if (!options.hideErrorAfterRetryComplete) {
-          const sleepLengthSeconds = options.maxRetryCount * options.retrySleepSeconds;
-          const errMsg = `Failed to fetch list of documents within ${sleepLengthSeconds} second time limit`;
-
-          dispatch(setErrorMessage(errMsg));
+        if (documentDownloadStarted(resp.body.data.attributes.fetched_files_status)) {
+          dispatch(pollDocumentDownload(retryCount, resp, options));
+        } else {
+          dispatch(pollUntilFetchComplete(retryCount, resp, options));
         }
       },
       (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
@@ -78,7 +112,10 @@ export const pollManifestFetchEndpoint = (retryCount = 0, options = {}) => (disp
 export const startDocumentDownload = (options = {}) => (dispatch) => {
   postRequest(`/api/v2/manifests/${options.manifestId}/files_downloads`, options.csrfToken).
     then(
-      (resp) => dispatch(setStateFromResponse(resp)),
+      (resp) => {
+        dispatch(setStateFromResponse(resp));
+        dispatch(pollManifestFetchEndpoint(0, options));
+      },
       (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
     );
 };

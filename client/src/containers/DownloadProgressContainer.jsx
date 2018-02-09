@@ -21,37 +21,9 @@ import {
 } from '../Constants';
 import DownloadProgressTab from './DownloadProgressTab';
 import DownloadProgressTable from '../components/DownloadProgressTable';
-import { aliasForSource } from '../Utils';
-
-// TODO: We don't currently account for the case where there are no documents. This is probably fine.
-const documentDownloadComplete = (docs) => {
-  for (const doc of docs) {
-    if (doc.status === DOCUMENT_DOWNLOAD_IN_PROGRESS_STATUS) {
-      return false;
-    }
-  }
-
-  return true;
-};
-
-const stopPollingFunction = (resp, dispatch) => documentDownloadComplete(resp.body.data.attributes.records) && dispatch(setActiveDownloadProgressTab(SUCCESS_TAB));
+import { aliasForSource, documentDownloadComplete } from '../Utils';
 
 class DownloadProgressContainer extends React.PureComponent {
-  componentDidMount() {
-    this.props.setActiveDownloadProgressTab(IN_PROGRESS_TAB);
-
-    const pollOptions = {
-      csrfToken: this.props.csrfToken,
-      hideErrorAfterRetryComplete: true,
-      manifestId: this.props.manifestId,
-      maxRetryCount: 2 * 60 / 5,
-      retrySleepSeconds: 5,
-      stopPollingFunction
-    };
-
-    this.props.pollManifestFetchEndpoint(0, pollOptions);
-  }
-
   // TODO: Add some request failure handling in here.
   wrapInDownloadZipForm(element) {
     return <form action={`/api/v2/manifests/${this.props.manifestId}/zip`} method="GET">{element}</form>;
@@ -141,15 +113,19 @@ class DownloadProgressContainer extends React.PureComponent {
 
   // TODO: These buttons can probably be factored out in some way... later
   getFooterDownloadButton(docs) {
-    if (!documentDownloadComplete(this.props.documents)) {
+    if (!documentDownloadComplete(this.props.documentsFetchStatus)) {
       return <button className="usa-button-disabled ee-right-button">Download efolder</button>;
     }
 
     if (docs.failed.length) {
-      return this.wrapInDownloadZipForm(<button className="usa-button ee-right-button cf-action-openmodal">Download anyway</button>);
+      const btn = <button className="usa-button ee-right-button cf-action-openmodal">Download anyway</button>;
+
+      return this.wrapInDownloadZipForm(btn);
     }
 
-    return this.wrapInDownloadZipForm(<button className="usa-button ee-right-button ee-download-button">Download efolder</button>);
+    const btn = <button className="usa-button ee-right-button ee-download-button">Download efolder</button>;
+
+    return this.wrapInDownloadZipForm(btn);
   }
 
   render() {
@@ -162,7 +138,7 @@ class DownloadProgressContainer extends React.PureComponent {
     return <React.Fragment>
       <AppSegment filledBackground>
 
-        { documentDownloadComplete(this.props.documents) ?
+        { documentDownloadComplete(this.props.documentsFetchStatus) ?
           this.completeBanner(documents) :
           this.inProgressBanner(documents)
         }
