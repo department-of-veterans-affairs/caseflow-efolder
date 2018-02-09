@@ -24,8 +24,8 @@ import { aliasForSource, documentDownloadComplete } from '../Utils';
 
 class DownloadProgressContainer extends React.PureComponent {
   // TODO: Add some request failure handling in here.
-  wrapInDownloadZipForm(element) {
-    return <form action={`/api/v2/manifests/${this.props.manifestId}/zip`} method="GET">{element}</form>;
+  wrapInDownloadLink(element) {
+    return <Link href={`/api/v2/manifests/${this.props.manifestId}/zip`}>{element}</Link>;
   }
 
   inProgressBanner(docs) {
@@ -71,7 +71,7 @@ class DownloadProgressContainer extends React.PureComponent {
           </p>
           <ul className="ee-button-list">
             <li>
-              {this.wrapInDownloadZipForm(<button className="usa-button cf-action-openmodal">Download anyway</button>)}
+              {this.wrapInDownloadLink(<button className="usa-button cf-action-openmodal">Download anyway</button>)}
             </li>
             <li><button className="usa-button usa-button-gray">Try retrieving efolder again</button></li>
           </ul>
@@ -92,7 +92,7 @@ class DownloadProgressContainer extends React.PureComponent {
         <p>
           This efolder contains {this.props.documents.length} documents: {documentCountNote}.
         </p>
-        { this.wrapInDownloadZipForm(<button className="usa-button">Download efolder</button>) }
+        { this.wrapInDownloadLink(<button className="usa-button">Download efolder</button>) }
       </div>
     </div>;
   }
@@ -118,12 +118,12 @@ class DownloadProgressContainer extends React.PureComponent {
     if (docs.failed.length) {
       const btn = <button className="usa-button ee-right-button cf-action-openmodal">Download anyway</button>;
 
-      return this.wrapInDownloadZipForm(btn);
+      return this.wrapInDownloadLink(btn);
     }
 
     const btn = <button className="usa-button ee-right-button ee-download-button">Download efolder</button>;
 
-    return this.wrapInDownloadZipForm(btn);
+    return this.wrapInDownloadLink(btn);
   }
 
   render() {
