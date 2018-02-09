@@ -20,11 +20,7 @@ class DownloadProgressTab extends React.PureComponent {
     }
 
     return <button className={classNames} onClick={this.setActiveTab}>
-      <span>
-        <span>
-          {this.props.children}
-        </span>
-      </span>
+      <span>{this.props.children}</span>
     </button>;
   }
 }
