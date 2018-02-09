@@ -1,3 +1,4 @@
+import { css } from 'glamor';
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -43,8 +44,7 @@ class DownloadProgressContainer extends React.PureComponent {
         </div>
       </div>
 
-      <h1 style={{ marginTop: '2rem',
-        textAlign: 'center' }}>Retrieving Files ...</h1>
+      <h1 {...css({ marginTop: '2rem', textAlign: 'center' })}>Retrieving Files ...</h1>
       <p className="ee-fetching-files">
         Estimated time left: {this.props.documentsFetchCompletionEstimate} ({docs.progress.length} of&nbsp;
         {this.props.documents.length} files remaining)
