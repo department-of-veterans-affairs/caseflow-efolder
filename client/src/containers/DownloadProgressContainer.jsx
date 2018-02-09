@@ -15,9 +15,7 @@ import {
   ERRORS_TAB,
   IN_PROGRESS_TAB,
   SUCCESS_TAB,
-  DOCUMENT_DOWNLOAD_IN_PROGRESS_STATUS,
-  DOCUMENT_DOWNLOAD_SUCCESS_STATUS,
-  DOCUMENT_DOWNLOAD_FAILED_STATUS
+  DOCUMENT_DOWNLOAD_STATE
 } from '../Constants';
 import DownloadProgressTab from './DownloadProgressTab';
 import DownloadProgressTable from '../components/DownloadProgressTable';
@@ -130,9 +128,9 @@ class DownloadProgressContainer extends React.PureComponent {
 
   render() {
     const documents = {
-      progress: this.props.documents.filter((doc) => doc.status === DOCUMENT_DOWNLOAD_IN_PROGRESS_STATUS),
-      success: this.props.documents.filter((doc) => doc.status === DOCUMENT_DOWNLOAD_SUCCESS_STATUS),
-      failed: this.props.documents.filter((doc) => doc.status === DOCUMENT_DOWNLOAD_FAILED_STATUS)
+      progress: this.props.documents.filter((doc) => doc.status === DOCUMENT_DOWNLOAD_STATE.IN_PROGRESS),
+      success: this.props.documents.filter((doc) => doc.status === DOCUMENT_DOWNLOAD_STATE.SUCCEEDED),
+      failed: this.props.documents.filter((doc) => doc.status === DOCUMENT_DOWNLOAD_STATE.FAILED)
     };
 
     return <React.Fragment>

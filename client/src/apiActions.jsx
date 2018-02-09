@@ -25,6 +25,8 @@ const setStateFromResponse = (resp) => (dispatch) => {
   dispatch(setVeteranId(respAttrs.file_number));
   dispatch(setVeteranName(`${respAttrs.veteran_first_name} ${respAttrs.veteran_last_name}`));
 
+  console.log(respAttrs.fetched_files_status);
+
   if (documentDownloadComplete(respAttrs.fetched_files_status)) {
     dispatch(setActiveDownloadProgressTab(SUCCESS_TAB));
   }

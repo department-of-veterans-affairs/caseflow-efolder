@@ -7,7 +7,7 @@ import StatusMessage from '@department-of-veterans-affairs/caseflow-frontend-too
 
 import { setErrorMessage, setManifestId } from '../actions';
 import { pollManifestFetchEndpoint } from '../apiActions';
-import { MANIFEST_DOWNLOAD_IN_PROGRESS_STATUS } from '../Constants';
+import { MANIFEST_DOWNLOAD_STATE } from '../Constants';
 import DownloadPageHeader from '../components/DownloadPageHeader';
 import PageLoadingIndicator from '../components/PageLoadingIndicator';
 import DownloadListContainer from './DownloadListContainer';
@@ -30,7 +30,7 @@ class DownloadContainer extends React.PureComponent {
     this.props.setManifestId(manifestId);
 
     if (!manifestFetchComplete(this.props.documentSources) ||
-      this.props.documentsFetchStatus === MANIFEST_DOWNLOAD_IN_PROGRESS_STATUS
+      this.props.documentsFetchStatus === MANIFEST_DOWNLOAD_STATE.IN_PROGRESS
     ) {
       const pollOptions = {
         csrfToken: this.props.csrfToken,
