@@ -34,10 +34,7 @@ const documentDownloadComplete = (docs) => {
   return true;
 };
 
-const stopPollingFunction = (resp, dispatch) => {
-  documentDownloadComplete(resp.body.data.attributes.records);
-  dispatch(setActiveDownloadProgressTab(SUCCESS_TAB));
-};
+const stopPollingFunction = (resp, dispatch) => documentDownloadComplete(resp.body.data.attributes.records) && dispatch(setActiveDownloadProgressTab(SUCCESS_TAB));
 
 class DownloadProgressContainer extends React.PureComponent {
   componentDidMount() {
@@ -45,10 +42,10 @@ class DownloadProgressContainer extends React.PureComponent {
 
     const pollOptions = {
       csrfToken: this.props.csrfToken,
-      jobDescription: 'download documents',
+      hideErrorAfterRetryComplete: true,
       manifestId: this.props.manifestId,
-      maxRetryCount: 2 * 60,
-      retrySleepSeconds: 1,
+      maxRetryCount: 2 * 60 / 5,
+      retrySleepSeconds: 5,
       stopPollingFunction
     };
 

@@ -64,7 +64,7 @@ export const pollManifestFetchEndpoint = (retryCount = 0, options = {}) => (disp
           setTimeout(() => {
             dispatch(pollManifestFetchEndpoint(retryCount + 1, options));
           }, options.retrySleepSeconds * 1000);
-        } else {
+        } else if (!options.hideErrorAfterRetryComplete) {
           const sleepLengthSeconds = options.maxRetryCount * options.retrySleepSeconds;
           const errMsg = `Failed to ${options.jobDescription} within ${sleepLengthSeconds} second time limit`;
 
