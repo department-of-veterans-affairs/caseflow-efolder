@@ -8,6 +8,7 @@ import Link from '@department-of-veterans-affairs/caseflow-frontend-toolkit/comp
 
 import { setActiveDownloadProgressTab } from '../actions';
 import { pollManifestFetchEndpoint } from '../apiActions';
+import DownloadProgressBanner from '../components/DownloadProgressBanner';
 import FailedIcon from '../components/FailedIcon';
 import ProgressIcon from '../components/ProgressIcon';
 import SuccessIcon from '../components/SuccessIcon';
@@ -32,17 +33,14 @@ class DownloadProgressContainer extends React.PureComponent {
     const percentComplete = 100 * (this.props.documents.length - docs.progress.length) / this.props.documents.length;
 
     return <React.Fragment>
-      <div className="usa-alert usa-alert-info" role="alert">
-        <div className="usa-alert-body">
-          <h2 className="usa-alert-heading">You can close this page at any time.</h2>
-          <p className="usa-alert-text">
-            You can close this page at any time and eFolder Express will continue retrieving files in the&nbsp;
-            background. View progress and download eFolders from the History on the&nbsp;
-            <Link to="/">eFolder Express home page.</Link>
-          </p>
-          <p>Note: eFolders remain in your History for { EFOLDER_RETENTION_TIME_HOURS } hours.</p>
-        </div>
-      </div>
+      <DownloadProgressBanner title='You can close this page at any time.' alertType='info'>
+        <p>
+          You can close this page at any time and eFolder Express will continue retrieving files in the&nbsp;
+          background. View progress and download eFolders from the History on the&nbsp;
+          <Link to="/">eFolder Express home page.</Link>
+        </p>
+        <p>Note: eFolders remain in your History for { EFOLDER_RETENTION_TIME_HOURS } hours.</p>
+      </DownloadProgressBanner>
 
       <h1 {...css({ marginTop: '2rem', textAlign: 'center' })}>Retrieving Files ...</h1>
       <p className="ee-fetching-files">
@@ -60,41 +58,29 @@ class DownloadProgressContainer extends React.PureComponent {
   // TODO: Add action that will kick off the post request again for the "Try retrieving efolder again" button.
   completeBanner(docs) {
     if (docs.failed.length) {
-      return <div className="usa-alert usa-alert-error" role="alert">
-        <div className="usa-alert-body">
-          <h2 className="usa-alert-heading">Some files couldn't be added to eFolder</h2>
-          <p className="usa-alert-text">
-            eFolder Express wasn't able to retrieve some files. Click on the 'Errors' tab below to view them
-          </p>
-          <p>
-            You can still download the rest of the files by clicking the 'Download anyway' button below.
-          </p>
-          <ul className="ee-button-list">
-            <li>
-              {this.wrapInDownloadLink(<button className="usa-button cf-action-openmodal">Download anyway</button>)}
-            </li>
-            <li><button className="usa-button usa-button-gray">Try retrieving efolder again</button></li>
-          </ul>
-        </div>
-      </div>;
+      return <DownloadProgressBanner title="Some files couldn't be added to eFolder" alertType='error'>
+        <p>eFolder Express wasn't able to retrieve some files. Click on the 'Errors' tab below to view them</p>
+        <p>You can still download the rest of the files by clicking the 'Download anyway' button below.</p>
+        <ul className="ee-button-list">
+          <li>
+            {this.wrapInDownloadLink(<button className="usa-button cf-action-openmodal">Download anyway</button>)}
+          </li>
+          <li><button className="usa-button usa-button-gray">Try retrieving efolder again</button></li>
+        </ul>
+      </DownloadProgressBanner>;
     }
 
     const documentCountNote = this.props.documentSources.map((src) => (
       `${src.number_of_documents} from ${aliasForSource(src.source)}`)).join(' and ');
 
-    return <div className="usa-alert usa-alert-success" role="alert">
-      <div className="usa-alert-body">
-        <h2 className="usa-alert-heading">Success!</h2>
-        <p className="usa-alert-text">
-          All of the documents in the VBMS eFolder for #{this.props.veteranId} are ready to download.
-          Click the "Download efolder" button below.
-        </p>
-        <p>
-          This efolder contains {this.props.documents.length} documents: {documentCountNote}.
-        </p>
-        { this.wrapInDownloadLink(<button className="usa-button">Download efolder</button>) }
-      </div>
-    </div>;
+    return <DownloadProgressBanner title='Success!' alertType='success'>
+      <p>
+        All of the documents in the VBMS eFolder for #{this.props.veteranId} are ready to download.&nbsp;
+        Click the "Download efolder" button below.
+      </p>
+      <p>This efolder contains {this.props.documents.length} documents: {documentCountNote}.</p>
+      { this.wrapInDownloadLink(<button className="usa-button">Download efolder</button>) }
+    </DownloadProgressBanner>;
   }
 
   getActiveTable(docs) {
