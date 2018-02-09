@@ -28,7 +28,7 @@ class DownloadProgressContainer extends React.PureComponent {
   }
 
   inProgressBanner(docs) {
-    const pctComplete = 100 * (this.props.documents.length - docs.progress.length) / this.props.documents.length;
+    const percentComplete = 100 * (this.props.documents.length - docs.progress.length) / this.props.documents.length;
 
     return <React.Fragment>
       <div className="usa-alert usa-alert-info" role="alert">
@@ -51,7 +51,7 @@ class DownloadProgressContainer extends React.PureComponent {
       </p>
 
       <div className="progress-bar">
-        <span style={{ width: `${pctComplete}%` }}>Progress: {pctComplete}%</span>
+        <span style={{ width: `${percentComplete}%` }}>Progress: {percentComplete}%</span>
       </div>
     </React.Fragment>;
   }
