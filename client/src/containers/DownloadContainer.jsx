@@ -54,7 +54,6 @@ class DownloadContainer extends React.PureComponent {
     if (totalRetryCount !== false && !manifestFetchComplete(this.props.documentSources)) {
       const pollOptions = {
         csrfToken: this.props.csrfToken,
-        jobDescription: 'fetch list of documents',
         manifestId: this.props.manifestId,
         maxRetryCount: MAX_MANIFEST_FETCH_RETRIES,
         retrySleepSeconds: MANIFEST_FETCH_SLEEP_TIMEOUT_SECONDS,

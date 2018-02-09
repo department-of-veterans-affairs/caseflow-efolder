@@ -66,7 +66,7 @@ export const pollManifestFetchEndpoint = (retryCount = 0, options = {}) => (disp
           }, options.retrySleepSeconds * 1000);
         } else if (!options.hideErrorAfterRetryComplete) {
           const sleepLengthSeconds = options.maxRetryCount * options.retrySleepSeconds;
-          const errMsg = `Failed to ${options.jobDescription} within ${sleepLengthSeconds} second time limit`;
+          const errMsg = `Failed to fetch list of documents within ${sleepLengthSeconds} second time limit`;
 
           dispatch(setErrorMessage(errMsg));
         }
