@@ -14,10 +14,6 @@ import DownloadListContainer from './DownloadListContainer';
 import DownloadProgressContainer from './DownloadProgressContainer';
 import { documentDownloadStarted, manifestFetchComplete } from '../Utils';
 
-// Reader polls every second for a maximum of 20 seconds. Match that here.
-const MANIFEST_FETCH_SLEEP_TIMEOUT_SECONDS = 1;
-const MAX_MANIFEST_FETCH_RETRIES = 20;
-
 // TODO: Add modal for confirming that the user wants to download even when the zip does not contain the entire
 // list of all documents.
 class DownloadContainer extends React.PureComponent {
@@ -32,14 +28,7 @@ class DownloadContainer extends React.PureComponent {
     if (!manifestFetchComplete(this.props.documentSources) ||
       this.props.documentsFetchStatus === MANIFEST_DOWNLOAD_STATE.IN_PROGRESS
     ) {
-      const pollOptions = {
-        csrfToken: this.props.csrfToken,
-        manifestId,
-        maxRetryCount: MAX_MANIFEST_FETCH_RETRIES,
-        retrySleepSeconds: MANIFEST_FETCH_SLEEP_TIMEOUT_SECONDS
-      };
-
-      this.props.pollManifestFetchEndpoint(0, pollOptions);
+      this.props.pollManifestFetchEndpoint(0, { csrfToken: this.props.csrfToken, manifestId });
     }
   }
 

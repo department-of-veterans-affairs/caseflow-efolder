@@ -25,8 +25,6 @@ const setStateFromResponse = (resp) => (dispatch) => {
   dispatch(setVeteranId(respAttrs.file_number));
   dispatch(setVeteranName(`${respAttrs.veteran_first_name} ${respAttrs.veteran_last_name}`));
 
-  console.log(respAttrs.fetched_files_status);
-
   if (documentDownloadComplete(respAttrs.fetched_files_status)) {
     dispatch(setActiveDownloadProgressTab(SUCCESS_TAB));
   }
@@ -63,7 +61,7 @@ const retryPollManifestFetchEndpoint = (retryCount = 0, options = {}) => (dispat
   if (retryCount < options.maxRetryCount) {
     setTimeout(() => {
       dispatch(pollManifestFetchEndpoint(retryCount + 1, options)); // eslint-disable-line no-use-before-define
-    }, options.retrySleepSeconds * 1000);
+    }, options.retrySleepMilliseconds);
 
     return true;
   }
@@ -75,7 +73,7 @@ const pollDocumentDownload = (retryCount = 0, resp, options = {}) => (dispatch) 
   const retryOptions = {
     ...options,
     maxRetryCount: 2 * 60 / 5,
-    retrySleepSeconds: 5
+    retrySleepMilliseconds: 5 * 1000
   };
 
   if (!documentDownloadComplete(resp.body.data.attributes.fetched_files_status)) {
@@ -88,8 +86,15 @@ const pollUntilFetchComplete = (retryCount = 0, resp, options = {}) => (dispatch
     return true;
   }
 
-  if (!dispatch(retryPollManifestFetchEndpoint(retryCount, options))) {
-    const sleepLengthSeconds = options.maxRetryCount * options.retrySleepSeconds;
+  const retryOptions = {
+    ...options,
+    // Reader polls every second for a maximum of 20 seconds. Match that here.
+    maxRetryCount: 20,
+    retrySleepMilliseconds: 1 * 1000
+  };
+
+  if (!dispatch(retryPollManifestFetchEndpoint(retryCount, retryOptions))) {
+    const sleepLengthSeconds = retryOptions.maxRetryCount * retryOptions.retrySleepSeconds / 1000;
     const errMsg = `Failed to fetch list of documents within ${sleepLengthSeconds} second time limit`;
 
     dispatch(setErrorMessage(errMsg));
