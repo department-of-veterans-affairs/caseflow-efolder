@@ -33,7 +33,7 @@ class DownloadProgressContainer extends React.PureComponent {
     const percentComplete = 100 * (this.props.documents.length - docs.progress.length) / this.props.documents.length;
 
     return <React.Fragment>
-      <DownloadProgressBanner title='You can close this page at any time.' alertType='info'>
+      <DownloadProgressBanner title="You can close this page at any time." alertType="info">
         <p>
           You can close this page at any time and eFolder Express will continue retrieving files in the&nbsp;
           background. View progress and download eFolders from the History on the&nbsp;
@@ -42,7 +42,8 @@ class DownloadProgressContainer extends React.PureComponent {
         <p>Note: eFolders remain in your History for { EFOLDER_RETENTION_TIME_HOURS } hours.</p>
       </DownloadProgressBanner>
 
-      <h1 {...css({ marginTop: '2rem', textAlign: 'center' })}>Retrieving Files ...</h1>
+      <h1 {...css({ marginTop: '2rem',
+        textAlign: 'center' })}>Retrieving Files ...</h1>
       <p className="ee-fetching-files">
         Estimated time left: {this.props.documentsFetchCompletionEstimate} ({docs.progress.length} of&nbsp;
         {this.props.documents.length} files remaining)
@@ -58,7 +59,7 @@ class DownloadProgressContainer extends React.PureComponent {
   // TODO: Add action that will kick off the post request again for the "Try retrieving efolder again" button.
   completeBanner(docs) {
     if (docs.failed.length) {
-      return <DownloadProgressBanner title="Some files couldn't be added to eFolder" alertType='error'>
+      return <DownloadProgressBanner title="Some files couldn't be added to eFolder" alertType="error">
         <p>eFolder Express wasn't able to retrieve some files. Click on the 'Errors' tab below to view them</p>
         <p>You can still download the rest of the files by clicking the 'Download anyway' button below.</p>
         <ul className="ee-button-list">
@@ -73,7 +74,7 @@ class DownloadProgressContainer extends React.PureComponent {
     const documentCountNote = this.props.documentSources.map((src) => (
       `${src.number_of_documents} from ${aliasForSource(src.source)}`)).join(' and ');
 
-    return <DownloadProgressBanner title='Success!' alertType='success'>
+    return <DownloadProgressBanner title="Success!" alertType="success">
       <p>
         All of the documents in the VBMS eFolder for #{this.props.veteranId} are ready to download.&nbsp;
         Click the "Download efolder" button below.

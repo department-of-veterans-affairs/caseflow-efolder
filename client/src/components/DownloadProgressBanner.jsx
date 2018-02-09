@@ -3,17 +3,18 @@ import React from 'react';
 export default class DownloadProgressBanner extends React.PureComponent {
   render() {
     let alertTypeClass;
+
     switch (this.props.alertType) {
-      case 'error':
-        alertTypeClass = 'usa-alert-error';
-        break;
-      case 'success':
-        alertTypeClass = 'usa-alert-success';
-        break;
-      case 'info':
-      default:
-        alertTypeClass = 'usa-alert-info';
-        break;
+    case 'error':
+      alertTypeClass = 'usa-alert-error';
+      break;
+    case 'success':
+      alertTypeClass = 'usa-alert-success';
+      break;
+    case 'info':
+    default:
+      alertTypeClass = 'usa-alert-info';
+      break;
     }
 
     return <div className={`usa-alert ${alertTypeClass}`} role="alert">
