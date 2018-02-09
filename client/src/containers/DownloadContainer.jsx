@@ -44,43 +44,23 @@ const stopPollingFunction = (resp, dispatch) => manifestFetchComplete(resp.body.
 // TODO: Add modal for confirming that the user wants to download even when the zip does not contain the entire
 // list of all documents.
 class DownloadContainer extends React.PureComponent {
-  async componentDidMount() {
+  componentDidMount() {
     // Clear all previous error messages. The only errors we care about will happen after this component has mounted.
     this.props.setErrorMessage('');
 
-    // Do not attempt to fetch the manifest until we have set the global manifest ID.
-    const totalRetryCount = await this.setGlobalManifestId(0);
+    const manifestId = this.props.match.params.manifestId;
+    this.props.setManifestId(manifestId);
 
-    if (totalRetryCount !== false && !manifestFetchComplete(this.props.documentSources)) {
+    if (!manifestFetchComplete(this.props.documentSources)) {
       const pollOptions = {
         csrfToken: this.props.csrfToken,
-        manifestId: this.props.manifestId,
+        manifestId: manifestId,
         maxRetryCount: MAX_MANIFEST_FETCH_RETRIES,
         retrySleepSeconds: MANIFEST_FETCH_SLEEP_TIMEOUT_SECONDS,
         stopPollingFunction
       };
 
-      this.props.pollManifestFetchEndpoint(totalRetryCount, pollOptions);
-    }
-  }
-
-  setGlobalManifestId(retryCount = 0) {
-    if (this.props.manifestId) {
-      return retryCount;
-    }
-
-    if (this.props.match.params.manifestId) {
-      this.props.setManifestId(this.props.match.params.manifestId);
-    }
-
-    if (retryCount < MAX_MANIFEST_FETCH_RETRIES) {
-      setTimeout(() => {
-        this.setGlobalManifestId(retryCount + 1);
-      }, MANIFEST_FETCH_SLEEP_TIMEOUT_SECONDS * 1000);
-    } else {
-      this.props.setErrorMessage('Could not get efolder manifest ID from URL');
-
-      return false;
+      this.props.pollManifestFetchEndpoint(0, pollOptions);
     }
   }
 
