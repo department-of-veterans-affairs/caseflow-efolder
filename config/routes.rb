@@ -12,8 +12,6 @@ Rails.application.routes.draw do
 
   post 'increment_vva_coachmarks_status', to: 'downloads#increment_vva_coachmarks_status'
 
-  match '/react(/*path)' => 'gui#react', via: [:get]
-
   resources :downloads, only: [:new, :create, :show] do
     post :start, on: :member
     post :retry, on: :member
@@ -53,6 +51,7 @@ Rails.application.routes.draw do
     get code, :to => "errors#show", :status_code => code
   end
 
+  match '(*path)' => 'application#serve_single_page_app', via: [:get]
 
   require "sidekiq/web"
   require "sidekiq/cron/web"

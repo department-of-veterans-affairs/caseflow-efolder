@@ -12,7 +12,7 @@ import WelcomeContainer from './WelcomeContainer';
 
 class InitContainer extends React.PureComponent {
   render() {
-    return <BrowserRouter basename="/react">
+    return <BrowserRouter basename="/">
       <React.Fragment>
         <NavigationBar
           appName="eFolder Express"
