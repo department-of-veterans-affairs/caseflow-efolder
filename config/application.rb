@@ -36,7 +36,7 @@ module CaseflowEfolder
     # if the environment variable isn't set
     cors_origins ||= "http://localhost:3000" unless Rails.env.production?
 
-    # Load javascript from URL instead of precompiled assets to allow hot javascript reloading.
+    # Load javascript from URL instead of precompiled assets to allow javascript reloading without restarting rails.
     config.react_spa_javascript_url = ENV["JAVASCRIPT_URL"]
 
     config.middleware.insert_before 0, "Rack::Cors" do
