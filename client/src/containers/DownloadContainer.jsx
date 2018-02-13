@@ -28,8 +28,7 @@ class DownloadContainer extends React.PureComponent {
     if (!manifestFetchComplete(this.props.documentSources) ||
       this.props.documentsFetchStatus === MANIFEST_DOWNLOAD_STATE.IN_PROGRESS
     ) {
-      this.props.pollManifestFetchEndpoint(0, { csrfToken: this.props.csrfToken,
-        manifestId });
+      this.props.pollManifestFetchEndpoint(0, manifestId, this.props.csrfToken);
     }
   }
 

@@ -7,7 +7,6 @@ import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolki
 import Link from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/Link';
 
 import { setActiveDownloadProgressTab } from '../actions';
-import { pollManifestFetchEndpoint } from '../apiActions';
 import DownloadProgressBanner from '../components/DownloadProgressBanner';
 import FailedIcon from '../components/FailedIcon';
 import ProgressIcon from '../components/ProgressIcon';
@@ -164,9 +163,6 @@ const mapStateToProps = (state) => ({
   veteranId: state.veteranId
 });
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({
-  pollManifestFetchEndpoint,
-  setActiveDownloadProgressTab
-}, dispatch);
+const mapDispatchToProps = (dispatch) => bindActionCreators({ setActiveDownloadProgressTab }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(DownloadProgressContainer);

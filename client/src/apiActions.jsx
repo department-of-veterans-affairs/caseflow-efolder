@@ -57,72 +57,53 @@ const buildErrorMessageFromResponse = (resp) => {
   return `${resp.statusCode} (${resp.statusText})${description}`;
 };
 
-const retryPollManifestFetchEndpoint = (dispatch, retryCount = 0, options = {}) => {
-  if (retryCount < options.maxRetryCount) {
-    setTimeout(() => {
-      dispatch(pollManifestFetchEndpoint(retryCount + 1, options)); // eslint-disable-line no-use-before-define
-    }, options.retrySleepMilliseconds);
-
-    return true;
-  }
-
-  return false;
-};
-
-const pollDocumentDownload = (dispatch, retryCount = 0, resp, options = {}) => {
-  const retryOptions = {
-    ...options,
-    // Poll every 10 seconds for 1 day
-    maxRetryCount: 1 * 24 * 60 * 60 / 10,
-    retrySleepMilliseconds: 10 * 1000
-  };
-
-  if (!documentDownloadComplete(resp.body.data.attributes.fetched_files_status)) {
-    retryPollManifestFetchEndpoint(dispatch, retryCount, retryOptions);
-  }
-};
-
-const pollUntilFetchComplete = (dispatch, retryCount = 0, resp, options = {}) => {
-  if (manifestFetchComplete(resp.body.data.attributes.sources)) {
-    return true;
-  }
-
-  const retryOptions = {
-    ...options,
-    // Reader polls every second for a maximum of 20 seconds. Match that here.
-    maxRetryCount: 20,
-    retrySleepMilliseconds: 1 * 1000
-  };
-
-  if (!retryPollManifestFetchEndpoint(dispatch, retryCount, retryOptions)) {
-    const sleepLengthSeconds = retryOptions.maxRetryCount * retryOptions.retrySleepSeconds / 1000;
-    const errMsg = `Failed to fetch list of documents within ${sleepLengthSeconds} second time limit`;
-
-    dispatch(setErrorMessage(errMsg));
-  }
-};
-
-export const pollManifestFetchEndpoint = (retryCount = 0, options = {}) => (dispatch) => {
-  getRequest(`/api/v2/manifests/${options.manifestId}`, options.csrfToken).
+export const pollManifestFetchEndpoint = (retryCount, manifestId, csrfToken) => (dispatch) => {
+  getRequest(`/api/v2/manifests/${manifestId}`, csrfToken).
     then(
-      (resp) => {
-        setStateFromResponse(dispatch, resp);
-        if (documentDownloadStarted(resp.body.data.attributes.fetched_files_status)) {
-          pollDocumentDownload(dispatch, retryCount, resp, options);
+      (response) => {
+        setStateFromResponse(dispatch, response);
+
+        // Reader polls every second for a maximum of 20 seconds. Match that here.
+        let maxRetryCount = 20;
+        let retrySleepMilliseconds = 1 * 1000;
+        let donePollingFunction = (resp) => manifestFetchComplete(resp.body.data.attributes.sources);
+        let onRetriesExhaustedFunction = () => {
+          const sleepLengthSeconds = maxRetryCount * retrySleepMilliseconds / 1000;
+          const errMsg = `Failed to fetch list of documents within ${sleepLengthSeconds} second time limit`;
+
+          dispatch(setErrorMessage(errMsg));
+        };
+
+        if (documentDownloadStarted(response.body.data.attributes.fetched_files_status)) {
+          // Poll every 10 seconds for 1 day
+          maxRetryCount = 1 * 24 * 60 * 60 / 10;
+          retrySleepMilliseconds = 10 * 1000;
+          donePollingFunction = (resp) => documentDownloadComplete(resp.body.data.attributes.fetched_files_status);
+          onRetriesExhaustedFunction = () => {}; // eslint-disable-line no-empty-function
+        }
+
+        if (donePollingFunction(response)) {
+          return true;
+        }
+
+        if (retryCount < maxRetryCount) {
+          setTimeout(() => {
+            dispatch(pollManifestFetchEndpoint(retryCount + 1, manifestId, csrfToken));
+          }, retrySleepMilliseconds);
         } else {
-          pollUntilFetchComplete(dispatch, retryCount, resp, options);
+          onRetriesExhaustedFunction();
         }
       },
       (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
     );
 };
 
-export const startDocumentDownload = (options = {}) => (dispatch) => {
-  postRequest(`/api/v2/manifests/${options.manifestId}/files_downloads`, options.csrfToken).
+export const startDocumentDownload = (manifestId, csrfToken) => (dispatch) => {
+  postRequest(`/api/v2/manifests/${manifestId}/files_downloads`, csrfToken).
     then(
       (resp) => {
         setStateFromResponse(dispatch, resp);
-        dispatch(pollManifestFetchEndpoint(0, options));
+        dispatch(pollManifestFetchEndpoint(0, manifestId, csrfToken));
       },
       (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
     );
