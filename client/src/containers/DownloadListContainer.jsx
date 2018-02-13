@@ -12,7 +12,7 @@ const startDownloadButtonLabel = 'Start retrieving efolder';
 
 class DownloadListContainer extends React.PureComponent {
   startDownload = () => this.props.startDocumentDownload({ csrfToken: this.props.csrfToken,
-      manifestId: this.props.manifestId });
+    manifestId: this.props.manifestId });
 
   render() {
     const totalDocumentsCount = this.props.documentSources.reduce((cnt, src) => cnt + src.number_of_documents, 0);

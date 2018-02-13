@@ -15,7 +15,7 @@ import {
 import { SUCCESS_TAB } from './Constants';
 import { documentDownloadComplete, documentDownloadStarted, manifestFetchComplete } from './Utils';
 
-const setStateFromResponse = (resp) => (dispatch) => {
+const setStateFromResponse = (dispatch, resp) => {
   const respAttrs = resp.body.data.attributes;
 
   dispatch(setDocuments(respAttrs.records));
@@ -57,7 +57,7 @@ const buildErrorMessageFromResponse = (resp) => {
   return `${resp.statusCode} (${resp.statusText})${description}`;
 };
 
-const retryPollManifestFetchEndpoint = (retryCount = 0, options = {}) => (dispatch) => {
+const retryPollManifestFetchEndpoint = (dispatch, retryCount = 0, options = {}) => {
   if (retryCount < options.maxRetryCount) {
     setTimeout(() => {
       dispatch(pollManifestFetchEndpoint(retryCount + 1, options)); // eslint-disable-line no-use-before-define
@@ -69,7 +69,7 @@ const retryPollManifestFetchEndpoint = (retryCount = 0, options = {}) => (dispat
   return false;
 };
 
-const pollDocumentDownload = (retryCount = 0, resp, options = {}) => (dispatch) => {
+const pollDocumentDownload = (dispatch, retryCount = 0, resp, options = {}) => {
   const retryOptions = {
     ...options,
     // Poll every 10 seconds for 1 day
@@ -78,11 +78,11 @@ const pollDocumentDownload = (retryCount = 0, resp, options = {}) => (dispatch) 
   };
 
   if (!documentDownloadComplete(resp.body.data.attributes.fetched_files_status)) {
-    dispatch(retryPollManifestFetchEndpoint(retryCount, retryOptions));
+    retryPollManifestFetchEndpoint(dispatch, retryCount, retryOptions);
   }
 };
 
-const pollUntilFetchComplete = (retryCount = 0, resp, options = {}) => (dispatch) => {
+const pollUntilFetchComplete = (dispatch, retryCount = 0, resp, options = {}) => {
   if (manifestFetchComplete(resp.body.data.attributes.sources)) {
     return true;
   }
@@ -94,7 +94,7 @@ const pollUntilFetchComplete = (retryCount = 0, resp, options = {}) => (dispatch
     retrySleepMilliseconds: 1 * 1000
   };
 
-  if (!dispatch(retryPollManifestFetchEndpoint(retryCount, retryOptions))) {
+  if (!retryPollManifestFetchEndpoint(dispatch, retryCount, retryOptions)) {
     const sleepLengthSeconds = retryOptions.maxRetryCount * retryOptions.retrySleepSeconds / 1000;
     const errMsg = `Failed to fetch list of documents within ${sleepLengthSeconds} second time limit`;
 
@@ -106,11 +106,11 @@ export const pollManifestFetchEndpoint = (retryCount = 0, options = {}) => (disp
   getRequest(`/api/v2/manifests/${options.manifestId}`, options.csrfToken).
     then(
       (resp) => {
-        dispatch(setStateFromResponse(resp));
+        setStateFromResponse(dispatch, resp);
         if (documentDownloadStarted(resp.body.data.attributes.fetched_files_status)) {
-          dispatch(pollDocumentDownload(retryCount, resp, options));
+          pollDocumentDownload(dispatch, retryCount, resp, options);
         } else {
-          dispatch(pollUntilFetchComplete(retryCount, resp, options));
+          pollUntilFetchComplete(dispatch, retryCount, resp, options);
         }
       },
       (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
@@ -121,7 +121,7 @@ export const startDocumentDownload = (options = {}) => (dispatch) => {
   postRequest(`/api/v2/manifests/${options.manifestId}/files_downloads`, options.csrfToken).
     then(
       (resp) => {
-        dispatch(setStateFromResponse(resp));
+        setStateFromResponse(dispatch, resp);
         dispatch(pollManifestFetchEndpoint(0, options));
       },
       (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
@@ -132,7 +132,7 @@ export const startManifestFetch = (options = {}) => (dispatch) => {
   postRequest('/api/v2/manifests/', options.csrfToken, { FILE_NUMBER: options.veteranId }).
     then(
       (resp) => {
-        dispatch(setStateFromResponse(resp));
+        setStateFromResponse(dispatch, resp);
 
         const manifestId = resp.body.data.id;
 
