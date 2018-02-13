@@ -28,8 +28,9 @@ class DownloadProgressContainer extends React.PureComponent {
     return <Link href={`/api/v2/manifests/${this.props.manifestId}/zip`}>{element}</Link>;
   }
 
-  inProgressBanner(docs) {
-    const percentComplete = 100 * (this.props.documents.length - docs.progress.length) / this.props.documents.length;
+  inProgressBanner() {
+    const totalDocCount = this.props.documents.length;
+    const percentComplete = 100 * (totalDocCount - this.props.documentsForStatus.progress.length) / totalDocCount;
 
     return <React.Fragment>
       <DownloadProgressBanner title="You can close this page at any time." alertType="info">
@@ -44,8 +45,8 @@ class DownloadProgressContainer extends React.PureComponent {
       <h1 {...css({ marginTop: '2rem',
         textAlign: 'center' })}>Retrieving Files ...</h1>
       <p className="ee-fetching-files">
-        Estimated time left: {this.props.documentsFetchCompletionEstimate} ({docs.progress.length} of&nbsp;
-        {this.props.documents.length} files remaining)
+        Estimated time left: {this.props.documentsFetchCompletionEstimate}&nbsp;
+        ({this.props.documentsForStatus.progress.length} of {this.props.documents.length} files remaining)
       </p>
 
       <div className="progress-bar">
@@ -56,8 +57,8 @@ class DownloadProgressContainer extends React.PureComponent {
 
   // TODO: Add caution alert to the download anyway button.
   // TODO: Add action that will kick off the post request again for the "Try retrieving efolder again" button.
-  completeBanner(docs) {
-    if (docs.failed.length) {
+  completeBanner() {
+    if (this.props.documentsForStatus.failed.length) {
       return <DownloadProgressBanner title="Some files couldn't be added to eFolder" alertType="error">
         <p>eFolder Express wasn't able to retrieve some files. Click on the 'Errors' tab below to view them</p>
         <p>You can still download the rest of the files by clicking the 'Download anyway' button below.</p>
@@ -83,25 +84,29 @@ class DownloadProgressContainer extends React.PureComponent {
     </DownloadProgressBanner>;
   }
 
-  getActiveTable(docs) {
+  getActiveTable() {
     switch (this.props.activeDownloadProgressTab) {
     case SUCCESS_TAB:
-      return <DownloadProgressTable documents={docs.success} icon={<SuccessIcon />} />;
+      return <DownloadProgressTable documents={this.props.documentsForStatus.success} icon={<SuccessIcon />} />;
     case ERRORS_TAB:
-      return <DownloadProgressTable documents={docs.failed} icon={<FailedIcon />} showDocumentId />;
+      return <DownloadProgressTable
+        documents={this.props.documentsForStatus.failed}
+        icon={<FailedIcon />}
+        showDocumentId
+      />;
     case IN_PROGRESS_TAB:
     default:
-      return <DownloadProgressTable documents={docs.progress} icon={<ProgressIcon />} />;
+      return <DownloadProgressTable documents={this.props.documentsForStatus.progress} icon={<ProgressIcon />} />;
     }
   }
 
   // TODO: These buttons can probably be factored out in some way... later
-  getFooterDownloadButton(docs) {
+  getFooterDownloadButton() {
     if (!documentDownloadComplete(this.props.documentsFetchStatus)) {
       return <button className="usa-button-disabled ee-right-button">Download efolder</button>;
     }
 
-    if (docs.failed.length) {
+    if (this.props.documentsForStatus.failed.length) {
       const btn = <button className="usa-button ee-right-button cf-action-openmodal">Download anyway</button>;
 
       return this.wrapInDownloadLink(btn);
@@ -113,39 +118,30 @@ class DownloadProgressContainer extends React.PureComponent {
   }
 
   render() {
-    const documents = {
-      progress: this.props.documents.filter((doc) => doc.status === DOCUMENT_DOWNLOAD_STATE.IN_PROGRESS),
-      success: this.props.documents.filter((doc) => doc.status === DOCUMENT_DOWNLOAD_STATE.SUCCEEDED),
-      failed: this.props.documents.filter((doc) => doc.status === DOCUMENT_DOWNLOAD_STATE.FAILED)
-    };
-
     return <React.Fragment>
       <AppSegment filledBackground>
 
-        { documentDownloadComplete(this.props.documentsFetchStatus) ?
-          this.completeBanner(documents) :
-          this.inProgressBanner(documents)
-        }
+        { documentDownloadComplete(this.props.documentsFetchStatus) ? this.completeBanner() : this.inProgressBanner() }
 
         <div className="cf-tab-navigation">
-          <DownloadProgressTab name={IN_PROGRESS_TAB} documentCount={documents.progress.length}>
-            <ProgressIcon /> Progress ({documents.progress.length})
+          <DownloadProgressTab name={IN_PROGRESS_TAB} documentCount={this.props.documentsForStatus.progress.length}>
+            <ProgressIcon /> Progress ({this.props.documentsForStatus.progress.length})
           </DownloadProgressTab>
 
-          <DownloadProgressTab name={SUCCESS_TAB} documentCount={documents.success.length}>
-            <SuccessIcon /> Completed ({documents.success.length})
+          <DownloadProgressTab name={SUCCESS_TAB} documentCount={this.props.documentsForStatus.success.length}>
+            <SuccessIcon /> Completed ({this.props.documentsForStatus.success.length})
           </DownloadProgressTab>
 
-          <DownloadProgressTab name={ERRORS_TAB} documentCount={documents.failed.length}>
-            <FailedIcon /> Errors ({documents.failed.length})
+          <DownloadProgressTab name={ERRORS_TAB} documentCount={this.props.documentsForStatus.failed.length}>
+            <FailedIcon /> Errors ({this.props.documentsForStatus.failed.length})
           </DownloadProgressTab>
         </div>
 
-        { this.getActiveTable(documents) }
+        { this.getActiveTable() }
       </AppSegment>
 
       <AppSegment>
-        { this.getFooterDownloadButton(documents) }
+        { this.getFooterDownloadButton() }
         <span className="ee-button-align"><Link to="/">Search for another efolder</Link></span>
       </AppSegment>
 
@@ -158,6 +154,11 @@ const mapStateToProps = (state) => ({
   documents: state.documents,
   documentsFetchCompletionEstimate: state.documentsFetchCompletionEstimate,
   documentsFetchStatus: state.documentsFetchStatus,
+  documentsForStatus: {
+    progress: state.documents.filter((doc) => doc.status === DOCUMENT_DOWNLOAD_STATE.IN_PROGRESS),
+    success: state.documents.filter((doc) => doc.status === DOCUMENT_DOWNLOAD_STATE.SUCCEEDED),
+    failed: state.documents.filter((doc) => doc.status === DOCUMENT_DOWNLOAD_STATE.FAILED)
+  },
   documentSources: state.documentSources,
   manifestId: state.manifestId,
   veteranId: state.veteranId
