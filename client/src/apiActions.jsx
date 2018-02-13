@@ -109,8 +109,8 @@ export const startDocumentDownload = (manifestId, csrfToken) => (dispatch) => {
     );
 };
 
-export const startManifestFetch = (options = {}) => (dispatch) => {
-  postRequest('/api/v2/manifests/', options.csrfToken, { FILE_NUMBER: options.veteranId }).
+export const startManifestFetch = (veteranId, csrfToken, redirectFunction) => (dispatch) => {
+  postRequest('/api/v2/manifests/', csrfToken, { FILE_NUMBER: veteranId }).
     then(
       (resp) => {
         setStateFromResponse(dispatch, resp);
@@ -118,7 +118,7 @@ export const startManifestFetch = (options = {}) => (dispatch) => {
         const manifestId = resp.body.data.id;
 
         dispatch(setManifestId(manifestId));
-        options.redirectFunction(`/downloads/${manifestId}`);
+        redirectFunction(`/downloads/${manifestId}`);
       },
       (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
     );

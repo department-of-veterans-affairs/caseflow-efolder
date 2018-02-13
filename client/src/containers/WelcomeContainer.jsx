@@ -23,15 +23,7 @@ class WelcomeContainer extends React.PureComponent {
     const veteranId = this.props.searchInputText;
 
     this.props.setVeteranId(veteranId);
-
-    const options = {
-      csrfToken: this.props.csrfToken,
-      veteranId,
-      redirectFunction: this.props.history.push
-    };
-
-    this.props.startManifestFetch(options);
-
+    this.props.startManifestFetch(veteranId, this.props.csrfToken, this.props.history.push);
     event.preventDefault();
   }
 
