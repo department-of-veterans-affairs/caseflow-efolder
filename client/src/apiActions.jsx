@@ -72,9 +72,9 @@ const retryPollManifestFetchEndpoint = (retryCount = 0, options = {}) => (dispat
 const pollDocumentDownload = (retryCount = 0, resp, options = {}) => (dispatch) => {
   const retryOptions = {
     ...options,
-    // Poll every 2 seconds for 1 day
-    maxRetryCount: 1 * 24 * 60 * 60 / 2,
-    retrySleepMilliseconds: 2 * 1000
+    // Poll every 10 seconds for 1 day
+    maxRetryCount: 1 * 24 * 60 * 60 / 10,
+    retrySleepMilliseconds: 10 * 1000
   };
 
   if (!documentDownloadComplete(resp.body.data.attributes.fetched_files_status)) {
