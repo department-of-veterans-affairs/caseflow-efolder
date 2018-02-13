@@ -11,11 +11,8 @@ import { aliasForSource, formatDateString } from '../Utils';
 const startDownloadButtonLabel = 'Start retrieving efolder';
 
 class DownloadListContainer extends React.PureComponent {
-  startDownload = (event) => {
-    this.props.startDocumentDownload({ csrfToken: this.props.csrfToken,
+  startDownload = () => this.props.startDocumentDownload({ csrfToken: this.props.csrfToken,
       manifestId: this.props.manifestId });
-    event.preventDefault();
-  }
 
   render() {
     const totalDocumentsCount = this.props.documentSources.reduce((cnt, src) => cnt + src.number_of_documents, 0);
@@ -32,7 +29,7 @@ class DownloadListContainer extends React.PureComponent {
         <p>
           <input
             className="cf-submit cf-retrieve-button"
-            type="submit"
+            type="button"
             value={startDownloadButtonLabel}
             onClick={this.startDownload}
           />
