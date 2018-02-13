@@ -8,6 +8,7 @@ class ApplicationController < BaseController
   before_action :check_v2_app_access
 
   def serve_single_page_app
+    redirect_to("/unauthorized") && return unless can_access_react_app?
     render "gui/single_page_app", layout: false
   end
 
