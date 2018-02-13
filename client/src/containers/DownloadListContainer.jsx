@@ -6,7 +6,8 @@ import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolki
 import Link from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/Link';
 
 import { startDocumentDownload } from '../apiActions';
-import { aliasForSource, formatDateString } from '../Utils';
+import ManifestDocumentsTable from '../components/ManifestDocumentsTable';
+import { aliasForSource } from '../Utils';
 
 const startDownloadButtonLabel = 'Start retrieving efolder';
 
@@ -34,27 +35,8 @@ class DownloadListContainer extends React.PureComponent {
           />
         </p>
 
-        <div className="ee-document-list">
-          <table className="usa-table-borderless ee-documents-table" summary="Files in veteran's eFolder">
-            <thead>
-              <tr>
-                <th className="document-col" scope="col">Document Type</th>
-                <th className="sources-col" scope="col">Source</th>
-                <th className="upload-col" scope="col">Receipt Date</th>
-              </tr>
-            </thead>
+        <ManifestDocumentsTable documents={this.props.documents} summary="Files in veteran's eFolder" />
 
-            <tbody className="ee-document-scroll" >
-              { this.props.documents.map((doc) => (
-                <tr key={doc.id}>
-                  <td className="document-col">{doc.type_description}</td>
-                  <td className="sources-col">{aliasForSource(doc.source)}</td>
-                  <td className="upload-col">{formatDateString(doc.received_at)}</td>
-                </tr>)
-              )}
-            </tbody>
-          </table>
-        </div>
       </AppSegment>
 
       <AppSegment>

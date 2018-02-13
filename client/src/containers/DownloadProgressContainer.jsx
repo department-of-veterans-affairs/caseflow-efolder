@@ -19,7 +19,7 @@ import {
   DOCUMENT_DOWNLOAD_STATE
 } from '../Constants';
 import DownloadProgressTab from './DownloadProgressTab';
-import DownloadProgressTable from '../components/DownloadProgressTable';
+import ManifestDocumentsTable from '../components/ManifestDocumentsTable';
 import { aliasForSource, documentDownloadComplete } from '../Utils';
 
 class DownloadProgressContainer extends React.PureComponent {
@@ -85,18 +85,29 @@ class DownloadProgressContainer extends React.PureComponent {
   }
 
   getActiveTable() {
+    const summary = 'Status of veteran eFolder file downloads';
+
     switch (this.props.activeDownloadProgressTab) {
     case SUCCESS_TAB:
-      return <DownloadProgressTable documents={this.props.documentsForStatus.success} icon={<SuccessIcon />} />;
+      return <ManifestDocumentsTable
+        documents={this.props.documentsForStatus.success}
+        icon={<SuccessIcon />}
+        summary={summary}
+      />;
     case ERRORS_TAB:
-      return <DownloadProgressTable
+      return <ManifestDocumentsTable
         documents={this.props.documentsForStatus.failed}
         icon={<FailedIcon />}
+        summary={summary}
         showDocumentId
       />;
     case IN_PROGRESS_TAB:
     default:
-      return <DownloadProgressTable documents={this.props.documentsForStatus.progress} icon={<ProgressIcon />} />;
+      return <ManifestDocumentsTable
+        documents={this.props.documentsForStatus.progress}
+        icon={<ProgressIcon />}
+        summary={summary}
+      />;
     }
   }
 

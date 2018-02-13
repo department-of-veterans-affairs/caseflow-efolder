@@ -8,7 +8,7 @@ export default class DownloadProgressTable extends React.PureComponent {
       <table className="usa-table-borderless ee-documents-table" summary="Status of veteran eFolder file downloads">
         <thead>
           <tr>
-            <th className="ee-status" scope="col"><span className="usa-sr-only">Status</span></th>
+            <th className="ee-status" scope="col"><span style={{ display: 'none' }}>Status</span></th>
             <th className="ee-filename-row" scope="col">Document Type</th>
             { this.props.showDocumentId && <th className="ee-document-id" scope="col">Document ID</th> }
             <th className="source-col" scope="col">Source</th>
