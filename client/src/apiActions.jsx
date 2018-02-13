@@ -67,19 +67,16 @@ export const pollManifestFetchEndpoint = (retryCount, manifestId, csrfToken) => 
         let maxRetryCount = 20;
         let retrySleepMilliseconds = 1 * 1000;
         let donePollingFunction = (resp) => manifestFetchComplete(resp.body.data.attributes.sources);
-        let onRetriesExhaustedFunction = () => {
-          const sleepLengthSeconds = maxRetryCount * retrySleepMilliseconds / 1000;
-          const errMsg = `Failed to fetch list of documents within ${sleepLengthSeconds} second time limit`;
-
-          dispatch(setErrorMessage(errMsg));
-        };
+        const sleepLengthSeconds = maxRetryCount * retrySleepMilliseconds / 1000;
+        let retriesExhaustedErrMsg = `Failed to fetch list of documents within ${sleepLengthSeconds} second time limit`;
 
         if (documentDownloadStarted(response.body.data.attributes.fetched_files_status)) {
           // Poll every 10 seconds for 1 day
           maxRetryCount = 1 * 24 * 60 * 60 / 10;
           retrySleepMilliseconds = 10 * 1000;
           donePollingFunction = (resp) => documentDownloadComplete(resp.body.data.attributes.fetched_files_status);
-          onRetriesExhaustedFunction = () => {}; // eslint-disable-line no-empty-function
+          retriesExhaustedErrMsg = 'Failed to complete documents download within 24 hours. ' +
+            'Please refresh page to see current download progress';
         }
 
         if (donePollingFunction(response)) {
@@ -91,7 +88,7 @@ export const pollManifestFetchEndpoint = (retryCount, manifestId, csrfToken) => 
             dispatch(pollManifestFetchEndpoint(retryCount + 1, manifestId, csrfToken));
           }, retrySleepMilliseconds);
         } else {
-          onRetriesExhaustedFunction();
+          dispatch(setErrorMessage(retriesExhaustedErrMsg));
         }
       },
       (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
