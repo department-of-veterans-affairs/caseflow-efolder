@@ -60,7 +60,7 @@ const buildErrorMessageFromResponse = (resp) => {
 export const pollManifestFetchEndpoint = (retryCount, manifestId, csrfToken) => (dispatch) => {
   getRequest(`/api/v2/manifests/${manifestId}`, csrfToken).
     then(
-      (response) => {
+      (response) => { // eslint-disable-line max-statements
         setStateFromResponse(dispatch, response);
 
         // Reader polls every second for a maximum of 20 seconds. Match that here.
