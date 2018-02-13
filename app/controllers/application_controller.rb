@@ -52,7 +52,7 @@ class ApplicationController < BaseController
       recentDownloads: recent_downloads.sort_by(&:created_at).reverse,
       referenceGuidePath: ActionController::Base.helpers.asset_path("reference_guide.pdf"),
       trainingGuidePath: ActionController::Base.helpers.asset_path("training_guide.pdf"),
-      userDisplayName: current_user.display_name
+      userDisplayName: current_user.try(:display_name)
     }.to_json
   end
   helper_method :initial_react_data
