@@ -299,12 +299,6 @@ describe "File API v1", type: :request do
                   type_id: "123",
                   received_at: "2017-02-01T00:00:00.000Z",
                   external_document_id: "1"
-                },
-                {
-                  id: download.documents[2].id,
-                  type_id: "825",
-                  received_at: "2015-09-06T01:00:00.000Z",
-                  external_document_id: document.document_id
                 }
               ]
             }
@@ -312,7 +306,7 @@ describe "File API v1", type: :request do
         }.to_json
       end
 
-      it "returns existing and new files" do
+      it "returns new files" do
         get "/api/v1/files", nil, headers
         expect(response.code).to eq("200")
         expect(response.body).to eq(response_body)
