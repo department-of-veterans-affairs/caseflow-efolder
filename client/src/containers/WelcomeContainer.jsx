@@ -2,18 +2,11 @@ import { css } from 'glamor';
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import request from 'superagent';
-import nocache from 'superagent-no-cache';
 
 import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/AppSegment';
 
-import {
-  setDocuments,
-  setDocumentSources,
-  setVeteranId,
-  setVeteranName,
-  updateSearchInputText
-} from '../actions';
+import { setVeteranId, updateSearchInputText } from '../actions';
+import { startManifestFetch } from '../apiActions';
 import RecentDownloadsContainer from './RecentDownloadsContainer';
 
 const searchBarNoteTextStyling = css({
@@ -27,33 +20,10 @@ class WelcomeContainer extends React.PureComponent {
   }
 
   handleFormSubmit = (event) => {
-    this.props.setVeteranId(this.props.searchInputText);
+    const veteranId = this.props.searchInputText;
 
-    const headers = {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      FILE_NUMBER: this.props.searchInputText,
-      'X-CSRF-Token': this.props.csrfToken
-    };
-
-    request.
-      post('/api/v2/manifests').
-      set(headers).
-      send().
-      use(nocache).
-      then(
-        (resp) => {
-          const respAttrs = resp.body.data.attributes;
-
-          this.props.setDocuments(respAttrs.records);
-          this.props.setDocumentSources(respAttrs.sources);
-          this.props.setVeteranId(respAttrs.file_number);
-          this.props.setVeteranName(`${respAttrs.veteran_first_name} ${respAttrs.veteran_last_name}`);
-
-          this.props.history.push(`/downloads/${resp.body.data.id}`);
-        }
-      );
-
+    this.props.setVeteranId(veteranId);
+    this.props.startManifestFetch(veteranId, this.props.csrfToken, this.props.history.push);
     event.preventDefault();
   }
 
@@ -102,10 +72,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  setDocuments,
-  setDocumentSources,
   setVeteranId,
-  setVeteranName,
+  startManifestFetch,
   updateSearchInputText
 }, dispatch);
 
