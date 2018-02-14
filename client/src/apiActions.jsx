@@ -12,7 +12,12 @@ import {
   setVeteranId,
   setVeteranName
 } from './actions';
-import { SUCCESS_TAB } from './Constants';
+import {
+  MANIFEST_DOWNLOAD_STATE,
+  ERRORS_TAB,
+  IN_PROGRESS_TAB,
+  SUCCESS_TAB
+} from './Constants';
 import { documentDownloadComplete, documentDownloadStarted, manifestFetchComplete } from './Utils';
 
 const setStateFromResponse = (dispatch, resp) => {
@@ -25,9 +30,19 @@ const setStateFromResponse = (dispatch, resp) => {
   dispatch(setVeteranId(respAttrs.file_number));
   dispatch(setVeteranName(`${respAttrs.veteran_first_name} ${respAttrs.veteran_last_name}`));
 
-  if (documentDownloadComplete(respAttrs.fetched_files_status)) {
-    dispatch(setActiveDownloadProgressTab(SUCCESS_TAB));
+  let activeTab = IN_PROGRESS_TAB;
+  switch(respAttrs.fetched_files_status) {
+    case MANIFEST_DOWNLOAD_STATE.SUCCEEDED:
+      activeTab = SUCCESS_TAB;
+      break;
+    case MANIFEST_DOWNLOAD_STATE.FAILED:
+      activeTab = ERRORS_TAB;
+      break;
+    default:
+      activeTab = IN_PROGRESS_TAB;
+      break;
   }
+  dispatch(setActiveDownloadProgressTab(activeTab));
 };
 
 const baseRequest = (endpoint, csrfToken, method, options = {}) => {
