@@ -32,28 +32,22 @@ class DownloadContainer extends React.PureComponent {
     }
   }
 
-  getPageBody() {
-    if (documentDownloadStarted(this.props.documentsFetchStatus)) {
-      return <DownloadProgressContainer />;
-    }
-
-    if (manifestFetchComplete(this.props.documentSources)) {
-      return <DownloadListContainer />;
-    }
-
-    return <AppSegment filledBackground>
+  render() {
+    let pageBody = <AppSegment filledBackground>
       <PageLoadingIndicator>We are gathering the list of files in the eFolder now...</PageLoadingIndicator>
     </AppSegment>;
-  }
 
-  render() {
     if (this.props.errorMessage) {
-      return <StatusMessage title="Could not fetch manifest">{this.props.errorMessage}</StatusMessage>;
+      pageBody = <StatusMessage title="Could not fetch manifest">{this.props.errorMessage}</StatusMessage>;
+    } else if (documentDownloadStarted(this.props.documentsFetchStatus)) {
+      pageBody = <DownloadProgressContainer />;
+    } else if (manifestFetchComplete(this.props.documentSources)) {
+      pageBody = <DownloadListContainer />;
     }
 
     return <React.Fragment>
       <DownloadPageHeader veteranId={this.props.veteranId} veteranName={this.props.veteranName} />
-      { this.getPageBody() }
+      { pageBody }
     </React.Fragment>;
   }
 }
