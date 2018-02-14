@@ -31,16 +31,17 @@ const setStateFromResponse = (dispatch, resp) => {
   dispatch(setVeteranName(`${respAttrs.veteran_first_name} ${respAttrs.veteran_last_name}`));
 
   let activeTab = IN_PROGRESS_TAB;
-  switch(respAttrs.fetched_files_status) {
-    case MANIFEST_DOWNLOAD_STATE.SUCCEEDED:
-      activeTab = SUCCESS_TAB;
-      break;
-    case MANIFEST_DOWNLOAD_STATE.FAILED:
-      activeTab = ERRORS_TAB;
-      break;
-    default:
-      activeTab = IN_PROGRESS_TAB;
-      break;
+
+  switch (respAttrs.fetched_files_status) {
+  case MANIFEST_DOWNLOAD_STATE.SUCCEEDED:
+    activeTab = SUCCESS_TAB;
+    break;
+  case MANIFEST_DOWNLOAD_STATE.FAILED:
+    activeTab = ERRORS_TAB;
+    break;
+  default:
+    activeTab = IN_PROGRESS_TAB;
+    break;
   }
   dispatch(setActiveDownloadProgressTab(activeTab));
 };
