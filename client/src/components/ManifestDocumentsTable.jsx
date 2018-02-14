@@ -7,12 +7,18 @@ const documentTypeStyle = css({ width: '100%' });
 
 export default class DownloadProgressTable extends React.PureComponent {
   render() {
+    if (!this.props.documents.length) {
+      return <div className="ee-document-list">
+        <p className="cf-txt-c">There are no documents here.</p>
+      </div>;
+    }
+
     return <div className="ee-document-list">
       <table className="usa-table-borderless ee-documents-table" summary={this.props.summary}>
         <thead>
           <tr>
             { this.props.icon &&
-              <th className="ee-status" scope="col"><span className="usa-sr-only">Status</span></th>
+                <th className="ee-status" scope="col"><span className="usa-sr-only">Status</span></th>
             }
             <th scope="col" {...documentTypeStyle}>Document Type</th>
             { this.props.showDocumentId && <th className="ee-document-id" scope="col">Document ID</th> }
