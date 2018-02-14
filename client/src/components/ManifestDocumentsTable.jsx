@@ -3,13 +3,19 @@ import React from 'react';
 
 import { aliasForSource, formatDateString } from '../Utils';
 
+const centeredTextMessageStyle = css({
+  borderBottom: '1px solid #d6d7d9',
+  paddingBottom: '2.4rem',
+  textAlign: 'center'
+});
+
 const documentTypeStyle = css({ width: '100%' });
 
 export default class DownloadProgressTable extends React.PureComponent {
   render() {
     if (!this.props.documents.length) {
       return <div className="ee-document-list">
-        <p className="cf-txt-c">There are no documents here.</p>
+        <p {...centeredTextMessageStyle}>There are no documents here.</p>
       </div>;
     }
 
