@@ -50,7 +50,7 @@ class WelcomeContainer extends React.PureComponent {
     return <AppSegment filledBackground>
       { this.props.errorMessage &&
         <AlertBanner title={userFriendlyErrorFor(this.props.errorMessage).title} alertType="error">
-          <p {...css({ margin: 0 })}>{userFriendlyErrorFor(this.props.errorMessage).body}</p>
+          <p>{userFriendlyErrorFor(this.props.errorMessage).body}</p>
         </AlertBanner>
       }
 
