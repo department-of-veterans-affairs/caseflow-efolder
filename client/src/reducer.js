@@ -1,7 +1,29 @@
 import * as Actions from './actionTypes';
+import { IN_PROGRESS_TAB, MANIFEST_DOWNLOAD_STATE } from './Constants';
+
+const defaultManifestState = {
+  activeDownloadProgressTab: IN_PROGRESS_TAB,
+  documents: [],
+  documentsFetchCompletionEstimate: '',
+  documentsFetchStatus: MANIFEST_DOWNLOAD_STATE.NOT_STARTED,
+  documentSources: [],
+  veteranId: '',
+  veteranName: ''
+};
+
+export const initState = {
+  errorMessage: '',
+  recentDownloads: [],
+  searchInputText: '',
+  ...defaultManifestState
+};
 
 export default function reducer(state = {}, action = {}) {
   switch (action.type) {
+
+  case Actions.RESET_DEFAULT_MANIFEST_STATE:
+    return { ...state,
+      ...defaultManifestState };
 
   case Actions.SET_ACTIVE_DOWNLOAD_PROGRESS_TAB:
     return { ...state,
@@ -31,6 +53,14 @@ export default function reducer(state = {}, action = {}) {
     return { ...state,
       manifestId: action.payload };
 
+  case Actions.SET_RECENT_DOWNLOADS:
+    return { ...state,
+      recentDownloads: action.payload };
+
+  case Actions.SET_SEARCH_TEXT:
+    return { ...state,
+      searchInputText: action.payload };
+
   case Actions.SET_VETERAN_ID:
     return { ...state,
       veteranId: action.payload };
@@ -38,10 +68,6 @@ export default function reducer(state = {}, action = {}) {
   case Actions.SET_VETERAN_NAME:
     return { ...state,
       veteranName: action.payload };
-
-  case Actions.UPDATE_SEARCH_TEXT:
-    return { ...state,
-      searchInputText: action.payload };
 
   default:
     return state;

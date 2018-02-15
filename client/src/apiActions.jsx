@@ -9,6 +9,7 @@ import {
   setDocumentSources,
   setErrorMessage,
   setManifestId,
+  setRecentDownloads,
   setVeteranId,
   setVeteranName
 } from './actions';
@@ -133,6 +134,14 @@ export const startManifestFetch = (veteranId, csrfToken, redirectFunction) => (d
         dispatch(setManifestId(manifestId));
         redirectFunction(`/downloads/${manifestId}`);
       },
+      (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
+    );
+};
+
+export const getDownloadHistory = (csrfToken) => (dispatch) => {
+  getRequest('/api/v2/manifests/history', csrfToken).
+    then(
+      (resp) => dispatch(setRecentDownloads(resp.body.data)),
       (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
     );
 };

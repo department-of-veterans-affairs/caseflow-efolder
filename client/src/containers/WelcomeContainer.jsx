@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 
 import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/AppSegment';
 
-import { setVeteranId, updateSearchInputText } from '../actions';
+import { setVeteranId, setSearchInputText } from '../actions';
 import { startManifestFetch } from '../apiActions';
 import RecentDownloadsContainer from './RecentDownloadsContainer';
 
@@ -16,7 +16,7 @@ const searchBarNoteTextStyling = css({
 
 class WelcomeContainer extends React.PureComponent {
   handleInputChange = (event) => {
-    this.props.updateSearchInputText(event.target.value);
+    this.props.setSearchInputText(event.target.value);
   }
 
   handleFormSubmit = (event) => {
@@ -74,7 +74,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   setVeteranId,
   startManifestFetch,
-  updateSearchInputText
+  setSearchInputText
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(WelcomeContainer);
