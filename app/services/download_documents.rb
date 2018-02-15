@@ -36,6 +36,7 @@ class DownloadDocuments
     @external_documents = DownloadDocuments.filter_documents(opts[:external_documents] || [])
   end
 
+  # rubocop:disable Metrics/MethodLength
   def create_documents
     Download.transaction do
       current_documents = @external_documents.map do |external_document|
@@ -62,6 +63,7 @@ class DownloadDocuments
       @download.update_attributes!(manifest_fetched_at: Time.zone.now)
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   def download_contents(save_locally: true)
     begin
