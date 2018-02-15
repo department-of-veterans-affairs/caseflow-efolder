@@ -7,7 +7,7 @@ import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolki
 import Link from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/Link';
 
 import { setActiveDownloadProgressTab } from '../actions';
-import DownloadProgressBanner from '../components/DownloadProgressBanner';
+import AlertBanner from '../components/AlertBanner';
 import FailedIcon from '../components/FailedIcon';
 import ProgressIcon from '../components/ProgressIcon';
 import SuccessIcon from '../components/SuccessIcon';
@@ -33,14 +33,14 @@ class DownloadProgressContainer extends React.PureComponent {
     const percentComplete = 100 * (totalDocCount - this.props.documentsForStatus.progress.length) / totalDocCount;
 
     return <React.Fragment>
-      <DownloadProgressBanner title="You can close this page at any time." alertType="info">
+      <AlertBanner title="You can close this page at any time." alertType="info">
         <p>
           You can close this page at any time and eFolder Express will continue retrieving files in the&nbsp;
           background. View progress and download eFolders from the History on the&nbsp;
           <Link to="/">eFolder Express home page.</Link>
         </p>
         <p>Note: eFolders remain in your History for { EFOLDER_RETENTION_TIME_HOURS } hours.</p>
-      </DownloadProgressBanner>
+      </AlertBanner>
 
       <h1 {...css({ marginTop: '2rem',
         textAlign: 'center' })}>Retrieving Files ...</h1>
@@ -59,7 +59,7 @@ class DownloadProgressContainer extends React.PureComponent {
   // TODO: Add action that will kick off the post request again for the "Try retrieving efolder again" button.
   completeBanner() {
     if (this.props.documentsForStatus.failed.length) {
-      return <DownloadProgressBanner title="Some files couldn't be added to eFolder" alertType="error">
+      return <AlertBanner title="Some files couldn't be added to eFolder" alertType="error">
         <p>eFolder Express wasn't able to retrieve some files. Click on the 'Errors' tab below to view them</p>
         <p>You can still download the rest of the files by clicking the 'Download anyway' button below.</p>
         <ul className="ee-button-list">
@@ -68,20 +68,20 @@ class DownloadProgressContainer extends React.PureComponent {
           </li>
           <li><button className="usa-button usa-button-gray">Try retrieving efolder again</button></li>
         </ul>
-      </DownloadProgressBanner>;
+      </AlertBanner>;
     }
 
     const documentCountNote = this.props.documentSources.map((src) => (
       `${src.number_of_documents} from ${aliasForSource(src.source)}`)).join(' and ');
 
-    return <DownloadProgressBanner title="Success!" alertType="success">
+    return <AlertBanner title="Success!" alertType="success">
       <p>
         All of the documents in the VBMS eFolder for #{this.props.veteranId} are ready to download.&nbsp;
         Click the "Download efolder" button below.
       </p>
       <p>This efolder contains {this.props.documents.length} documents: {documentCountNote}.</p>
       { this.wrapInDownloadLink(<button className="usa-button">Download efolder</button>) }
-    </DownloadProgressBanner>;
+    </AlertBanner>;
   }
 
   getActiveTable() {

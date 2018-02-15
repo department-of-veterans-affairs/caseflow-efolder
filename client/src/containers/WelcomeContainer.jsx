@@ -7,12 +7,31 @@ import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolki
 
 import { setVeteranId, updateSearchInputText } from '../actions';
 import { startManifestFetch } from '../apiActions';
+import AlertBanner from '../components/AlertBanner';
 import RecentDownloadsContainer from './RecentDownloadsContainer';
 
 const searchBarNoteTextStyling = css({
   fontStyle: 'italic',
   textAlign: 'center'
 });
+
+const userFriendlyErrorFor = (errorStr) => {
+  let err = { title: 'Could not complete search for input Veteran ID',
+    body: errorStr };
+
+  switch (errorStr) {
+  case '400 (Bad Request) File Number is invalid, must be 8 or 9 digits':
+    err = {
+      title: 'The Veteran ID you entered was not valid.',
+      body: 'Veteran IDs must be 8 characters or longer and only contain numbers.'
+    };
+    break;
+  default:
+    break;
+  }
+
+  return err;
+};
 
 class WelcomeContainer extends React.PureComponent {
   handleInputChange = (event) => {
@@ -29,6 +48,12 @@ class WelcomeContainer extends React.PureComponent {
 
   render() {
     return <AppSegment filledBackground>
+      { this.props.errorMessage &&
+        <AlertBanner title={userFriendlyErrorFor(this.props.errorMessage).title} alertType="error">
+          <p {...css({ margin: 0 })}>{userFriendlyErrorFor(this.props.errorMessage).body}</p>
+        </AlertBanner>
+      }
+
       <div className="ee-heading">
         <h1>Welcome to eFolder Express</h1>
         <p>eFolder Express allows VA employees to bulk-download VBMS eFolders.
@@ -68,6 +93,7 @@ Note: eFolder Express now includes Virtual VA documents from the Legacy Content 
 
 const mapStateToProps = (state) => ({
   csrfToken: state.csrfToken,
+  errorMessage: state.errorMessage,
   searchInputText: state.searchInputText
 });
 
