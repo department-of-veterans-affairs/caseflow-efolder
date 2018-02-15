@@ -76,9 +76,24 @@ describe DownloadDocuments do
         updated_download_documents.create_documents
       end
 
-      it "updates the metadata of old documents and adds any new documents" do
-        expect(Document.count).to eq(5)
+      it "updates the metadata of old documents, adds any new documents, removes any old" do
+        expect(Document.count).to eq(2)
         expect(Document.first.type_id).to eq("124")
+      end
+    end
+
+    context "when a document was saved before, but has been removed" do
+      let(:external_documents_updated) do
+        [
+          OpenStruct.new(document_id: generate_id, received_at: 3.hours.ago, downloaded_from: "VVA")
+        ]
+      end
+
+      it "removes the extra documents" do
+        expect(Document.count).to eq(4)
+
+        DownloadDocuments.new(download: download, external_documents: external_documents_updated).create_documents
+        expect(Document.count).to eq(1)
       end
     end
   end
@@ -169,7 +184,7 @@ describe DownloadDocuments do
 
         download.documents.each_with_index do |document, _i|
           document.save!
-          expect(document).to be_success
+          expect(document.reload).to be_success
           expect(document.path).to eq((Rails.root + "tmp/files/#{download.id}/#{document.id}").to_s)
           expect(File.exist?(document.path)).to be_truthy
         end

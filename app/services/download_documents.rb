@@ -36,9 +36,10 @@ class DownloadDocuments
     @external_documents = DownloadDocuments.filter_documents(opts[:external_documents] || [])
   end
 
+  # rubocop:disable Metrics/MethodLength
   def create_documents
     Download.transaction do
-      @external_documents.each do |external_document|
+      current_documents = @external_documents.map do |external_document|
         # JRO and SSN are required when searching for a document in VVA
         type_id = external_document.try(:doc_type) || external_document.type_id
         @download.documents.find_or_initialize_by(document_id: external_document.document_id).tap do |t|
@@ -56,11 +57,13 @@ class DownloadDocuments
           t.save!
         end
       end
+      (@download.documents - current_documents).each(&:destroy)
 
       # TODO(alex): do we still need this field? why are we setting it here?
       @download.update_attributes!(manifest_fetched_at: Time.zone.now)
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   def download_contents(save_locally: true)
     begin
