@@ -9,6 +9,7 @@ import NotFoundMessage from '../components/NotFoundMessage';
 import DownloadContainer from './DownloadContainer';
 import HelpContainer from './HelpContainer';
 import OutOfServiceContainer from './OutOfServiceContainer';
+import PrivateRoute from './PrivateRoute';
 import UnauthorizedContainer from './UnauthorizedContainer';
 import WelcomeContainer from './WelcomeContainer';
 
@@ -27,8 +28,8 @@ class InitContainer extends React.PureComponent {
           defaultUrl="/">
           <main className="usa-grid">
             <Switch>
-              <Route exact path="/" component={WelcomeContainer} />
-              <Route exact path="/downloads/:manifestId" component={DownloadContainer} />
+              <PrivateRoute exact path="/" component={WelcomeContainer} />
+              <PrivateRoute exact path="/downloads/:manifestId" component={DownloadContainer} />
               <Route exact path="/help" component={HelpContainer} />
               <Route exact path="/out-of-service" component={OutOfServiceContainer} />
               <Route exact path="/unauthorized" component={UnauthorizedContainer} />

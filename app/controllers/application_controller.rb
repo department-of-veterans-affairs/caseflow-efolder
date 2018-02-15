@@ -8,7 +8,6 @@ class ApplicationController < BaseController
   before_action :check_v2_app_access
 
   def serve_single_page_app
-    redirect_to("/unauthorized") && return unless can_access_react_app?
     render "gui/single_page_app", layout: false
   end
 
@@ -36,7 +35,7 @@ class ApplicationController < BaseController
   end
 
   def authorize
-    redirect_to "/unauthorized" unless current_user.can? "Download eFolder"
+    redirect_to "/unauthorized" unless user_is_authorized?
   end
 
   def check_v2_app_access
@@ -52,7 +51,8 @@ class ApplicationController < BaseController
       recentDownloads: recent_downloads.sort_by(&:created_at).reverse,
       referenceGuidePath: ActionController::Base.helpers.asset_path("reference_guide.pdf"),
       trainingGuidePath: ActionController::Base.helpers.asset_path("training_guide.pdf"),
-      userDisplayName: current_user.try(:display_name)
+      userDisplayName: current_user.try(:display_name),
+      userIsAuthorized: user_is_authorized?
     }.to_json
   end
   helper_method :initial_react_data
@@ -76,6 +76,10 @@ class ApplicationController < BaseController
   end
 
   private
+
+  def user_is_authorized?
+    current_user.can?("Download efolder") || Rails.env.development?
+  end
 
   def can_access_react_app?
     FeatureToggle.enabled?(:efolder_react_app, user: current_user) || Rails.env.development?
