@@ -9,6 +9,7 @@ import NotFoundMessage from '../components/NotFoundMessage';
 import DownloadContainer from './DownloadContainer';
 import HelpContainer from './HelpContainer';
 import OutOfServiceContainer from './OutOfServiceContainer';
+import UnauthorizedContainer from './UnauthorizedContainer';
 import WelcomeContainer from './WelcomeContainer';
 
 class InitContainer extends React.PureComponent {
@@ -30,6 +31,7 @@ class InitContainer extends React.PureComponent {
               <Route exact path="/downloads/:manifestId" component={DownloadContainer} />
               <Route exact path="/help" component={HelpContainer} />
               <Route exact path="/out-of-service" component={OutOfServiceContainer} />
+              <Route exact path="/unauthorized" component={UnauthorizedContainer} />
               <Route component={NotFoundMessage} />
             </Switch>
           </main>
