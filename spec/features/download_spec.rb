@@ -469,7 +469,6 @@ RSpec.feature "Downloads" do
     end
 
     download_documents = DownloadDocuments.new(download: @download, vbms_service: FakeVBMSService)
-    download_documents.create_documents
     download_documents.download_and_package
 
     visit download_path(@download)
