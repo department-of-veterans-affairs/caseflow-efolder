@@ -3,16 +3,28 @@ import React from 'react';
 
 import { aliasForSource, formatDateString } from '../Utils';
 
+const centeredTextMessageStyle = css({
+  borderBottom: '1px solid #d6d7d9',
+  paddingBottom: '2.4rem',
+  textAlign: 'center'
+});
+
 const documentTypeStyle = css({ width: '100%' });
 
 export default class DownloadProgressTable extends React.PureComponent {
   render() {
+    if (!this.props.documents.length) {
+      return <div className="ee-document-list">
+        <p {...centeredTextMessageStyle}>There are no documents here.</p>
+      </div>;
+    }
+
     return <div className="ee-document-list">
       <table className="usa-table-borderless ee-documents-table" summary={this.props.summary}>
         <thead>
           <tr>
             { this.props.icon &&
-              <th className="ee-status" scope="col"><span className="usa-sr-only">Status</span></th>
+                <th className="ee-status" scope="col"><span className="usa-sr-only">Status</span></th>
             }
             <th scope="col" {...documentTypeStyle}>Document Type</th>
             { this.props.showDocumentId && <th className="ee-document-id" scope="col">Document ID</th> }
