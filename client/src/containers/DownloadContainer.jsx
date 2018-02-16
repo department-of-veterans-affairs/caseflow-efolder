@@ -7,9 +7,10 @@ import StatusMessage from '@department-of-veterans-affairs/caseflow-frontend-too
 
 import { setErrorMessage, setManifestId } from '../actions';
 import { pollManifestFetchEndpoint } from '../apiActions';
-import { MANIFEST_DOWNLOAD_STATE } from '../Constants';
+import DownloadPageFooter from '../components/DownloadPageFooter';
 import DownloadPageHeader from '../components/DownloadPageHeader';
 import PageLoadingIndicator from '../components/PageLoadingIndicator';
+import { MANIFEST_DOWNLOAD_STATE } from '../Constants';
 import DownloadListContainer from './DownloadListContainer';
 import DownloadProgressContainer from './DownloadProgressContainer';
 import { documentDownloadStarted, manifestFetchComplete } from '../Utils';
@@ -33,12 +34,18 @@ class DownloadContainer extends React.PureComponent {
   }
 
   render() {
-    let pageBody = <AppSegment filledBackground>
-      <PageLoadingIndicator>We are gathering the list of files in the eFolder now...</PageLoadingIndicator>
-    </AppSegment>;
+    let pageBody = <React.Fragment>
+      <AppSegment filledBackground>
+        <PageLoadingIndicator>We are gathering the list of files in the eFolder now...</PageLoadingIndicator>
+      </AppSegment>
+      <DownloadPageFooter />
+    </React.Fragment>;
 
     if (this.props.errorMessage) {
-      pageBody = <StatusMessage title="Could not fetch manifest">{this.props.errorMessage}</StatusMessage>;
+      pageBody = <React.Fragment>
+        <StatusMessage title="Could not fetch manifest">{this.props.errorMessage}</StatusMessage>
+        <DownloadPageFooter />
+      </React.Fragment>;
     } else if (documentDownloadStarted(this.props.documentsFetchStatus)) {
       pageBody = <DownloadProgressContainer />;
     } else if (manifestFetchComplete(this.props.documentSources)) {
