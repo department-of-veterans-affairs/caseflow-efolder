@@ -78,7 +78,7 @@ class ApplicationController < BaseController
   private
 
   def user_is_authorized?
-    current_user.try(:can?, "Download efolder") || Rails.env.development?
+    current_user.try(:can?, "Download eFolder") || Rails.env.development?
   end
 
   def can_access_react_app?
