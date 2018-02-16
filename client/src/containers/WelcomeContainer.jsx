@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 
 import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/AppSegment';
 
-import { setVeteranId, updateSearchInputText } from '../actions';
+import { clearError, setVeteranId, updateSearchInputText } from '../actions';
 import { startManifestFetch } from '../apiActions';
 import AlertBanner from '../components/AlertBanner';
 import RecentDownloadsContainer from './RecentDownloadsContainer';
@@ -15,25 +15,11 @@ const searchBarNoteTextStyling = css({
   textAlign: 'center'
 });
 
-const userFriendlyErrorFor = (errorStr) => {
-  let err = { title: 'Could not complete search for input Veteran ID',
-    body: errorStr };
-
-  switch (errorStr) {
-  case '400 (Bad Request) File Number is invalid, must be 8 or 9 digits':
-    err = {
-      title: 'The Veteran ID you entered was not valid.',
-      body: 'Veteran IDs must be 8 characters or longer and only contain numbers.'
-    };
-    break;
-  default:
-    break;
+class WelcomeContainer extends React.PureComponent {
+  componentDidMount() {
+    this.props.clearError();
   }
 
-  return err;
-};
-
-class WelcomeContainer extends React.PureComponent {
   handleInputChange = (event) => {
     this.props.updateSearchInputText(event.target.value);
   }
@@ -48,9 +34,9 @@ class WelcomeContainer extends React.PureComponent {
 
   render() {
     return <AppSegment filledBackground>
-      { this.props.errorMessage &&
-        <AlertBanner title={userFriendlyErrorFor(this.props.errorMessage).title} alertType="error">
-          <p>{userFriendlyErrorFor(this.props.errorMessage).body}</p>
+      { this.props.error &&
+        <AlertBanner title="Could not complete search for input Veteran ID" alertType="error">
+          <p>{this.props.error.description}</p>
         </AlertBanner>
       }
 
@@ -93,11 +79,12 @@ Note: eFolder Express now includes Virtual VA documents from the Legacy Content 
 
 const mapStateToProps = (state) => ({
   csrfToken: state.csrfToken,
-  errorMessage: state.errorMessage,
+  error: state.error,
   searchInputText: state.searchInputText
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  clearError,
   setVeteranId,
   startManifestFetch,
   updateSearchInputText

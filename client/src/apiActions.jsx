@@ -7,7 +7,7 @@ import {
   setDocumentsFetchCompletionEstimate,
   setDocumentsFetchStatus,
   setDocumentSources,
-  setErrorMessage,
+  setError,
   setManifestId,
   setVeteranId,
   setVeteranName
@@ -61,7 +61,15 @@ const baseRequest = (endpoint, csrfToken, method, options = {}) => {
 const getRequest = (endpoint, csrfToken, options) => baseRequest(endpoint, csrfToken, 'get', options);
 const postRequest = (endpoint, csrfToken, options) => baseRequest(endpoint, csrfToken, 'post', options);
 
-const buildErrorMessageFromResponse = (resp) => {
+const buildErrorFromString = (str) => {
+  return {
+    statusCode: null,
+    statusText: null,
+    description: str
+  };
+};
+
+const buildErrorFromResponse = (resp) => {
   let description = '';
 
   if (resp.body.status) {
@@ -70,7 +78,11 @@ const buildErrorMessageFromResponse = (resp) => {
     description = ` ${resp.body.errors[0].detail}`;
   }
 
-  return `${resp.statusCode} (${resp.statusText})${description}`;
+  return {
+    statusCode: resp.statusCode,
+    statusText: resp.statusText,
+    description
+  };
 };
 
 export const pollManifestFetchEndpoint = (retryCount, manifestId, csrfToken) => (dispatch) => {
@@ -104,10 +116,10 @@ export const pollManifestFetchEndpoint = (retryCount, manifestId, csrfToken) => 
             dispatch(pollManifestFetchEndpoint(retryCount + 1, manifestId, csrfToken));
           }, retrySleepMilliseconds);
         } else {
-          dispatch(setErrorMessage(retriesExhaustedErrMsg));
+          dispatch(setError(buildErrorFromString(retriesExhaustedErrMsg)));
         }
       },
-      (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
+      (err) => dispatch(setError(buildErrorFromResponse(err.response)))
     );
 };
 
@@ -118,7 +130,7 @@ export const startDocumentDownload = (manifestId, csrfToken) => (dispatch) => {
         setStateFromResponse(dispatch, resp);
         dispatch(pollManifestFetchEndpoint(0, manifestId, csrfToken));
       },
-      (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
+      (err) => dispatch(setError(buildErrorFromResponse(err.response)))
     );
 };
 
@@ -133,6 +145,6 @@ export const startManifestFetch = (veteranId, csrfToken, redirectFunction) => (d
         dispatch(setManifestId(manifestId));
         redirectFunction(`/downloads/${manifestId}`);
       },
-      (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
+      (err) => dispatch(setError(buildErrorFromResponse(err.response)))
     );
 };

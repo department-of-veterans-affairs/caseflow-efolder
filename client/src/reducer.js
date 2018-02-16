@@ -3,6 +3,10 @@ import * as Actions from './actionTypes';
 export default function reducer(state = {}, action = {}) {
   switch (action.type) {
 
+  case Actions.CLEAR_ERROR:
+    return { ...state,
+      error: null };
+
   case Actions.SET_ACTIVE_DOWNLOAD_PROGRESS_TAB:
     return { ...state,
       activeDownloadProgressTab: action.payload };
@@ -23,9 +27,9 @@ export default function reducer(state = {}, action = {}) {
     return { ...state,
       documentsFetchStatus: action.payload };
 
-  case Actions.SET_ERROR_MESSAGE:
+  case Actions.SET_ERROR:
     return { ...state,
-      errorMessage: action.payload };
+      error: action.payload };
 
   case Actions.SET_MANIFEST_ID:
     return { ...state,
