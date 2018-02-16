@@ -7,6 +7,7 @@ import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolki
 import Link from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/Link';
 
 import { setActiveDownloadProgressTab } from '../actions';
+import DownloadPageFooter from '../components/DownloadPageFooter';
 import DownloadProgressBanner from '../components/DownloadProgressBanner';
 import FailedIcon from '../components/FailedIcon';
 import ProgressIcon from '../components/ProgressIcon';
@@ -151,10 +152,7 @@ class DownloadProgressContainer extends React.PureComponent {
         { this.getActiveTable() }
       </AppSegment>
 
-      <AppSegment>
-        { this.getFooterDownloadButton() }
-        <span className="ee-button-align"><Link to="/">Search for another efolder</Link></span>
-      </AppSegment>
+      <DownloadPageFooter>{ this.getFooterDownloadButton() }</DownloadPageFooter>
 
     </React.Fragment>;
   }
