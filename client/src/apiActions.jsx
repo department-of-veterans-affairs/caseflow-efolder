@@ -135,7 +135,7 @@ export const startDocumentDownload = (manifestId, csrfToken) => (dispatch) => {
 };
 
 export const startManifestFetch = (veteranId, csrfToken, redirectFunction) => (dispatch) => {
-  postRequest('/api/v2/manifests/', csrfToken, { FILE_NUMBER: veteranId }).
+  postRequest('/api/v2/manifests/', csrfToken, { 'FILE-NUMBER': veteranId }).
     then(
       (resp) => {
         setStateFromResponse(dispatch, resp);
