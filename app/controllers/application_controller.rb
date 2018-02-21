@@ -96,11 +96,11 @@ class ApplicationController < BaseController
   end
 
   def check_out_of_service
-    out_of_service_path = "/react/out-of-service"
-    react_enabled = FeatureToggle.enabled?(:efolder_react_app, user: current_user) || Rails.env.development?
-    redirect_to out_of_service_path if Rails.cache.read("out_of_service") && request.path != out_of_service_path && react_enabled
-
-    render "out_of_service", layout: "application" if Rails.cache.read("out_of_service")
+    out_of_service_path = "/out-of-service"
+    if Rails.cache.read("out_of_service") && request.path != out_of_service_path
+      redirect_to out_of_service_path and return if can_access_react_app?
+      render "out_of_service", layout: "application"
+    end
   end
 
   def feedback_url
