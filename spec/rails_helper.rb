@@ -6,6 +6,8 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 require "spec_helper"
 require "rspec/rails"
 require_relative "support/database_cleaner"
+require_relative "support/sauce_driver"
+require_relative "support/download_helper"
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -22,12 +24,48 @@ require_relative "support/database_cleaner"
 # require only the support files necessary.
 #
 # Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
+
 require "capybara"
 
 Capybara.default_driver = :sniffybara
 Sniffybara::Driver.path_exclusions << /samlva/
 Sniffybara::Driver.configuration_file = File.expand_path("../support/VA-axe-configuration.json", __FILE__)
 Sniffybara::Driver.issue_id_exceptions += []
+
+download_directory = Rails.root.join("tmp/downloads_#{ENV['TEST_SUBCATEGORY'] || 'all'}")
+cache_directory = Rails.root.join("tmp/browser_cache_#{ENV['TEST_SUBCATEGORY'] || 'all'}")
+
+Dir.mkdir download_directory unless File.directory?(download_directory)
+if File.directory?(cache_directory)
+  FileUtils.rm_r cache_directory
+else
+  Dir.mkdir cache_directory
+end
+
+FeatureToggle.cache_namespace = "test_#{ENV['TEST_SUBCATEGORY'] || 'all'}"
+
+Capybara.register_driver(:parallel_sniffybara) do |app|
+  chrome_options = ::Selenium::WebDriver::Chrome::Options.new
+
+  chrome_options.add_preference(:download,
+                                prompt_for_download: false,
+                                default_directory: download_directory)
+
+  chrome_options.add_preference(:browser,
+                                disk_cache_dir: cache_directory)
+
+  options = {
+    port: 51_674,
+    browser: :chrome,
+    options: chrome_options
+  }
+
+  Sniffybara::Driver.current_driver = Sniffybara::Driver.new(app, options)
+end
+
+Capybara.default_driver = ENV["SAUCE_SPECS"] ? :sauce_driver : :parallel_sniffybara
+# the default default_max_wait_time is 2 seconds
+Capybara.default_max_wait_time = 20
 
 ActiveRecord::Migration.maintain_test_schema!
 

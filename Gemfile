@@ -13,7 +13,7 @@ gem "sqlite3", platforms: [:ruby, :mswin, :mingw, :mswin, :x64_mingw]
 gem "rails", "4.2.7.1"
 
 gem "activerecord-jdbcpostgresql-adapter", platforms: :jruby
-gem "pg", platforms: :ruby
+gem "pg", "~> 0.19.0", platforms: :ruby
 
 gem "aws-sdk", "~> 2"
 
@@ -124,7 +124,7 @@ group :test do
   # gem 'guard-rspec'
   gem "capybara", "2.6.2"
   gem "simplecov"
-  gem "sniffybara", git: "https://github.com/department-of-veterans-affairs/sniffybara.git", branch: "axe"
+  gem "sniffybara", git: "https://github.com/department-of-veterans-affairs/sniffybara.git"
   # to save and open specific page in capybara tests
   gem "database_cleaner"
   gem "launchy"

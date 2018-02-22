@@ -98,7 +98,7 @@ class ApplicationController < BaseController
   def check_out_of_service
     out_of_service_path = "/out-of-service"
     if Rails.cache.read("out_of_service") && request.path != out_of_service_path
-      redirect_to out_of_service_path and return if can_access_react_app?
+      redirect_to(out_of_service_path) && return if can_access_react_app?
       render "out_of_service", layout: "application"
     end
   end
