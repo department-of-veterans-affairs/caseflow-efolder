@@ -7,6 +7,7 @@ import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolki
 import Link from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/Link';
 
 import { setActiveDownloadProgressTab } from '../actions';
+import { startDocumentDownload } from '../apiActions';
 import DownloadPageFooter from '../components/DownloadPageFooter';
 import DownloadProgressBanner from '../components/DownloadProgressBanner';
 import FailedIcon from '../components/FailedIcon';
@@ -56,8 +57,9 @@ class DownloadProgressContainer extends React.PureComponent {
     </React.Fragment>;
   }
 
+  restartDocumentDownload = () => this.props.startDocumentDownload(this.props.manifestId, this.props.csrfToken);
+
   // TODO: Add caution alert to the download anyway button.
-  // TODO: Add action that will kick off the post request again for the "Try retrieving efolder again" button.
   completeBanner() {
     if (this.props.documentsForStatus.failed.length) {
       return <DownloadProgressBanner title="Some files couldn't be added to eFolder" alertType="error">
@@ -66,8 +68,12 @@ class DownloadProgressContainer extends React.PureComponent {
         <ul className="ee-button-list">
           <li>
             {this.wrapInDownloadLink(<button className="usa-button cf-action-openmodal">Download anyway</button>)}
+          </li>&nbsp;
+          <li>
+            <button className="usa-button usa-button-gray" onClick={this.restartDocumentDownload}>
+              Try retrieving efolder again
+            </button>
           </li>
-          <li><button className="usa-button usa-button-gray">Try retrieving efolder again</button></li>
         </ul>
       </DownloadProgressBanner>;
     }
@@ -160,6 +166,7 @@ class DownloadProgressContainer extends React.PureComponent {
 
 const mapStateToProps = (state) => ({
   activeDownloadProgressTab: state.activeDownloadProgressTab,
+  csrfToken: state.csrfToken,
   documents: state.documents,
   documentsFetchCompletionEstimate: state.documentsFetchCompletionEstimate,
   documentsFetchStatus: state.documentsFetchStatus,
@@ -173,6 +180,9 @@ const mapStateToProps = (state) => ({
   veteranId: state.veteranId
 });
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({ setActiveDownloadProgressTab }, dispatch);
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+  setActiveDownloadProgressTab,
+  startDocumentDownload
+}, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(DownloadProgressContainer);
