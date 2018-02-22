@@ -117,9 +117,9 @@ RSpec.feature "Stats Dashboard" do
     visit "/stats"
     click_on "Daily"
 
-    find('*[role="button"]', text: "Time to Manifest").trigger("click")
+    find('*[role="button"]', text: "Time to Manifest").click
     expect(page).to have_content("Time to Manifest (95th percentile) 30.37 sec")
-    find('*[role="button"]', text: "Time to Manifest").trigger("click")
+    find('*[role="button"]', text: "Time to Manifest").click
     expect(page).to have_content("Time to Manifest (median) 16.37 sec")
   end
 
