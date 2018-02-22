@@ -35,7 +35,7 @@ Sniffybara::Driver.issue_id_exceptions += []
 download_directory = Rails.root.join("tmp/downloads_#{ENV['TEST_SUBCATEGORY'] || 'all'}")
 cache_directory = Rails.root.join("tmp/browser_cache_#{ENV['TEST_SUBCATEGORY'] || 'all'}")
 
-Dir.mkdir download_directory unless File.directory?(download_directory)
+FileUtils.mkpath download_directory unless File.directory?(download_directory)
 if File.directory?(cache_directory)
   FileUtils.rm_r cache_directory
 else
