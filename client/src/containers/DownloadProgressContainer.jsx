@@ -10,6 +10,7 @@ import { setActiveDownloadProgressTab } from '../actions';
 import { startDocumentDownload } from '../apiActions';
 import DownloadPageFooter from '../components/DownloadPageFooter';
 import DownloadProgressBanner from '../components/DownloadProgressBanner';
+import CloseIcon from '../components/CloseIcon';
 import FailedIcon from '../components/FailedIcon';
 import ProgressIcon from '../components/ProgressIcon';
 import SuccessIcon from '../components/SuccessIcon';
@@ -25,6 +26,11 @@ import ManifestDocumentsTable from '../components/ManifestDocumentsTable';
 import { aliasForSource, documentDownloadComplete } from '../Utils';
 
 class DownloadProgressContainer extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = { confirmDownloadModalIsVisible: false };
+  }
+
   // TODO: Add some request failure handling in here.
   wrapInDownloadLink(element) {
     return <Link href={`/api/v2/manifests/${this.props.manifestId}/zip`}>{element}</Link>;
@@ -58,8 +64,9 @@ class DownloadProgressContainer extends React.PureComponent {
   }
 
   restartDocumentDownload = () => this.props.startDocumentDownload(this.props.manifestId, this.props.csrfToken);
+  showConfirmDownloadModal = () => this.setState({ confirmDownloadModalIsVisible: true });
+  hideConfirmDownloadModal = () => this.setState({ confirmDownloadModalIsVisible: false });
 
-  // TODO: Add caution alert to the download anyway button.
   completeBanner() {
     if (this.props.documentsForStatus.failed.length) {
       return <DownloadProgressBanner title="Some files couldn't be added to eFolder" alertType="error">
@@ -67,7 +74,7 @@ class DownloadProgressContainer extends React.PureComponent {
         <p>You can still download the rest of the files by clicking the 'Download anyway' button below.</p>
         <ul className="ee-button-list">
           <li>
-            {this.wrapInDownloadLink(<button className="usa-button cf-action-openmodal">Download anyway</button>)}
+            <button className="usa-button" onClick={this.showConfirmDownloadModal}>Download anyway</button>
           </li>&nbsp;
           <li>
             <button className="usa-button usa-button-gray" onClick={this.restartDocumentDownload}>
@@ -125,14 +132,63 @@ class DownloadProgressContainer extends React.PureComponent {
     }
 
     if (this.props.documentsForStatus.failed.length) {
-      const btn = <button className="usa-button ee-right-button cf-action-openmodal">Download anyway</button>;
-
-      return this.wrapInDownloadLink(btn);
+      return <button
+        className="usa-button ee-right-button cf-action-openmodal"
+        onClick={this.showConfirmDownloadModal}
+      >
+        Download anyway
+      </button>;
     }
 
     const btn = <button className="usa-button ee-right-button ee-download-button">Download efolder</button>;
 
     return this.wrapInDownloadLink(btn);
+  }
+
+  displayConfirmDownloadModal() {
+    return <section
+      className="cf-modal active"
+      id="confirm-download-anyway"
+      role="alertdialog"
+      aria-labelledby="confirm-download-anyway-title"
+      aria-describedby="confirm-download-anyway-desc"
+    >
+      <div className="cf-modal-body">
+        <button
+          type="button"
+          aria-label="Close modal"
+          className="cf-modal-close cf-action-closemodal cf-modal-startfocus"
+          onClick={this.hideConfirmDownloadModal}
+        >
+          <CloseIcon />
+        </button>
+        <h1 className="cf-modal-title" id="confirm-download-anyway-title">Download incomplete efolder?</h1>
+        <p className="cf-modal-normal-text" id="confirm-download-anyway-desc">
+          We encountered errors when retrieving some documents and they won’t be included in the eFolder download.&nbsp;
+          If you elect to "Download anyway" you may want to retrieve these files individually from VBMS.
+        </p>
+        <div className="cf-modal-divider"></div>
+        <div className="cf-push-row cf-modal-controls">
+          <button
+            type="button"
+            className="usa-button-outline cf-action-closemodal cf-push-left"
+            data-controls="#confirm-download-anyway"
+            onClick={this.hideConfirmDownloadModal}
+          >
+            Go back
+          </button>
+          { this.wrapInDownloadLink(
+            <button
+              className="cf-push-right usa-button usa-button-secondary"
+              onClick={this.hideConfirmDownloadModal}
+            >
+                Download anyway
+            </button>
+          )
+          }
+        </div>
+      </div>
+    </section>;
   }
 
   render() {
@@ -159,6 +215,8 @@ class DownloadProgressContainer extends React.PureComponent {
       </AppSegment>
 
       <DownloadPageFooter>{ this.getFooterDownloadButton() }</DownloadPageFooter>
+
+      { this.state.confirmDownloadModalIsVisible && this.displayConfirmDownloadModal() }
 
     </React.Fragment>;
   }
