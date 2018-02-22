@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 
 import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/AppSegment';
 
-import { clearError, setVeteranId, updateSearchInputText } from '../actions';
+import { clearErrorMessage, setVeteranId, updateSearchInputText } from '../actions';
 import { startManifestFetch } from '../apiActions';
 import AlertBanner from '../components/AlertBanner';
 import RecentDownloadsContainer from './RecentDownloadsContainer';
@@ -17,7 +17,7 @@ const searchBarNoteTextStyling = css({
 
 class WelcomeContainer extends React.PureComponent {
   componentDidMount() {
-    this.props.clearError();
+    this.props.clearErrorMessage();
   }
 
   handleInputChange = (event) => {
@@ -34,9 +34,9 @@ class WelcomeContainer extends React.PureComponent {
 
   render() {
     return <AppSegment filledBackground>
-      { this.props.error &&
+      { this.props.errorMessage &&
         <AlertBanner title="Could not complete search for input Veteran ID" alertType="error">
-          <p>{this.props.error.description}</p>
+          <p>{this.props.errorMessage}</p>
         </AlertBanner>
       }
 
@@ -79,12 +79,12 @@ Note: eFolder Express now includes Virtual VA documents from the Legacy Content 
 
 const mapStateToProps = (state) => ({
   csrfToken: state.csrfToken,
-  error: state.error,
+  errorMessage: state.errorMessage,
   searchInputText: state.searchInputText
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  clearError,
+  clearErrorMessage,
   setVeteranId,
   startManifestFetch,
   updateSearchInputText

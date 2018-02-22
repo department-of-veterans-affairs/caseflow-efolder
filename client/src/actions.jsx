@@ -1,19 +1,19 @@
 import {
-  CLEAR_ERROR,
+  CLEAR_ERROR_MESSAGE,
   SET_ACTIVE_DOWNLOAD_PROGRESS_TAB,
   SET_DOCUMENT_SOURCES,
   SET_DOCUMENTS,
   SET_DOCUMENTS_FETCH_COMPLETION_ESTIMATE,
   SET_DOCUMENTS_FETCH_STATUS,
-  SET_ERROR,
+  SET_ERROR_MESSAGE,
   SET_MANIFEST_ID,
   SET_VETERAN_ID,
   SET_VETERAN_NAME,
   UPDATE_SEARCH_TEXT
 } from './actionTypes';
 
-export const clearError = () => ({
-  type: CLEAR_ERROR
+export const clearErrorMessage = () => ({
+  type: CLEAR_ERROR_MESSAGE
 });
 
 export const setActiveDownloadProgressTab = (tab) => ({
@@ -41,9 +41,9 @@ export const setDocumentSources = (sources) => ({
   payload: sources
 });
 
-export const setError = (err) => ({
-  type: SET_ERROR,
-  payload: err
+export const setErrorMessage = (msg) => ({
+  type: SET_ERROR_MESSAGE,
+  payload: msg
 });
 
 export const setManifestId = (id) => ({

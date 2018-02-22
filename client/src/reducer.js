@@ -3,9 +3,9 @@ import * as Actions from './actionTypes';
 export default function reducer(state = {}, action = {}) {
   switch (action.type) {
 
-  case Actions.CLEAR_ERROR:
+  case Actions.CLEAR_ERROR_MESSAGE:
     return { ...state,
-      error: null };
+      errorMessage: '' };
 
   case Actions.SET_ACTIVE_DOWNLOAD_PROGRESS_TAB:
     return { ...state,
@@ -27,9 +27,9 @@ export default function reducer(state = {}, action = {}) {
     return { ...state,
       documentsFetchStatus: action.payload };
 
-  case Actions.SET_ERROR:
+  case Actions.SET_ERROR_MESSAGE:
     return { ...state,
-      error: action.payload };
+      errorMessage: action.payload };
 
   case Actions.SET_MANIFEST_ID:
     return { ...state,

@@ -7,7 +7,7 @@ import {
   setDocumentsFetchCompletionEstimate,
   setDocumentsFetchStatus,
   setDocumentSources,
-  setError,
+  setErrorMessage,
   setManifestId,
   setVeteranId,
   setVeteranName
@@ -61,28 +61,16 @@ const baseRequest = (endpoint, csrfToken, method, options = {}) => {
 const getRequest = (endpoint, csrfToken, options) => baseRequest(endpoint, csrfToken, 'get', options);
 const postRequest = (endpoint, csrfToken, options) => baseRequest(endpoint, csrfToken, 'post', options);
 
-const buildErrorFromString = (str) => {
-  return {
-    statusCode: null,
-    statusText: null,
-    description: str
-  };
-};
-
-const buildErrorFromResponse = (resp) => {
-  let description = '';
+const buildErrorMessageFromResponse = (resp) => {
+  let description = `${resp.statusCode} (${resp.statusText})`;
 
   if (resp.body.status) {
-    description = ` ${resp.body.status}`;
+    description = resp.body.status;
   } else if (resp.body.errors[0].detail) {
-    description = ` ${resp.body.errors[0].detail}`;
+    description = resp.body.errors[0].detail;
   }
 
-  return {
-    statusCode: resp.statusCode,
-    statusText: resp.statusText,
-    description
-  };
+  return description;
 };
 
 export const pollManifestFetchEndpoint = (retryCount, manifestId, csrfToken) => (dispatch) => {
@@ -116,10 +104,10 @@ export const pollManifestFetchEndpoint = (retryCount, manifestId, csrfToken) => 
             dispatch(pollManifestFetchEndpoint(retryCount + 1, manifestId, csrfToken));
           }, retrySleepMilliseconds);
         } else {
-          dispatch(setError(buildErrorFromString(retriesExhaustedErrMsg)));
+          dispatch(setErrorMessage(retriesExhaustedErrMsg));
         }
       },
-      (err) => dispatch(setError(buildErrorFromResponse(err.response)))
+      (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
     );
 };
 
@@ -130,7 +118,7 @@ export const startDocumentDownload = (manifestId, csrfToken) => (dispatch) => {
         setStateFromResponse(dispatch, resp);
         dispatch(pollManifestFetchEndpoint(0, manifestId, csrfToken));
       },
-      (err) => dispatch(setError(buildErrorFromResponse(err.response)))
+      (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
     );
 };
 
@@ -145,6 +133,6 @@ export const startManifestFetch = (veteranId, csrfToken, redirectFunction) => (d
         dispatch(setManifestId(manifestId));
         redirectFunction(`/downloads/${manifestId}`);
       },
-      (err) => dispatch(setError(buildErrorFromResponse(err.response)))
+      (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
     );
 };

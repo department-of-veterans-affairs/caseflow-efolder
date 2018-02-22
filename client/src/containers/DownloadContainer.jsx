@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/AppSegment';
 import StatusMessage from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/StatusMessage';
 
-import { clearError, setManifestId } from '../actions';
+import { clearErrorMessage, setManifestId } from '../actions';
 import { pollManifestFetchEndpoint } from '../apiActions';
 import DownloadPageFooter from '../components/DownloadPageFooter';
 import DownloadPageHeader from '../components/DownloadPageHeader';
@@ -20,7 +20,7 @@ import { documentDownloadStarted, manifestFetchComplete } from '../Utils';
 class DownloadContainer extends React.PureComponent {
   componentDidMount() {
     // Clear all previous error messages. The only errors we care about will happen after this component has mounted.
-    this.props.clearError();
+    this.props.clearErrorMessage();
 
     const manifestId = this.props.match.params.manifestId;
 
@@ -41,9 +41,9 @@ class DownloadContainer extends React.PureComponent {
       <DownloadPageFooter />
     </React.Fragment>;
 
-    if (this.props.error) {
+    if (this.props.errorMessage) {
       pageBody = <React.Fragment>
-        <StatusMessage title="Could not fetch manifest">{this.props.error.description}</StatusMessage>
+        <StatusMessage title="Could not fetch manifest">{this.props.errorMessage}</StatusMessage>
         <DownloadPageFooter />
       </React.Fragment>;
     } else if (documentDownloadStarted(this.props.documentsFetchStatus)) {
@@ -63,7 +63,7 @@ const mapStateToProps = (state) => ({
   csrfToken: state.csrfToken,
   documentsFetchStatus: state.documentsFetchStatus,
   documentSources: state.documentSources,
-  error: state.error,
+  errorMessage: state.errorMessage,
   manifestId: state.manifestId,
   veteranId: state.veteranId,
   veteranName: state.veteranName
@@ -71,7 +71,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   pollManifestFetchEndpoint,
-  clearError,
+  clearErrorMessage,
   setManifestId
 }, dispatch);
 
