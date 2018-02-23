@@ -3,6 +3,10 @@ import * as Actions from './actionTypes';
 export default function reducer(state = {}, action = {}) {
   switch (action.type) {
 
+  case Actions.CLEAR_ERROR_MESSAGE:
+    return { ...state,
+      errorMessage: '' };
+
   case Actions.SET_ACTIVE_DOWNLOAD_PROGRESS_TAB:
     return { ...state,
       activeDownloadProgressTab: action.payload };

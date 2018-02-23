@@ -1,4 +1,5 @@
 import {
+  CLEAR_ERROR_MESSAGE,
   SET_ACTIVE_DOWNLOAD_PROGRESS_TAB,
   SET_DOCUMENT_SOURCES,
   SET_DOCUMENTS,
@@ -10,6 +11,10 @@ import {
   SET_VETERAN_NAME,
   UPDATE_SEARCH_TEXT
 } from './actionTypes';
+
+export const clearErrorMessage = () => ({
+  type: CLEAR_ERROR_MESSAGE
+});
 
 export const setActiveDownloadProgressTab = (tab) => ({
   type: SET_ACTIVE_DOWNLOAD_PROGRESS_TAB,

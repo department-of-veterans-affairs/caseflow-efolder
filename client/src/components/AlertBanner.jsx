@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default class DownloadProgressBanner extends React.PureComponent {
+export default class AlertBanner extends React.PureComponent {
   render() {
     let alertTypeClass;
 
