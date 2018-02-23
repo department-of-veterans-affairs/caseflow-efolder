@@ -6,7 +6,11 @@ import { bindActionCreators } from 'redux';
 import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/AppSegment';
 import Link from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/Link';
 
-import { setActiveDownloadProgressTab } from '../actions';
+import {
+  hideConfirmDownloadModal,
+  setActiveDownloadProgressTab,
+  showConfirmDownloadModal
+} from '../actions';
 import { startDocumentDownload } from '../apiActions';
 import DownloadPageFooter from '../components/DownloadPageFooter';
 import DownloadProgressBanner from '../components/DownloadProgressBanner';
@@ -26,11 +30,6 @@ import ManifestDocumentsTable from '../components/ManifestDocumentsTable';
 import { aliasForSource, documentDownloadComplete } from '../Utils';
 
 class DownloadProgressContainer extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = { confirmDownloadModalIsVisible: false };
-  }
-
   // TODO: Add some request failure handling in here.
   wrapInDownloadLink(element) {
     return <Link href={`/api/v2/manifests/${this.props.manifestId}/zip`}>{element}</Link>;
@@ -64,8 +63,6 @@ class DownloadProgressContainer extends React.PureComponent {
   }
 
   restartDocumentDownload = () => this.props.startDocumentDownload(this.props.manifestId, this.props.csrfToken);
-  showConfirmDownloadModal = () => this.setState({ confirmDownloadModalIsVisible: true });
-  hideConfirmDownloadModal = () => this.setState({ confirmDownloadModalIsVisible: false });
 
   completeBanner() {
     if (this.props.documentsForStatus.failed.length) {
@@ -74,7 +71,7 @@ class DownloadProgressContainer extends React.PureComponent {
         <p>You can still download the rest of the files by clicking the 'Download anyway' button below.</p>
         <ul className="ee-button-list">
           <li>
-            <button className="usa-button" onClick={this.showConfirmDownloadModal}>Download anyway</button>
+            <button className="usa-button" onClick={this.props.showConfirmDownloadModal}>Download anyway</button>
           </li>&nbsp;
           <li>
             <button className="usa-button usa-button-gray" onClick={this.restartDocumentDownload}>
@@ -134,7 +131,7 @@ class DownloadProgressContainer extends React.PureComponent {
     if (this.props.documentsForStatus.failed.length) {
       return <button
         className="usa-button ee-right-button cf-action-openmodal"
-        onClick={this.showConfirmDownloadModal}
+        onClick={this.props.showConfirmDownloadModal}
       >
         Download anyway
       </button>;
@@ -158,7 +155,7 @@ class DownloadProgressContainer extends React.PureComponent {
           type="button"
           aria-label="Close modal"
           className="cf-modal-close cf-action-closemodal cf-modal-startfocus"
-          onClick={this.hideConfirmDownloadModal}
+          onClick={this.props.hideConfirmDownloadModal}
         >
           <CloseIcon />
         </button>
@@ -173,14 +170,14 @@ class DownloadProgressContainer extends React.PureComponent {
             type="button"
             className="usa-button-outline cf-action-closemodal cf-push-left"
             data-controls="#confirm-download-anyway"
-            onClick={this.hideConfirmDownloadModal}
+            onClick={this.props.hideConfirmDownloadModal}
           >
             Go back
           </button>
           { this.wrapInDownloadLink(
             <button
               className="cf-push-right usa-button usa-button-secondary"
-              onClick={this.hideConfirmDownloadModal}
+              onClick={this.props.hideConfirmDownloadModal}
             >
                 Download anyway
             </button>
@@ -216,7 +213,7 @@ class DownloadProgressContainer extends React.PureComponent {
 
       <DownloadPageFooter>{ this.getFooterDownloadButton() }</DownloadPageFooter>
 
-      { this.state.confirmDownloadModalIsVisible && this.displayConfirmDownloadModal() }
+      { this.props.confirmDownloadModalIsVisible && this.displayConfirmDownloadModal() }
 
     </React.Fragment>;
   }
@@ -224,6 +221,7 @@ class DownloadProgressContainer extends React.PureComponent {
 
 const mapStateToProps = (state) => ({
   activeDownloadProgressTab: state.activeDownloadProgressTab,
+  confirmDownloadModalIsVisible: state.confirmDownloadModalIsVisible,
   csrfToken: state.csrfToken,
   documents: state.documents,
   documentsFetchCompletionEstimate: state.documentsFetchCompletionEstimate,
@@ -239,7 +237,9 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  hideConfirmDownloadModal,
   setActiveDownloadProgressTab,
+  showConfirmDownloadModal,
   startDocumentDownload
 }, dispatch);
 
