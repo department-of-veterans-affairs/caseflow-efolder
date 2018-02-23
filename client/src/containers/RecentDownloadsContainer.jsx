@@ -5,7 +5,6 @@ import { bindActionCreators } from 'redux';
 import Link from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/Link';
 
 import { MANIFEST_DOWNLOAD_STATE } from '../Constants';
-import { resetDefaultManifestState } from '../actions';
 import { getDownloadHistory } from '../apiActions';
 import AlertIcon from '../components/AlertIcon';
 
@@ -44,7 +43,7 @@ class RecentDownloadsContainer extends React.PureComponent {
                   {download.attributes.zip_expiration_date} </span>
               </td>
               <td className="ee-actions-cell">
-                <Link to={`/downloads/${download.id}`} onClick={this.props.resetDefaultManifestState}>
+                <Link to={`/downloads/${download.id}`}>
                   { linkTextForStatus(download.attributes.fetched_files_status) }
                 </Link>
               </td>
@@ -61,9 +60,6 @@ const mapStateToProps = (state) => ({
   recentDownloads: state.recentDownloads
 });
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({
-  getDownloadHistory,
-  resetDefaultManifestState
-}, dispatch);
+const mapDispatchToProps = (dispatch) => bindActionCreators({ getDownloadHistory }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(RecentDownloadsContainer);
