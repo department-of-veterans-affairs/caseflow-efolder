@@ -8,8 +8,8 @@ import { MANIFEST_DOWNLOAD_STATE } from '../Constants';
 import { getDownloadHistory } from '../apiActions';
 import AlertIcon from '../components/AlertIcon';
 
-const linkTextForStatus = (status) => {
-  const icon = status === MANIFEST_DOWNLOAD_STATE.FAILED ? <AlertIcon /> : null;
+const linkText = (status, failedDocCount) => {
+  const icon = failedDocCount ? <AlertIcon /> : null;
   const text = status === MANIFEST_DOWNLOAD_STATE.IN_PROGRESS ? 'progress' : 'results';
 
   return <React.Fragment>{icon} View {text} »</React.Fragment>;
@@ -44,7 +44,7 @@ class RecentDownloadsContainer extends React.PureComponent {
               </td>
               <td className="ee-actions-cell">
                 <Link to={`/downloads/${download.id}`}>
-                  { linkTextForStatus(download.attributes.fetched_files_status) }
+                  { linkText(download.attributes.fetched_files_status, download.attributes.number_failed_documents) }
                 </Link>
               </td>
             </tr>)
