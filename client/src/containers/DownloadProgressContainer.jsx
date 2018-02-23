@@ -30,10 +30,7 @@ import ManifestDocumentsTable from '../components/ManifestDocumentsTable';
 import { aliasForSource, documentDownloadComplete } from '../Utils';
 
 class DownloadProgressContainer extends React.PureComponent {
-  // TODO: Add some request failure handling in here.
-  wrapInDownloadLink(element) {
-    return <Link href={`/api/v2/manifests/${this.props.manifestId}/zip`}>{element}</Link>;
-  }
+  startDownloadZip = () => location.assign(`/api/v2/manifests/${this.props.manifestId}/zip`);
 
   inProgressBanner() {
     const totalDocCount = this.props.documents.length;
@@ -91,7 +88,7 @@ class DownloadProgressContainer extends React.PureComponent {
         Click the "Download efolder" button below.
       </p>
       <p>This efolder contains {this.props.documents.length} documents: {documentCountNote}.</p>
-      { this.wrapInDownloadLink(<button className="usa-button">Download efolder</button>) }
+      <button className="usa-button" onClick={this.startDownloadZip}>Download efolder</button>
     </DownloadProgressBanner>;
   }
 
@@ -137,9 +134,9 @@ class DownloadProgressContainer extends React.PureComponent {
       </button>;
     }
 
-    const btn = <button className="usa-button ee-right-button ee-download-button">Download efolder</button>;
-
-    return this.wrapInDownloadLink(btn);
+    return <button className="usa-button ee-right-button ee-download-button" onClick={this.startDownloadZip}>
+      Download efolder
+    </button>;
   }
 
   displayConfirmDownloadModal() {
@@ -174,15 +171,15 @@ class DownloadProgressContainer extends React.PureComponent {
           >
             Go back
           </button>
-          { this.wrapInDownloadLink(
-            <button
-              className="cf-push-right usa-button usa-button-secondary"
-              onClick={this.props.hideConfirmDownloadModal}
-            >
-                Download anyway
-            </button>
-          )
-          }
+          <button
+            className="cf-push-right usa-button usa-button-secondary"
+            onClick={() => {
+              this.startDownloadZip();
+              this.props.hideConfirmDownloadModal();
+            }}
+          >
+            Download anyway
+          </button>
         </div>
       </div>
     </section>;

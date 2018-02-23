@@ -89,6 +89,7 @@ export const pollManifestFetchEndpoint = (retryCount, manifestId, csrfToken) => 
         if (documentDownloadStarted(response.body.data.attributes.fetched_files_status)) {
           // Poll every 2 seconds for 1 day
           const pollFrequencySeconds = 2;
+
           maxRetryCount = 1 * 24 * 60 * 60 / pollFrequencySeconds;
           retrySleepMilliseconds = pollFrequencySeconds * 1000;
           donePollingFunction = (resp) => documentDownloadComplete(resp.body.data.attributes.fetched_files_status);
