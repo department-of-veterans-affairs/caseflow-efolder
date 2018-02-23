@@ -19,7 +19,7 @@ export const clearErrorMessage = () => ({
 });
 
 export const hideConfirmDownloadModal = () => ({ type: HIDE_CONFIRM_DOWNLOAD_MODAL });
-  
+
 export const setActiveDownloadProgressTab = (tab) => ({
   type: SET_ACTIVE_DOWNLOAD_PROGRESS_TAB,
   payload: tab
