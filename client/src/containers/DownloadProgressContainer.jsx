@@ -31,6 +31,10 @@ import { aliasForSource, documentDownloadComplete } from '../Utils';
 
 class DownloadProgressContainer extends React.PureComponent {
   startDownloadZip = () => location.assign(`/api/v2/manifests/${this.props.manifestId}/zip`);
+  downloadZipAndHideModal = () => {
+    this.startDownloadZip();
+    this.props.hideConfirmDownloadModal();
+  }
 
   inProgressBanner() {
     const totalDocCount = this.props.documents.length;
@@ -171,13 +175,7 @@ class DownloadProgressContainer extends React.PureComponent {
           >
             Go back
           </button>
-          <button
-            className="cf-push-right usa-button usa-button-secondary"
-            onClick={() => {
-              this.startDownloadZip();
-              this.props.hideConfirmDownloadModal();
-            }}
-          >
+          <button className="cf-push-right usa-button usa-button-secondary" onClick={this.downloadZipAndHideModal}>
             Download anyway
           </button>
         </div>
