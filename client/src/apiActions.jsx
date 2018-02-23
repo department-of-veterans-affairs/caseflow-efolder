@@ -62,15 +62,15 @@ const getRequest = (endpoint, csrfToken, options) => baseRequest(endpoint, csrfT
 const postRequest = (endpoint, csrfToken, options) => baseRequest(endpoint, csrfToken, 'post', options);
 
 const buildErrorMessageFromResponse = (resp) => {
-  let description = '';
+  let description = `${resp.statusCode} (${resp.statusText})`;
 
   if (resp.body.status) {
-    description = ` ${resp.body.status}`;
+    description = resp.body.status;
   } else if (resp.body.errors[0].detail) {
-    description = ` ${resp.body.errors[0].detail}`;
+    description = resp.body.errors[0].detail;
   }
 
-  return `${resp.statusCode} (${resp.statusText})${description}`;
+  return description;
 };
 
 export const pollManifestFetchEndpoint = (retryCount, manifestId, csrfToken) => (dispatch) => {

@@ -1,4 +1,5 @@
 import {
+  CLEAR_ERROR_MESSAGE,
   HIDE_CONFIRM_DOWNLOAD_MODAL,
   SET_ACTIVE_DOWNLOAD_PROGRESS_TAB,
   SET_DOCUMENT_SOURCES,
@@ -13,8 +14,12 @@ import {
   UPDATE_SEARCH_TEXT
 } from './actionTypes';
 
-export const hideConfirmDownloadModal = () => ({ type: HIDE_CONFIRM_DOWNLOAD_MODAL });
+export const clearErrorMessage = () => ({
+  type: CLEAR_ERROR_MESSAGE
+});
 
+export const hideConfirmDownloadModal = () => ({ type: HIDE_CONFIRM_DOWNLOAD_MODAL });
+  
 export const setActiveDownloadProgressTab = (tab) => ({
   type: SET_ACTIVE_DOWNLOAD_PROGRESS_TAB,
   payload: tab
