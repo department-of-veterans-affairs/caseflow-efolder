@@ -2,6 +2,8 @@ require "rails_helper"
 
 RSpec.feature "Stats Dashboard" do
   before do
+    puts "Starting before block"
+
     Functions.delete_all_keys!
     Timecop.freeze(Time.utc(2015, 1, 1, 17, 0, 0))
 
@@ -80,9 +82,15 @@ RSpec.feature "Stats Dashboard" do
         completed_at: 3.hours.ago
       )
     end
+
+    puts "Done with before block"
   end
 
-  after { Timecop.return }
+  after do
+    puts "Starting with after block"
+    Timecop.return
+    puts "Done with after block"
+  end
 
   scenario "Vist from unauthenticated user" do
     User.authenticate!
