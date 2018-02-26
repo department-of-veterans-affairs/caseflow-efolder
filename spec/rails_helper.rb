@@ -6,7 +6,6 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 require "spec_helper"
 require "rspec/rails"
 require_relative "support/database_cleaner"
-require_relative "support/sauce_driver"
 require_relative "support/download_helper"
 # Add additional requires below this line. Rails is not loaded until this point!
 
@@ -63,7 +62,7 @@ Capybara.register_driver(:parallel_sniffybara) do |app|
   Sniffybara::Driver.current_driver = Sniffybara::Driver.new(app, options)
 end
 
-Capybara.default_driver = ENV["SAUCE_SPECS"] ? :sauce_driver : :parallel_sniffybara
+Capybara.default_driver = :parallel_sniffybara
 # the default default_max_wait_time is 2 seconds
 Capybara.default_max_wait_time = 20
 
