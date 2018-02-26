@@ -2,8 +2,6 @@ require "rails_helper"
 
 RSpec.feature "Stats Dashboard" do
   before do
-    puts "Starting before block"
-
     Functions.delete_all_keys!
     Timecop.freeze(Time.utc(2015, 1, 1, 17, 0, 0))
 
@@ -82,30 +80,17 @@ RSpec.feature "Stats Dashboard" do
         completed_at: 3.hours.ago
       )
     end
-
-    puts "Done with before block"
   end
 
   after do
-    puts "Starting with after block"
     Timecop.return
-    puts "Done with after block"
   end
 
   scenario "Vist from unauthenticated user" do
-    puts "in first scenario"
-    puts "before user authenticate"
-
     User.authenticate!
 
-    puts "after user authenticate"
-
     visit "/stats"
-    puts "done visting page"
-
     expect(page).to have_content("authorized")
-
-    puts "done with test"
   end
 
   scenario "Switching tab intervals" do
