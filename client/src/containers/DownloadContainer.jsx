@@ -5,7 +5,11 @@ import { bindActionCreators } from 'redux';
 import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/AppSegment';
 import StatusMessage from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/StatusMessage';
 
-import { clearErrorMessage, setManifestId } from '../actions';
+import {
+  clearErrorMessage,
+  resetDefaultManifestState,
+  setManifestId
+} from '../actions';
 import { pollManifestFetchEndpoint } from '../apiActions';
 import DownloadPageFooter from '../components/DownloadPageFooter';
 import DownloadPageHeader from '../components/DownloadPageHeader';
@@ -23,10 +27,17 @@ class DownloadContainer extends React.PureComponent {
     this.props.clearErrorMessage();
 
     const manifestId = this.props.match.params.manifestId;
+    let forceManifestRequest = false;
+
+    if (this.props.manifestId && this.props.manifestId !== manifestId) {
+      forceManifestRequest = true;
+      this.props.resetDefaultManifestState();
+    }
 
     this.props.setManifestId(manifestId);
 
-    if (!manifestFetchComplete(this.props.documentSources) ||
+    if (forceManifestRequest ||
+      !manifestFetchComplete(this.props.documentSources) ||
       this.props.documentsFetchStatus === MANIFEST_DOWNLOAD_STATE.IN_PROGRESS
     ) {
       this.props.pollManifestFetchEndpoint(0, manifestId, this.props.csrfToken);
@@ -72,6 +83,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   pollManifestFetchEndpoint,
   clearErrorMessage,
+  resetDefaultManifestState,
   setManifestId
 }, dispatch);
 

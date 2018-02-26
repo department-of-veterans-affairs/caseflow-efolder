@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 
 import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/AppSegment';
 
-import { clearErrorMessage, setVeteranId, updateSearchInputText } from '../actions';
+import { clearErrorMessage, setVeteranId, setSearchInputText } from '../actions';
 import { startManifestFetch } from '../apiActions';
 import AlertBanner from '../components/AlertBanner';
 import RecentDownloadsContainer from './RecentDownloadsContainer';
@@ -21,7 +21,7 @@ class WelcomeContainer extends React.PureComponent {
   }
 
   handleInputChange = (event) => {
-    this.props.updateSearchInputText(event.target.value);
+    this.props.setSearchInputText(event.target.value);
   }
 
   handleFormSubmit = (event) => {
@@ -87,7 +87,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   clearErrorMessage,
   setVeteranId,
   startManifestFetch,
-  updateSearchInputText
+  setSearchInputText
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(WelcomeContainer);
