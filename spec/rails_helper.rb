@@ -27,7 +27,6 @@ require_relative "support/download_helper"
 require "selenium-webdriver"
 require "capybara"
 
-Capybara.default_driver = :sniffybara
 Sniffybara::Driver.path_exclusions << /samlva/
 Sniffybara::Driver.configuration_file = File.expand_path("../support/VA-axe-configuration.json", __FILE__)
 Sniffybara::Driver.issue_id_exceptions += []
