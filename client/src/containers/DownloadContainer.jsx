@@ -6,8 +6,8 @@ import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolki
 import StatusMessage from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/StatusMessage';
 
 import {
+  clearErrorMessage,
   resetDefaultManifestState,
-  setErrorMessage,
   setManifestId
 } from '../actions';
 import { pollManifestFetchEndpoint } from '../apiActions';
@@ -24,7 +24,7 @@ import { documentDownloadStarted, manifestFetchComplete } from '../Utils';
 class DownloadContainer extends React.PureComponent {
   componentDidMount() {
     // Clear all previous error messages. The only errors we care about will happen after this component has mounted.
-    this.props.setErrorMessage('');
+    this.props.clearErrorMessage();
 
     const manifestId = this.props.match.params.manifestId;
     let forceManifestRequest = false;
@@ -82,8 +82,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   pollManifestFetchEndpoint,
+  clearErrorMessage,
   resetDefaultManifestState,
-  setErrorMessage,
   setManifestId
 }, dispatch);
 

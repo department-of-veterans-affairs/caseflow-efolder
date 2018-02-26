@@ -3,6 +3,7 @@ import { IN_PROGRESS_TAB, MANIFEST_DOWNLOAD_STATE } from './Constants';
 
 const defaultManifestState = {
   activeDownloadProgressTab: IN_PROGRESS_TAB,
+  confirmDownloadModalIsVisible: false,
   documents: [],
   documentsFetchCompletionEstimate: '',
   documentsFetchStatus: MANIFEST_DOWNLOAD_STATE.NOT_STARTED,
@@ -20,6 +21,14 @@ export const initState = {
 
 export default function reducer(state = {}, action = {}) {
   switch (action.type) {
+
+  case Actions.CLEAR_ERROR_MESSAGE:
+    return { ...state,
+      errorMessage: initState.errorMessage };
+
+  case Actions.HIDE_CONFIRM_DOWNLOAD_MODAL:
+    return { ...state,
+      confirmDownloadModalIsVisible: false };
 
   case Actions.RESET_DEFAULT_MANIFEST_STATE:
     return { ...state,
@@ -68,6 +77,10 @@ export default function reducer(state = {}, action = {}) {
   case Actions.SET_VETERAN_NAME:
     return { ...state,
       veteranName: action.payload };
+
+  case Actions.SHOW_CONFIRM_DOWNLOAD_MODAL:
+    return { ...state,
+      confirmDownloadModalIsVisible: true };
 
   default:
     return state;

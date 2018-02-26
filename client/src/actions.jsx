@@ -1,4 +1,6 @@
 import {
+  CLEAR_ERROR_MESSAGE,
+  HIDE_CONFIRM_DOWNLOAD_MODAL,
   RESET_DEFAULT_MANIFEST_STATE,
   SET_ACTIVE_DOWNLOAD_PROGRESS_TAB,
   SET_DOCUMENT_SOURCES,
@@ -8,10 +10,17 @@ import {
   SET_ERROR_MESSAGE,
   SET_MANIFEST_ID,
   SET_RECENT_DOWNLOADS,
+  SET_SEARCH_TEXT,
   SET_VETERAN_ID,
   SET_VETERAN_NAME,
-  SET_SEARCH_TEXT
+  SHOW_CONFIRM_DOWNLOAD_MODAL
 } from './actionTypes';
+
+export const clearErrorMessage = () => ({
+  type: CLEAR_ERROR_MESSAGE
+});
+
+export const hideConfirmDownloadModal = () => ({ type: HIDE_CONFIRM_DOWNLOAD_MODAL });
 
 export const resetDefaultManifestState = () => ({
   type: RESET_DEFAULT_MANIFEST_STATE
@@ -71,3 +80,5 @@ export const setVeteranName = (name) => ({
   type: SET_VETERAN_NAME,
   payload: name
 });
+
+export const showConfirmDownloadModal = () => ({ type: SHOW_CONFIRM_DOWNLOAD_MODAL });

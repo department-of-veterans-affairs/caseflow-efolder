@@ -5,8 +5,9 @@ import { bindActionCreators } from 'redux';
 
 import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/AppSegment';
 
-import { setVeteranId, setSearchInputText } from '../actions';
+import { clearErrorMessage, setVeteranId, setSearchInputText } from '../actions';
 import { startManifestFetch } from '../apiActions';
+import AlertBanner from '../components/AlertBanner';
 import RecentDownloadsContainer from './RecentDownloadsContainer';
 
 const searchBarNoteTextStyling = css({
@@ -15,6 +16,10 @@ const searchBarNoteTextStyling = css({
 });
 
 class WelcomeContainer extends React.PureComponent {
+  componentDidMount() {
+    this.props.clearErrorMessage();
+  }
+
   handleInputChange = (event) => {
     this.props.setSearchInputText(event.target.value);
   }
@@ -29,6 +34,12 @@ class WelcomeContainer extends React.PureComponent {
 
   render() {
     return <AppSegment filledBackground>
+      { this.props.errorMessage &&
+        <AlertBanner title="Could not complete search for input Veteran ID" alertType="error">
+          <p>{this.props.errorMessage}</p>
+        </AlertBanner>
+      }
+
       <div className="ee-heading">
         <h1>Welcome to eFolder Express</h1>
         <p>eFolder Express allows VA employees to bulk-download VBMS eFolders.
@@ -68,10 +79,12 @@ Note: eFolder Express now includes Virtual VA documents from the Legacy Content 
 
 const mapStateToProps = (state) => ({
   csrfToken: state.csrfToken,
+  errorMessage: state.errorMessage,
   searchInputText: state.searchInputText
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  clearErrorMessage,
   setVeteranId,
   startManifestFetch,
   setSearchInputText
