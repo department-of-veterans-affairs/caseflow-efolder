@@ -188,7 +188,7 @@ GEM
     faraday (0.14.0)
       multipart-post (>= 1.2, < 3)
     fastercsv (1.5.5)
-    ffi (1.9.21)
+    ffi (1.9.23)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
     gyoku (1.3.1)
@@ -390,9 +390,9 @@ GEM
     sdoc (0.4.2)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
-    selenium-webdriver (3.9.0)
+    selenium-webdriver (3.8.0)
       childprocess (~> 0.5)
-      rubyzip (~> 1.2)
+      rubyzip (~> 1.0)
     sentry-raven (2.7.2)
       faraday (>= 0.7.6, < 1.0)
     sexp_processor (4.10.1)
@@ -511,6 +511,7 @@ DEPENDENCIES
   sass-rails (~> 5.0)
   scss_lint
   sdoc (~> 0.4.0)
+  selenium-webdriver (= 3.8.0)
   sentry-raven
   sidekiq
   sidekiq-cron (~> 0.4.0)
