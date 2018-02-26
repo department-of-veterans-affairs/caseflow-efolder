@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/AppSegment';
 import StatusMessage from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/StatusMessage';
 
-import { setErrorMessage, setManifestId } from '../actions';
+import { clearErrorMessage, setManifestId } from '../actions';
 import { pollManifestFetchEndpoint } from '../apiActions';
 import DownloadPageFooter from '../components/DownloadPageFooter';
 import DownloadPageHeader from '../components/DownloadPageHeader';
@@ -20,7 +20,7 @@ import { documentDownloadStarted, manifestFetchComplete } from '../Utils';
 class DownloadContainer extends React.PureComponent {
   componentDidMount() {
     // Clear all previous error messages. The only errors we care about will happen after this component has mounted.
-    this.props.setErrorMessage('');
+    this.props.clearErrorMessage();
 
     const manifestId = this.props.match.params.manifestId;
 
@@ -71,7 +71,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   pollManifestFetchEndpoint,
-  setErrorMessage,
+  clearErrorMessage,
   setManifestId
 }, dispatch);
 

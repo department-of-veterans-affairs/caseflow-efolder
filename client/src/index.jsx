@@ -9,6 +9,7 @@ import InitContainer from './containers/InitContainer';
 
 const initState = {
   activeDownloadProgressTab: IN_PROGRESS_TAB,
+  confirmDownloadModalIsVisible: false,
   documents: [],
   documentsFetchCompletionEstimate: '',
   documentsFetchStatus: MANIFEST_DOWNLOAD_STATE.NOT_STARTED,
