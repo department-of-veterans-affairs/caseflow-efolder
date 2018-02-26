@@ -31,8 +31,8 @@ Sniffybara::Driver.path_exclusions << /samlva/
 Sniffybara::Driver.configuration_file = File.expand_path("../support/VA-axe-configuration.json", __FILE__)
 Sniffybara::Driver.issue_id_exceptions += []
 
-download_directory = Rails.root.join("tmp/downloads_#{ENV['TEST_SUBCATEGORY'] || 'all'}")
-cache_directory = Rails.root.join("tmp/browser_cache_#{ENV['TEST_SUBCATEGORY'] || 'all'}")
+download_directory = Rails.root.join("tmp", "downloads_all")
+cache_directory = Rails.root.join("tmp", "browser_cache_all")
 
 FileUtils.mkpath download_directory unless File.directory?(download_directory)
 if File.directory?(cache_directory)
@@ -41,7 +41,7 @@ else
   Dir.mkdir cache_directory
 end
 
-FeatureToggle.cache_namespace = "test_#{ENV['TEST_SUBCATEGORY'] || 'all'}"
+FeatureToggle.cache_namespace = "test_all"
 
 Capybara.register_driver(:parallel_sniffybara) do |app|
   chrome_options = ::Selenium::WebDriver::Chrome::Options.new
