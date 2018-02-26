@@ -93,10 +93,19 @@ RSpec.feature "Stats Dashboard" do
   end
 
   scenario "Vist from unauthenticated user" do
+    puts "in first scenario"
+    puts "before user authenticate"
+
     User.authenticate!
 
+    puts "after user authenticate"
+
     visit "/stats"
+    puts "done visting page"
+
     expect(page).to have_content("authorized")
+
+    puts "done with test"
   end
 
   scenario "Switching tab intervals" do
