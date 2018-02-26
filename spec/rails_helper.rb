@@ -24,6 +24,7 @@ require_relative "support/download_helper"
 #
 # Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 
+require "selenium-webdriver"
 require "capybara"
 
 Capybara.default_driver = :sniffybara
