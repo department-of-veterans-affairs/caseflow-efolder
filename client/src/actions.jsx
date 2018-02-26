@@ -1,4 +1,6 @@
 import {
+  CLEAR_ERROR_MESSAGE,
+  HIDE_CONFIRM_DOWNLOAD_MODAL,
   SET_ACTIVE_DOWNLOAD_PROGRESS_TAB,
   SET_DOCUMENT_SOURCES,
   SET_DOCUMENTS,
@@ -8,8 +10,15 @@ import {
   SET_MANIFEST_ID,
   SET_VETERAN_ID,
   SET_VETERAN_NAME,
+  SHOW_CONFIRM_DOWNLOAD_MODAL,
   UPDATE_SEARCH_TEXT
 } from './actionTypes';
+
+export const clearErrorMessage = () => ({
+  type: CLEAR_ERROR_MESSAGE
+});
+
+export const hideConfirmDownloadModal = () => ({ type: HIDE_CONFIRM_DOWNLOAD_MODAL });
 
 export const setActiveDownloadProgressTab = (tab) => ({
   type: SET_ACTIVE_DOWNLOAD_PROGRESS_TAB,
@@ -55,6 +64,8 @@ export const setVeteranName = (name) => ({
   type: SET_VETERAN_NAME,
   payload: name
 });
+
+export const showConfirmDownloadModal = () => ({ type: SHOW_CONFIRM_DOWNLOAD_MODAL });
 
 export const updateSearchInputText = (text) => ({
   type: UPDATE_SEARCH_TEXT,

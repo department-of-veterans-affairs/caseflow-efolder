@@ -51,8 +51,8 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/ruby-bgs.git
-  revision: 416f7a4ee49c7c80160e97416e7c7b0a7bd20a4a
-  branch: 416f7a4ee49c7c80160e97416e7c7b0a7bd20a4a
+  revision: e30db7fdf6f5c28c09d6081d062cad80820240a0
+  branch: e30db7fdf6f5c28c09d6081d062cad80820240a0
   specs:
     bgs (0.1)
       nokogiri (~> 1.8.2)
@@ -410,6 +410,7 @@ GEM
     slim (3.0.9)
       temple (>= 0.7.6, < 0.9)
       tilt (>= 1.3.3, < 2.1)
+    slop (3.6.0)
     socksify (1.7.1)
     sprockets (3.7.1)
       concurrent-ruby (~> 1.0)
