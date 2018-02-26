@@ -122,9 +122,8 @@ group :test do
   gem "rspec-rails"
   gem "timecop"
   # gem 'guard-rspec'
-  gem "capybara", "2.6.2"
-  # selenium-webdriver 3.9 is causing our tests to hang
-  gem "selenium-webdriver", "3.8.0"
+  gem "capybara"
+  gem "selenium-webdriver"
   gem "simplecov"
   gem "sniffybara", git: "https://github.com/department-of-veterans-affairs/sniffybara.git"
   # to save and open specific page in capybara tests
