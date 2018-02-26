@@ -10,12 +10,6 @@ rvm:
 # Install PhantomJS 2.0 from source binary, remove once TravisCI environment has PhantomJS 2.0 installed
 # see https://github.com/travis-ci/travis-ci/issues/3225 for more details
 before_install:
-  - mkdir travis-phantomjs
-  - wget https://s3-us-west-2.amazonaws.com/va.devops/phantomjs-2.1.1-linux-x86_64.tar.bz2 -O $PWD/travis-phantomjs/phantomjs-2.1.1-linux-x86_64.tar.bz2
-  - tar -xvf $PWD/travis-phantomjs/phantomjs-2.1.1-linux-x86_64.tar.bz2 -C $PWD/travis-phantomjs
-  - export PATH=$PWD/travis-phantomjs/phantomjs-2.1.1-linux-x86_64/bin:$PATH
-  - phantomjs -v
-
   - nvm install $(cat .nvmrc)
   - node -v
 
@@ -28,14 +22,17 @@ before_install:
   # Travis has an old version of yarn installed at /usr/local/bin, and that comes first in the PATH,
   # so we need to explicitly point to the version of Yarn we just installed.
   - export YARN=/usr/bin/yarn
-  - cd ./client && $YARN --frozen-lockfile
-  - cd ..
-
+  
+  - $YARN --version
+# See https://github.com/department-of-veterans-affairs/caseflow/issues/1744 for detail on why we're doing this.
   - wget https://s3-us-gov-west-1.amazonaws.com/dsva-appeals-devops/chromium-chromedriver_53.0.2785.143-0ubuntu0.14.04.1.1145_amd64.deb -O $PWD/chromium-chromedriver.deb
   - sudo dpkg -i $PWD/chromium-chromedriver.deb
   - sudo apt-get install -f
-  - export PATH=$PATH:/usr/lib/chromium-browser/
-  - export DISPLAY=:99.0
+  - sudo apt-get install pdftk
+  - "export PATH=$PATH:/usr/lib/chromium-browser/"
+  - "export DISPLAY=:99.0"
+  - cd ./client && $YARN --frozen-lockfile
+  - cd ..
 
 before_script:
   - RAILS_ENV=test bundle exec rake db:create
