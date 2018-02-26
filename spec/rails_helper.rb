@@ -24,8 +24,13 @@ require_relative "support/download_helper"
 #
 # Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 
+puts "preparing to require selenium-webdriver"
 require "selenium-webdriver"
+puts "done requiring selenium-webdriver"
+
+puts "preparing to require capybara"
 require "capybara"
+puts "done requiring capybara"
 
 Capybara.default_driver = :sniffybara
 Sniffybara::Driver.path_exclusions << /samlva/
