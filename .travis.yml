@@ -39,6 +39,11 @@ before_script:
   - RAILS_ENV=test bundle exec rake db:schema:load
   - sudo apt-get install pdftk
 
+  # Start up xvfb for headless browser testing
+  - "sh -e /etc/init.d/xvfb start"
+  - sleep 3 # give xvfb some time to start
+
+
 script:
   - bundle exec rake
 
