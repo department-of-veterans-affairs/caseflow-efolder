@@ -68,21 +68,24 @@ class DownloadProgressContainer extends React.PureComponent {
 
   restartDocumentDownload = () => this.props.startDocumentDownload(this.props.manifestId, this.props.csrfToken);
 
+  /* eslint-disable max-statements */
   completeBanner() {
-    const sourcesForStatus = {};
+    const successSources = [];
+    const failedSources = [];
 
-    for (const status of Object.values(MANIFEST_SOURCE_FETCH_STATE)) {
-      sourcesForStatus[status] = [];
-    }
+    // Assume only success or failed status by the time we reach here.
     for (const src of this.props.documentSources) {
-      sourcesForStatus[src.status].push(src.source);
+      if (src.status === MANIFEST_SOURCE_FETCH_STATE.FAILED) {
+        failedSources.push(src.source);
+      } else {
+        successSources.push(src.source);
+      }
     }
 
     // If any of the document sources are unavailable, display a banner with a specific message about that source.
-    if (sourcesForStatus[MANIFEST_SOURCE_FETCH_STATE.FAILED].length) {
-      // Assume only success or failed status by the time we reach here.
-      const successSourcesString = sourcesForStatus[MANIFEST_SOURCE_FETCH_STATE.SUCCEEDED].join(', ');
-      const failedSourcesString = sourcesForStatus[MANIFEST_SOURCE_FETCH_STATE.FAILED].join(', ');
+    if (failedSources.length) {
+      const successSourcesString = successSources.join(', ');
+      const failedSourcesString = failedSources.join(', ');
       const downloadButtonText = `Download ${successSourcesString} documents`;
 
       return <AlertBanner
@@ -140,6 +143,7 @@ class DownloadProgressContainer extends React.PureComponent {
       <button className="usa-button" onClick={this.startDownloadZip}>Download efolder</button>
     </AlertBanner>;
   }
+  /* eslint-enable max-statements */
 
   getActiveTable() {
     const summary = 'Status of veteran eFolder file downloads';
