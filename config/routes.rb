@@ -43,7 +43,7 @@ Rails.application.routes.draw do
         get :files_downloads, to: "files_downloads#progress"
         get :zip, to: "files_downloads#zip"
       end
-      resources :records, only: :show
+      resources :records, only: :show, param: :version_id
     end
   end
 

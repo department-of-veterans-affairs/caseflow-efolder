@@ -41,7 +41,7 @@ describe "Records API v2", type: :request do
 
       it "returns a document" do
         allow(S3Service).to receive(:fetch_content).and_return("hello there")
-        get "/api/v2/records/#{record.id}"
+        get "/api/v2/records/#{record.version_id}"
         expect(response.code).to eq("200")
         expect(response.body).to eq("hello there")
         expect(response.headers["Cache-Control"]).to match(/2592000/)
@@ -51,7 +51,7 @@ describe "Records API v2", type: :request do
         allow_any_instance_of(RecordFetcher).to receive(:process).and_return(nil)
         record.update(status: :failed)
 
-        get "/api/v2/records/#{record.id}"
+        get "/api/v2/records/#{record.version_id}"
 
         expect(response.code).to eq("502")
 
@@ -66,7 +66,7 @@ describe "Records API v2", type: :request do
         expect(Raven).to receive(:capture_exception)
         expect(Raven).to receive(:last_event_id).and_return("a1b2c3")
 
-        get "/api/v2/records/#{record.id}"
+        get "/api/v2/records/#{record.version_id}"
 
         expect(response.code).to eq("500")
 
@@ -81,7 +81,7 @@ describe "Records API v2", type: :request do
         expect(Raven).to receive(:capture_exception)
         expect(Raven).to receive(:last_event_id).and_return("a1b2c3")
 
-        get "/api/v2/records/#{record.id}"
+        get "/api/v2/records/#{record.version_id}"
 
         expect(response.code).to eq("500")
 
@@ -94,7 +94,7 @@ describe "Records API v2", type: :request do
 
     context "when user doesn't own corresponding download record" do
       it "returns 403" do
-        get "/api/v2/records/#{record.id}"
+        get "/api/v2/records/#{record.version_id}"
         expect(response.code).to eq("403")
         body = JSON.parse(response.body)
         expect(body["status"]).to match(/sensitive/)
