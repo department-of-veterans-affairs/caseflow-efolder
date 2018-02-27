@@ -70,16 +70,16 @@ class DownloadProgressContainer extends React.PureComponent {
 
   completeBanner() {
     // If any document sources are unavailable, display a banner with a specific message about that source.
-    if ( this.props.documentSources.map(src => src.status).includes(MANIFEST_SOURCE_FETCH_STATE.FAILED) ) {
-      let successSources = [];
-      let failedSources = [];
+    if (this.props.documentSources.map((src) => src.status).includes(MANIFEST_SOURCE_FETCH_STATE.FAILED)) {
+      const successSources = [];
+      const failedSources = [];
 
       // Assume only success or failed status by the time we reach here.
       for (const src of this.props.documentSources) {
         if (src.status === MANIFEST_SOURCE_FETCH_STATE.FAILED) {
           failedSources.push(src.source);
         } else {
-          successSources.push(src.source);  
+          successSources.push(src.source);
         }
       }
 
@@ -231,8 +231,6 @@ class DownloadProgressContainer extends React.PureComponent {
   }
 
   render() {
-    console.log(this.props.documentSources)
-
     return <React.Fragment>
       <AppSegment filledBackground>
 
