@@ -5,11 +5,16 @@ import { bindActionCreators } from 'redux';
 import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/AppSegment';
 import StatusMessage from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/StatusMessage';
 
-import { setErrorMessage, setManifestId } from '../actions';
+import {
+  clearErrorMessage,
+  resetDefaultManifestState,
+  setManifestId
+} from '../actions';
 import { pollManifestFetchEndpoint } from '../apiActions';
-import { MANIFEST_DOWNLOAD_STATE } from '../Constants';
+import DownloadPageFooter from '../components/DownloadPageFooter';
 import DownloadPageHeader from '../components/DownloadPageHeader';
 import PageLoadingIndicator from '../components/PageLoadingIndicator';
+import { MANIFEST_DOWNLOAD_STATE } from '../Constants';
 import DownloadListContainer from './DownloadListContainer';
 import DownloadProgressContainer from './DownloadProgressContainer';
 import { documentDownloadStarted, manifestFetchComplete } from '../Utils';
@@ -19,13 +24,20 @@ import { documentDownloadStarted, manifestFetchComplete } from '../Utils';
 class DownloadContainer extends React.PureComponent {
   componentDidMount() {
     // Clear all previous error messages. The only errors we care about will happen after this component has mounted.
-    this.props.setErrorMessage('');
+    this.props.clearErrorMessage();
 
     const manifestId = this.props.match.params.manifestId;
+    let forceManifestRequest = false;
+
+    if (this.props.manifestId && this.props.manifestId !== manifestId) {
+      forceManifestRequest = true;
+      this.props.resetDefaultManifestState();
+    }
 
     this.props.setManifestId(manifestId);
 
-    if (!manifestFetchComplete(this.props.documentSources) ||
+    if (forceManifestRequest ||
+      !manifestFetchComplete(this.props.documentSources) ||
       this.props.documentsFetchStatus === MANIFEST_DOWNLOAD_STATE.IN_PROGRESS
     ) {
       this.props.pollManifestFetchEndpoint(0, manifestId, this.props.csrfToken);
@@ -33,12 +45,18 @@ class DownloadContainer extends React.PureComponent {
   }
 
   render() {
-    let pageBody = <AppSegment filledBackground>
-      <PageLoadingIndicator>We are gathering the list of files in the eFolder now...</PageLoadingIndicator>
-    </AppSegment>;
+    let pageBody = <React.Fragment>
+      <AppSegment filledBackground>
+        <PageLoadingIndicator>We are gathering the list of files in the eFolder now...</PageLoadingIndicator>
+      </AppSegment>
+      <DownloadPageFooter />
+    </React.Fragment>;
 
     if (this.props.errorMessage) {
-      pageBody = <StatusMessage title="Could not fetch manifest">{this.props.errorMessage}</StatusMessage>;
+      pageBody = <React.Fragment>
+        <StatusMessage title="Could not fetch manifest">{this.props.errorMessage}</StatusMessage>
+        <DownloadPageFooter />
+      </React.Fragment>;
     } else if (documentDownloadStarted(this.props.documentsFetchStatus)) {
       pageBody = <DownloadProgressContainer />;
     } else if (manifestFetchComplete(this.props.documentSources)) {
@@ -64,7 +82,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   pollManifestFetchEndpoint,
-  setErrorMessage,
+  clearErrorMessage,
+  resetDefaultManifestState,
   setManifestId
 }, dispatch);
 

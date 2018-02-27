@@ -6,8 +6,15 @@ import { bindActionCreators } from 'redux';
 import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/AppSegment';
 import Link from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/Link';
 
-import { setActiveDownloadProgressTab } from '../actions';
-import DownloadProgressBanner from '../components/DownloadProgressBanner';
+import {
+  hideConfirmDownloadModal,
+  setActiveDownloadProgressTab,
+  showConfirmDownloadModal
+} from '../actions';
+import { startDocumentDownload } from '../apiActions';
+import AlertBanner from '../components/AlertBanner';
+import CloseIcon from '../components/CloseIcon';
+import DownloadPageFooter from '../components/DownloadPageFooter';
 import FailedIcon from '../components/FailedIcon';
 import ProgressIcon from '../components/ProgressIcon';
 import SuccessIcon from '../components/SuccessIcon';
@@ -23,9 +30,10 @@ import ManifestDocumentsTable from '../components/ManifestDocumentsTable';
 import { aliasForSource, documentDownloadComplete } from '../Utils';
 
 class DownloadProgressContainer extends React.PureComponent {
-  // TODO: Add some request failure handling in here.
-  wrapInDownloadLink(element) {
-    return <Link href={`/api/v2/manifests/${this.props.manifestId}/zip`}>{element}</Link>;
+  startDownloadZip = () => location.assign(`/api/v2/manifests/${this.props.manifestId}/zip`);
+  downloadZipAndHideModal = () => {
+    this.startDownloadZip();
+    this.props.hideConfirmDownloadModal();
   }
 
   inProgressBanner() {
@@ -33,14 +41,14 @@ class DownloadProgressContainer extends React.PureComponent {
     const percentComplete = 100 * (totalDocCount - this.props.documentsForStatus.progress.length) / totalDocCount;
 
     return <React.Fragment>
-      <DownloadProgressBanner title="You can close this page at any time." alertType="info">
+      <AlertBanner title="You can close this page at any time." alertType="info">
         <p>
           You can close this page at any time and eFolder Express will continue retrieving files in the&nbsp;
           background. View progress and download eFolders from the History on the&nbsp;
           <Link to="/">eFolder Express home page.</Link>
         </p>
         <p>Note: eFolders remain in your History for { EFOLDER_RETENTION_TIME_HOURS } hours.</p>
-      </DownloadProgressBanner>
+      </AlertBanner>
 
       <h1 {...css({ marginTop: '2rem',
         textAlign: 'center' })}>Retrieving Files ...</h1>
@@ -55,33 +63,41 @@ class DownloadProgressContainer extends React.PureComponent {
     </React.Fragment>;
   }
 
-  // TODO: Add caution alert to the download anyway button.
-  // TODO: Add action that will kick off the post request again for the "Try retrieving efolder again" button.
+  restartDocumentDownload = () => this.props.startDocumentDownload(this.props.manifestId, this.props.csrfToken);
+
   completeBanner() {
     if (this.props.documentsForStatus.failed.length) {
-      return <DownloadProgressBanner title="Some files couldn't be added to eFolder" alertType="error">
+      return <AlertBanner title="Some files couldn't be added to eFolder" alertType="error">
         <p>eFolder Express wasn't able to retrieve some files. Click on the 'Errors' tab below to view them</p>
         <p>You can still download the rest of the files by clicking the 'Download anyway' button below.</p>
         <ul className="ee-button-list">
           <li>
-            {this.wrapInDownloadLink(<button className="usa-button cf-action-openmodal">Download anyway</button>)}
+            <button className="usa-button" onClick={this.props.showConfirmDownloadModal}>Download anyway</button>
           </li>
-          <li><button className="usa-button usa-button-gray">Try retrieving efolder again</button></li>
+          <li>
+            <button
+              className="usa-button-outline"
+              onClick={this.restartDocumentDownload}
+              {...css({ marginLeft: '2rem' })}
+            >
+              Retry missing files
+            </button>
+          </li>
         </ul>
-      </DownloadProgressBanner>;
+      </AlertBanner>;
     }
 
     const documentCountNote = this.props.documentSources.map((src) => (
       `${src.number_of_documents} from ${aliasForSource(src.source)}`)).join(' and ');
 
-    return <DownloadProgressBanner title="Success!" alertType="success">
+    return <AlertBanner title="Success!" alertType="success">
       <p>
         All of the documents in the VBMS eFolder for #{this.props.veteranId} are ready to download.&nbsp;
         Click the "Download efolder" button below.
       </p>
       <p>This efolder contains {this.props.documents.length} documents: {documentCountNote}.</p>
-      { this.wrapInDownloadLink(<button className="usa-button">Download efolder</button>) }
-    </DownloadProgressBanner>;
+      <button className="usa-button" onClick={this.startDownloadZip}>Download efolder</button>
+    </AlertBanner>;
   }
 
   getActiveTable() {
@@ -118,14 +134,57 @@ class DownloadProgressContainer extends React.PureComponent {
     }
 
     if (this.props.documentsForStatus.failed.length) {
-      const btn = <button className="usa-button ee-right-button cf-action-openmodal">Download anyway</button>;
-
-      return this.wrapInDownloadLink(btn);
+      return <button
+        className="usa-button ee-right-button cf-action-openmodal"
+        onClick={this.props.showConfirmDownloadModal}
+      >
+        Download anyway
+      </button>;
     }
 
-    const btn = <button className="usa-button ee-right-button ee-download-button">Download efolder</button>;
+    return <button className="usa-button ee-right-button ee-download-button" onClick={this.startDownloadZip}>
+      Download efolder
+    </button>;
+  }
 
-    return this.wrapInDownloadLink(btn);
+  displayConfirmDownloadModal() {
+    return <section
+      className="cf-modal active"
+      id="confirm-download-anyway"
+      role="alertdialog"
+      aria-labelledby="confirm-download-anyway-title"
+      aria-describedby="confirm-download-anyway-desc"
+    >
+      <div className="cf-modal-body">
+        <button
+          type="button"
+          aria-label="Close modal"
+          className="cf-modal-close cf-action-closemodal cf-modal-startfocus"
+          onClick={this.props.hideConfirmDownloadModal}
+        >
+          <CloseIcon />
+        </button>
+        <h1 className="cf-modal-title" id="confirm-download-anyway-title">Download incomplete efolder?</h1>
+        <p className="cf-modal-normal-text" id="confirm-download-anyway-desc">
+          We encountered errors when retrieving some documents and they won’t be included in the eFolder download.&nbsp;
+          If you elect to "Download anyway" you may want to retrieve these files individually from VBMS.
+        </p>
+        <div className="cf-modal-divider"></div>
+        <div className="cf-push-row cf-modal-controls">
+          <button
+            type="button"
+            className="usa-button-outline cf-action-closemodal cf-push-left"
+            data-controls="#confirm-download-anyway"
+            onClick={this.props.hideConfirmDownloadModal}
+          >
+            Go back
+          </button>
+          <button className="cf-push-right usa-button usa-button-secondary" onClick={this.downloadZipAndHideModal}>
+            Download anyway
+          </button>
+        </div>
+      </div>
+    </section>;
   }
 
   render() {
@@ -151,10 +210,9 @@ class DownloadProgressContainer extends React.PureComponent {
         { this.getActiveTable() }
       </AppSegment>
 
-      <AppSegment>
-        { this.getFooterDownloadButton() }
-        <span className="ee-button-align"><Link to="/">Search for another efolder</Link></span>
-      </AppSegment>
+      <DownloadPageFooter>{ this.getFooterDownloadButton() }</DownloadPageFooter>
+
+      { this.props.confirmDownloadModalIsVisible && this.displayConfirmDownloadModal() }
 
     </React.Fragment>;
   }
@@ -162,6 +220,8 @@ class DownloadProgressContainer extends React.PureComponent {
 
 const mapStateToProps = (state) => ({
   activeDownloadProgressTab: state.activeDownloadProgressTab,
+  confirmDownloadModalIsVisible: state.confirmDownloadModalIsVisible,
+  csrfToken: state.csrfToken,
   documents: state.documents,
   documentsFetchCompletionEstimate: state.documentsFetchCompletionEstimate,
   documentsFetchStatus: state.documentsFetchStatus,
@@ -175,6 +235,11 @@ const mapStateToProps = (state) => ({
   veteranId: state.veteranId
 });
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({ setActiveDownloadProgressTab }, dispatch);
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+  hideConfirmDownloadModal,
+  setActiveDownloadProgressTab,
+  showConfirmDownloadModal,
+  startDocumentDownload
+}, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(DownloadProgressContainer);
