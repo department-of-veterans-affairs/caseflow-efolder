@@ -111,9 +111,10 @@ class DownloadProgressContainer extends React.PureComponent {
     }
 
     if (this.props.documentsForStatus.failed.length) {
-      return <AlertBanner title="Some files couldn't be added to eFolder" alertType="error">
-        <p>eFolder Express wasn't able to retrieve some files. Click on the 'Errors' tab below to view them</p>
-        <p>You can still download the rest of the files by clicking the 'Download anyway' button below.</p>
+      return <AlertBanner title="Some files could not be retrieved" alertType="error">
+        <p>Files that could not be retrieved are shown in the errors tab.</p>
+        <p>You can still download the completed files by clicking the ‘Download anyway’ button or
+          try to download the missing files using the “Retry missing files” button.</p>
         <ul className="ee-button-list">
           <li>
             <button className="usa-button" onClick={this.props.showConfirmDownloadModal}>Download anyway</button>
