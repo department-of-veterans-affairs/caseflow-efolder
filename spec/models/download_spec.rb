@@ -413,6 +413,21 @@ describe "Download" do
           expect(SaveFilesInS3Job).to receive(:perform_later)
           download.prepare_files_for_api!(start_download: true)
         end
+
+        context "when the manifest fetched at timestamps are current" do
+          let(:download) do
+            Download.create(
+              file_number: file_number,
+              manifest_vva_fetched_at: Time.now.utc,
+              manifest_vbms_fetched_at: Time.now.utc
+            )
+          end
+
+          it "doesn't start the download job" do
+            expect(SaveFilesInS3Job).to_not receive(:perform_later)
+            download.prepare_files_for_api!(start_download: true)
+          end
+        end
       end
     end
   end
