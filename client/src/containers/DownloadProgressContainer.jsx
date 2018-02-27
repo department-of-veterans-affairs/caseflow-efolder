@@ -69,7 +69,7 @@ class DownloadProgressContainer extends React.PureComponent {
     if (this.props.documentsForStatus.failed.length) {
       return <AlertBanner title="Some files could not be retrieved" alertType="error">
         <p>Files that could not be retrieved are shown in the errors tab.</p>
-        <p>You can still download the completed files by clicking the ‘Download anyway’ button or&nbsp;
+        <p>You can still download the completed files by clicking the ‘Download anyway’ button or
           try to download the missing files using the “Retry missing files” button.</p>
         <ul className="ee-button-list">
           <li>
