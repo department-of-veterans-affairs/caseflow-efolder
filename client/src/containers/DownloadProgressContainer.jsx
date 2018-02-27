@@ -72,14 +72,14 @@ class DownloadProgressContainer extends React.PureComponent {
     // Assume only success or failed status by the time we reach here.
     const successSourcesString = sourcesForStatus[MANIFEST_SOURCE_FETCH_STATE.SUCCEEDED].join(', ');
     const failedSourcesString = sourcesForStatus[MANIFEST_SOURCE_FETCH_STATE.FAILED].join(', ');
-
-    const title = `We could not retrieve ${failedSourcesString} documents at this time`;
     const downloadButtonText = `Download ${successSourcesString} documents`;
-    const paragraphText = `To continue downloading ${successSourcesString} files without ${failedSourcesString}
-      documents, click the ‘${downloadButtonText}' button below.`;
 
-    return <AlertBanner title={title} alertType="warning">
-      <p>{paragraphText}</p>
+    return <AlertBanner
+      title={`We could not retrieve ${failedSourcesString} documents at this time`}
+      alertType="warning"
+    >
+      <p>To continue downloading {successSourcesString} files without {failedSourcesString}&nbsp;
+        documents, click the ‘{downloadButtonText}' button below.</p>
       <p>You can also try again by clicking the ‘Retry download’ button below or search for another efolder.</p>
       <ul className="ee-button-list">
         <li><button className="usa-button" onClick={this.startDownloadZip}>{downloadButtonText}</button></li>
