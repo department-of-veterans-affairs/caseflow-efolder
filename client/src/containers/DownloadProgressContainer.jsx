@@ -73,9 +73,13 @@ class DownloadProgressContainer extends React.PureComponent {
         <ul className="ee-button-list">
           <li>
             <button className="usa-button" onClick={this.props.showConfirmDownloadModal}>Download anyway</button>
-          </li>&nbsp;
+          </li>
           <li>
-            <button className="usa-button-outline" onClick={this.restartDocumentDownload}>
+            <button
+              className="usa-button-outline"
+              onClick={this.restartDocumentDownload}
+              {...css({ marginLeft: '2rem' })}
+            >
               Retry missing files
             </button>
           </li>
