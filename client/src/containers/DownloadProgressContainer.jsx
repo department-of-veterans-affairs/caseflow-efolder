@@ -68,34 +68,6 @@ class DownloadProgressContainer extends React.PureComponent {
 
   restartDocumentDownload = () => this.props.startDocumentDownload(this.props.manifestId, this.props.csrfToken);
 
-  bannerForManifestSourceFailed = (sourcesForStatus) => {
-    // Assume only success or failed status by the time we reach here.
-    const successSourcesString = sourcesForStatus[MANIFEST_SOURCE_FETCH_STATE.SUCCEEDED].join(', ');
-    const failedSourcesString = sourcesForStatus[MANIFEST_SOURCE_FETCH_STATE.FAILED].join(', ');
-    const downloadButtonText = `Download ${successSourcesString} documents`;
-
-    return <AlertBanner
-      title={`We could not retrieve ${failedSourcesString} documents at this time`}
-      alertType="warning"
-    >
-      <p>To continue downloading {successSourcesString} files without {failedSourcesString}&nbsp;
-        documents, click the ‘{downloadButtonText}' button below.</p>
-      <p>You can also try again by clicking the ‘Retry download’ button below or search for another efolder.</p>
-      <ul className="ee-button-list">
-        <li><button className="usa-button" onClick={this.startDownloadZip}>{downloadButtonText}</button></li>
-        <li>
-          <button
-            className="usa-button-outline"
-            onClick={this.restartDocumentDownload}
-            {...css({ marginLeft: '2rem' })}
-          >
-            Retry download
-          </button>
-        </li>
-      </ul>
-    </AlertBanner>;
-  }
-
   completeBanner() {
     const sourcesForStatus = {};
 
@@ -108,7 +80,31 @@ class DownloadProgressContainer extends React.PureComponent {
 
     // If any of the document sources are unavailable, display a banner with a specific message about that source.
     if (sourcesForStatus[MANIFEST_SOURCE_FETCH_STATE.FAILED].length) {
-      return this.bannerForManifestSourceFailed(sourcesForStatus);
+      // Assume only success or failed status by the time we reach here.
+      const successSourcesString = sourcesForStatus[MANIFEST_SOURCE_FETCH_STATE.SUCCEEDED].join(', ');
+      const failedSourcesString = sourcesForStatus[MANIFEST_SOURCE_FETCH_STATE.FAILED].join(', ');
+      const downloadButtonText = `Download ${successSourcesString} documents`;
+
+      return <AlertBanner
+        title={`We could not retrieve ${failedSourcesString} documents at this time`}
+        alertType="warning"
+      >
+        <p>To continue downloading {successSourcesString} files without {failedSourcesString}&nbsp;
+          documents, click the ‘{downloadButtonText}' button below.</p>
+        <p>You can also try again by clicking the ‘Retry download’ button below or search for another efolder.</p>
+        <ul className="ee-button-list">
+          <li><button className="usa-button" onClick={this.startDownloadZip}>{downloadButtonText}</button></li>
+          <li>
+            <button
+              className="usa-button-outline"
+              onClick={this.restartDocumentDownload}
+              {...css({ marginLeft: '2rem' })}
+            >
+              Retry download
+            </button>
+          </li>
+        </ul>
+      </AlertBanner>;
     }
 
     if (this.props.documentsForStatus.failed.length) {
