@@ -75,8 +75,8 @@ class DownloadProgressContainer extends React.PureComponent {
             <button className="usa-button" onClick={this.props.showConfirmDownloadModal}>Download anyway</button>
           </li>&nbsp;
           <li>
-            <button className="usa-button usa-button-gray" onClick={this.restartDocumentDownload}>
-              Try retrieving efolder again
+            <button className="usa-button-outline" onClick={this.restartDocumentDownload}>
+              Retry missing files
             </button>
           </li>
         </ul>
