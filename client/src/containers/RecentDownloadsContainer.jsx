@@ -6,7 +6,7 @@ import Link from '@department-of-veterans-affairs/caseflow-frontend-toolkit/comp
 
 import { MANIFEST_DOWNLOAD_STATE } from '../Constants';
 import { getDownloadHistory } from '../apiActions';
-import AlertIcon from '../components/AlertIcon';
+import { AlertIcon } from '../components/Icons';
 
 const linkText = (status, failedDocCount) => {
   const icon = failedDocCount ? <AlertIcon /> : null;

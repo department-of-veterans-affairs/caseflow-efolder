@@ -3,7 +3,7 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 
 import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/AppSegment';
 
-import CopyIcon from '../components/CopyIcon';
+import { CopyIcon } from '../components/Icons';
 
 export default class DownloadPageHeader extends React.PureComponent {
   render() {

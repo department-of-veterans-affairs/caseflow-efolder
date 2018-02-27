@@ -13,17 +13,20 @@ import {
 } from '../actions';
 import { startDocumentDownload } from '../apiActions';
 import AlertBanner from '../components/AlertBanner';
-import CloseIcon from '../components/CloseIcon';
+import {
+  CloseIcon,
+  FailedIcon,
+  ProgressIcon,
+  SuccessIcon
+} from '../components/Icons';
 import DownloadPageFooter from '../components/DownloadPageFooter';
-import FailedIcon from '../components/FailedIcon';
-import ProgressIcon from '../components/ProgressIcon';
-import SuccessIcon from '../components/SuccessIcon';
 import {
   EFOLDER_RETENTION_TIME_HOURS,
   ERRORS_TAB,
   IN_PROGRESS_TAB,
   SUCCESS_TAB,
-  DOCUMENT_DOWNLOAD_STATE
+  DOCUMENT_DOWNLOAD_STATE,
+  MANIFEST_SOURCE_FETCH_STATE
 } from '../Constants';
 import DownloadProgressTab from './DownloadProgressTab';
 import ManifestDocumentsTable from '../components/ManifestDocumentsTable';
@@ -65,7 +68,48 @@ class DownloadProgressContainer extends React.PureComponent {
 
   restartDocumentDownload = () => this.props.startDocumentDownload(this.props.manifestId, this.props.csrfToken);
 
+  /* eslint-disable max-statements */
   completeBanner() {
+    const successSources = [];
+    const failedSources = [];
+
+    // Assume only success or failed status by the time we reach here.
+    for (const src of this.props.documentSources) {
+      if (src.status === MANIFEST_SOURCE_FETCH_STATE.FAILED) {
+        failedSources.push(src.source);
+      } else {
+        successSources.push(src.source);
+      }
+    }
+
+    // If any of the document sources are unavailable, display a banner with a specific message about that source.
+    if (failedSources.length) {
+      const successSourcesString = successSources.join(', ');
+      const failedSourcesString = failedSources.join(', ');
+      const downloadButtonText = `Download ${successSourcesString} documents`;
+
+      return <AlertBanner
+        title={`We could not retrieve ${failedSourcesString} documents at this time`}
+        alertType="warning"
+      >
+        <p>To continue downloading {successSourcesString} files without {failedSourcesString}&nbsp;
+          documents, click the ‘{downloadButtonText}' button below.</p>
+        <p>You can also try again by clicking the ‘Retry download’ button below or search for another efolder.</p>
+        <ul className="ee-button-list">
+          <li><button className="usa-button" onClick={this.startDownloadZip}>{downloadButtonText}</button></li>
+          <li>
+            <button
+              className="usa-button-outline"
+              onClick={this.restartDocumentDownload}
+              {...css({ marginLeft: '2rem' })}
+            >
+              Retry download
+            </button>
+          </li>
+        </ul>
+      </AlertBanner>;
+    }
+
     if (this.props.documentsForStatus.failed.length) {
       return <AlertBanner title="Some files could not be retrieved" alertType="error">
         <p>Files that could not be retrieved are shown in the errors tab.</p>
@@ -100,6 +144,7 @@ class DownloadProgressContainer extends React.PureComponent {
       <button className="usa-button" onClick={this.startDownloadZip}>Download efolder</button>
     </AlertBanner>;
   }
+  /* eslint-enable max-statements */
 
   getActiveTable() {
     const summary = 'Status of veteran eFolder file downloads';

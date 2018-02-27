@@ -20,6 +20,6 @@ export const MANIFEST_DOWNLOAD_STATE = {
 export const MANIFEST_SOURCE_FETCH_STATE = {
   NOT_STARTED: 'initialized',
   IN_PROGRESS: 'pending',
-  SUCCEEDED: 'finished',
+  SUCCEEDED: 'success',
   FAILED: 'failed'
 };
