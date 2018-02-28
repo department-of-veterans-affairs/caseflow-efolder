@@ -69,7 +69,7 @@ describe DocumentCreator do
         source.records.create(version_id: "3", series_id: "4")
         subject
         expect(source.reload.records.size).to eq 2
-        expect(source.reload.records.first.series_id).to eq "3"
+        expect(source.reload.records.first.series_id).to eq "4"
         expect(source.reload.records.second.series_id).to eq "4"
       end
     end
