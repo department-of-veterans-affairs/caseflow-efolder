@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/AppSegment';
+import Link from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/Link';
 import StatusMessage from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/StatusMessage';
 
 import {
@@ -19,8 +20,6 @@ import DownloadListContainer from './DownloadListContainer';
 import DownloadProgressContainer from './DownloadProgressContainer';
 import { documentDownloadStarted, manifestFetchComplete } from '../Utils';
 
-// TODO: Add modal for confirming that the user wants to download even when the zip does not contain the entire
-// list of all documents.
 class DownloadContainer extends React.PureComponent {
   componentDidMount() {
     // Clear all previous error messages. The only errors we care about will happen after this component has mounted.
@@ -57,6 +56,18 @@ class DownloadContainer extends React.PureComponent {
         <StatusMessage title="Could not fetch manifest">{this.props.errorMessage}</StatusMessage>
         <DownloadPageFooter />
       </React.Fragment>;
+    } else if (!this.props.documents.count) {
+      pageBody = <React.Fragment>
+        <AppSegment filledBackground>
+          <h1 className="cf-msg-screen-heading">No Documents in eFolder</h1>
+          <h2 className="cf-msg-screen-deck">
+            eFolder Express could not find any documents in the eFolder with Veteran ID #{this.props.veteranId}.
+            It's possible this eFolder does not exist.
+          </h2>
+          <p className="cf-msg-screen-text">Please check the Veteran ID number and <Link to="/">search again</Link>.</p>
+        </AppSegment>
+        <DownloadPageFooter />
+      </React.Fragment>;
     } else if (documentDownloadStarted(this.props.documentsFetchStatus)) {
       pageBody = <DownloadProgressContainer />;
     } else if (manifestFetchComplete(this.props.documentSources)) {
@@ -72,6 +83,7 @@ class DownloadContainer extends React.PureComponent {
 
 const mapStateToProps = (state) => ({
   csrfToken: state.csrfToken,
+  documents: state.documents,
   documentsFetchStatus: state.documentsFetchStatus,
   documentSources: state.documentSources,
   errorMessage: state.errorMessage,
