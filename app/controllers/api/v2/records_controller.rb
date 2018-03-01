@@ -32,12 +32,11 @@ class Api::V2::RecordsController < Api::V1::ApplicationController
   end
 
   def record
-    @record ||= Record.includes(:manifest_source).find(params[:id])
+    @record ||= Record.includes(:manifest_source).find_by(version_id: "{" + params[:version_id] + "}")
   end
 
   def validate_access
+    return record_not_found unless record
     forbidden("sensitive record") unless record.accessible_by?(current_user)
-  rescue ActiveRecord::RecordNotFound
-    record_not_found
   end
 end
