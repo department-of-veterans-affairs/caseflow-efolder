@@ -44,7 +44,7 @@ gem "newrelic_rpm"
 gem "dogstatsd-ruby"
 
 # SSOI
-gem "omniauth-saml-va", git: "https://github.com/department-of-veterans-affairs/omniauth-saml-va", ref: "fc5d4132c150add221a79bf06b71d8dafefc3ca6"
+gem "omniauth-saml-va", git: "https://github.com/department-of-veterans-affairs/omniauth-saml-va", ref: "fbe2b878c250b14ee996ef6699c42df2c42e41a1"
 
 gem "puma"
 
