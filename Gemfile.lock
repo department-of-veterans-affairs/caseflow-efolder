@@ -60,11 +60,10 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/sniffybara.git
-  revision: 79b9686fd838f717750e57a7c36dd2252b0a31a6
+  revision: 8c58b95615daa6fbe3ff9d39942fb265d57eb920
   branch: axe
   specs:
     sniffybara (0.0.1)
-      poltergeist
       rainbow
       selenium-webdriver
 
@@ -114,8 +113,8 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
-    addressable (2.5.0)
-      public_suffix (~> 2.0, >= 2.0.2)
+    addressable (2.5.2)
+      public_suffix (>= 2.0.2, < 4.0)
     akami (1.3.1)
       gyoku (>= 0.4.0)
       nokogiri
@@ -160,7 +159,6 @@ GEM
       activesupport
     childprocess (0.8.0)
       ffi (~> 1.0, >= 1.0.11)
-    cliver (0.3.2)
     coderay (1.1.1)
     coffee-rails (4.1.1)
       coffee-script (>= 2.2.0)
@@ -248,10 +246,6 @@ GEM
     parser (2.4.0.2)
       ast (~> 2.3)
     pg (0.19.0)
-    poltergeist (1.12.0)
-      capybara (~> 2.1)
-      cliver (~> 0.3.1)
-      websocket-driver (>= 0.2.0)
     powerpack (0.1.1)
     prometheus-client (0.7.1)
       quantile (~> 0.2.0)
@@ -262,7 +256,7 @@ GEM
     pry-byebug (3.4.3)
       byebug (>= 9.0, < 9.1)
       pry (~> 0.10)
-    public_suffix (2.0.5)
+    public_suffix (3.0.2)
     puma (3.6.2)
     quantile (0.2.0)
     rack (1.6.9)
@@ -443,9 +437,6 @@ GEM
     wasabi (3.5.0)
       httpi (~> 2.0)
       nokogiri (>= 1.4.2)
-    websocket-driver (0.6.4)
-      websocket-extensions (>= 0.1.0)
-    websocket-extensions (0.1.2)
     xmldsig (0.3.2)
       nokogiri
     xmlenc (0.7.0)
@@ -455,7 +446,7 @@ GEM
       xmlmapper (~> 0.6)
     xmlmapper (0.7.2)
       nokogiri (~> 1.5)
-    xpath (2.0.0)
+    xpath (2.1.0)
       nokogiri (~> 1.3)
     zaru (0.1.0)
     zero_downtime_migrations (0.0.7)
