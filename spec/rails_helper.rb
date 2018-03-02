@@ -41,8 +41,6 @@ else
   Dir.mkdir cache_directory
 end
 
-FeatureToggle.cache_namespace = "test_all"
-
 Capybara.register_driver(:parallel_sniffybara) do |app|
   chrome_options = ::Selenium::WebDriver::Chrome::Options.new
 
