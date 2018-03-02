@@ -60,7 +60,8 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/sniffybara.git
-  revision: d5f94213dcef08756f8d1622355015739e96ff4f
+  revision: 8440860a92a6f513f38c989a51ed133f98d6c4ae
+  branch: lowell/test_for_efolder_travis
   specs:
     sniffybara (0.0.1)
       rainbow
