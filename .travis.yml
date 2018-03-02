@@ -1,5 +1,8 @@
 language: ruby
 dist: trusty
+sudo: required
+addons:
+  chrome: stable
 
 branches:
     only:
