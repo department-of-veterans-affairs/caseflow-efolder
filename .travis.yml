@@ -34,6 +34,9 @@ before_install:
   - cd ./client && $YARN --frozen-lockfile
   - cd ..
 
+  # Add path to chrome for chromedriver
+  - export PATH=$PATH:$CHROME_SOURCE_URL
+
 before_script:
   - RAILS_ENV=test bundle exec rake db:create
   - RAILS_ENV=test bundle exec rake db:schema:load
