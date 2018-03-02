@@ -41,16 +41,16 @@ else
   Dir.mkdir cache_directory
 end
 
-Capybara.register_driver(:parallel_sniffybara) do |app|
+Capybara.register_driver(:virtual_framebuffer_chrome) do |app|
   options = {
-    port: 51_674,
-    browser: :chrome
+    browser: :chrome,
+    options: ::Selenium::WebDriver::Chrome::Options.new
   }
 
-  Sniffybara::Driver.current_driver = Sniffybara::Driver.new(app, options)
+  Sniffybara::Driver.new(app, options)
 end
 
-Capybara.default_driver = :parallel_sniffybara
+Capybara.default_driver = :virtual_framebuffer_chrome
 # the default default_max_wait_time is 2 seconds
 Capybara.default_max_wait_time = 20
 
