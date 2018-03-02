@@ -7,6 +7,10 @@ Rails.application.configure do
   # and recreated between test runs. Don't rely on the data there!
   config.cache_classes = true
 
+  cache_dir = Rails.root.join("tmp", "cache", "test_all")
+  FileUtils.mkdir_p(cache_dir) unless File.exists?(cache_dir)
+  config.cache_store = :file_store, cache_dir
+
   # Do not eager load code on boot. This avoids loading your whole application
   # just for the purpose of running a single test. If you are using a tool that
   # preloads Rails for running tests, you may have to set it to true.

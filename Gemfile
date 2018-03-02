@@ -121,10 +121,10 @@ group :test do
   gem "rspec"
   gem "rspec-rails"
   gem "timecop"
-  # gem 'guard-rspec'
-  gem "capybara", "2.6.2"
+  gem "capybara"
+  gem "selenium-webdriver", ">= 3.5" # Selenium::WebDriver::Chrome::Options was not added until 3.4.1
   gem "simplecov"
-  gem "sniffybara", git: "https://github.com/department-of-veterans-affairs/sniffybara.git", branch: "axe"
+  gem "sniffybara", git: "https://github.com/department-of-veterans-affairs/sniffybara.git"
   # to save and open specific page in capybara tests
   gem "database_cleaner"
   gem "launchy"
