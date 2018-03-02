@@ -31,15 +31,15 @@ Sniffybara::Driver.path_exclusions << /samlva/
 Sniffybara::Driver.configuration_file = File.expand_path("../support/VA-axe-configuration.json", __FILE__)
 Sniffybara::Driver.issue_id_exceptions += []
 
-download_directory = Rails.root.join("tmp", "downloads_all")
-cache_directory = Rails.root.join("tmp", "browser_cache_all")
+# download_directory = Rails.root.join("tmp", "downloads_all")
+# cache_directory = Rails.root.join("tmp", "browser_cache_all")
 
-FileUtils.mkpath download_directory unless File.directory?(download_directory)
-if File.directory?(cache_directory)
-  FileUtils.rm_r cache_directory
-else
-  Dir.mkdir cache_directory
-end
+# FileUtils.mkpath download_directory unless File.directory?(download_directory)
+# if File.directory?(cache_directory)
+#   FileUtils.rm_r cache_directory
+# else
+#   Dir.mkdir cache_directory
+# end
 
 Capybara.register_driver(:virtual_framebuffer_chrome) do |app|
   options = {
@@ -52,7 +52,7 @@ end
 
 Capybara.default_driver = :virtual_framebuffer_chrome
 # the default default_max_wait_time is 2 seconds
-Capybara.default_max_wait_time = 20
+# Capybara.default_max_wait_time = 20
 
 ActiveRecord::Migration.maintain_test_schema!
 
