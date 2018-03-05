@@ -36,5 +36,15 @@ describe DownloadVVAManifestJob do
         expect(download.documents.count).to eq(0)
       end
     end
+
+    context "when vva client encounters HTTP error" do
+      before do
+        allow(VVAService).to receive(:fetch_documents_for).and_raise(VVA::HTTPError.new(code: 503, body: "upstream connect error or disconnect/reset before headers", data: nil))
+      end
+
+      it "catches returns an error string and no documents" do
+        expect(DownloadVVAManifestJob.perform_now(download)).to eq(["vva_connection_error", nil])
+      end
+    end
   end
 end
