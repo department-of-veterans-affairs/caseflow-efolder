@@ -123,7 +123,7 @@ group :test do
   gem "rspec-rails"
   gem "selenium-webdriver"
   gem "simplecov"
-  gem "sniffybara", git: "https://github.com/department-of-veterans-affairs/sniffybara.git", ref: "d5f94213dcef08756f8d1622355015739e96ff4f"
+  gem "sniffybara", git: "https://github.com/department-of-veterans-affairs/sniffybara.git", branch: "axe"
   gem "timecop"
   # to save and open specific page in capybara tests
   gem "database_cleaner"
