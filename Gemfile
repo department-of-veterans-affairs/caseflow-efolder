@@ -121,7 +121,7 @@ group :test do
   gem "capybara", "2.17.0"
   gem "rspec"
   gem "rspec-rails"
-  gem "selenium-webdriver"
+  gem "selenium-webdriver", "3.8.0"
   gem "simplecov"
   gem "sniffybara", git: "https://github.com/department-of-veterans-affairs/sniffybara.git", branch: "axe"
   gem "timecop"
