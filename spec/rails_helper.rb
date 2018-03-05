@@ -51,8 +51,6 @@ Capybara.register_driver(:virtual_framebuffer_chrome) do |app|
   chrome_options.add_preference(:browser,
                                 disk_cache_dir: cache_directory)
 
-  chrome_options.add_argument('--headless')
-
   options = {
     port: 51_674,
     browser: :chrome,
