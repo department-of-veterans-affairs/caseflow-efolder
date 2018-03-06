@@ -69,7 +69,7 @@ GIT
 
 GIT
   remote: https://github.com/lowellrex/capybara.git
-  revision: 9f57391a7c97563f594350c87248491c60ed68e0
+  revision: 405f02d4a9d6d9249d226f7a17bb0c5409806b8f
   specs:
     capybara (3.0.0.rc1)
       addressable
