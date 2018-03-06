@@ -69,7 +69,7 @@ GIT
 
 GIT
   remote: https://github.com/lowellrex/selenium.git
-  revision: 9526e868304189f065bdae5e81b9cff34b868ac2
+  revision: 15c0cda1ed5eef95052e89886a05cb8789f5e3b6
   specs:
     selenium-webdriver (3.10.0)
       childprocess (~> 0.5)
