@@ -38,7 +38,7 @@ before_install:
   - "echo $PATH"
   - "echo 'PATH ^, LD_LIBRARY_PATH v'"
   - "echo $LD_LIBRARY_PATH"
-  - "ldconfig"
+  - "sudo ldconfig"
   - "/usr/lib/chromium-browser/chromedriver --version"
 
 before_script:
