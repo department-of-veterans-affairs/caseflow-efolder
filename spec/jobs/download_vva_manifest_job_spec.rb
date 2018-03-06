@@ -39,7 +39,7 @@ describe DownloadVVAManifestJob do
 
     context "when vva client encounters HTTP error" do
       before do
-        allow(VVAService).to receive(:fetch_documents_for).and_raise(VVA::HTTPError.new(code: 503, body: "upstream connect error or disconnect/reset before headers", data: nil))
+        allow(VVAService).to receive(:fetch_documents_for).and_raise(VVA::HTTPError.new(code: 503, body: "upstream connect error or disconnect/reset before headers"))
       end
 
       it "catches returns an error string and no documents" do
