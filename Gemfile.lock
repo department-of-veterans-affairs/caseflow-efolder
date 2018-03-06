@@ -60,24 +60,20 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/sniffybara.git
-  revision: 77637ac34346f3123f33e3a6c7bec26fa436a116
-  branch: lowell/axe
+  revision: 7ef776ed7aebc5bb0445c8524af12b6402ff6ead
+  branch: axe
   specs:
     sniffybara (0.0.1)
       rainbow
       selenium-webdriver
 
 GIT
-  remote: https://github.com/lowellrex/capybara.git
-  revision: 615e45fbcc2d19446165dfce28e8c1eca15766cf
+  remote: https://github.com/lowellrex/selenium.git
+  revision: 2dfca1213349feab7c7b4cc14f02d69937b04ada
   specs:
-    capybara (3.0.0.rc1)
-      addressable
-      mini_mime (>= 0.1.3)
-      nokogiri (~> 1.8)
-      rack (>= 1.6.0)
-      rack-test (>= 0.6.3)
-      xpath (~> 3.0)
+    selenium-webdriver (3.10.0)
+      childprocess (~> 0.5)
+      rubyzip (~> 1.2)
 
 GEM
   remote: https://rubygems.org/
@@ -160,6 +156,13 @@ GEM
       bundler (~> 1.2)
       thor (~> 0.18)
     byebug (9.0.6)
+    capybara (2.6.2)
+      addressable
+      mime-types (>= 1.16)
+      nokogiri (>= 1.3.3)
+      rack (>= 1.0.0)
+      rack-test (>= 0.5.4)
+      xpath (~> 2.0)
     case_transform (0.2)
       activesupport
     childprocess (0.8.0)
@@ -227,7 +230,6 @@ GEM
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
     mini_magick (4.8.0)
-    mini_mime (1.0.0)
     mini_portile2 (2.3.0)
     minitest (5.10.1)
     moment_timezone-rails (0.5.0)
@@ -384,9 +386,6 @@ GEM
     sdoc (0.4.2)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
-    selenium-webdriver (3.8.0)
-      childprocess (~> 0.5)
-      rubyzip (~> 1.0)
     sentry-raven (2.3.0)
       faraday (>= 0.7.6, < 1.0)
     sexp_processor (4.7.0)
@@ -452,8 +451,8 @@ GEM
       xmlmapper (~> 0.6)
     xmlmapper (0.7.2)
       nokogiri (~> 1.5)
-    xpath (3.0.0)
-      nokogiri (~> 1.8)
+    xpath (2.1.0)
+      nokogiri (~> 1.3)
     zaru (0.1.0)
     zero_downtime_migrations (0.0.7)
       activerecord
@@ -470,7 +469,7 @@ DEPENDENCIES
   brakeman (= 3.1.5)
   bundler-audit
   byebug
-  capybara!
+  capybara (= 2.6.2)
   caseflow!
   coffee-rails (~> 4.1.0)
   connect_vbms!
@@ -506,7 +505,7 @@ DEPENDENCIES
   sass-rails (~> 5.0)
   scss_lint
   sdoc (~> 0.4.0)
-  selenium-webdriver (= 3.8.0)
+  selenium-webdriver!
   sentry-raven
   sidekiq
   sidekiq-cron (~> 0.4.0)
