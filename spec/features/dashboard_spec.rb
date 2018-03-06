@@ -87,22 +87,6 @@ RSpec.feature "Stats Dashboard" do
   scenario "Vist from unauthenticated user" do
     User.authenticate!
 
-    # Dump a bunch of Capybara configs out here.
-    puts "\n\n\ndrivers:\n"
-    puts Capybara.drivers.inspect
-    
-    puts "\n\n\njavascript driver:\n"
-    puts Capybara.javascript_driver.inspect
-    
-    puts "\n\n\nservers:\n"
-    puts Capybara.servers.inspect
-
-    puts "\n\n\nsession options:\n"
-    puts Capybara.session_options.inspect
-
-    # puts "\n\n\nentire app configs:\n"
-    # puts Capybara.app.inspect
-
     visit "/stats"
     expect(page).to have_content("authorized")
   end
