@@ -5,6 +5,12 @@ sudo: required
 branches:
     only:
         - master
+
+env:
+  global:
+    # include $HOME/.local/bin for `aws`
+    - PATH=$HOME/.local/bin:$PATH
+
 rvm:
   - 2.3.0
 
