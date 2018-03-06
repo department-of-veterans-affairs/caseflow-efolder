@@ -119,11 +119,12 @@ end
 
 group :test do
   gem "capybara", "2.6.2"
+  gem "childprocess", git: "https://github.com/lowellrex/childprocess.git"
   gem "rspec"
   gem "rspec-rails"
-  # gem "selenium-webdriver", "3.8.0"
+  gem "selenium-webdriver", "3.8.0"
   # gem "selenium-webdriver", path: "/Users/lowell/Projects/selenium"
-  gem "selenium-webdriver", git: "https://github.com/lowellrex/selenium.git"
+  # gem "selenium-webdriver", git: "https://github.com/lowellrex/selenium.git"
   gem "simplecov"
   gem "sniffybara", git: "https://github.com/department-of-veterans-affairs/sniffybara.git", branch: "axe"
   gem "timecop"
