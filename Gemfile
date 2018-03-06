@@ -118,7 +118,7 @@ group :development, :test do
 end
 
 group :test do
-  gem "capybara", "2.17.0"
+  gem "capybara", git: "https://github.com/lowellrex/capybara.git"
   gem "rspec"
   gem "rspec-rails"
   gem "selenium-webdriver", "3.8.0"
