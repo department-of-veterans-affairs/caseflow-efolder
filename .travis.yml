@@ -29,6 +29,7 @@ before_install:
   - sudo apt-get install -f
   - "export PATH=$PATH:/usr/lib/chromium-browser/"
   - "export DISPLAY=:99.0"
+  - "/usr/lib/chromium-browser/chromedriver --version"
 
 before_script:
   - RAILS_ENV=test bundle exec rake db:create
