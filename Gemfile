@@ -118,7 +118,8 @@ group :development, :test do
 end
 
 group :test do
-  gem "capybara", "2.6.2"
+  gem "capybara", git: "https://github.com/lowellrex/capybara.git"
+  # gem "capybara", path: "/Users/lowell/Projects/capybara"
   gem "rspec"
   gem "rspec-rails"
   gem "selenium-webdriver", "3.8.0"
