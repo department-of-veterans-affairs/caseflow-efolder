@@ -59,10 +59,7 @@ Capybara.register_driver(:virtual_framebuffer_chrome) do |app|
 
   Sniffybara::Driver.current_driver = Sniffybara::Driver.new(app, options)
 end
-
 Capybara.default_driver = :virtual_framebuffer_chrome
-# the default default_max_wait_time is 2 seconds
-Capybara.default_max_wait_time = 20
 
 ActiveRecord::Migration.maintain_test_schema!
 
