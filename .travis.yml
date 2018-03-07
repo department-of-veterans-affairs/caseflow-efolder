@@ -36,9 +36,7 @@ before_install:
   - "export PATH=$PATH:/usr/lib/chromium-browser/"
   - "export DISPLAY=:99.0"
   - "echo $PATH"
-  - "echo 'PATH ^, LD_LIBRARY_PATH v'"
-  - "echo $LD_LIBRARY_PATH"
-  - "sudo ldconfig"
+  - "ls /usr/lib | cat"
   - "/usr/lib/chromium-browser/chromedriver --version"
 
 before_script:
