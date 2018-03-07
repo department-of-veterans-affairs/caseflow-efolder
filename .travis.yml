@@ -37,7 +37,7 @@ before_install:
   - "export DISPLAY=:99.0"
   - "sudo find / -name libbase.so 2> /dev/null"
   - "echo $PATH"
-  - "ls /usr/lib/chromium-browser/libs | cat"
+  - "sudo ls /usr/lib/chromium-browser/libs | cat"
   - "/usr/lib/chromium-browser/chromedriver --version"
 
 before_script:
