@@ -10,7 +10,7 @@ gem "moment_timezone-rails"
 gem "sqlite3", platforms: [:ruby, :mswin, :mingw, :mswin, :x64_mingw]
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem "rails", "4.2.7.1"
+gem "rails", "4.2.10"
 
 gem "activerecord-jdbcpostgresql-adapter", platforms: :jruby
 gem "pg", platforms: :ruby
