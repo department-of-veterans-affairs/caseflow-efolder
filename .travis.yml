@@ -5,7 +5,6 @@ sudo: required
 branches:
     only:
         - master
-
 rvm:
   - 2.3.0
 
@@ -30,10 +29,6 @@ before_install:
   - sudo apt-get install -f
   - "export PATH=$PATH:/usr/lib/chromium-browser/"
   - "export DISPLAY=:99.0"
-  - "sudo find / -name libbase.so 2> /dev/null"
-  - "echo $PATH"
-  - "sudo ls /usr/lib/chromium-browser/libs | cat"
-  - "/usr/lib/chromium-browser/chromedriver --version"
 
 before_script:
   - RAILS_ENV=test bundle exec rake db:create
