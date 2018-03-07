@@ -1,4 +1,3 @@
-require "fileutils"
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -7,10 +6,6 @@ Rails.application.configure do
   # your test database is "scratch space" for the test suite and is wiped
   # and recreated between test runs. Don't rely on the data there!
   config.cache_classes = true
-
-  cache_dir = Rails.root.join("tmp", "cache", "test_all")
-  FileUtils.mkdir_p(cache_dir) unless File.exists?(cache_dir)
-  config.cache_store = :file_store, cache_dir
 
   # Do not eager load code on boot. This avoids loading your whole application
   # just for the purpose of running a single test. If you are using a tool that
@@ -22,11 +17,11 @@ Rails.application.configure do
   config.static_cache_control = 'public, max-age=3600'
 
   # Show full error reports and disable caching.
-  config.consider_all_requests_local       = false
+  config.consider_all_requests_local       = true
   config.action_controller.perform_caching = false
 
   # Raise exceptions instead of rendering exception templates.
-  config.action_dispatch.show_exceptions = true
+  config.action_dispatch.show_exceptions = false
 
   # Disable request forgery protection in test environment.
   config.action_controller.allow_forgery_protection = false
@@ -42,13 +37,7 @@ Rails.application.configure do
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr
 
-  # Setup S3
   config.s3_enabled = false
-
-  assets_cache_path = Rails.root.join("tmp", "cache", "assets", "all")
-  config.assets.configure do |env|
-    env.cache = Sprockets::Cache::FileStore.new(assets_cache_path)
-  end
 
   config.api_key = "token"
 
