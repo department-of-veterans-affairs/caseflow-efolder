@@ -378,9 +378,9 @@ GEM
     sdoc (0.4.2)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
-    selenium-webdriver (3.8.0)
+    selenium-webdriver (3.10.0)
       childprocess (~> 0.5)
-      rubyzip (~> 1.0)
+      rubyzip (~> 1.2)
     sentry-raven (2.3.0)
       faraday (>= 0.7.6, < 1.0)
     sexp_processor (4.7.0)
@@ -500,7 +500,6 @@ DEPENDENCIES
   sass-rails (~> 5.0)
   scss_lint
   sdoc (~> 0.4.0)
-  selenium-webdriver (= 3.8.0)
   sentry-raven
   sidekiq
   sidekiq-cron (~> 0.4.0)
