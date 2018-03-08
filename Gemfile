@@ -118,13 +118,12 @@ group :development, :test do
 end
 
 group :test do
+  gem "capybara", "2.6.2"
   gem "rspec"
   gem "rspec-rails"
-  gem "timecop"
-  # gem 'guard-rspec'
-  gem "capybara", "2.6.2"
   gem "simplecov"
-  gem "sniffybara", git: "https://github.com/department-of-veterans-affairs/sniffybara.git", branch: "axe"
+  gem "sniffybara", git: "https://github.com/department-of-veterans-affairs/sniffybara.git"
+  gem "timecop"
   # to save and open specific page in capybara tests
   gem "database_cleaner"
   gem "launchy"
