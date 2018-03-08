@@ -13,7 +13,7 @@ gem "sqlite3", platforms: [:ruby, :mswin, :mingw, :mswin, :x64_mingw]
 gem "rails", "4.2.7.1"
 
 gem "activerecord-jdbcpostgresql-adapter", platforms: :jruby
-gem "pg", "~> 0.19.0", platforms: :ruby
+gem "pg", platforms: :ruby
 
 gem "aws-sdk", "~> 2"
 
