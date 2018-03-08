@@ -35,10 +35,12 @@ class DownloadListContainer extends React.PureComponent {
     return <React.Fragment>
       <AppSegment filledBackground>
         { unavailableSourceText &&
-          <AlertBanner title={`Can't connect to ${unavailableSourceText}`} alertType="warning">
-            <p>Please give {unavailableSourceText} a few moments to come back online,
-              then try searching for the eFolder again.</p>
-            <p><Link to="/">Try again</Link></p>
+          <AlertBanner title={`We are having trouble connecting to ${unavailableSourceText}`} alertType="warning">
+            <p>Please wait a few minutes and try searching this efolder again using the "Back to eFolder Express"&nbsp;
+              button below. If you continue to experience issues, you can also&nbsp;
+              <Link href={this.props.feedbackUrl}>send feedback</Link> to reach our support team.
+            </p>
+            <Link to="/"><button className="usa-button usa-button-outline">Back to eFolder Express</button></Link>
           </AlertBanner>
         }
 
@@ -66,6 +68,7 @@ const mapStateToProps = (state) => ({
   csrfToken: state.csrfToken,
   documents: state.documents,
   documentSources: state.documentSources,
+  feedbackUrl: state.feedbackUrl,
   manifestId: state.manifestId,
   veteranId: state.veteranId,
   veteranName: state.veteranName
