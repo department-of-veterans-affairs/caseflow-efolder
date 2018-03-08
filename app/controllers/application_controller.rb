@@ -39,8 +39,6 @@ class ApplicationController < BaseController
   end
 
   def check_v2_app_access
-    puts "Checking v2 app access"
-    puts can_access_react_app? ? "TRUE" : "FALSE"
     serve_single_page_app if can_access_react_app?
   end
 
