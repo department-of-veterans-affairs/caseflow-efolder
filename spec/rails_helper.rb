@@ -59,7 +59,6 @@ Capybara.register_driver(:virtual_framebuffer_chrome) do |app|
 
   Sniffybara::Driver.current_driver = Sniffybara::Driver.new(app, options)
 end
-
 Capybara.default_driver = :virtual_framebuffer_chrome
 
 ActiveRecord::Migration.maintain_test_schema!
