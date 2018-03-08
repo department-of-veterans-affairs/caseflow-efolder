@@ -28,10 +28,10 @@ POST "/api/v2/manifests/:manifest_id/files_downloads", to: "files_downloads#star
 GET "/api/v2/manifests/:manifest_id/files_downloads", to: "files_downloads#progress"
 ```
 
-5. To get document content:
+5. To get document content (version_id cannot contain curly braces):
 
 ```
-GET /api/v2/records/:id, to "records#show"
+GET /api/v2/records/:version_id, to "records#show"
 ```
 
 6. To download manifest zip:

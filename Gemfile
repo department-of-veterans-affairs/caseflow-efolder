@@ -2,7 +2,7 @@
 
 source ENV["GEM_SERVER_URL"] || "https://rubygems.org"
 
-gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons", ref: "6be9e1e95b1a012af1fb5b7aa292ec7123281dc2"
+gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons", ref: "5e6830534124f578f43c619c8620c0560365aa55"
 
 gem "moment_timezone-rails"
 
@@ -44,7 +44,7 @@ gem "newrelic_rpm"
 gem "dogstatsd-ruby"
 
 # SSOI
-gem "omniauth-saml-va", git: "https://github.com/department-of-veterans-affairs/omniauth-saml-va", ref: "fc5d4132c150add221a79bf06b71d8dafefc3ca6"
+gem "omniauth-saml-va", git: "https://github.com/department-of-veterans-affairs/omniauth-saml-va", ref: "fbe2b878c250b14ee996ef6699c42df2c42e41a1"
 
 gem "puma"
 
@@ -84,7 +84,7 @@ gem "httpclient"
 
 gem "bgs", git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", branch: "e30db7fdf6f5c28c09d6081d062cad80820240a0"
 gem "connect_vbms", git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "f014b4772385814cd510712c46698653866f99dd"
-gem "connect_vva", git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "5af0ad0e2538c1039bce75dbc6c4019b3e0c3312"
+gem "connect_vva", git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "9400bed703272c0e9ed33aeb36404a1a6b2585d3"
 
 # catch problematic migrations
 gem "zero_downtime_migrations"
@@ -118,14 +118,12 @@ group :development, :test do
 end
 
 group :test do
+  gem "capybara", "2.6.2"
   gem "rspec"
   gem "rspec-rails"
-  gem "timecop"
-  # gem 'guard-rspec'
-  gem "capybara"
-  gem "selenium-webdriver"
   gem "simplecov"
   gem "sniffybara", git: "https://github.com/department-of-veterans-affairs/sniffybara.git"
+  gem "timecop"
   # to save and open specific page in capybara tests
   gem "database_cleaner"
   gem "launchy"

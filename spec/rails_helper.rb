@@ -41,9 +41,7 @@ else
   Dir.mkdir cache_directory
 end
 
-FeatureToggle.cache_namespace = "test_all"
-
-Capybara.register_driver(:parallel_sniffybara) do |app|
+Capybara.register_driver(:virtual_framebuffer_chrome) do |app|
   chrome_options = ::Selenium::WebDriver::Chrome::Options.new
 
   chrome_options.add_preference(:download,
@@ -62,9 +60,7 @@ Capybara.register_driver(:parallel_sniffybara) do |app|
   Sniffybara::Driver.current_driver = Sniffybara::Driver.new(app, options)
 end
 
-Capybara.default_driver = :parallel_sniffybara
-# the default default_max_wait_time is 2 seconds
-Capybara.default_max_wait_time = 20
+Capybara.default_driver = :virtual_framebuffer_chrome
 
 ActiveRecord::Migration.maintain_test_schema!
 

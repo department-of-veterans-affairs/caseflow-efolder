@@ -3,7 +3,7 @@
 
 module DownloadHelpers
   TIMEOUT = 60
-  WORKDIR = Rails.root.join("tmp", "downloads_all")
+  WORKDIR = Rails.root.join("tmp/downloads_all")
 
   module_function
 
@@ -21,8 +21,6 @@ module DownloadHelpers
   end
 
   def filesize
-    puts downloads.inspect
-    puts "Getting file size for #{download}"
     File.size(download)
   end
 
@@ -41,6 +39,6 @@ module DownloadHelpers
   end
 
   def clear_downloads
-    FileUtils.rm_rf(downloads)
+    FileUtils.rm_f(downloads)
   end
 end

@@ -11,6 +11,9 @@ export default class AlertBanner extends React.PureComponent {
     case 'success':
       alertTypeClass = 'usa-alert-success';
       break;
+    case 'warning':
+      alertTypeClass = 'usa-alert-warning';
+      break;
     case 'info':
     default:
       alertTypeClass = 'usa-alert-info';

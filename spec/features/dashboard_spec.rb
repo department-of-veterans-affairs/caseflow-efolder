@@ -113,18 +113,6 @@ RSpec.feature "Stats Dashboard" do
     expect(page).to have_content("No Email Recorded (ROCKY - Station 203) 3 Downloads")
   end
 
-  scenario "Toggle median to 95th percentile" do
-    User.authenticate!(roles: ["System Admin"])
-
-    visit "/stats"
-    click_on "Daily"
-
-    find('*[role="button"]', text: "Time to Manifest").click
-    expect(page).to have_content("Time to Manifest (95th percentile) 30.37 sec")
-    find('*[role="button"]', text: "Time to Manifest").click
-    expect(page).to have_content("Time to Manifest (median) 16.37 sec")
-  end
-
   scenario "Navigate to past periods with arrow keys" do
     leftarrow = "d3.select(window).dispatch('keydown', { detail: { keyCode: 37 } })"
 

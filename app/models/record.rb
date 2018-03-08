@@ -4,7 +4,7 @@ class Record < ActiveRecord::Base
   belongs_to :manifest_source
 
   validates :manifest_source, :version_id, :series_id, presence: true
-  validates :version_id, :series_id, uniqueness: true
+  validates :version_id, uniqueness: true
 
   enum status: {
     initialized: 0,
@@ -68,19 +68,18 @@ class Record < ActiveRecord::Base
   end
 
   def self.create_from_external_document(manifest_source, document)
-    find_or_initialize_by(manifest_source: manifest_source, series_id: document.series_id).tap do |t|
-      t.assign_attributes(
-        type_id: document.type_id,
-        version_id: document.document_id,
-        version: document.version.to_i,
-        type_description: document.type_description,
-        mime_type: document.mime_type,
-        received_at: document.received_at,
-        jro: document.jro,
-        source: document.source
-      )
-      t.save!
-    end
+    create(
+      manifest_source: manifest_source,
+      version_id: document.document_id,
+      type_id: document.type_id,
+      series_id: document.series_id,
+      version: document.version.to_i,
+      type_description: document.type_description,
+      mime_type: document.mime_type,
+      received_at: document.received_at,
+      jro: document.jro,
+      source: document.source
+    )
   end
 
   private
