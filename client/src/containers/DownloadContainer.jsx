@@ -56,22 +56,26 @@ class DownloadContainer extends React.PureComponent {
         <StatusMessage title="Could not fetch manifest">{this.props.errorMessage}</StatusMessage>
         <DownloadPageFooter />
       </React.Fragment>;
-    } else if (!this.props.documents.count) {
-      pageBody = <React.Fragment>
-        <AppSegment filledBackground>
-          <h1 className="cf-msg-screen-heading">No Documents in eFolder</h1>
-          <h2 className="cf-msg-screen-deck">
-            eFolder Express could not find any documents in the eFolder with Veteran ID #{this.props.veteranId}.
-            It's possible this eFolder does not exist.
-          </h2>
-          <p className="cf-msg-screen-text">Please check the Veteran ID number and <Link to="/">search again</Link>.</p>
-        </AppSegment>
-        <DownloadPageFooter />
-      </React.Fragment>;
     } else if (documentDownloadStarted(this.props.documentsFetchStatus)) {
       pageBody = <DownloadProgressContainer />;
     } else if (manifestFetchComplete(this.props.documentSources)) {
-      pageBody = <DownloadListContainer />;
+      if (this.props.documents.length) {
+        pageBody = <DownloadListContainer />;
+      } else {
+        pageBody = <React.Fragment>
+          <AppSegment filledBackground>
+            <h1 className="cf-msg-screen-heading">No Documents in eFolder</h1>
+            <h2 className="cf-msg-screen-deck">
+              eFolder Express could not find any documents in the eFolder with Veteran ID #{this.props.veteranId}.
+              It's possible this eFolder does not exist.
+            </h2>
+            <p className="cf-msg-screen-text">
+              Please check the Veteran ID number and <Link to="/">search again</Link>.
+            </p>
+          </AppSegment>
+          <DownloadPageFooter />
+        </React.Fragment>;
+      }
     }
 
     return <React.Fragment>
