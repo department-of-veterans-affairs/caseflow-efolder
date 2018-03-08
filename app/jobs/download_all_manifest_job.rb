@@ -1,4 +1,4 @@
-class DownloadAllManifestJob < ActiveJob::Base
+class DownloadAllManifestJob < ApplicationJob
   queue_as :default
 
   def perform(download)

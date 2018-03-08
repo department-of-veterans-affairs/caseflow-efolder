@@ -3,7 +3,7 @@
 # veteran's eFolder, successfully or unsuccessfully. If successful,
 # it performs logic required to initialize the subsequent download.
 #
-class Search < ActiveRecord::Base
+class Search < ApplicationRecord
   belongs_to :download
   belongs_to :user
 
