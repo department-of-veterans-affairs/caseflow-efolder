@@ -15,7 +15,7 @@ gem "rails", "5.0.6"
 gem "activerecord-jdbcpostgresql-adapter", platforms: :jruby
 
 # pg version that is compatible with Rails 5
-gem "pg", '~> 0.18', platforms: :ruby
+gem "pg", "~> 0.18", platforms: :ruby
 
 gem "aws-sdk", "~> 2"
 
