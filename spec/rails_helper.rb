@@ -61,8 +61,6 @@ Capybara.register_driver(:virtual_framebuffer_chrome) do |app|
 end
 Capybara.default_driver = :virtual_framebuffer_chrome
 
-ActiveRecord::Migration.maintain_test_schema!
-
 # Convenience methods for stubbing current user
 module StubbableUser
   module ClassMethods
