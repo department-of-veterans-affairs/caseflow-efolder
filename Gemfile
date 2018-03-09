@@ -13,7 +13,9 @@ gem "sqlite3", platforms: [:ruby, :mswin, :mingw, :mswin, :x64_mingw]
 gem "rails", "5.0.6"
 
 gem "activerecord-jdbcpostgresql-adapter", platforms: :jruby
-gem "pg", platforms: :ruby
+
+# pg version that is compatible with Rails 5
+gem "pg", '~> 0.18', platforms: :ruby
 
 gem "aws-sdk", "~> 2"
 
