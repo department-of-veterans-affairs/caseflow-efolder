@@ -443,7 +443,7 @@ RSpec.feature "Downloads" do
     expect(Download.where(id: fake_id)).to be_empty
 
     visit download_download_path(fake_id)
-    expect(page.status_code).to be(404)
+    expect(page).to have_content("Something went wrong...")
   end
 
   scenario "Completed download" do
@@ -494,9 +494,11 @@ RSpec.feature "Downloads" do
 
     expect_page_to_have_coachmarks
 
+    DownloadHelpers.clear_downloads
     first(:link, "Download efolder").click
-    expect(page.response_headers["Content-Type"]).to eq("application/zip")
-    expect(page.response_headers["Content-Length"]).to eq(File.size(download_documents.zip_path).to_s)
+    DownloadHelpers.wait_for_download
+    expect(DownloadHelpers.filesize).to eq(File.size(download_documents.zip_path))
+    DownloadHelpers.clear_downloads
 
     visit download_path(@download)
     expect_page_to_have_coachmarks
