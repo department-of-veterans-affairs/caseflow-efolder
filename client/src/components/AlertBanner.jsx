@@ -1,3 +1,4 @@
+import { css } from 'glamor';
 import React from 'react';
 
 export default class AlertBanner extends React.PureComponent {
@@ -23,7 +24,7 @@ export default class AlertBanner extends React.PureComponent {
     return <div className={`usa-alert ${alertTypeClass}`} role="alert">
       <div className="usa-alert-body">
         <h2 className="usa-alert-heading">{this.props.title}</h2>
-        <div className="usa-alert-text">{this.props.children}</div>
+        <div {...css({ marginTop: '-2rem !important' })} className="usa-alert-text">{this.props.children}</div>
       </div>
     </div>;
   }
