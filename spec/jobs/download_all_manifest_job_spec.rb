@@ -50,7 +50,7 @@ describe DownloadAllManifestJob do
         allow(VBMSService).to receive(:fetch_documents_for).and_return([])
         allow(VVAService).to receive(:fetch_documents_for).and_raise(VVA::ClientError)
       end
-      it "saves download status as :vbms_connection_error" do
+      it "saves download status as :vva_connection_error" do
         expect(DownloadAllManifestJob.perform_now(download)).to be_nil
         expect(download.reload).to be_vva_connection_error
       end
