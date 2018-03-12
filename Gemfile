@@ -84,7 +84,7 @@ gem "httpclient"
 
 gem "bgs", git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", branch: "e30db7fdf6f5c28c09d6081d062cad80820240a0"
 gem "connect_vbms", git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "f014b4772385814cd510712c46698653866f99dd"
-gem "connect_vva", git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "9400bed703272c0e9ed33aeb36404a1a6b2585d3"
+gem "connect_vva", git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "e10768f4c9ab24614360c82a2678b7e83c785a37"
 
 # catch problematic migrations
 gem "zero_downtime_migrations"
