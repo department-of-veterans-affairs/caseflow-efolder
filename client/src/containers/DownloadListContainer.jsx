@@ -36,7 +36,7 @@ class DownloadListContainer extends React.PureComponent {
       <AppSegment filledBackground>
         { unavailableSourceText &&
           <AlertBanner title={`We are having trouble connecting to ${unavailableSourceText}`} alertType="warning">
-            <p>Please wait a few minutes and try searching this efolder again using the "Back to eFolder Express"&nbsp;
+            <p>Please wait a few minutes and try searching this eFolder again using the "Back to eFolder Express"&nbsp;
               button below. If you continue to experience issues, you can also&nbsp;
               <Link href={this.props.feedbackUrl}>send feedback</Link> to reach our support team.
             </p>
