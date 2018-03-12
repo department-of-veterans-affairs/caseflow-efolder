@@ -36,6 +36,16 @@ RSpec.feature "Downloads" do
     expect(page).to have_content("Test VA Saml")
   end
 
+  context "when user has access to efolder react app" do
+    before { FeatureToggle.enable!(:efolder_react_app, users: [@user.css_id]) }
+    after { FeatureToggle.disable!(:efolder_react_app, users: [@user.css_id]) }
+
+    it "coachmarks are not displayed indicating that we are viewing the react app" do
+      visit "/"
+      expect(page).to_not have_content("See what's new!")
+    end
+  end
+
   scenario "Download coachmarks" do
     def assert_coachmark_exists
       expect(page).to have_content("Downloads from eFolder Express now include Virtual VA documents.")
