@@ -35,8 +35,8 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/connect_vva.git
-  revision: e10768f4c9ab24614360c82a2678b7e83c785a37
-  ref: e10768f4c9ab24614360c82a2678b7e83c785a37
+  revision: ecc1da3f1027e6c270af264de46dc1cb4974fa47
+  ref: ecc1da3f1027e6c270af264de46dc1cb4974fa47
   specs:
     connect_vva (0.1)
       savon (~> 2.11, >= 2.11.0)
