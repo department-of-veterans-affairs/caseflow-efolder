@@ -44,7 +44,7 @@ class DownloadProgressContainer extends React.PureComponent {
     const percentComplete = 100 * (totalDocCount - this.props.documentsForStatus.progress.length) / totalDocCount;
 
     return <React.Fragment>
-      <AlertBanner title="You can close this page at any time." alertType="info">
+      <AlertBanner title="You can close this page at any time" alertType="info">
         <p>
           You can close this page at any time and eFolder Express will continue retrieving files in the&nbsp;
           background. View progress and download eFolders from the History on the&nbsp;
