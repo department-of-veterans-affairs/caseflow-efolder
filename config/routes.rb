@@ -51,7 +51,7 @@ Rails.application.routes.draw do
     get code, :to => "errors#show", :status_code => code
   end
 
-  match '(*path)' => 'application#serve_single_page_app', via: [:get]
+  match '(*path)' => 'application#check_v2_app_access', via: [:get]
 
   require "sidekiq/web"
   require "sidekiq/cron/web"

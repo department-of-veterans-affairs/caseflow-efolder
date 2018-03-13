@@ -39,7 +39,7 @@ class ApplicationController < BaseController
   end
 
   def check_v2_app_access
-    serve_single_page_app if can_access_react_app?
+    can_access_react_app? ? serve_single_page_app : redirect_to("/unauthorized")
   end
 
   def initial_react_data
