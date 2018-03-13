@@ -74,10 +74,21 @@ const buildErrorMessageFromResponse = (resp) => {
   return description;
 };
 
+const MAX_SIMULTANEOUS_POLL_REQUESTS = 2;
+let outstandingPollRequestCount = 0;
+
 export const pollManifestFetchEndpoint = (retryCount, manifestId, csrfToken) => (dispatch) => {
+  if (outstandingPollRequestCount >= MAX_SIMULTANEOUS_POLL_REQUESTS) {
+    setTimeout(() => {
+      dispatch(pollManifestFetchEndpoint(retryCount + 1, manifestId, csrfToken));
+    }, 1000);
+  }
+
+  outstandingPollRequestCount += 1;
   getRequest(`/api/v2/manifests/${manifestId}`, csrfToken).
     then(
       (response) => { // eslint-disable-line max-statements
+        outstandingPollRequestCount -= 1;
         setStateFromResponse(dispatch, response);
 
         // Reader polls every second for a maximum of 20 seconds. Match that here.
@@ -110,7 +121,11 @@ export const pollManifestFetchEndpoint = (retryCount, manifestId, csrfToken) => 
           dispatch(setErrorMessage(retriesExhaustedErrMsg));
         }
       },
-      (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
+      (err) => {
+        outstandingPollRequestCount -= 1;
+        dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)));
+      }
+
     );
 };
 
