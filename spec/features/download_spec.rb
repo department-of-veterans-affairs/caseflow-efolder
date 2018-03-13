@@ -1,4 +1,5 @@
 require "rails_helper"
+require 'sidekiq/testing'
 
 RSpec.feature "Downloads" do
   before do
@@ -18,7 +19,7 @@ RSpec.feature "Downloads" do
     FeatureToggle.disable!(:efolder_react_app)
   end
 
-  let(:react_path) { "/react" }
+  let(:react_path) { "/react/" }
 
   let(:veteran_id) { "12341234" }
   let(:veteran_info) do
@@ -80,7 +81,7 @@ RSpec.feature "Downloads" do
     expect(manifest.veteran_last_four_ssn).to eq("2222")
   end
 
-  context "When there is an errored download" do
+  context "When there is a download with no documents" do
     let(:manifest) do
       Manifest.create!(
         file_number: veteran_id
@@ -94,29 +95,59 @@ RSpec.feature "Downloads" do
       ]
     end
 
-    scenario "Searching for it shows the no documents page", focus: true do
+    scenario "Searching for it shows the no documents page" do
       visit "/react"
       fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
       click_button "Search"
 
-      expect(page).to have_content "No Documents in eFolder"
+      expect(page).to have_css ".cf-msg-screen-heading", text: "No Documents in eFolder"
+      expect(page).to have_content manifest.file_number
+
+      click_on "search again"
+      expect(page).to have_current_path(react_path)
     end
   end
 
-  scenario "Searching for a completed download" do
-    @user_manifest.create!(
-      file_number: "55555555",
-      status: :complete_success
-    )
+  context "When there is a completed download", focus: true do
+    before do
+      Sidekiq::Testing.inline!
+    end
+    # let(:manifest) do
+    #   Manifest.create!(
+    #     file_number: veteran_id
+    #   )
+    # end
 
-    visit "/react"
-    fill_in "Search for a Veteran ID number below to get started.", with: "55555555"
-    click_button "Search"
+    # let!(:vva_source) do
+    #   manifest.sources.create(name: "VVA", status: :success, fetched_at: 2.hours.ago)
+    # end
 
-    expect(page).to have_content("Success")
+    # let!(:vbms_source) do
+    #   manifest.sources.create(name: "VBMS", status: :success, fetched_at: 2.hours.ago)
+    # end
 
-    search = Search.where(user: @user).first
-    expect(search).to be_download_found
+    # let!(:vbms_records) do
+    #   vbms_source.records.create(version_id: "{TEST}", mime_type: "application/pdf")
+    # end
+
+    scenario "Searching for it takes you to the complete screen" do
+      visit "/react"
+      fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
+      click_button "Search"
+
+      expect(page).to have_content "STAN LEE VETERAN ID #{veteran_id}"
+      binding.pry
+      click_button "Start retrieving efolder"
+      expect(page).to have_content("Retrieving Files ...")
+
+      expect(page).to have_css ".progress-bar"
+
+      expect(page).to have_content("Success!")
+
+      click_button "Download efolder"
+
+      click_button "Start over"
+    end
   end
 
   scenario "Extraneous spaces in search input" do
