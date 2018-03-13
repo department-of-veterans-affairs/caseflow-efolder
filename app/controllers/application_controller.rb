@@ -8,7 +8,7 @@ class ApplicationController < BaseController
   before_action :check_v2_app_access
 
   def serve_single_page_app
-    render "gui/single_page_app", layout: false
+    can_access_react_app? ? render("gui/single_page_app", layout: false) : redirect_to("/unauthorized")
   end
 
   def authenticate
@@ -48,7 +48,7 @@ class ApplicationController < BaseController
       dropdownUrls: dropdown_urls,
       efolderAccessImagePath: ActionController::Base.helpers.image_path("help/efolder-access.png"),
       feedbackUrl: feedback_url,
-      recentDownloads: recent_downloads.sort_by(&:created_at).reverse,
+      recentDownloads: ActiveModelSerializers::SerializableResource.new(current_user.recent_downloads, each_serializer: Serializers::V2::ManifestSerializer),
       referenceGuidePath: ActionController::Base.helpers.asset_path("reference_guide.pdf"),
       trainingGuidePath: ActionController::Base.helpers.asset_path("training_guide.pdf"),
       userDisplayName: current_user.try(:display_name),
