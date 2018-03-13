@@ -84,7 +84,7 @@ RSpec.feature "Stats Dashboard" do
 
   after { Timecop.return }
 
-  scenario "Vist from unauthenticated user" do
+  scenario "Visit from unauthenticated user" do
     User.authenticate!
 
     visit "/stats"
