@@ -8,7 +8,7 @@ class ApplicationController < BaseController
   before_action :check_v2_app_access
 
   def serve_single_page_app
-    render "gui/single_page_app", layout: false
+    can_access_react_app? ? render("gui/single_page_app", layout: false) : redirect_to("/unauthorized")
   end
 
   def authenticate
@@ -39,7 +39,7 @@ class ApplicationController < BaseController
   end
 
   def check_v2_app_access
-    can_access_react_app? ? serve_single_page_app : redirect_to("/unauthorized")
+    serve_single_page_app if can_access_react_app?
   end
 
   def initial_react_data
