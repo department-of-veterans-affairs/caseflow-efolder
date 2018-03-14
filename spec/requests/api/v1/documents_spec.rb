@@ -100,7 +100,7 @@ describe "Documents API v1", type: :request do
       end
 
       it "returns 403" do
-        get "/api/v1/documents/#{document.id}"
+        get "/api/v1/documents/#{document.id}", nil, headers
         expect(response.code).to eq("403")
         body = JSON.parse(response.body)
         expect(body["status"]).to match(/sensitive/)

@@ -198,7 +198,7 @@ describe "Download" do
     context "when download is pending documents" do
       before do
         download.update_attributes!(status: :pending_documents)
-        allow(document_class).to receive(:historical_average_download_rate).and_return(5.minutes)
+        document_class.stub(:historical_average_download_rate) { 5.minutes }
       end
 
       context "when documents have been downloaded" do
@@ -219,7 +219,7 @@ describe "Download" do
       end
 
       context "when no historical data exists" do
-        before { allow(document_class).to receive(:historical_average_download_rate).and_return(nil) }
+        before { document_class.stub(:historical_average_download_rate) { nil } }
         it { is_expected.to be_nil }
       end
     end

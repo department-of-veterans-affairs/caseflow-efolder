@@ -1,6 +1,6 @@
 require "action_view"
 
-class Manifest < ApplicationRecord
+class Manifest < ActiveRecord::Base
   include ActionView::Helpers::DateHelper
 
   has_many :sources, class_name: "ManifestSource", dependent: :destroy
