@@ -43,10 +43,13 @@ class Manifest < ActiveRecord::Base
   end
 
   def vbms_source
+    binding.pry
     with_lock { sources.find_or_create_by(name: "VBMS") }
   end
 
   def vva_source
+    # binding.pry
+
     with_lock { sources.find_or_create_by(name: "VVA") }
   end
 
