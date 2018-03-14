@@ -491,6 +491,7 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jquery-rails
   launchy
+  mime-types
   mini_magick
   moment_timezone-rails
   newrelic_rpm

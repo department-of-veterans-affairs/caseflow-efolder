@@ -91,6 +91,8 @@ gem "connect_vva", git: "https://github.com/department-of-veterans-affairs/conne
 # catch problematic migrations
 gem "zero_downtime_migrations"
 
+gem "mime-types"
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
