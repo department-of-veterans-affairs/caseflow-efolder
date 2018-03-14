@@ -73,6 +73,8 @@ gem "wannabe_bool"
 
 gem "zaru"
 
+gem "listen"
+
 gem "active_model_serializers"
 
 gem "redis-namespace"

@@ -219,6 +219,10 @@ GEM
     launchy (2.4.3)
       addressable (~> 2.3)
     libv8 (3.16.14.19)
+    listen (3.1.5)
+      rb-fsevent (~> 0.9, >= 0.9.4)
+      rb-inotify (~> 0.9, >= 0.9.7)
+      ruby_dep (~> 1.2)
     loofah (2.2.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -362,6 +366,7 @@ GEM
     ruby2ruby (2.2.0)
       ruby_parser (~> 3.1)
       sexp_processor (~> 4.0)
+    ruby_dep (1.5.0)
     ruby_parser (3.7.3)
       sexp_processor (~> 4.1)
     rubyzip (1.2.1)
@@ -491,6 +496,7 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jquery-rails
   launchy
+  listen
   mime-types
   mini_magick
   moment_timezone-rails
