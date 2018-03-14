@@ -1,4 +1,4 @@
-class DownloadManifestJob < ApplicationJob
+class DownloadManifestJob < ActiveJob::Base
   queue_as :default
 
   # these must be implemented by child classes

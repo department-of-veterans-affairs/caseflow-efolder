@@ -1,4 +1,4 @@
-class SaveFilesInS3Job < ApplicationJob
+class SaveFilesInS3Job < ActiveJob::Base
   queue_as :default
 
   def perform(download)

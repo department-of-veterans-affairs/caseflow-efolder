@@ -1,4 +1,4 @@
-class ManifestSource < ApplicationRecord
+class ManifestSource < ActiveRecord::Base
   include ApplicationHelper
 
   enum status: {

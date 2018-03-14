@@ -1,4 +1,4 @@
-class FilesDownload < ApplicationRecord
+class FilesDownload < ActiveRecord::Base
   belongs_to :user
   belongs_to :manifest
 
