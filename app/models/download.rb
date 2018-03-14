@@ -1,6 +1,6 @@
 # rubocop:disable Metrics/ClassLength
 # #626 is a task to refactor the Download model
-class Download < ActiveRecord::Base
+class Download < ApplicationRecord
   enum status: {
     fetching_manifest: 0,
     no_documents: 1,
