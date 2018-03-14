@@ -1,4 +1,4 @@
-class DownloadFilesJob < ActiveJob::Base
+class DownloadFilesJob < ApplicationJob
   queue_as :default
 
   def perform(download)

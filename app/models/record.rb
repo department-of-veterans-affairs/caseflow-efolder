@@ -1,4 +1,4 @@
-class Record < ActiveRecord::Base
+class Record < ApplicationRecord
   include Caseflow::DocumentTypes
 
   belongs_to :manifest_source
