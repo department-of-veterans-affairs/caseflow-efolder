@@ -1,7 +1,9 @@
 require "rails_helper"
-require 'sidekiq/testing'
+require "sidekiq/testing"
 
 RSpec.feature "Downloads" do
+  include ActiveJob::TestHelper
+
   before do
     @user = User.create(css_id: "123123", station_id: "116")
 
@@ -110,7 +112,7 @@ RSpec.feature "Downloads" do
 
   context "When there is a completed download", focus: true do
     before do
-      Sidekiq::Testing.inline!
+      # Sidekiq::Testing.inline!
     end
     # let(:manifest) do
     #   Manifest.create!(
@@ -131,12 +133,15 @@ RSpec.feature "Downloads" do
     # end
 
     scenario "Searching for it takes you to the complete screen" do
-      visit "/react"
-      fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
-      click_button "Search"
-
+      perform_enqueued_jobs do
+        visit "/react"
+        fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
+        click_button "Search"
+      end
+      assert_performed_jobs 2
+      
       expect(page).to have_content "STAN LEE VETERAN ID #{veteran_id}"
-      binding.pry
+      # binding.pry
       click_button "Start retrieving efolder"
       expect(page).to have_content("Retrieving Files ...")
 
