@@ -4,18 +4,26 @@
 # https://github.com/shakacode/react_on_rails/blob/8c8077b3b86680581aef5f49908225aa33ea25fd/lib/react_on_rails/assets_precompile.rb#L59
 desc "symlink assets for reference by filename without digest"
 task :symlink_assets do
+  puts "apple"
   assets_path = File.join(Rails.root, "public/assets/")
 
+  puts "banana"
   manifest_glob = Dir.glob("#{assets_path}.sprockets-manifest-*.json") +
                   Dir.glob("#{assets_path}manifest-*.json") +
                   Dir.glob("#{assets_path}manifest.yml")
+  
+  puts "churro"
   if manifest_glob.empty?
     puts "Warning: React On Rails: expected to find .sprockets-manifest-*.json, manifest-*.json "\
              "or manifest.yml at #{assets_path}, but found none. Canceling symlinking tasks."
     return -1
   end
+
+  puts "donut"
   manifest_path = manifest_glob.first
   manifest_file = File.new(manifest_path)
+
+  puts "egg"
   manifest_data = if File.extname(manifest_file) == ".json"
                     manifest_file_data = File.read(manifest_path)
                     JSON.parse(manifest_file_data)["assets"]
@@ -23,6 +31,7 @@ task :symlink_assets do
                     YAML.safe_load(manifest_file)
                   end
 
+  puts "frosty"
   manifest_data.each do |asset_name, file_name|
     # Only symlink .woff font files.
     next unless asset_name =~ /\.woff2?$/
