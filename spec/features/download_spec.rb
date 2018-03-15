@@ -34,18 +34,23 @@ RSpec.feature "Downloads" do
     User.authenticate!
 
     allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info).with(veteran_id).and_return(veteran_info)
-    allow_any_instance_of(Fakes::BGSService).to receive(:valid_file_number?).and_return(true)
+    allow_any_instance_of(Fakes::BGSService).to receive(:valid_file_number?).with(veteran_id).and_return(true)
+    allow_any_instance_of(Fakes::BGSService).to receive(:valid_file_number?).with(invalid_veteran_id).and_return(false)
 
 
     allow(Fakes::DocumentService).to receive(:v2_fetch_documents_for).and_return(documents)
     allow(Fakes::DocumentService).to receive(:v2_fetch_document_file).and_return("Test content")
+
+    DownloadHelpers.clear_downloads
   end
 
   after do
     FeatureToggle.disable!(:efolder_react_app)
   end
 
-  let(:react_path) { "/react/" }
+  let(:root_path) { "/" }
+
+  let(:invalid_veteran_id) {"abcd"}
 
   let(:veteran_id) { "12341234" }
   let(:veteran_info) do
@@ -59,20 +64,20 @@ RSpec.feature "Downloads" do
   scenario "Not login bounces to login page" do
     User.unauthenticate!
 
-    visit("/react")
+    visit("/")
     expect(page).to have_content("Test VA Saml")
     fill_in "css_id", with: "css_id"
     fill_in "station_id", with: "station_id"
     click_on "Sign In"
 
     puts page.current_path
-    expect(page).to have_current_path(react_path)
+    expect(page).to have_current_path("/")
   end
 
   scenario "Logging out" do
     User.unauthenticate!
 
-    visit("/react")
+    visit("/")
     fill_in "css_id", with: "css_id"
     fill_in "station_id", with: "station_id"
     click_on "Sign In"
@@ -114,7 +119,7 @@ RSpec.feature "Downloads" do
   scenario "Creating a download" do
     expect(V2::DownloadManifestJob).to receive(:perform_later).twice
 
-    visit "/react"
+    visit "/"
     expect(page).to_not have_content "Recent Searches"
 
     fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
@@ -128,7 +133,7 @@ RSpec.feature "Downloads" do
 
     expect(page).to have_css(".ee-page-loading .ee-page-loading-icon")
 
-    expect(page).to have_current_path("/react/downloads/#{manifest.id}")
+    expect(page).to have_current_path("/downloads/#{manifest.id}")
 
     expect(manifest).to_not be_nil
     expect(manifest.veteran_first_name).to eq("Stan")
@@ -151,7 +156,7 @@ RSpec.feature "Downloads" do
     end
 
     scenario "Searching for it shows the no documents page" do
-      visit "/react"
+      visit "/"
       fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
       click_button "Search"
 
@@ -159,182 +164,174 @@ RSpec.feature "Downloads" do
       expect(page).to have_content manifest.file_number
 
       click_on "search again"
-      expect(page).to have_current_path(react_path)
+      expect(page).to have_current_path(root_path)
     end
   end
 
-  context "When there is a completed download", focus: true do
-    before do
-      DownloadHelpers.clear_downloads
+  scenario "Happy path, zip file is downloaded" do
+    perform_enqueued_jobs do
+      visit "/"
+      fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
+
+      click_button "Search"
+
+      expect(page).to have_content "STAN LEE VETERAN ID #{veteran_id}"
+      expect(page).to have_content "Start retrieving efolder"
+    
+      within(".cf-app-segment--alt") do
+        click_button "Start retrieving efolder"
+      end
+      
+      expect(page).to have_content("Success!")
+
+      within(".cf-app-segment--alt") do
+        click_button "Download efolder"
+      end
+
+      DownloadHelpers.wait_for_download
+      download = DownloadHelpers.downloaded?
+      expect(download).to be_truthy
+
+      expect(DownloadHelpers.download).to include("Lee, Stan - 2222.zip")
+    end
+  end
+
+  scenario "Loading bar appears when waiting for case to download" do
+    perform_enqueued_jobs do
+      visit "/"
+      fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
+
+      click_button "Search"
+
+      expect(page).to have_content "STAN LEE VETERAN ID #{veteran_id}"
+      expect(page).to have_content "Start retrieving efolder"
     end
 
-    scenario "Searching for it takes you to the complete screen" do
+    within(".cf-app-segment--alt") do
+      click_button "Start retrieving efolder"
+    end
+  
+    expect(page).to have_content("Retrieving Files ...")
+    expect(page).to have_css ".progress-bar"
+  end
+
+  scenario "Extraneous spaces in search input" do
+    visit "/"
+
+    fill_in "Search for a Veteran ID number below to get started.", with: " #{veteran_id} "
+    click_button "Search"
+
+    expect(page).to have_content "STAN LEE VETERAN ID #{veteran_id}"
+
+    expect(Manifest.where(file_number: veteran_id).count).to eq(1)    
+  end
+
+  scenario "Requesting invalid case number" do
+    visit "/"
+
+    fill_in "Search for a Veteran ID number below to get started.", with: invalid_veteran_id
+    click_button "Search"
+    binding.pry
+
+    expect(page).to have_content("File number is invalid")
+  end
+
+  # TODO
+  # scenario "Requesting veteran that does not exist" do
+  #   visit "/"
+
+  #   fill_in "Search for a Veteran ID number below to get started.", with: "88888888"
+  #   click_button "Search"
+
+  #   search = Search.where(user: @user).first
+  #   expect(search).to be_veteran_not_found
+  # end
+
+  # TODO: Fix test
+  context "When veteran id has high sensitivity" do
+    before do
+      allow_any_instance_of(Fakes::BGSService).to receive(:sensitive_files).and_return({ veteran_id => true })
+    end
+
+    scenario "Cannot access it" do
+      visit "/"
+      fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
+      click_button "Search"
+
+      expect(page).to have_current_path("/")
+      expect(page).to have_content("contains sensitive information")
+    end
+  end
+
+  # TODO
+  # scenario "Attempting to view expired download fails" do
+  #   expired = @user_manifest.create!(
+  #     file_number: "78901",
+  #     created_at: 77.hours.ago,
+  #     status: :complete_success
+  #   )
+
+  #   visit download_path(expired)
+  #   expect(page).to have_content("search again")
+  # end
+
+
+  context "When veteran case folder has no documents" do
+    before do
+      allow(Fakes::DocumentService).to receive(:v2_fetch_documents_for).and_return([])
+    end
+
+    scenario "Download with no documents" do
       perform_enqueued_jobs do
         visit "/"
         fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
-
         click_button "Search"
 
-        expect(page).to have_content "STAN LEE VETERAN ID #{veteran_id}"
-        expect(page).to have_content "Start retrieving efolder"
-      
-      # assert_performed_jobs 2
-      
-      
-        within(".cf-app-segment--alt") do
-          click_button "Start retrieving efolder"
-        end
-        
-        expect(page).to have_content("Success!")
+        expect(page).to have_css ".cf-msg-screen-heading", text: "No Documents in eFolder"
+        expect(page).to have_content veteran_id
 
-        within(".cf-app-segment--alt") do
-          click_button "Download efolder"
-        end
-
-        DownloadHelpers.wait_for_download
-        download = DownloadHelpers.downloaded?
-        expect(download).to be_truthy
-
-        expect(DownloadHelpers.download).to include("Lee, Stan - 2222.zip")
+        click_on "search again"
+        expect(page).to have_current_path(root_path)
       end
     end
   end
 
+  context "When VBMS returns an error" do
+    before do
+      allow(Fakes::VBMSService).to receive(:v2_fetch_documents_for).and_raise(VBMS::ClientError)
+    end
 
-# expect(page).to have_content("Retrieving Files ...")
+    scenario "Download with VBMS connection error", focus: true do
+      perform_enqueued_jobs do
+        visit "/"
+        fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
+        click_button "Search"
 
-#         expect(page).to have_css ".progress-bar"
+        expect(page).to have_css ".usa-alert-heading", text: "We are having trouble connecting to VBMS"        
+        click_link "Back to eFolder Express"
 
-  scenario "Extraneous spaces in search input" do
-    veteran_info = {
-      "12341234" => {
-        "veteran_first_name" => "Stan",
-        "veteran_last_name" => "Lee",
-        "veteran_last_four_ssn" => "2222"
-      }
-    }
-    allow_any_instance_of(Fakes::BGSService).to receive(:veteran_info).and_return(veteran_info)
-
-    visit "/react"
-    expect(page).to_not have_content "Recent Searches"
-
-    fill_in "Search for a Veteran ID number below to get started.", with: " 12341234 "
-    click_button "Search"
-
-    download = @user_manifest.last
-    expect(download).to_not be_nil
-
-    expect(page).to have_content "STAN LEE VETERAN ID 12341234"
+        expect(page).to have_current_path(root_path)
+      end
+    end
   end
 
-  scenario "Requesting invalid case number" do
-    visit "/react"
+  context "When VVA returns an error" do
+    before do
+      allow(Fakes::VVAService).to receive(:v2_fetch_documents_for).and_raise(VVA::ClientError)
+    end
 
-    fill_in "Search for a Veteran ID number below to get started.", with: "abcd"
-    click_button "Search"
+    scenario "Download with VVA connection error", focus: true do
+      perform_enqueued_jobs do
+        visit "/"
+        fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
+        click_button "Search"
 
-    expect(page).to have_content("not valid")
-  end
+        expect(page).to have_css ".usa-alert-heading", text: "We are having trouble connecting to VVA"        
+        click_link "Back to eFolder Express"
 
-  scenario "Requesting veteran that does not exist" do
-    visit "/react"
-
-    fill_in "Search for a Veteran ID number below to get started.", with: "88888888"
-    click_button "Search"
-
-    search = Search.where(user: @user).first
-    expect(search).to be_veteran_not_found
-  end
-
-  scenario "Using demo mode" do
-    expect(DownloadAllManifestJob).to receive(:perform_later)
-
-    visit "/react"
-
-    fill_in "Search for a Veteran ID number below to get started.", with: "DEMO123"
-    click_button "Search"
-
-    download = @user_manifest.last
-    expect(download).to_not be_nil
-    expect(download.veteran_name).to_not be_nil
-    expect(download.veteran_name).to_not be_empty
-
-    expect(page).to have_content "VETERAN ID"
-  end
-
-  scenario "Sensitive download error" do
-    veteran_info = { "88888888" => { "veteran_first_name" => "Nick", "veteran_last_name" => "Saban" } }
-    sensitive_files = { "88888888" => true }
-
-    allow_any_instance_of(Fakes::BGSService).to receive(:veteran_info).and_return(veteran_info)
-    allow_any_instance_of(Fakes::BGSService).to receive(:sensitive_files).and_return(sensitive_files)
-
-    visit "/react"
-    fill_in "Search for a Veteran ID number below to get started.", with: "88888888"
-    click_button "Search"
-    expect(page).to have_current_path("/downloads")
-    expect(page).to have_content("contains sensitive information")
-
-    search = Search.where(user: @user).first
-    expect(search).to be_access_denied
-  end
-
-  scenario "Attempting to view download created by another user" do
-    user = User.create(css_id: "123123", station_id: "222")
-    another_user = Download.create!(
-      user: user,
-      file_number: "22222",
-      status: :complete_success
-    )
-
-    visit download_path(another_user)
-    expect(page).to have_content("search again")
-  end
-
-  scenario "Attempting to view expired download fails" do
-    expired = @user_manifest.create!(
-      file_number: "78901",
-      created_at: 77.hours.ago,
-      status: :complete_success
-    )
-
-    visit download_path(expired)
-    expect(page).to have_content("search again")
-  end
-
-  scenario "Download with no documents" do
-    download = @user_manifest.create(status: :no_documents)
-    visit download_path(download)
-
-    expect(page).to have_css ".cf-app-msg-screen", text: "No Documents in eFolder"
-    expect(page).to have_content download.file_number
-
-    click_on "search again"
-    expect(page).to have_current_path(react_path)
-  end
-
-  scenario "Download with VBMS connection error" do
-    download = @user_manifest.create(status: :vbms_connection_error)
-    visit download_path(download)
-
-    expect(page).to have_css ".usa-alert-heading", text: "Can't connect to VBMS"
-    click_on "Try again"
-    expect(page).to have_current_path(react_path)
-  end
-
-  scenario "Download with VVA connection error" do
-    download = @user_manifest.create(status: :vva_connection_error)
-    visit download_path(download)
-
-    expect(page).to have_css ".usa-alert-heading", text: "Can't connect to Virtual VA"
-    click_on "Try again"
-    expect(page).to have_current_path(react_path)
-  end
-
-  scenario "Download with manifest_fetch_error status" do
-    download = @user_manifest.create(status: :manifest_fetch_error)
-    visit download_path(download)
-    expect(page).to have_content "We couldn't find this efolder."
+        expect(page).to have_current_path(root_path)
+      end
+    end
   end
 
   scenario "Confirming download" do
@@ -452,7 +449,7 @@ RSpec.feature "Downloads" do
     expect(page).to have_content "Some files couldn't be added"
 
     click_on "Search for another efolder"
-    expect(page).to have_current_path(react_path)
+    expect(page).to have_current_path(root_path)
   end
 
   scenario "Downloading anyway with at least one failed document download" do
@@ -573,7 +570,7 @@ RSpec.feature "Downloads" do
     expect_page_to_have_coachmarks
 
     # When we click on "See what's new", we want the coachmarks to show up on subsequent page loads.
-    visit "/react"
+    visit "/"
     expect(page).to have_content("Downloads from eFolder Express now include Virtual VA documents.")
     expect(page).to have_content("Hide tutorial")
   end
@@ -585,7 +582,7 @@ RSpec.feature "Downloads" do
       status: :complete_success
     )
 
-    visit "/react"
+    visit "/"
     expect(page).to_not have_content("78901")
   end
 
@@ -612,7 +609,7 @@ RSpec.feature "Downloads" do
       status: :complete_success
     )
 
-    visit "/react"
+    visit "/"
 
     expect(page).to_not have_content(pending_confirmation.file_number)
     expect(page).to_not have_content(another_user.file_number)
@@ -623,13 +620,13 @@ RSpec.feature "Downloads" do
     within(complete_with_errors_row) { click_on("View results") }
     expect(page).to have_content("Download efolder")
 
-    visit "/react"
+    visit "/"
     pending_documents_row = "#download-#{pending_documents.id}"
     expect(find(pending_documents_row)).to have_content("45678")
     within(pending_documents_row) { click_on("View progress") }
     expect(page).to have_current_path(download_path(pending_documents))
 
-    visit "/react"
+    visit "/"
     complete_row = "#download-#{complete.id}"
     expect(find(complete_row)).to have_content("78901")
     within(complete_row) { click_on("View results") }
@@ -645,7 +642,7 @@ RSpec.feature "Downloads" do
       status: :complete_success
     )
 
-    visit "/react"
+    visit "/"
     expect(page).to have_content("View results")
     expect(page).not_to have_content("Delete Cache")
   end
@@ -659,7 +656,7 @@ RSpec.feature "Downloads" do
     )
     User.tester!
 
-    visit "/react"
+    visit "/"
     expect(page).to have_content("View results")
     expect(page).to have_content("Delete Cache")
     click_on("Delete Cache")
