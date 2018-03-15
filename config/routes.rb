@@ -51,8 +51,6 @@ Rails.application.routes.draw do
     get code, :to => "errors#show", :status_code => code
   end
 
-  match '(*path)' => 'application#serve_single_page_app', via: [:get]
-
   require "sidekiq/web"
   require "sidekiq/cron/web"
   Sidekiq::Web.use Rack::Auth::Basic do |username, password|
@@ -66,4 +64,5 @@ Rails.application.routes.draw do
   end
   mount Sidekiq::Web, at: "/sidekiq"
 
+  match '(*path)' => 'application#serve_single_page_app', via: [:get]
 end
