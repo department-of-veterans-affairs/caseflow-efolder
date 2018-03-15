@@ -13,4 +13,4 @@ Rails.application.config.assets.paths << Rails.root.join('node_modules')
 # folder are already added.
 Rails.application.config.assets.precompile += %w( react-app.js stats.js )
 Rails.application.config.assets.precompile += %w( favicon.ico )
-Rails.application.config.assets.precompile += %w( *.woff *.woff2 *.eot *.ttf )
+Rails.application.config.assets.precompile << %w( *.woff *.woff2 *.eot *.ttf )
