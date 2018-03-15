@@ -1,5 +1,5 @@
-# This is called during the deploy script to link files
-# 
+# This is called during the deploy script to link files relied on by uswds styles.
+#
 # Mirror what react-on-rails does for caseflow since we do not use react-on-rails for efolder.
 # https://github.com/shakacode/react_on_rails/blob/8c8077b3b86680581aef5f49908225aa33ea25fd/lib/react_on_rails/assets_precompile.rb#L59
 desc "symlink assets for reference by filename without digest"
