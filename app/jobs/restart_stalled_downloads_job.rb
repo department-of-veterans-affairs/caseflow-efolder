@@ -1,4 +1,4 @@
-class RestartStalledDownloadsJob < ActiveJob::Base
+class RestartStalledDownloadsJob < ApplicationJob
   queue_as :default
 
   def perform
