@@ -3,18 +3,42 @@ require "rails_helper"
 
 RSpec.feature "Downloads" do
   include ActiveJob::TestHelper
+  # include Caseflow::DocumentTypes
+
+  let(:documents) do
+    [
+      OpenStruct.new(
+        document_id: "1",
+        series_id: "1234",
+        type_id: Caseflow::DocumentTypes::TYPES.keys.sample,
+        version: "1",
+        mime_type: "txt",
+        received_at: Time.now.utc
+      ),
+      OpenStruct.new(
+        document_id: "2",
+        series_id: "5678",
+        type_id: Caseflow::DocumentTypes::TYPES.keys.sample,
+        version: "1",
+        mime_type: "txt",
+        received_at: Time.now.utc
+      )
+    ]
+  end
 
   before do
     @user = User.create(css_id: "123123", station_id: "116")
 
     FeatureToggle.enable!(:efolder_react_app)
 
-    allow(V2::DownloadManifestJob).to receive(:perform_later)
-    allow(DownloadFilesJob).to receive(:perform_later)
     User.authenticate!
 
     allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info).with(veteran_id).and_return(veteran_info)
     allow_any_instance_of(Fakes::BGSService).to receive(:valid_file_number?).and_return(true)
+
+
+    allow(Fakes::DocumentService).to receive(:v2_fetch_documents_for).and_return(documents)
+    allow(Fakes::DocumentService).to receive(:v2_fetch_document_file).and_return("Test content")
   end
 
   after do
@@ -141,52 +165,45 @@ RSpec.feature "Downloads" do
 
   context "When there is a completed download", focus: true do
     before do
-      # Sidekiq::Testing.inline!
+      DownloadHelpers.clear_downloads
     end
-    # let(:manifest) do
-    #   Manifest.create!(
-    #     file_number: veteran_id
-    #   )
-    # end
-
-    # let!(:vva_source) do
-    #   manifest.sources.create(name: "VVA", status: :success, fetched_at: 2.hours.ago)
-    # end
-
-    # let!(:vbms_source) do
-    #   manifest.sources.create(name: "VBMS", status: :success, fetched_at: 2.hours.ago)
-    # end
-
-    # let!(:vbms_records) do
-    #   vbms_source.records.create(version_id: "{TEST}", mime_type: "application/pdf")
-    # end
 
     scenario "Searching for it takes you to the complete screen" do
-      # expect_any_instance_of(V2::DownloadManifestJob).to receive(:perform)
-      
-      visit "/react"
-      fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
+      perform_enqueued_jobs do
+        visit "/"
+        fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
 
-      # perform_enqueued_jobs do
         click_button "Search"
-        sleep 5
-      # end
+
+        expect(page).to have_content "STAN LEE VETERAN ID #{veteran_id}"
+        expect(page).to have_content "Start retrieving efolder"
+      
       # assert_performed_jobs 2
       
-      # expect(page).to have_content "STAN LEE VETERAN ID #{veteran_id}"
-      # # binding.pry
-      # click_button "Start retrieving efolder"
-      # expect(page).to have_content("Retrieving Files ...")
+      
+        within(".cf-app-segment--alt") do
+          click_button "Start retrieving efolder"
+        end
+        
+        expect(page).to have_content("Success!")
 
-      # expect(page).to have_css ".progress-bar"
+        within(".cf-app-segment--alt") do
+          click_button "Download efolder"
+        end
 
-      # expect(page).to have_content("Success!")
+        DownloadHelpers.wait_for_download
+        download = DownloadHelpers.downloaded?
+        expect(download).to be_truthy
 
-      # click_button "Download efolder"
-
-      # click_button "Start over"
+        expect(DownloadHelpers.download).to include("Lee, Stan - 2222.zip")
+      end
     end
   end
+
+
+# expect(page).to have_content("Retrieving Files ...")
+
+#         expect(page).to have_css ".progress-bar"
 
   scenario "Extraneous spaces in search input" do
     veteran_info = {
