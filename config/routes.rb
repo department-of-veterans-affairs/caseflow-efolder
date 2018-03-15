@@ -12,8 +12,6 @@ Rails.application.routes.draw do
 
   post 'increment_vva_coachmarks_status', to: 'downloads#increment_vva_coachmarks_status'
 
-  match '/react(/*path)' => 'gui#react', via: [:get]
-
   resources :downloads, only: [:new, :create, :show] do
     post :start, on: :member
     post :retry, on: :member
@@ -53,7 +51,6 @@ Rails.application.routes.draw do
     get code, :to => "errors#show", :status_code => code
   end
 
-
   require "sidekiq/web"
   require "sidekiq/cron/web"
   Sidekiq::Web.use Rack::Auth::Basic do |username, password|
@@ -67,4 +64,5 @@ Rails.application.routes.draw do
   end
   mount Sidekiq::Web, at: "/sidekiq"
 
+  match '(*path)' => 'application#serve_single_page_app', via: [:get]
 end

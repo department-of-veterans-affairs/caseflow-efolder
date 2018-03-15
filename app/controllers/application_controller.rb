@@ -5,6 +5,11 @@ class ApplicationController < BaseController
   before_action :check_out_of_service
   before_action :authenticate
   before_action :set_raven_user
+  before_action :check_v2_app_access
+
+  def serve_single_page_app
+    can_access_react_app? ? render("gui/single_page_app", layout: false) : redirect_to("/unauthorized")
+  end
 
   def authenticate
     return true unless current_user.nil?
@@ -30,17 +35,72 @@ class ApplicationController < BaseController
   end
 
   def authorize
-    redirect_to "/unauthorized" unless current_user.can? "Download eFolder"
+    redirect_to "/unauthorized" unless user_is_authorized?
+  end
+
+  def check_v2_app_access
+    serve_single_page_app if can_access_react_app?
+  end
+
+  def initial_react_data
+    {
+      csrfToken: form_authenticity_token,
+      dropdownUrls: dropdown_urls,
+      efolderAccessImagePath: ActionController::Base.helpers.image_path("help/efolder-access.png"),
+      feedbackUrl: feedback_url,
+      recentDownloads: ActiveModelSerializers::SerializableResource.new(current_user.recent_downloads, each_serializer: Serializers::V2::ManifestSerializer),
+      referenceGuidePath: ActionController::Base.helpers.asset_path("reference_guide.pdf"),
+      trainingGuidePath: ActionController::Base.helpers.asset_path("training_guide.pdf"),
+      userDisplayName: current_user.try(:display_name),
+      userIsAuthorized: user_is_authorized?
+    }.to_json
+  end
+  helper_method :initial_react_data
+
+  def dropdown_urls
+    [
+      {
+        title: "Help",
+        link: url_for(controller: "/help", action: "show")
+      },
+      {
+        title: "Send Feedback",
+        link: feedback_url,
+        target: "_blank"
+      },
+      {
+        title: "Sign out",
+        link: url_for(controller: "/sessions", action: "destroy")
+      }
+    ]
   end
 
   private
 
-  def check_out_of_service
-    out_of_service_path = "/react/out-of-service"
-    react_enabled = FeatureToggle.enabled?(:efolder_react_app, user: current_user) || Rails.env.development?
-    redirect_to out_of_service_path if Rails.cache.read("out_of_service") && request.path != out_of_service_path && react_enabled
+  def user_is_authorized?
+    current_user.try(:can?, "Download eFolder") || Rails.env.development?
+  end
 
-    render "out_of_service", layout: "application" if Rails.cache.read("out_of_service")
+  def can_access_react_app?
+    FeatureToggle.enabled?(:efolder_react_app, user: current_user) || Rails.env.development?
+  end
+
+  def downloads
+    Download.active.where(user: current_user)
+  end
+
+  # TODO: This will need to be replaced by a similar function for UserManifests
+  # efolder issue 813 addresses this requirement.
+  def recent_downloads
+    @recent_downloads ||= downloads.where(status: [3, 4, 5, 6])
+  end
+
+  def check_out_of_service
+    out_of_service_path = "/out-of-service"
+    if Rails.cache.read("out_of_service") && request.path != out_of_service_path
+      redirect_to(out_of_service_path) && return if can_access_react_app?
+      render "out_of_service", layout: "application"
+    end
   end
 
   def feedback_url

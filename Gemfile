@@ -10,10 +10,12 @@ gem "moment_timezone-rails"
 gem "sqlite3", platforms: [:ruby, :mswin, :mingw, :mswin, :x64_mingw]
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem "rails", "4.2.7.1"
+gem "rails", "5.1.5"
 
 gem "activerecord-jdbcpostgresql-adapter", platforms: :jruby
-gem "pg", platforms: :ruby
+
+# pg version that is compatible with Rails 5
+gem "pg", "~> 0.18", platforms: :ruby
 
 gem "aws-sdk", "~> 2"
 
@@ -26,7 +28,7 @@ gem "sass-rails", "~> 5.0"
 # Use Uglifier as compressor for JavaScript assets
 gem "uglifier", ">= 1.3.0"
 # Use CoffeeScript for .coffee assets and views
-gem "coffee-rails", "~> 4.1.0"
+gem "coffee-rails", "> 4.1.0"
 
 # Explicitly adding USWDS gem until it's published and we can
 # include it via commons
@@ -71,6 +73,8 @@ gem "wannabe_bool"
 
 gem "zaru"
 
+gem "listen"
+
 gem "active_model_serializers"
 
 gem "redis-namespace"
@@ -84,10 +88,12 @@ gem "httpclient"
 
 gem "bgs", git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", branch: "e30db7fdf6f5c28c09d6081d062cad80820240a0"
 gem "connect_vbms", git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "f014b4772385814cd510712c46698653866f99dd"
-gem "connect_vva", git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "9400bed703272c0e9ed33aeb36404a1a6b2585d3"
+gem "connect_vva", git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "ecc1da3f1027e6c270af264de46dc1cb4974fa47"
 
 # catch problematic migrations
 gem "zero_downtime_migrations"
+
+gem "mime-types"
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
@@ -127,7 +133,6 @@ group :test do
   # to save and open specific page in capybara tests
   gem "database_cleaner"
   gem "launchy"
-  gem "test_after_commit"
 end
 
 group :development do

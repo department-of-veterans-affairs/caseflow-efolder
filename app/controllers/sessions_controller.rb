@@ -1,6 +1,7 @@
 class SessionsController < ApplicationController
   skip_before_action :verify_authenticity_token, only: [:create]
   skip_before_action :authenticate, only: [:create]
+  skip_before_action :check_v2_app_access
 
   def create
     session["user"] = CssAuthenticationSession.from_css_auth_hash(css_auth_hash).as_json

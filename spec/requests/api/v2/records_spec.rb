@@ -75,7 +75,7 @@ describe "Records API v2", type: :request do
         json = JSON.parse(response.body)
         expect(json["errors"].length).to eq(1)
         expect(json["errors"].first["title"]).to eq("Unknown error occured")
-        expect(json["errors"].first["detail"]).to eq("Attempted to  a stale object: NilClass (Sentry event id: a1b2c3)")
+        expect(json["errors"].first["detail"]).to eq("Stale object error. (Sentry event id: a1b2c3)")
       end
 
       it "returns 500 on any other error" do
