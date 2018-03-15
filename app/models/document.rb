@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Document < ActiveRecord::Base
+class Document < ApplicationRecord
   include Caseflow::DocumentTypes
 
   belongs_to :download
