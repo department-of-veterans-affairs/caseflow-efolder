@@ -4,8 +4,8 @@ class V2::DownloadManifestJob < ActiveJob::Base
   SECONDS_TO_AUTO_UNLOCK = 180
 
   def perform(manifest_source, ui_user)
-    # binding.pry
-    puts "HERE 222"
+    binding.pry
+    # puts "HERE 222"
     s = Redis::Semaphore.new("download_manifest_source_#{manifest_source.id}".to_s,
                              url: Rails.application.secrets.redis_url_sidekiq)
 

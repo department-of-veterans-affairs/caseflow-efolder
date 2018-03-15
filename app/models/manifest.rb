@@ -43,13 +43,12 @@ class Manifest < ActiveRecord::Base
   end
 
   def vbms_source
-    binding.pry
+    Rails.logger.info("HERE1")
     with_lock { sources.find_or_create_by(name: "VBMS") }
   end
 
   def vva_source
-    # binding.pry
-
+    Rails.logger.info("HERE2")
     with_lock { sources.find_or_create_by(name: "VVA") }
   end
 

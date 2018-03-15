@@ -20,8 +20,7 @@ class ManifestSource < ActiveRecord::Base
   def start!
     return if current? || pending?
     update(status: :pending)
-    # puts "HERE!!!"
-    # binding.pry
+
     V2::DownloadManifestJob.perform_later(self, ui_user?)
   end
 
