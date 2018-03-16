@@ -40,9 +40,18 @@ RSpec.feature "Downloads" do
     before { FeatureToggle.enable!(:efolder_react_app, users: [@user.css_id]) }
     after { FeatureToggle.disable!(:efolder_react_app, users: [@user.css_id]) }
 
-    it "coachmarks are not displayed indicating that we are viewing the react app" do
+    scenario "coachmarks are not displayed indicating that we are viewing the react app" do
       visit "/"
       expect(page).to_not have_content("See what's new!")
+    end
+
+    scenario "requesting veteran that does not exist results in veteran not found error" do
+      allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info).and_return(nil)
+
+      visit "/"
+      fill_in "Search for a Veteran ID number below to get started.", with: "DEMO1901"
+      click_button "Search"
+      expect(page).to have_content("could not find an eFolder with the Veteran ID")
     end
   end
 
