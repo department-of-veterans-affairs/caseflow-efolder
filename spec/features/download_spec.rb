@@ -51,9 +51,6 @@ RSpec.feature "Downloads" do
       visit "/"
       fill_in "Search for a Veteran ID number below to get started.", with: "DEMO1901"
       click_button "Search"
-
-      # For debugging
-      it {puts page.body}
       expect(page).to have_content("could not find an eFolder with the Veteran ID")
     end
   end
