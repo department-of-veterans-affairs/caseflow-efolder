@@ -42,6 +42,7 @@ RSpec.feature "Downloads" do
 
     scenario "coachmarks are not displayed indicating that we are viewing the react app" do
       visit "/"
+      expect(page).to have_current_path("/")
       expect(page).to_not have_content("See what's new!")
     end
 
@@ -49,6 +50,7 @@ RSpec.feature "Downloads" do
       allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info).and_return(nil)
 
       visit "/"
+      expect(page).to have_current_path("/")
       fill_in "Search for a Veteran ID number below to get started.", with: "DEMO1901"
       click_button "Search"
       expect(page).to have_content("could not find an eFolder with the Veteran ID")
