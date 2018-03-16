@@ -49,9 +49,6 @@ RSpec.feature "Downloads" do
       allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info).and_return(nil)
 
       visit "/"
-
-      # Allow page time to load
-      sleep 1
       fill_in "Search for a Veteran ID number below to get started.", with: "DEMO1901"
       click_button "Search"
       expect(page).to have_content("could not find an eFolder with the Veteran ID")
