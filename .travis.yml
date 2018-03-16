@@ -35,7 +35,7 @@ before_script:
   - RAILS_ENV=test bundle exec rake db:schema:load
   - sudo apt-get install pdftk
 
-  - sh -e /etc/init.d/xvfb start
+  - sh -e /etc/init.d/xvfb start -screen 0 1280x1024x24
   - sleep 3 # give xvfb some time to start
 
 script:
