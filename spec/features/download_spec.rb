@@ -39,7 +39,7 @@ RSpec.feature "Downloads" do
 
 
     allow(Fakes::DocumentService).to receive(:v2_fetch_documents_for).and_return(documents)
-    allow(Fakes::DocumentService).to receive(:v2_fetch_document_file).and_return("Test content")
+    # allow(Fakes::DocumentService).to receive(:v2_fetch_document_file).and_return("Test content")
 
     DownloadHelpers.clear_downloads
   end
@@ -184,6 +184,8 @@ RSpec.feature "Downloads" do
       
       expect(page).to have_content("Success!")
 
+      expect(page).to have_css ".document-success", text: Caseflow::DocumentTypes::TYPES[documents[0].type_id]
+
       within(".cf-app-segment--alt") do
         click_button "Download efolder"
       end
@@ -301,7 +303,7 @@ RSpec.feature "Downloads" do
       allow(Fakes::VBMSService).to receive(:v2_fetch_documents_for).and_raise(VBMS::ClientError)
     end
 
-    scenario "Download with VBMS connection error", focus: true do
+    scenario "Download with VBMS connection error" do
       perform_enqueued_jobs do
         visit "/"
         fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
@@ -320,7 +322,7 @@ RSpec.feature "Downloads" do
       allow(Fakes::VVAService).to receive(:v2_fetch_documents_for).and_raise(VVA::ClientError)
     end
 
-    scenario "Download with VVA connection error", focus: true do
+    scenario "Download with VVA connection error" do
       perform_enqueued_jobs do
         visit "/"
         fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
@@ -334,48 +336,7 @@ RSpec.feature "Downloads" do
     end
   end
 
-  scenario "Confirming download" do
-    veteran_info = {
-      "3456" => {
-        "veteran_first_name" => "Steph",
-        "veteran_last_name" => "Curry",
-        "veteran_last_four_ssn" => "2345"
-      }
-    }
-    allow_any_instance_of(Fakes::BGSService).to receive(:veteran_info).and_return(veteran_info)
-    download = @user_manifest.create(file_number: "3456", status: :fetching_manifest)
-
-    visit download_path(download)
-    expect(page).to have_content "We are gathering the list of files in the eFolder now..."
-
-    download.reload.update_attributes!(status: :pending_confirmation)
-    download.documents.create(vbms_filename: "yawn.pdf", mime_type: "application/pdf",
-                              received_at: Time.zone.local(2015, 9, 6), download_status: :pending)
-    download.documents.create(vbms_filename: "smiley.pdf", mime_type: "application/pdf",
-                              received_at: Time.zone.local(2015, 1, 19), download_status: :pending)
-    page.execute_script("window.DownloadStatus.recheck();")
-
-    expect(page).to have_content "found a total of 2 documents"
-    expect(page).to have_content "STEPH CURRY VETERAN ID 3456"
-    expect(page).to have_content "yawn.pdf VBMS 09/06/2015"
-    expect(page).to have_content "smiley.pdf VBMS 01/19/2015"
-
-    expect(page).to have_content(
-      "The total number of documents that will be retrieved from each database is listed here."
-    )
-    expect(page).to have_content(
-      "The Source column shows the name of the database from which the file will be retrieved."
-    )
-
-    expect(page.evaluate_script("window.DownloadStatus.intervalID")).to be_falsey
-    first(:button, "Start retrieving efolder").click
-
-    expect(download.reload).to be_pending_documents
-    expect(DownloadFilesJob).to have_received(:perform_later)
-
-    expect(page).to have_content("Retrieving Files ...")
-  end
-
+  # TODO change this one
   scenario "Download progress shows correct information" do
     download = @user_manifest.create(status: :pending_documents)
     download.documents.create(
@@ -424,6 +385,46 @@ RSpec.feature "Downloads" do
     expect(page).to_not have_css ".document-pending", text: "yawn.pdf"
 
     expect(page).to have_content "2 of 4 files remaining"
+  end
+
+  context "When at least one document fails", focus: true do
+    before do
+      # allow(Fakes::DocumentService).to receive(:v2_fetch_document_file).once.and_return("Test content")
+      
+      allow(Fakes::DocumentService).to receive(:v2_fetch_document_file).once.and_raise(VBMS::ClientError)
+      # allow(Fakes::DocumentService).to receive(:v2_fetch_document_file).and_return("Test content")
+    end
+
+    scenario do
+      perform_enqueued_jobs do
+        visit "/"
+        fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
+
+        click_button "Search"
+
+        expect(page).to have_content "STAN LEE VETERAN ID #{veteran_id}"
+        expect(page).to have_content "Start retrieving efolder"
+      
+        within(".cf-app-segment--alt") do
+          click_button "Start retrieving efolder"
+        end
+        binding.pry
+        
+        expect(page).to have_content("Success!")
+
+        expect(page).to have_css ".document-success", text: Caseflow::DocumentTypes::TYPES[documents[0].type_id]
+
+        within(".cf-app-segment--alt") do
+          click_button "Download efolder"
+        end
+
+        DownloadHelpers.wait_for_download
+        download = DownloadHelpers.downloaded?
+        expect(download).to be_truthy
+
+        expect(DownloadHelpers.download).to include("Lee, Stan - 2222.zip")
+      end
+    end
   end
 
   scenario "Completed with at least one failed document download" do
@@ -497,82 +498,6 @@ RSpec.feature "Downloads" do
 
     visit download_download_path(fake_id)
     expect(page).to have_content("Something went wrong...")
-  end
-
-  scenario "Completed download" do
-    veteran_info = {
-      "12" => {
-        "veteran_first_name" => "Stan",
-        "veteran_last_name" => "Lee",
-        "veteran_last_four_ssn" => "2222"
-      }
-    }
-    allow_any_instance_of(Fakes::BGSService).to receive(:veteran_info).and_return(veteran_info)
-    # clean files
-    FileUtils.rm_rf(Rails.application.config.download_filepath)
-
-    @download = @user_manifest.create(file_number: "12", status: :complete_success)
-    @download.documents.create(received_at: Time.zone.now, type_id: "102", mime_type: "application/pdf")
-    @download.documents.create(received_at: Time.zone.now, type_id: "103", mime_type: "application/pdf")
-
-    class FakeVBMSService
-      def self.fetch_document_file(_document)
-        IO.binread(Rails.root + "spec/support/test.pdf")
-      end
-    end
-
-    download_documents = DownloadDocuments.new(download: @download, vbms_service: FakeVBMSService)
-    download_documents.create_documents
-    download_documents.download_and_package
-
-    visit download_path(@download)
-    expect(page).to have_css ".document-success", text: "VA 119 Report of Contact"
-    expect(page).to have_css ".document-success", text: "VA 5655 Financial Status Report (Submit with Waiver Request)"
-
-    def expect_page_to_have_coachmarks
-      expect(page).to have_content(
-        "The total number of documents that will be downloaded from each database is listed here."
-      )
-      expect(page).to have_content("Hide tutorial")
-    end
-
-    def expect_page_to_not_have_coachmarks
-      expect(page).to_not have_content(
-        "The total number of documents that will be downloaded from each database is listed here."
-      )
-      expect(page).to have_content(
-        "See what's new!"
-      )
-    end
-
-    expect_page_to_have_coachmarks
-
-    DownloadHelpers.clear_downloads
-    first(:link, "Download efolder").click
-    DownloadHelpers.wait_for_download
-    expect(DownloadHelpers.filesize).to eq(File.size(download_documents.zip_path))
-    DownloadHelpers.clear_downloads
-
-    visit download_path(@download)
-    expect_page_to_have_coachmarks
-
-    # After visiting the download page 3 times, we no longer want the coachmarks to show up automatically.
-    visit download_path(@download)
-    expect_page_to_not_have_coachmarks
-
-    click_on "See what's new!"
-    expect_page_to_have_coachmarks
-
-    click_on "Hide tutorial"
-    expect_page_to_not_have_coachmarks
-
-    click_on "See what's new!"
-    expect_page_to_have_coachmarks
-
-    # When we click on "See what's new", we want the coachmarks to show up on subsequent page loads.
-    visit "/"
-    expect(page).to have_content("Downloads from eFolder Express now include Virtual VA documents.")
-    expect(page).to have_content("Hide tutorial")
   end
 
   scenario "Recent download list expires old downloads" do

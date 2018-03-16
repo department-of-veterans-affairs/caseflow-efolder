@@ -38,8 +38,7 @@ Rails.application.configure do
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr
 
-  config.s3_enabled = true
-  config.s3_bucket_name = "dsva-appeals-efolder-demo"
+  config.s3_enabled = false
 
   config.api_key = "token"
 
