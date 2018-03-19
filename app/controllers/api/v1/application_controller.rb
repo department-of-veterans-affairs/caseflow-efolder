@@ -3,7 +3,7 @@ class Api::V1::ApplicationController < BaseController
   before_action :authenticate_or_authorize
 
   rescue_from StandardError do |error|
-    if error.respond_to?(:public_message)
+    if error.is_a?(BGS::PublicError) && error.respond_to?(:public_message)
       forbidden(error.public_message)
     else
       ExceptionLogger.capture(error)
