@@ -3,15 +3,18 @@ class Api::V1::ApplicationController < BaseController
   before_action :authenticate_or_authorize
 
   rescue_from StandardError do |error|
-    ExceptionLogger.capture(error)
-
-    render json: {
-      "errors": [
-        "status": "500",
-        "title": "Unknown error occured",
-        "detail": "#{error} (Sentry event id: #{Raven.last_event_id})"
-      ]
-    }, status: 500
+    if error.respond_to?(:public_message)
+      forbidden(error.public_message)
+    else
+      ExceptionLogger.capture(error)
+      render json: {
+        "errors": [
+          "status": "500",
+          "title": "Unknown error occured",
+          "detail": "#{error} (Sentry event id: #{Raven.last_event_id})"
+        ]
+      }, status: 500
+    end
   end
 
   private
