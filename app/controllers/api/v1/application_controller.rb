@@ -24,7 +24,7 @@ class Api::V1::ApplicationController < BaseController
   end
 
   def sensitive_record
-    forbidden("It looks like you don't have permission to view this eFolder. This usually happens if the eFolder contains sensitive information.")
+    forbidden("This efolder contains sensitive information you do not have permission to view. Please contact your supervisor.")
   end
 
   def forbidden(reason = "Forbidden: unspecified")
