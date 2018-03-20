@@ -1,7 +1,7 @@
 require "rails_helper"
 # require "sidekiq/testing"
 
-RSpec.feature "Downloads", focus: true do
+RSpec.feature "Downloads" do
   include ActiveJob::TestHelper
 
   let(:documents) do
@@ -186,6 +186,12 @@ RSpec.feature "Downloads", focus: true do
         expect(find(history_row)).to have_content(veteran_id)
         within(history_row) { click_on("View results") }
         expect(page).to have_content("Success!")
+
+        click_on "Start over"
+        fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
+
+        click_button "Search"
+        expect(page).to have_content("Success!")
       end
     end
   end
@@ -245,7 +251,7 @@ RSpec.feature "Downloads", focus: true do
 
   context "When veteran id has high sensitivity" do
     before do
-      allow_any_instance_of(Fakes::BGSService).to receive(:sensitive_files).and_return(veteran_id: true)
+      allow_any_instance_of(Fakes::BGSService).to receive(:sensitive_files).and_return(veteran_id => true)
     end
 
     scenario "Cannot access it" do
@@ -253,7 +259,6 @@ RSpec.feature "Downloads", focus: true do
       fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
       click_button "Search"
 
-      expect(page).to have_current_path("/")
       expect(page).to have_content("forbidden: sensitive record")
     end
   end
