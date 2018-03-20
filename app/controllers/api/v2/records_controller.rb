@@ -37,6 +37,6 @@ class Api::V2::RecordsController < Api::V1::ApplicationController
 
   def validate_access
     return record_not_found unless record
-    forbidden("sensitive record") unless record.accessible_by?(current_user)
+    sensitive_record unless record.accessible_by?(current_user)
   end
 end
