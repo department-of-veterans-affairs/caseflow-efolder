@@ -11,9 +11,10 @@ class AlertStuckManifestSourceJob < ApplicationJob
 
     unless stuck_manifest_ids.empty?
       msg = format(
-        "%<count>d ManifestSources with the following IDs have been stuck in the pending state for more than 1 day: %<ids>s",
+        "%<count>d ManifestSources with the following IDs have been stuck in the pending state for more than 1 day: %<ids>s. Investigate! %<url>s",
         count: stuck_manifest_ids.length,
-        ids: stuck_manifest_ids.join(", ")
+        ids: stuck_manifest_ids.join(", "),
+        url: "https://github.com/department-of-veterans-affairs/caseflow-efolder/issues/945"
       )
       ExceptionLogger.capture(msg)
     end
