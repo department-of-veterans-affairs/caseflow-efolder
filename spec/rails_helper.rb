@@ -61,10 +61,6 @@ Capybara.register_driver(:virtual_framebuffer_chrome) do |app|
 end
 Capybara.default_driver = :virtual_framebuffer_chrome
 
-Capybara.default_max_wait_time = 5
-
-ActiveRecord::Migration.maintain_test_schema!
-
 # Convenience methods for stubbing current user
 module StubbableUser
   module ClassMethods

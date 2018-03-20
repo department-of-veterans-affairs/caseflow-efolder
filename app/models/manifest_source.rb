@@ -20,7 +20,6 @@ class ManifestSource < ApplicationRecord
   def start!
     return if current? || pending?
     update(status: :pending)
-
     V2::DownloadManifestJob.perform_later(self, ui_user?)
   end
 

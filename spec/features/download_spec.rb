@@ -1,5 +1,4 @@
 require "rails_helper"
-# require "sidekiq/testing"
 
 RSpec.feature "Downloads" do
   include ActiveJob::TestHelper
