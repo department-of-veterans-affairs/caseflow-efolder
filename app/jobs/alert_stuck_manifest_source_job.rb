@@ -4,7 +4,8 @@ class AlertStuckManifestSourceJob < ApplicationJob
   def perform
     if Date.current >= Date.new(2018, 5, 31)
       # Remove the associated entry in config/sidekiq_cron.yml as well.
-      ExceptionLogger.capture("Consider removing the AlertStuckManifestSourceJob if we haven't seen a stuck ManifestSource in a while")
+      msg = "Consider removing the AlertStuckManifestSourceJob if we haven't seen a stuck ManifestSource in a while"
+      Raven.capture_exception(StandardError.new(msg))
     end
 
     stuck_manifest_ids = ManifestSource.where(status: 1).where("updated_at < ?", 1.day.ago).pluck(:id)
@@ -16,7 +17,7 @@ class AlertStuckManifestSourceJob < ApplicationJob
         ids: stuck_manifest_ids.join(", "),
         url: "https://github.com/department-of-veterans-affairs/caseflow-efolder/issues/945"
       )
-      ExceptionLogger.capture(msg)
+      Raven.capture_exception(StandardError.new(msg))
     end
   end
 end
