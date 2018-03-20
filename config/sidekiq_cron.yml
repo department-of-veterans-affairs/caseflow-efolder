@@ -20,7 +20,7 @@ clean_download_files_job:
   active_job: true
 
 # Check for ManifestSources stuck in pending state at the top of every hour during the workday, work week.
-calculate_stats_job:
+check_stuck_pending_manifest_source:
   cron: "0 9-17 * * 1-5"
   class: "AlertStuckManifestSourceJob"
   queue: default
