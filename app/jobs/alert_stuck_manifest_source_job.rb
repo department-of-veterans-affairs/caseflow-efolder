@@ -3,11 +3,11 @@ class AlertStuckManifestSourceJob < ApplicationJob
 
   def perform
     if Date.current >= Date.new(2018, 5, 31)
-      # Remove the associate entry in config/sidekiq_cron.yml as well.
+      # Remove the associated entry in config/sidekiq_cron.yml as well.
       ExceptionLogger.capture("Consider removing the AlertStuckManifestSourceJob if we haven't seen a stuck ManifestSource in a while")
     end
 
-    stuck_manifest_ids = ManifestSource.find_by_sql("select * from manifest_sources where status = 1 and created_at + interval '1 day' < current_timestamp").map(&:id)
+    stuck_manifest_ids = ManifestSource.where(status: 1).where("updated_at < ?", 1.day.ago).pluck(:id)
 
     unless stuck_manifest_ids.empty?
       msg = format(
