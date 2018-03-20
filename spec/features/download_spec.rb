@@ -1,9 +1,8 @@
 require "rails_helper"
 # require "sidekiq/testing"
 
-RSpec.feature "Downloads" do
+RSpec.feature "Downloads", focus: true do
   include ActiveJob::TestHelper
-  # include Caseflow::DocumentTypes
 
   let(:documents) do
     [
@@ -37,9 +36,12 @@ RSpec.feature "Downloads" do
     allow_any_instance_of(Fakes::BGSService).to receive(:valid_file_number?).with(veteran_id).and_return(true)
     allow_any_instance_of(Fakes::BGSService).to receive(:valid_file_number?).with(invalid_veteran_id).and_return(false)
 
-
     allow(Fakes::DocumentService).to receive(:v2_fetch_documents_for).and_return(documents)
-    # allow(Fakes::DocumentService).to receive(:v2_fetch_document_file).and_return("Test content")
+    allow(Fakes::DocumentService).to receive(:v2_fetch_document_file).and_return("Test content")
+
+    S3Service.files = {}
+
+    allow(S3Service).to receive(:stream_content).and_return("streamed content")
 
     DownloadHelpers.clear_downloads
   end
@@ -50,7 +52,7 @@ RSpec.feature "Downloads" do
 
   let(:root_path) { "/" }
 
-  let(:invalid_veteran_id) {"abcd"}
+  let(:invalid_veteran_id) { "abcd" }
 
   let(:veteran_id) { "12341234" }
   let(:veteran_info) do
@@ -95,34 +97,6 @@ RSpec.feature "Downloads" do
       visit "/"
       expect(page).to_not have_content("See what's new!")
     end
-
-    scenario "requesting veteran that does not exist results in veteran not found error" do
-      allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info).and_return(nil)
-
-      visit "/"
-      fill_in "Search for a Veteran ID number below to get started.", with: "DEMO1901"
-      click_button "Search"
-      expect(page).to have_content("could not find an eFolder with the Veteran ID")
-    end
-  end
-
-  scenario "Download coachmarks" do
-    def assert_coachmark_exists
-      expect(page).to have_content("Downloads from eFolder Express now include Virtual VA documents.")
-    end
-
-    def assert_coachmark_does_not_exist
-      expect(page).to_not have_content("Downloads from eFolder Express now include Virtual VA documents.")
-    end
-
-    visit "/"
-    assert_coachmark_exists
-    click_on "Close"
-    assert_coachmark_does_not_exist
-    click_on "See what's new!"
-    assert_coachmark_exists
-    click_on "Hide tutorial"
-    assert_coachmark_does_not_exist
   end
 
   scenario "Creating a download" do
@@ -177,33 +151,42 @@ RSpec.feature "Downloads" do
     end
   end
 
-  scenario "Happy path, zip file is downloaded" do
-    perform_enqueued_jobs do
-      visit "/"
-      fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
+  context "When downloading documents is successful" do
+    scenario "Happy path, zip file is downloaded" do
+      perform_enqueued_jobs do
+        visit "/"
+        fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
 
-      click_button "Search"
+        click_button "Search"
 
-      expect(page).to have_content "STAN LEE VETERAN ID #{veteran_id}"
-      expect(page).to have_content "Start retrieving efolder"
-    
-      within(".cf-app-segment--alt") do
-        click_button "Start retrieving efolder"
+        expect(page).to have_content "STAN LEE VETERAN ID #{veteran_id}"
+        expect(page).to have_content "Start retrieving efolder"
+
+        within(".cf-app-segment--alt") do
+          click_button "Start retrieving efolder"
+        end
+
+        expect(page).to have_content("Success!")
+
+        expect(page).to have_css ".document-success", text: Caseflow::DocumentTypes::TYPES[documents[0].type_id]
+
+        within(".cf-app-segment--alt") do
+          click_button "Download efolder"
+        end
+
+        DownloadHelpers.wait_for_download
+        download = DownloadHelpers.downloaded?
+        expect(download).to be_truthy
+
+        expect(DownloadHelpers.download).to include("Lee, Stan - 2222")
+
+        click_on "Start over"
+
+        history_row = "#download-1"
+        expect(find(history_row)).to have_content(veteran_id)
+        within(history_row) { click_on("View results") }
+        expect(page).to have_content("Success!")
       end
-      
-      expect(page).to have_content("Success!")
-
-      expect(page).to have_css ".document-success", text: Caseflow::DocumentTypes::TYPES[documents[0].type_id]
-
-      within(".cf-app-segment--alt") do
-        click_button "Download efolder"
-      end
-
-      DownloadHelpers.wait_for_download
-      download = DownloadHelpers.downloaded?
-      expect(download).to be_truthy
-
-      expect(DownloadHelpers.download).to include("Lee, Stan - 2222.zip")
     end
   end
 
@@ -221,7 +204,7 @@ RSpec.feature "Downloads" do
     within(".cf-app-segment--alt") do
       click_button "Start retrieving efolder"
     end
-  
+
     expect(page).to have_content("Retrieving Files ...")
     expect(page).to have_css ".progress-bar"
   end
@@ -234,7 +217,7 @@ RSpec.feature "Downloads" do
 
     expect(page).to have_content "STAN LEE VETERAN ID #{veteran_id}"
 
-    expect(Manifest.where(file_number: veteran_id).count).to eq(1)    
+    expect(Manifest.where(file_number: veteran_id).count).to eq(1)
   end
 
   scenario "Requesting invalid case number" do
@@ -242,26 +225,27 @@ RSpec.feature "Downloads" do
 
     fill_in "Search for a Veteran ID number below to get started.", with: invalid_veteran_id
     click_button "Search"
-    binding.pry
 
     expect(page).to have_content("File number is invalid")
   end
 
-  # TODO
-  # scenario "Requesting veteran that does not exist" do
-  #   visit "/"
+  context "When veteran_id has no veteran info" do
+    before do
+      allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info).with(veteran_id).and_return(nil)
+    end
 
-  #   fill_in "Search for a Veteran ID number below to get started.", with: "88888888"
-  #   click_button "Search"
+    scenario "Requesting veteran_id returns cannot find eFolder" do
+      visit "/"
+      fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
 
-  #   search = Search.where(user: @user).first
-  #   expect(search).to be_veteran_not_found
-  # end
+      click_button "Search"
+      expect(page).to have_content("could not find an eFolder with the Veteran ID")
+    end
+  end
 
-  # TODO: Fix test
   context "When veteran id has high sensitivity" do
     before do
-      allow_any_instance_of(Fakes::BGSService).to receive(:sensitive_files).and_return({ veteran_id => true })
+      allow_any_instance_of(Fakes::BGSService).to receive(:sensitive_files).and_return(veteran_id: true)
     end
 
     scenario "Cannot access it" do
@@ -270,22 +254,9 @@ RSpec.feature "Downloads" do
       click_button "Search"
 
       expect(page).to have_current_path("/")
-      expect(page).to have_content("contains sensitive information")
+      expect(page).to have_content("forbidden: sensitive record")
     end
   end
-
-  # TODO
-  # scenario "Attempting to view expired download fails" do
-  #   expired = @user_manifest.create!(
-  #     file_number: "78901",
-  #     created_at: 77.hours.ago,
-  #     status: :complete_success
-  #   )
-
-  #   visit download_path(expired)
-  #   expect(page).to have_content("search again")
-  # end
-
 
   context "When veteran case folder has no documents" do
     before do
@@ -318,7 +289,7 @@ RSpec.feature "Downloads" do
         fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
         click_button "Search"
 
-        expect(page).to have_css ".usa-alert-heading", text: "We are having trouble connecting to VBMS"        
+        expect(page).to have_css ".usa-alert-heading", text: "We are having trouble connecting to VBMS"
         click_link "Back to eFolder Express"
 
         expect(page).to have_current_path(root_path)
@@ -337,7 +308,7 @@ RSpec.feature "Downloads" do
         fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
         click_button "Search"
 
-        expect(page).to have_css ".usa-alert-heading", text: "We are having trouble connecting to VVA"        
+        expect(page).to have_css ".usa-alert-heading", text: "We are having trouble connecting to VVA"
         click_link "Back to eFolder Express"
 
         expect(page).to have_current_path(root_path)
@@ -345,66 +316,102 @@ RSpec.feature "Downloads" do
     end
   end
 
-  # TODO change this one
-  scenario "Download progress shows correct information" do
-    download = @user_manifest.create(status: :pending_documents)
-    download.documents.create(
-      vbms_filename: "yawn.pdf",
-      mime_type: "application/pdf",
-      started_at: 1.minute.ago,
-      download_status: :pending
-    )
-    download.documents.create(
-      vbms_filename: "yawn.pdf",
-      mime_type: "application/pdf",
-      started_at: 1.minute.ago,
-      download_status: :pending
-    )
-    download.documents.create(
-      vbms_filename: "smiley.pdf",
-      mime_type: "application/pdf",
-      started_at: 2.minutes.ago,
-      completed_at: 1.minute.ago,
-      download_status: :success
-    )
-    download.documents.create(
-      type_id: "129",
-      document_id: "{1234-1234-1234-5555}",
-      mime_type: "application/pdf",
-      started_at: 2.minutes.ago,
-      download_status: :failed
-    )
-
-    visit download_path(download)
-    expect(page).to have_css ".cf-tab.cf-active", text: "Progress (2)"
-    expect(page).to have_css ".document-pending", text: "yawn.pdf"
-    expect(page).to_not have_css ".document-success", text: "smiley.pdf"
-    expect(page).to_not have_css ".document-failed", text: "poo.pdf"
-
-    click_on "Completed"
-    expect(page).to have_css ".cf-tab.cf-active", text: "Completed (1)"
-    expect(page).to have_css ".document-success", text: "smiley.pdf"
-    expect(page).to_not have_css ".document-pending", text: "yawn.pdf"
-    expect(page).to_not have_css ".document-failed", text: "poo.pdf"
-
-    click_on "Errors"
-    expect(page).to have_css ".cf-tab.cf-active", text: "Errors (1)"
-    expect(page).to have_css ".document-failed", text: "VA 21-509 Statement of Dependency of Parents 1234-1234-1234-5555"
-    expect(page).to_not have_css ".document-success", text: "smiley.pdf"
-    expect(page).to_not have_css ".document-pending", text: "yawn.pdf"
-
-    expect(page).to have_content "2 of 4 files remaining"
-  end
-
-  context "When at least one document fails", focus: true do
-    before do
-      # allow(Fakes::DocumentService).to receive(:v2_fetch_document_file).once.and_return("Test content")
-      
-      allow(Fakes::DocumentService).to receive(:v2_fetch_document_file).once.and_raise(VBMS::ClientError)
-      # allow(Fakes::DocumentService).to receive(:v2_fetch_document_file).and_return("Test content")
+  context "When manifest endpoint returns different statuses for different documents" do
+    let!(:manifest) { Manifest.create(file_number: veteran_id, fetched_files_status: "pending") }
+    let!(:source) do
+      [
+        manifest.sources.create(status: :success, name: "VBMS"),
+        manifest.sources.create(status: :success, name: "VVA")
+      ]
+    end
+    let!(:records) do
+      [
+        source[0].records.create(
+          status: "initialized",
+          version_id: "1",
+          series_id: "101",
+          mime_type: "application/pdf",
+          type_id: Caseflow::DocumentTypes::TYPES.keys.sample
+        ),
+        source[0].records.create(
+          status: "success",
+          version_id: "2",
+          series_id: "102",
+          mime_type: "application/pdf",
+          type_id: Caseflow::DocumentTypes::TYPES.keys.sample
+        ),
+        source[0].records.create(
+          status: "failed",
+          version_id: "3",
+          series_id: "103",
+          mime_type: "application/pdf",
+          type_id: Caseflow::DocumentTypes::TYPES.keys.sample
+        )
+      ]
+    end
+    let!(:files_download) do
+      manifest.files_downloads.find_or_create_by(
+        user: User.first,
+        requested_zip_at: Time.zone.now
+      )
     end
 
-    scenario do
+    scenario "Download progress shows correct information" do
+      visit "/downloads/1"
+
+      expect(page).to have_css ".progress-bar"
+
+      expect(page).to have_css ".cf-tab.cf-active", text: "Progress (1)"
+      expect(page).to have_content "1 of 3 files remaining"
+      expect(page).to have_content Caseflow::DocumentTypes::TYPES[records[0].type_id]
+
+      click_on "Completed (1)"
+      expect(page).to have_css ".cf-tab.cf-active", text: "Completed (1)"
+      expect(page).to have_content Caseflow::DocumentTypes::TYPES[records[1].type_id]
+
+      click_on "Errors (1)"
+      expect(page).to have_css ".cf-tab.cf-active", text: "Errors (1)"
+      expect(page).to have_content Caseflow::DocumentTypes::TYPES[records[2].type_id]
+
+      click_on "Start over"
+
+      history_row = "#download-1"
+
+      expect(find(history_row)).to have_content(veteran_id)
+      expect(find(history_row)).to have_css(".cf-icon-alert")
+      within(history_row) { click_on("View progress") }
+      expect(page).to have_content("You can close this page at any time")
+    end
+
+    context "When in progress download is older than 3 days" do
+      let!(:files_download) do
+        manifest.files_downloads.find_or_create_by(
+          user: User.first,
+          requested_zip_at: Time.zone.now - 4.days
+        )
+      end
+
+      scenario "Recent download list expires old downloads" do
+        visit "/"
+
+        expect(page).to_not have_content(veteran_id)
+      end
+    end
+  end
+
+  context "When at least one document fails" do
+    before do
+      allow(Fakes::DocumentService).to receive(:v2_fetch_document_file) do |arg|
+        case arg.id
+        when 1
+          raise VBMS::ClientError
+        else
+          "Test content"
+        end
+      end
+    end
+
+    scenario "Download the eFolder anyway" do
       perform_enqueued_jobs do
         visit "/"
         fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
@@ -413,187 +420,72 @@ RSpec.feature "Downloads" do
 
         expect(page).to have_content "STAN LEE VETERAN ID #{veteran_id}"
         expect(page).to have_content "Start retrieving efolder"
-      
+
         within(".cf-app-segment--alt") do
           click_button "Start retrieving efolder"
         end
-        binding.pry
-        
-        expect(page).to have_content("Success!")
 
-        expect(page).to have_css ".document-success", text: Caseflow::DocumentTypes::TYPES[documents[0].type_id]
+        expect(page).to have_css ".cf-tab.cf-active", text: "Completed (1)"
+        expect(page).to have_content "Some files could not be retrieved"
 
-        within(".cf-app-segment--alt") do
-          click_button "Download efolder"
+        expect(page).to have_content Caseflow::DocumentTypes::TYPES[documents[1].type_id]
+
+        # Clicking on progress shouldn't change tabs since there number is 0.
+        click_on "Progress (0)"
+        expect(page).to have_content Caseflow::DocumentTypes::TYPES[documents[1].type_id]
+
+        click_on "Errors (1)"
+        expect(page).to have_content Caseflow::DocumentTypes::TYPES[documents[0].type_id]
+
+        within first(".usa-alert-body") do
+          click_on "Download anyway"
+        end
+        expect(page).to have_selector("#confirm-download-anyway")
+
+        within first(".cf-modal-body") do
+          click_on "Download anyway"
         end
 
         DownloadHelpers.wait_for_download
         download = DownloadHelpers.downloaded?
         expect(download).to be_truthy
 
-        expect(DownloadHelpers.download).to include("Lee, Stan - 2222.zip")
+        expect(DownloadHelpers.download).to include("Lee, Stan - 2222")
+
+        click_on "Start over"
+
+        history_row = "#download-1"
+
+        expect(find(history_row)).to have_content(veteran_id)
+        expect(find(history_row)).to have_css(".cf-icon-alert")
+        within(history_row) { click_on("View results") }
+        expect(page).to have_content("Download anyway")
       end
     end
-  end
 
-  scenario "Completed with at least one failed document download" do
-    download = @user_manifest.create(file_number: "12", status: :pending_documents)
-    download.documents.create(vbms_filename: "roll.pdf", mime_type: "application/pdf", download_status: :failed)
-    download.documents.create(vbms_filename: "tide.pdf", mime_type: "application/pdf", download_status: :success)
+    scenario "Retrying to download error-ed document succeeds" do
+      perform_enqueued_jobs do
+        visit "/"
+        fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
 
-    visit download_path(download)
-    expect(page).to have_css ".cf-tab.cf-active", text: "Progress (0)"
+        click_button "Search"
 
-    # If this test scenario is run after another scenario where a download_url for a download with the same ID as this
-    # download, capybara will not make the request to /downloads/1 (for example), and will instead serve the webdriver's
-    # cached version of that page. However, when this test scenario is run and no cached versions of the page exist
-    # DownloadsController.start_download_files() will update the download's updated_at value in the database causing a
-    # StaleObjectError when we attempt to update the status below. Re-fetch the download record from the database after
-    # we have updated the updated_at value in order to avoid this error.
-    download = Download.find(download.id)
+        expect(page).to have_content "STAN LEE VETERAN ID #{veteran_id}"
+        expect(page).to have_content "Start retrieving efolder"
 
-    download.update_attributes(status: :complete_with_errors)
-    page.execute_script("window.DownloadProgress.reload();")
-    expect(page).to have_css ".cf-tab.cf-active", text: "Completed (1)"
-    expect(page).to have_button "Progress (0)", disabled: true
-    expect(page).to have_content "Some files couldn't be added"
+        within(".cf-app-segment--alt") do
+          click_button "Start retrieving efolder"
+        end
 
-    click_on "Search for another efolder"
-    expect(page).to have_current_path(root_path)
-  end
+        expect(page).to have_css ".cf-tab.cf-active", text: "Completed (1)"
+        expect(page).to have_content "Some files could not be retrieved"
 
-  scenario "Downloading anyway with at least one failed document download" do
-    download = @user_manifest.create(file_number: "12", status: :pending_documents)
-    download.documents.create(vbms_filename: "roll.pdf", mime_type: "application/pdf", download_status: :failed)
-    download.documents.create(vbms_filename: "tide.pdf", mime_type: "application/pdf", download_status: :success)
-
-    visit download_path(download)
-    expect(page).to have_css ".cf-tab.cf-active", text: "Progress (0)"
-
-    download = Download.find(download.id)
-
-    download.update_attributes(status: :complete_with_errors)
-    page.execute_script("window.DownloadProgress.reload();")
-
-    expect(page).to have_content "tide.pdf"
-    expect(page).to have_content "Download anyway"
-    expect(page).to have_no_content "Download incomplete eFolder?"
-
-    within first(".usa-alert-body") do
-      click_on "Download anyway"
+        allow(Fakes::DocumentService).to receive(:v2_fetch_document_file).and_return("Test content")
+        within first(".usa-alert-body") do
+          click_on "Retry missing files"
+        end
+        expect(page).to have_content("Success!")
+      end
     end
-    expect(page).to have_selector("#confirm-download-anyway")
-
-    click_on "Go back"
-  end
-
-  scenario "Retry failed download" do
-    download = @user_manifest.create(file_number: "12", status: :complete_with_errors)
-    download.documents.create(vbms_filename: "roll.pdf", mime_type: "application/pdf", download_status: :failed)
-    download.documents.create(vbms_filename: "tide.pdf", mime_type: "application/pdf", download_status: :success)
-
-    visit download_path(download)
-    click_on "Try retrieving efolder again"
-
-    expect(page).to have_css ".cf-tab.cf-active", text: "Progress (2)"
-    expect(page).to have_content "Completed (0)"
-    expect(page).to have_content "Errors (0)"
-    expect(DownloadFilesJob).to have_received(:perform_later)
-  end
-
-  scenario "Download non-existing zip" do
-    fake_id = "non_existing_download_id"
-    expect(Download.where(id: fake_id)).to be_empty
-
-    visit download_download_path(fake_id)
-    expect(page).to have_content("Something went wrong...")
-  end
-
-  scenario "Recent download list expires old downloads" do
-    @user_manifest.create!(
-      file_number: "78901",
-      created_at: 77.hours.ago,
-      status: :complete_success
-    )
-
-    visit "/"
-    expect(page).to_not have_content("78901")
-  end
-
-  scenario "Recent download list" do
-    pending_confirmation = @user_manifest.create!(
-      file_number: "12345",
-      status: :pending_confirmation
-    )
-    pending_documents = @user_manifest.create!(
-      file_number: "45678",
-      status: :pending_documents
-    )
-    complete = @user_manifest.create!(
-      file_number: "78901",
-      status: :complete_success
-    )
-    complete_with_errors = @user_manifest.create!(
-      file_number: "78902",
-      status: :complete_with_errors
-    )
-    another_user = Download.create!(
-      user: User.create(css_id: "456", station_id: "45673"),
-      file_number: "22222",
-      status: :complete_success
-    )
-
-    visit "/"
-
-    expect(page).to_not have_content(pending_confirmation.file_number)
-    expect(page).to_not have_content(another_user.file_number)
-
-    complete_with_errors_row = "#download-#{complete_with_errors.id}"
-    expect(find(complete_with_errors_row)).to have_content("78902")
-    expect(find(complete_with_errors_row)).to have_css(".cf-icon-alert")
-    within(complete_with_errors_row) { click_on("View results") }
-    expect(page).to have_content("Download efolder")
-
-    visit "/"
-    pending_documents_row = "#download-#{pending_documents.id}"
-    expect(find(pending_documents_row)).to have_content("45678")
-    within(pending_documents_row) { click_on("View progress") }
-    expect(page).to have_current_path(download_path(pending_documents))
-
-    visit "/"
-    complete_row = "#download-#{complete.id}"
-    expect(find(complete_row)).to have_content("78901")
-    within(complete_row) { click_on("View results") }
-    expect(page).to have_current_path(download_path(complete))
-  end
-
-  # route should only be available to test user anyway
-  scenario "unable to access delete download cache" do
-    ENV["TEST_USER_ID"] = nil
-    Download.create!(
-      user: @user,
-      file_number: "321321",
-      status: :complete_success
-    )
-
-    visit "/"
-    expect(page).to have_content("View results")
-    expect(page).not_to have_content("Delete Cache")
-  end
-
-  scenario "test user able to access delete download cache" do
-    ENV["TEST_USER_ID"] = "321321"
-    Download.create!(
-      user: User.create(css_id: ENV["TEST_USER_ID"], station_id: "116"),
-      file_number: "321321",
-      status: :complete_success
-    )
-    User.tester!
-
-    visit "/"
-    expect(page).to have_content("View results")
-    expect(page).to have_content("Delete Cache")
-    click_on("Delete Cache")
-    expect(page).not_to have_content("View results")
   end
 end
