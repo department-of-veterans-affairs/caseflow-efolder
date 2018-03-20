@@ -4,7 +4,6 @@ class Api::V1::ApplicationController < BaseController
 
   rescue_from StandardError do |error|
     ExceptionLogger.capture(error)
-
     render json: {
       "errors": [
         "status": "500",
@@ -12,6 +11,10 @@ class Api::V1::ApplicationController < BaseController
         "detail": "#{error} (Sentry event id: #{Raven.last_event_id})"
       ]
     }, status: 500
+  end
+
+  rescue_from BGS::PublicError do |error|
+    forbidden(error.public_message)
   end
 
   private

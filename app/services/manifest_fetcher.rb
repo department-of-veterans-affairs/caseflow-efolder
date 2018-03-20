@@ -8,10 +8,10 @@ class ManifestFetcher
   def process
     documents = manifest_source.service.v2_fetch_documents_for(manifest_source)
     DocumentCreator.new(manifest_source: manifest_source, external_documents: documents).create
-    manifest_source.update(status: :success, fetched_at: Time.zone.now)
+    manifest_source.update!(status: :success, fetched_at: Time.zone.now)
     documents
   rescue *EXCEPTIONS => e
-    manifest_source.update(status: :failed)
+    manifest_source.update!(status: :failed)
     ExceptionLogger.capture(e)
     []
   end
