@@ -196,4 +196,18 @@ describe "Manifests API v2", type: :request do
       expect(body["status"]).to match(/sensitive/)
     end
   end
+
+  context "When user does not exist in BGS" do
+    let(:error_string) { "Logon ID VACOHSOLO Not Found in the Benefits Gateway Service (BGS). Contact your ISO if you need assistance gaining access to BGS." }
+    before do
+      allow_any_instance_of(Fakes::BGSService).to receive(:check_sensitivity).and_raise(BGS::PublicError.new(error_string))
+    end
+
+    it "returns 403 forbidden response" do
+      post "/api/v2/manifests/", params: nil, headers: headers
+      expect(response.code).to eq("403")
+      body = JSON.parse(response.body)
+      expect(body["status"]).to eq("forbidden: #{error_string}")
+    end
+  end
 end

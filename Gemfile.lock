@@ -51,8 +51,8 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/ruby-bgs.git
-  revision: e30db7fdf6f5c28c09d6081d062cad80820240a0
-  branch: e30db7fdf6f5c28c09d6081d062cad80820240a0
+  revision: 8c36e65cfec998ac9dcef4cb2caa433c2d0c5550
+  branch: 8c36e65cfec998ac9dcef4cb2caa433c2d0c5550
   specs:
     bgs (0.1)
       nokogiri (~> 1.8.2)
@@ -223,7 +223,7 @@ GEM
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
       ruby_dep (~> 1.2)
-    loofah (2.2.0)
+    loofah (2.2.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.7.0)
