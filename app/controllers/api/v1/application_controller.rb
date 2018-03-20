@@ -23,8 +23,12 @@ class Api::V1::ApplicationController < BaseController
     render json: { status: "unauthorized" }, status: 401
   end
 
-  def forbidden(reason = "unspecified")
-    render json: { status: "forbidden: #{reason}" }, status: 403
+  def sensitive_record
+    forbidden("It looks like you don't have permission to view this eFolder. This usually happens if the eFolder contains sensitive information.")
+  end
+
+  def forbidden(reason = "Forbidden: unspecified")
+    render json: { status: reason }, status: 403
   end
 
   def missing_header(header)

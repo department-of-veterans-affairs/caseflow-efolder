@@ -207,7 +207,7 @@ describe "Manifests API v2", type: :request do
       post "/api/v2/manifests/", params: nil, headers: headers
       expect(response.code).to eq("403")
       body = JSON.parse(response.body)
-      expect(body["status"]).to eq("forbidden: #{error_string}")
+      expect(body["status"]).to eq(error_string)
     end
   end
 end
