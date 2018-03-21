@@ -273,6 +273,8 @@ class Download < ApplicationRecord
   end
 
   def prepare_files_for_api!(start_download: false)
+    need_to_download_files = !all_manifests_current?
+
     begin
       force_fetch_manifest_if_expired!
     rescue ActiveRecord::StaleObjectError
@@ -293,7 +295,7 @@ class Download < ApplicationRecord
       end
     end
 
-    start_save_files_in_s3 if start_download
+    start_save_files_in_s3 if start_download && need_to_download_files
   end
 
   def start_fetch_manifest
