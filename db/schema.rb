@@ -15,7 +15,7 @@ ActiveRecord::Schema.define(version: 20180321175607) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "delayed_jobs", id: :serial, force: :cascade do |t|
+  create_table "delayed_jobs", force: :cascade do |t|
     t.integer "priority", default: 0, null: false
     t.integer "attempts", default: 0, null: false
     t.text "handler", null: false
@@ -30,7 +30,7 @@ ActiveRecord::Schema.define(version: 20180321175607) do
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
-  create_table "documents", id: :serial, force: :cascade do |t|
+  create_table "documents", force: :cascade do |t|
     t.integer "download_id"
     t.integer "download_status", default: 0
     t.string "document_id"
@@ -56,7 +56,7 @@ ActiveRecord::Schema.define(version: 20180321175607) do
     t.index ["download_status"], name: "index_documents_on_download_status"
   end
 
-  create_table "downloads", id: :serial, force: :cascade do |t|
+  create_table "downloads", force: :cascade do |t|
     t.string "request_id"
     t.string "file_number"
     t.integer "status", default: 0
@@ -80,7 +80,7 @@ ActiveRecord::Schema.define(version: 20180321175607) do
     t.index ["user_id"], name: "index_downloads_on_user_id"
   end
 
-  create_table "files_downloads", id: :serial, force: :cascade do |t|
+  create_table "files_downloads", force: :cascade do |t|
     t.integer "manifest_id"
     t.integer "user_id"
     t.datetime "created_at", null: false
@@ -89,7 +89,7 @@ ActiveRecord::Schema.define(version: 20180321175607) do
     t.index ["manifest_id", "user_id"], name: "index_files_downloads_on_manifest_id_and_user_id"
   end
 
-  create_table "manifest_sources", id: :serial, force: :cascade do |t|
+  create_table "manifest_sources", force: :cascade do |t|
     t.integer "manifest_id"
     t.integer "status", default: 0
     t.string "name"
@@ -98,7 +98,7 @@ ActiveRecord::Schema.define(version: 20180321175607) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "manifests", id: :serial, force: :cascade do |t|
+  create_table "manifests", force: :cascade do |t|
     t.string "file_number"
     t.string "veteran_last_name"
     t.string "veteran_first_name"
@@ -111,7 +111,7 @@ ActiveRecord::Schema.define(version: 20180321175607) do
     t.index ["file_number"], name: "index_manifests_on_file_number", unique: true
   end
 
-  create_table "records", id: :serial, force: :cascade do |t|
+  create_table "records", force: :cascade do |t|
     t.integer "manifest_source_id"
     t.integer "status", default: 0
     t.string "version_id"
@@ -131,7 +131,7 @@ ActiveRecord::Schema.define(version: 20180321175607) do
     t.index ["manifest_source_id", "version_id"], name: "index_records_on_manifest_source_id_and_version_id"
   end
 
-  create_table "searches", id: :serial, force: :cascade do |t|
+  create_table "searches", force: :cascade do |t|
     t.integer "download_id"
     t.string "file_number"
     t.integer "status", default: 0
@@ -143,7 +143,7 @@ ActiveRecord::Schema.define(version: 20180321175607) do
     t.index ["user_id"], name: "index_searches_on_user_id"
   end
 
-  create_table "users", id: :serial, force: :cascade do |t|
+  create_table "users", force: :cascade do |t|
     t.string "css_id", null: false
     t.string "station_id", null: false
     t.string "email"
