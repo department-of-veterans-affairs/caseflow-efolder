@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.feature "Authentication", focus: true do
+RSpec.feature "Authentication" do
   before do
     @user = User.create(css_id: "123123", station_id: "116")
 

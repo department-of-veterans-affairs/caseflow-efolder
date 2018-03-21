@@ -33,7 +33,6 @@ RSpec.feature "Downloads" do
 
     allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info).with(veteran_id).and_return(veteran_info)
     allow_any_instance_of(Fakes::BGSService).to receive(:valid_file_number?).with(veteran_id).and_return(true)
-    allow_any_instance_of(Fakes::BGSService).to receive(:valid_file_number?).with(invalid_veteran_id).and_return(false)
 
     allow(Fakes::DocumentService).to receive(:v2_fetch_documents_for).and_return(documents)
     allow(Fakes::DocumentService).to receive(:v2_fetch_document_file).and_return("Test content")
@@ -48,10 +47,6 @@ RSpec.feature "Downloads" do
   after do
     FeatureToggle.disable!(:efolder_react_app)
   end
-
-  let(:root_path) { "/" }
-
-  let(:invalid_veteran_id) { "abcd" }
 
   let(:veteran_id) { "12341234" }
   let(:veteran_info) do

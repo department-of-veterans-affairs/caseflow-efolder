@@ -24,6 +24,17 @@ RSpec.feature "Downloads" do
     ]
   end
 
+  let(:invalid_veteran_id) { "abcd" }
+
+  let(:veteran_id) { "12341234" }
+  let(:veteran_info) do
+    {
+      "veteran_first_name" => "Stan",
+      "veteran_last_name" => "Lee",
+      "veteran_last_four_ssn" => "2222"
+    }
+  end
+
   before do
     @user = User.create(css_id: "123123", station_id: "116")
 
@@ -116,5 +127,4 @@ RSpec.feature "Downloads" do
       end
     end
   end
-
 end

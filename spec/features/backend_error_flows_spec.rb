@@ -24,6 +24,15 @@ RSpec.feature "Downloads" do
     ]
   end
 
+  let(:veteran_id) { "12341234" }
+  let(:veteran_info) do
+    {
+      "veteran_first_name" => "Stan",
+      "veteran_last_name" => "Lee",
+      "veteran_last_four_ssn" => "2222"
+    }
+  end
+
   before do
     @user = User.create(css_id: "123123", station_id: "116")
 
@@ -33,7 +42,6 @@ RSpec.feature "Downloads" do
 
     allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info).with(veteran_id).and_return(veteran_info)
     allow_any_instance_of(Fakes::BGSService).to receive(:valid_file_number?).with(veteran_id).and_return(true)
-    allow_any_instance_of(Fakes::BGSService).to receive(:valid_file_number?).with(invalid_veteran_id).and_return(false)
 
     allow(Fakes::DocumentService).to receive(:v2_fetch_documents_for).and_return(documents)
     allow(Fakes::DocumentService).to receive(:v2_fetch_document_file).and_return("Test content")
@@ -63,7 +71,7 @@ RSpec.feature "Downloads" do
         expect(page).to have_css ".usa-alert-heading", text: "We are having trouble connecting to VBMS"
         click_link "Back to eFolder Express"
 
-        expect(page).to have_current_path(root_path)
+        expect(page).to have_current_path("/")
       end
     end
   end
@@ -82,7 +90,7 @@ RSpec.feature "Downloads" do
         expect(page).to have_css ".usa-alert-heading", text: "We are having trouble connecting to VVA"
         click_link "Back to eFolder Express"
 
-        expect(page).to have_current_path(root_path)
+        expect(page).to have_current_path("/")
       end
     end
   end
