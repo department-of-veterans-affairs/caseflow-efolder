@@ -6,7 +6,7 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
 
     return invalid_file_number unless bgs_service.valid_file_number?(file_number)
     return veteran_not_found(file_number) if bgs_service.fetch_veteran_info(file_number).nil?
-    return forbidden("sensitive record") unless bgs_service.check_sensitivity(file_number)
+    return sensitive_record unless bgs_service.check_sensitivity(file_number)
 
     manifest = Manifest.find_or_create_by_user(user: current_user, file_number: file_number)
     manifest.start!
