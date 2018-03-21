@@ -82,7 +82,7 @@ RSpec.feature "Downloads" do
     expect(manifest.veteran_last_four_ssn).to eq("2222")
   end
 
-  scenario "Happy path, zip file is downloaded", focus: true do
+  scenario "Happy path, zip file is downloaded" do
     perform_enqueued_jobs do
       visit "/"
       fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
