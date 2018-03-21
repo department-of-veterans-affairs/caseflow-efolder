@@ -82,48 +82,56 @@ RSpec.feature "Downloads" do
     expect(manifest.veteran_last_four_ssn).to eq("2222")
   end
 
-  context "When downloading documents is successful" do
-    scenario "Happy path, zip file is downloaded" do
-      perform_enqueued_jobs do
-        visit "/"
-        fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
+  scenario "Happy path, zip file is downloaded", focus: true do
+    perform_enqueued_jobs do
+      visit "/"
+      fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
 
-        click_button "Search"
+      click_button "Search"
 
-        expect(page).to have_content "STAN LEE VETERAN ID #{veteran_id}"
-        expect(page).to have_content "Start retrieving efolder"
+      expect(page).to have_content "STAN LEE VETERAN ID #{veteran_id}"
+      expect(page).to have_content "Start retrieving efolder"
 
-        within(".cf-app-segment--alt") do
-          click_button "Start retrieving efolder"
-        end
-
-        expect(page).to have_content("Success!")
-
-        expect(page).to have_css ".document-success", text: Caseflow::DocumentTypes::TYPES[documents[0].type_id]
-
-        within(".cf-app-segment--alt") do
-          click_button "Download efolder"
-        end
-
-        DownloadHelpers.wait_for_download
-        download = DownloadHelpers.downloaded?
-        expect(download).to be_truthy
-
-        expect(DownloadHelpers.download).to include("Lee, Stan - 2222")
-
-        click_on "Start over"
-
-        history_row = "#download-1"
-        expect(find(history_row)).to have_content(veteran_id)
-        within(history_row) { click_on("View results") }
-        expect(page).to have_content("Success!")
-
-        click_on "Start over"
-        fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
-
-        click_button "Search"
-        expect(page).to have_content("Success!")
+      within(".cf-app-segment--alt") do
+        click_button "Start retrieving efolder"
       end
+
+      expect(page).to have_content("Success!")
+
+      expect(page).to have_css ".document-success", text: Caseflow::DocumentTypes::TYPES[documents[0].type_id]
+
+      within(".cf-app-segment--alt") do
+        click_button "Download efolder"
+      end
+
+      DownloadHelpers.wait_for_download
+      download = DownloadHelpers.downloaded?
+      expect(download).to be_truthy
+
+      expect(DownloadHelpers.download).to include("Lee, Stan - 2222")
+
+      click_on "Start over"
+
+      history_row = "#download-1"
+      expect(find(history_row)).to have_content(veteran_id)
+      within(history_row) { click_on("View results") }
+      expect(page).to have_content("Success!")
+
+      # Searching for this case again should take a user right to the success screen.
+      click_on "Start over"
+      fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
+
+      click_button "Search"
+      expect(page).to have_content("Success!")
+
+      # Even a different user searching for this case should be able to find it.
+      User.authenticate!(css_id: "different_user", user_name: "different user")
+
+      visit "/"
+      fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
+
+      click_button "Search"
+      expect(page).to have_content("Success!")
     end
   end
 

@@ -60,6 +60,7 @@ RSpec.feature "Downloads" do
   context "When VBMS returns an error" do
     before do
       allow(Fakes::VBMSService).to receive(:v2_fetch_documents_for).and_raise(VBMS::ClientError)
+      allow(Fakes::VVAService).to receive(:v2_fetch_documents_for).and_return(documents)
     end
 
     scenario "Download with VBMS connection error" do
@@ -69,6 +70,8 @@ RSpec.feature "Downloads" do
         click_button "Search"
 
         expect(page).to have_css ".usa-alert-heading", text: "We are having trouble connecting to VBMS"
+        expect(page).to have_content Caseflow::DocumentTypes::TYPES[documents[0].type_id]
+
         click_link "Back to eFolder Express"
 
         expect(page).to have_current_path("/")
@@ -79,6 +82,7 @@ RSpec.feature "Downloads" do
   context "When VVA returns an error" do
     before do
       allow(Fakes::VVAService).to receive(:v2_fetch_documents_for).and_raise(VVA::ClientError)
+      allow(Fakes::VBMSService).to receive(:v2_fetch_documents_for).and_return(documents)
     end
 
     scenario "Download with VVA connection error" do
@@ -88,6 +92,8 @@ RSpec.feature "Downloads" do
         click_button "Search"
 
         expect(page).to have_css ".usa-alert-heading", text: "We are having trouble connecting to VVA"
+        expect(page).to have_content Caseflow::DocumentTypes::TYPES[documents[0].type_id]
+
         click_link "Back to eFolder Express"
 
         expect(page).to have_current_path("/")
