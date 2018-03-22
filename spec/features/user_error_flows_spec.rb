@@ -104,7 +104,7 @@ RSpec.feature "Downloads" do
       fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
       click_button "Search"
 
-      expect(page).to have_content("forbidden: sensitive record")
+      expect(page).to have_content("contains sensitive information")
     end
   end
 
