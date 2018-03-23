@@ -3,8 +3,7 @@ class Record < ApplicationRecord
 
   belongs_to :manifest_source
 
-  validates :manifest_source, :version_id, :series_id, presence: true
-  validates :version_id, uniqueness: true
+  validates :manifest_source, :version_id, :series_id, :version_id, presence: true
 
   enum status: {
     initialized: 0,
@@ -68,7 +67,7 @@ class Record < ApplicationRecord
   end
 
   def self.create_from_external_document(manifest_source, document)
-    create(
+    create!(
       manifest_source: manifest_source,
       version_id: document.document_id,
       type_id: document.type_id,
