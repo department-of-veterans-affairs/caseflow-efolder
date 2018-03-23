@@ -69,10 +69,12 @@ module StubbableUser
     end
 
     def authenticate!(options = {})
-      Functions.grant!("System Admin", users: ["123123"]) if options[:roles]&.include?("System Admin")
+      css_id = options[:css_id] || "123123"
+      user_name = options[:user_name] || "first last"
+      Functions.grant!("System Admin", users: [css_id]) if options[:roles]&.include?("System Admin")
 
-      self.stub = find_or_create_by(css_id: "123123", station_id: "116").tap do |u|
-        u.name = "first last"
+      self.stub = find_or_create_by(css_id: css_id, station_id: "116").tap do |u|
+        u.name = user_name
         u.email = "test@gmail.com"
         u.roles = options[:roles] || ["Download eFolder"]
         u.save
