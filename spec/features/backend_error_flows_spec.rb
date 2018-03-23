@@ -6,7 +6,7 @@ RSpec.feature "Downloads" do
   let(:documents) do
     [
       OpenStruct.new(
-        document_id: "1",
+        document_id: SecureRandom.base64,
         series_id: "1234",
         type_id: Caseflow::DocumentTypes::TYPES.keys.sample,
         version: "1",
@@ -14,7 +14,7 @@ RSpec.feature "Downloads" do
         received_at: Time.now.utc
       ),
       OpenStruct.new(
-        document_id: "2",
+        document_id: SecureRandom.base64,
         series_id: "5678",
         type_id: Caseflow::DocumentTypes::TYPES.keys.sample,
         version: "1",
@@ -127,7 +127,7 @@ RSpec.feature "Downloads" do
           click_button "Start retrieving efolder"
         end
 
-        expect(page).to have_css ".cf-tab.cf-active", text: "Completed (1)"
+        expect(page).to have_css ".cf-tab.cf-active", text: "Completed (3)"
         expect(page).to have_content "Some files could not be retrieved"
 
         expect(page).to have_content Caseflow::DocumentTypes::TYPES[documents[1].type_id]
@@ -179,7 +179,7 @@ RSpec.feature "Downloads" do
           click_button "Start retrieving efolder"
         end
 
-        expect(page).to have_css ".cf-tab.cf-active", text: "Completed (1)"
+        expect(page).to have_css ".cf-tab.cf-active", text: "Completed (3)"
         expect(page).to have_content "Some files could not be retrieved"
 
         allow(Fakes::DocumentService).to receive(:v2_fetch_document_file).and_return("Test content")

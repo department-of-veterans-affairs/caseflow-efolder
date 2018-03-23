@@ -6,7 +6,7 @@ RSpec.feature "Downloads" do
   let(:documents) do
     [
       OpenStruct.new(
-        document_id: "1",
+        document_id: SecureRandom.base64,
         series_id: "1234",
         type_id: Caseflow::DocumentTypes::TYPES.keys.sample,
         version: "1",
@@ -14,7 +14,7 @@ RSpec.feature "Downloads" do
         received_at: Time.now.utc
       ),
       OpenStruct.new(
-        document_id: "2",
+        document_id: SecureRandom.base64,
         series_id: "5678",
         type_id: Caseflow::DocumentTypes::TYPES.keys.sample,
         version: "1",
