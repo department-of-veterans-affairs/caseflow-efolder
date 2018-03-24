@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.feature "Downloads" do
+RSpec.feature "React Downloads" do
   include ActiveJob::TestHelper
 
   let(:documents) do
@@ -34,7 +34,8 @@ RSpec.feature "Downloads" do
     allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info).with(veteran_id).and_return(veteran_info)
     allow_any_instance_of(Fakes::BGSService).to receive(:valid_file_number?).with(veteran_id).and_return(true)
 
-    allow(Fakes::DocumentService).to receive(:v2_fetch_documents_for).and_return(documents)
+    allow(Fakes::VBMSService).to receive(:v2_fetch_documents_for).and_return(documents)
+    allow(Fakes::VVAService).to receive(:v2_fetch_documents_for).and_return([])
     allow(Fakes::DocumentService).to receive(:v2_fetch_document_file).and_return("Test content")
 
     S3Service.files = {}

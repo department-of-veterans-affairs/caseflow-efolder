@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.feature "Downloads" do
+RSpec.feature "Backend Error Flows" do
   include ActiveJob::TestHelper
 
   let(:documents) do
@@ -43,7 +43,8 @@ RSpec.feature "Downloads" do
     allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info).with(veteran_id).and_return(veteran_info)
     allow_any_instance_of(Fakes::BGSService).to receive(:valid_file_number?).with(veteran_id).and_return(true)
 
-    allow(Fakes::DocumentService).to receive(:v2_fetch_documents_for).and_return(documents)
+    allow(Fakes::VBMSService).to receive(:v2_fetch_documents_for).and_return(documents)
+    allow(Fakes::VVAService).to receive(:v2_fetch_documents_for).and_return([])
     allow(Fakes::DocumentService).to receive(:v2_fetch_document_file).and_return("Test content")
 
     S3Service.files = {}
@@ -127,7 +128,7 @@ RSpec.feature "Downloads" do
           click_button "Start retrieving efolder"
         end
 
-        expect(page).to have_css ".cf-tab.cf-active", text: "Completed (3)"
+        expect(page).to have_css ".cf-tab.cf-active", text: "Completed (1)"
         expect(page).to have_content "Some files could not be retrieved"
 
         expect(page).to have_content Caseflow::DocumentTypes::TYPES[documents[1].type_id]
@@ -179,7 +180,7 @@ RSpec.feature "Downloads" do
           click_button "Start retrieving efolder"
         end
 
-        expect(page).to have_css ".cf-tab.cf-active", text: "Completed (3)"
+        expect(page).to have_css ".cf-tab.cf-active", text: "Completed (1)"
         expect(page).to have_content "Some files could not be retrieved"
 
         allow(Fakes::DocumentService).to receive(:v2_fetch_document_file).and_return("Test content")

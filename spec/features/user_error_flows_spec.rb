@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.feature "Downloads" do
+RSpec.feature "User Error Flows" do
   include ActiveJob::TestHelper
 
   let(:documents) do
@@ -46,7 +46,8 @@ RSpec.feature "Downloads" do
     allow_any_instance_of(Fakes::BGSService).to receive(:valid_file_number?).with(veteran_id).and_return(true)
     allow_any_instance_of(Fakes::BGSService).to receive(:valid_file_number?).with(invalid_veteran_id).and_return(false)
 
-    allow(Fakes::DocumentService).to receive(:v2_fetch_documents_for).and_return(documents)
+    allow(Fakes::VBMSService).to receive(:v2_fetch_documents_for).and_return(documents)
+    allow(Fakes::VVAService).to receive(:v2_fetch_documents_for).and_return([])
     allow(Fakes::DocumentService).to receive(:v2_fetch_document_file).and_return("Test content")
 
     S3Service.files = {}
@@ -110,7 +111,8 @@ RSpec.feature "Downloads" do
 
   context "When veteran case folder has no documents" do
     before do
-      allow(Fakes::DocumentService).to receive(:v2_fetch_documents_for).and_return([])
+      allow(Fakes::VBMSService).to receive(:v2_fetch_documents_for).and_return([])
+      allow(Fakes::VVAService).to receive(:v2_fetch_documents_for).and_return([])
     end
 
     scenario "Download with no documents" do
