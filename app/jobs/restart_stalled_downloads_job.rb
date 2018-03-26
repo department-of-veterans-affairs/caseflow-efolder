@@ -1,5 +1,5 @@
 class RestartStalledDownloadsJob < ApplicationJob
-  queue_as :default
+  queue_as :high_priority
 
   def perform
     Download.where(status: [3, 4]).each do |download|

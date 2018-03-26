@@ -1,5 +1,5 @@
 class DownloadVBMSManifestJob < DownloadManifestJob
-  queue_as :default
+  queue_as :high_priority
 
   def get_service(_download)
     VBMSService

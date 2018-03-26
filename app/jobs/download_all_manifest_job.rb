@@ -1,5 +1,5 @@
 class DownloadAllManifestJob < ApplicationJob
-  queue_as :default
+  queue_as :high_priority
 
   def perform(download)
     # sequentially download documents from all services

@@ -1,5 +1,5 @@
 class V2::PackageFilesJob < ActiveJob::Base
-  queue_as :default
+  queue_as :long_running
 
   SECONDS_TO_AUTO_UNLOCK = 43_200
 

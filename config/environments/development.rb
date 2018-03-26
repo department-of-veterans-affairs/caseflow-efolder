@@ -62,8 +62,14 @@ Rails.application.configure do
   ENV["METRICS_USERNAME"] = "caseflow"
   ENV["METRICS_PASSWORD"] = "caseflow"
 
-  ENV["SIDEKIQ_USERNAME"] ||= "caseflow"
-  ENV["SIDEKIQ_PASSWORD"] ||= "caseflow"
+  # use a locally mocked SQS server endpoint instead of AWS. We use localstack to mock this.
+  # https://github.com/localstack/localstack/
+  Shoryuken::Client.sqs.config[:endpoint]=URI('http://localhost:4576')
+
+  # create the development queues
+  Shoryuken::Client.sqs.create_queue({ queue_name: 'efolder_development_low_priority' })
+  Shoryuken::Client.sqs.create_queue({ queue_name: 'efolder_development_high_priority' })
+  Shoryuken::Client.sqs.create_queue({ queue_name: 'efolder_development_long_running' })
 
   # Use an evented file watcher to asynchronously detect changes in source code,
   # routes, locales, etc. This feature depends on the listen gem.

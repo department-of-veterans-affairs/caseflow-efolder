@@ -1,5 +1,5 @@
 class DownloadVVAManifestJob < DownloadManifestJob
-  queue_as :default
+  queue_as :high_priority
 
   def get_service(download)
     return nil if !FeatureToggle.enabled?(:vva_service, user: download.user)

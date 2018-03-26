@@ -1,5 +1,5 @@
 class SaveFilesInS3Job < ApplicationJob
-  queue_as :default
+  queue_as :low_priority
 
   def perform(download)
     download_documents = DownloadDocuments.new(download: download)
