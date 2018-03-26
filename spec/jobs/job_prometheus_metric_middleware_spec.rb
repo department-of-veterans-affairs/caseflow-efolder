@@ -1,4 +1,4 @@
-describe JobPrometheusMetricMiddleware, focus: true do
+describe JobPrometheusMetricMiddleware do
   before do
     @middleware = JobPrometheusMetricMiddleware.new
 
