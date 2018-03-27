@@ -52,6 +52,9 @@ module CaseflowEfolder
     # sqs details
     config.active_job.queue_name_prefix = "efolder_" + Rails.env
 
+    config.sqs_create_queues = false
+    config.sqs_endpoint = nil
+
     config.cache_store = :redis_store, Rails.application.secrets.redis_url_cache, { expires_in: 24.hours }
 
     config.analytics_account = "UA-74789258-2"

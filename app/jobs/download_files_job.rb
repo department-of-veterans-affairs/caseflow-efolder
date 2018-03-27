@@ -1,5 +1,5 @@
 class DownloadFilesJob < ApplicationJob
-  queue_as :long_running
+  queue_as :med_priority
 
   def perform(download)
     RequestStore.store[:current_user] = download.user
