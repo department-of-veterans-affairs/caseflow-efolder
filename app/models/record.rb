@@ -3,7 +3,7 @@ class Record < ApplicationRecord
 
   belongs_to :manifest_source
 
-  validates :manifest_source, :version_id, :series_id, :version_id, presence: true
+  validates :manifest_source, :version_id, :series_id, presence: true
 
   enum status: {
     initialized: 0,
