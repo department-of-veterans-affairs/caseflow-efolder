@@ -50,7 +50,7 @@ module CaseflowEfolder
     config.active_job.queue_adapter = :shoryuken
 
     # sqs details
-    config.active_job.queue_name_prefix = "efolder_" + Rails.env
+    config.active_job.queue_name_prefix = "efolder_" + ENV['DEPLOY_ENV']
 
     config.sqs_create_queues = false
     config.sqs_endpoint = nil
