@@ -24,7 +24,7 @@ class Fetcher
     return cached_content if cached_content
 
     converted_image = ImageConverterService.new(
-      image: external_service.fetch_document_file(document), record: document
+      image: external_service.v2_fetch_document_file(document), record: document
     ).process
     S3Service.store_file(document.s3_filename, converted_image)
 
