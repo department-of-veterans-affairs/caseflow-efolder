@@ -55,6 +55,26 @@ describe ManifestFetcher do
         end
       end
 
+      context "when VVA client returns manifest with {F291C1BC-FCDE-4C58-8544-B4FCE2E59008}" do
+        let(:documents) do
+          [
+            OpenStruct.new(document_id: "{F291C1BC-FCDE-4C58-8544-B4FCE2E59008}", series_id: "3"),
+            OpenStruct.new(document_id: "2", series_id: "4")
+          ]
+        end
+
+        before do
+          allow(VVAService).to receive(:v2_fetch_documents_for).and_return(documents)
+        end
+
+        it "saves manifest status as success and updated fetched at" do
+          expect(subject.size).to eq 1
+          expect(source.reload.status).to eq "success"
+          expect(source.reload.fetched_at).to_not be_nil
+          expect(subject[0].document_id).to eq "2"
+        end
+      end
+
       context "when VVA client returns error" do
         before do
           allow(VVAService).to receive(:v2_fetch_documents_for).and_raise(VVA::ClientError)
