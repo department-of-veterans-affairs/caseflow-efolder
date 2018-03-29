@@ -80,8 +80,9 @@ export const pollManifestFetchEndpoint = (retryCount, manifestId, csrfToken) => 
       (response) => { // eslint-disable-line max-statements
         setStateFromResponse(dispatch, response);
 
-        // Reader polls every second for a maximum of 20 seconds. Match that here.
-        let maxRetryCount = 20;
+        // efolder #959: Large efolders can take more than 20 seconds to fetch manifests. Set timeout to 30 seconds
+        // in order to accomodate these large efolders.
+        let maxRetryCount = 30;
         let retrySleepMilliseconds = 1 * 1000;
         let donePollingFunction = (resp) => manifestFetchComplete(resp.body.data.attributes.sources);
         const sleepLengthSeconds = maxRetryCount * retrySleepMilliseconds / 1000;
