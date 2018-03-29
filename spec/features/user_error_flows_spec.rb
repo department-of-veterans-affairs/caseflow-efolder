@@ -1,12 +1,12 @@
 require "rails_helper"
 
-RSpec.feature "Downloads" do
+RSpec.feature "User Error Flows" do
   include ActiveJob::TestHelper
 
   let(:documents) do
     [
       OpenStruct.new(
-        document_id: "1",
+        document_id: SecureRandom.base64,
         series_id: "1234",
         type_id: Caseflow::DocumentTypes::TYPES.keys.sample,
         version: "1",
@@ -14,7 +14,7 @@ RSpec.feature "Downloads" do
         received_at: Time.now.utc
       ),
       OpenStruct.new(
-        document_id: "2",
+        document_id: SecureRandom.base64,
         series_id: "5678",
         type_id: Caseflow::DocumentTypes::TYPES.keys.sample,
         version: "1",
@@ -46,7 +46,8 @@ RSpec.feature "Downloads" do
     allow_any_instance_of(Fakes::BGSService).to receive(:valid_file_number?).with(veteran_id).and_return(true)
     allow_any_instance_of(Fakes::BGSService).to receive(:valid_file_number?).with(invalid_veteran_id).and_return(false)
 
-    allow(Fakes::DocumentService).to receive(:v2_fetch_documents_for).and_return(documents)
+    allow(Fakes::VBMSService).to receive(:v2_fetch_documents_for).and_return(documents)
+    allow(Fakes::VVAService).to receive(:v2_fetch_documents_for).and_return([])
     allow(Fakes::DocumentService).to receive(:v2_fetch_document_file).and_return("Test content")
 
     S3Service.files = {}
@@ -110,7 +111,8 @@ RSpec.feature "Downloads" do
 
   context "When veteran case folder has no documents" do
     before do
-      allow(Fakes::DocumentService).to receive(:v2_fetch_documents_for).and_return([])
+      allow(Fakes::VBMSService).to receive(:v2_fetch_documents_for).and_return([])
+      allow(Fakes::VVAService).to receive(:v2_fetch_documents_for).and_return([])
     end
 
     scenario "Download with no documents" do

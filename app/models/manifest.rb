@@ -10,7 +10,7 @@ class Manifest < ApplicationRecord
   # Sort by receipt date; documents with same date ordered as sent by vbms
   has_many :records, -> { order(received_at: :desc, id: :asc) }, through: :sources
 
-  validates :file_number, presence: true, uniqueness: true
+  validates :file_number, presence: true
 
   enum fetched_files_status: {
     initialized: 0,

@@ -1,12 +1,12 @@
 require "rails_helper"
 
-RSpec.feature "Downloads" do
+RSpec.feature "Backend Error Flows" do
   include ActiveJob::TestHelper
 
   let(:documents) do
     [
       OpenStruct.new(
-        document_id: "1",
+        document_id: SecureRandom.base64,
         series_id: "1234",
         type_id: Caseflow::DocumentTypes::TYPES.keys.sample,
         version: "1",
@@ -14,7 +14,7 @@ RSpec.feature "Downloads" do
         received_at: Time.now.utc
       ),
       OpenStruct.new(
-        document_id: "2",
+        document_id: SecureRandom.base64,
         series_id: "5678",
         type_id: Caseflow::DocumentTypes::TYPES.keys.sample,
         version: "1",
@@ -43,7 +43,8 @@ RSpec.feature "Downloads" do
     allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info).with(veteran_id).and_return(veteran_info)
     allow_any_instance_of(Fakes::BGSService).to receive(:valid_file_number?).with(veteran_id).and_return(true)
 
-    allow(Fakes::DocumentService).to receive(:v2_fetch_documents_for).and_return(documents)
+    allow(Fakes::VBMSService).to receive(:v2_fetch_documents_for).and_return(documents)
+    allow(Fakes::VVAService).to receive(:v2_fetch_documents_for).and_return([])
     allow(Fakes::DocumentService).to receive(:v2_fetch_document_file).and_return("Test content")
 
     S3Service.files = {}
