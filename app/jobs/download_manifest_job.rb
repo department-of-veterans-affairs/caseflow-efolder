@@ -49,7 +49,7 @@ class DownloadManifestJob < ApplicationJob
 
   def download_from_service(download)
     service = get_service(download)
-    external_documents = service.v2_fetch_documents_for(download)
+    external_documents = service.fetch_documents_for(download)
     external_documents || []
   end
 
