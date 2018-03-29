@@ -49,6 +49,9 @@ module CaseflowEfolder
 
     config.active_job.queue_adapter = :shoryuken
 
+    # setup the deploy env environment variable
+    ENV['DEPLOY_ENV'] ||= Rails.env
+
     # sqs details
     config.active_job.queue_name_prefix = "efolder_" + ENV['DEPLOY_ENV']
 
