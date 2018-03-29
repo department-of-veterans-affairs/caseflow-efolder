@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180321175607) do
+ActiveRecord::Schema.define(version: 20180323021917) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -129,6 +129,7 @@ ActiveRecord::Schema.define(version: 20180321175607) do
     t.integer "version"
     t.index ["manifest_source_id", "series_id"], name: "index_records_on_manifest_source_id_and_series_id"
     t.index ["manifest_source_id", "version_id"], name: "index_records_on_manifest_source_id_and_version_id"
+    t.index ["version_id"], name: "index_records_on_version_id", unique: true
   end
 
   create_table "searches", force: :cascade do |t|
