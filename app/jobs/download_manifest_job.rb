@@ -1,5 +1,5 @@
 class DownloadManifestJob < ApplicationJob
-  queue_as :default
+  queue_as :high_priority
 
   # these must be implemented by child classes
   def get_service(_download)

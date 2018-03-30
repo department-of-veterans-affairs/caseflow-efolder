@@ -47,7 +47,16 @@ module CaseflowEfolder
 
     config.exceptions_app = self.routes
 
-    config.active_job.queue_adapter = :sidekiq
+    config.active_job.queue_adapter = :shoryuken
+
+    # setup the deploy env environment variable
+    ENV['DEPLOY_ENV'] ||= Rails.env
+
+    # sqs details
+    config.active_job.queue_name_prefix = "efolder_" + ENV['DEPLOY_ENV']
+
+    config.sqs_create_queues = false
+    config.sqs_endpoint = nil
 
     config.cache_store = :redis_store, Rails.application.secrets.redis_url_cache, { expires_in: 24.hours }
 

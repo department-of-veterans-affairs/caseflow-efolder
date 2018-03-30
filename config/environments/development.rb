@@ -62,8 +62,8 @@ Rails.application.configure do
   ENV["METRICS_USERNAME"] = "caseflow"
   ENV["METRICS_PASSWORD"] = "caseflow"
 
-  ENV["SIDEKIQ_USERNAME"] ||= "caseflow"
-  ENV["SIDEKIQ_PASSWORD"] ||= "caseflow"
+  config.sqs_create_queues = true
+  config.sqs_endpoint = 'http://localhost:4576'
 
   # Use an evented file watcher to asynchronously detect changes in source code,
   # routes, locales, etc. This feature depends on the listen gem.

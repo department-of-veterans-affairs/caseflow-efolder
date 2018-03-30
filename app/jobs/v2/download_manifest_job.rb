@@ -1,5 +1,5 @@
 class V2::DownloadManifestJob < ActiveJob::Base
-  queue_as :default
+  queue_as :high_priority
 
   SECONDS_TO_AUTO_UNLOCK = 180
 

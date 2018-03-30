@@ -7,21 +7,50 @@ FOIA Requests that give veterans access to their own VA files take **way** too l
 
 ![](screenshot.png "eFolder Express")
 
+## Start up your docker based environment
+
+We use [docker](https://docs.docker.com/) and [docker-compose](https://docs.docker.com/compose/) to mock a production environment locally.  Prior knowledge of docker is not required, but slowly learning how docker works is encouraged.
+Please ask a team member for an overview, and/or slowly review the docs linked.
+
+Your development setup of caseflow currently runs Redis, postgres and OracleDB (VACOLS) in Docker.
+
+Setup your postgres user.  Run this in your CLI, or better yet, add this to your shell configuration `~/.bashrc`
+
+```
+export POSTGRES_HOST=localhost
+export POSTGRES_USER=postgres
+export POSTGRES_PASSWORD=postgres
+```
+
+**Note: If you previously have had redis and postgres installed via brew and would like to switch to docker, do the following:**
+```
+brew services stop postgresql
+brew services stop redis
+```
+
+Start all containers
+```
+docker-compose up -d
+# run without -d to start your environment and view container logging in the foreground
+
+docker-compose ps
+# this shows you the status of all of your dependencies
+```
+
+Turning off dependencies
+```
+# this stops all containers
+docker-compose down
+
+# this will reset your setup back to scratch. You will need to setup your database schema again if you do this (see below)
+docker-compose down -v
+```
+
 ## First Time Development Setup
 
-You'll need Ruby 2.3.0, Postgres and Redis if you don't have them.
+You'll need Ruby 2.3.0 if you don't have it.
 
 > $ rbenv install 2.3.0
-
-> $ brew install postgresql
-
-> $ brew install redis
-
-You may want to have Redis and Postgres run on startup. Let brew tell you how to do that:
-
-> $ brew info redis
-
-> $ brew info postgresql
 
 Install dependencies
 
@@ -41,7 +70,7 @@ Now start both the rails server,
 
 And in a seperate terminal, start a jobs worker
 
-> $ bundle exec sidekiq
+> $ bundle exec shoryuken start -q efolder_development_high_priority efolder_development_low_priority efolder_development_med_priority -R
 
 If you want to convert TIFF files to PDFs then you also need to run the image converter service. You can
 do this by cloning the appeals-deployment repo, navigating to `ansible/utility-roles/imagemagick/files`
@@ -90,12 +119,12 @@ Then you must setup the staging DB. Run:
 > $ RAILS_ENV=staging rake db:create
 > $ RAILS_ENV=staging rake db:schema:load
 
-Finally, you can run the server and sidekiq. In one tab you can run:
+Finally, you can run the server and shoryuken. In one tab you can run:
 
 > $ rails s -e staging
 
 In a separate tab run:
 
-> $ RAILS_ENV=staging bundle exec sidekiq
+> $ RAILS_ENV=staging bundle exec shoryuken start -q efolder_staging_high_priority efolder_staging_low_priority efolder_staging_med_priority -R
 
 Now when you go to [localhost:3000](localhost:3000) you'll be prompted with a fake login screen. Use any of these [logins](https://github.com/department-of-veterans-affairs/appeals-qa/blob/master/TestData/LOGINS.md) to impersonate a UAT user.

@@ -1,5 +1,5 @@
 class Fakes::DownloadFilesJob < ActiveJob::Base
-  queue_as :default
+  queue_as :med_priority
 
   def perform(download)
     demo = Fakes::DocumentService::DEMOS[download.file_number] || Fakes::DocumentService::DEMOS["DEMODEFAULT"]

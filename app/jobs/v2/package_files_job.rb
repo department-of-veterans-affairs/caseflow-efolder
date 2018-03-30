@@ -1,5 +1,5 @@
 class V2::PackageFilesJob < ActiveJob::Base
-  queue_as :default
+  queue_as :med_priority
 
   SECONDS_TO_AUTO_UNLOCK = 43_200
 
