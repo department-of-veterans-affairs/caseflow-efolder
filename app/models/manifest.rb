@@ -111,7 +111,7 @@ class Manifest < ApplicationRecord
   private
 
   def file_download
-    files_downloads.find_by(user: RequestStore[:current_user])
+    files_downloads.find_or_create_by(user: RequestStore[:current_user])
   end
 
   def requested_zip_at

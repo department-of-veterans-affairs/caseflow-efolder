@@ -14,10 +14,10 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
   end
 
   def progress
-    files_download ||= FilesDownload.includes(:manifest).find_by(manifest_id: params[:id], user_id: current_user.id)
-    return record_not_found unless files_download
+    manifest = Manifest.find(params[:id])
+    return record_not_found unless manifest
 
-    render json: json_manifests(files_download.manifest)
+    render json: json_manifests(manifest)
   end
 
   def history
