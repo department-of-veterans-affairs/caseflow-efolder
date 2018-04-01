@@ -16,6 +16,7 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
   def progress
     manifest = Manifest.find(params[:id])
     return record_not_found unless manifest
+    return sensitive_record unless bgs_service.check_sensitivity(file_number)
 
     render json: json_manifests(manifest)
   end
