@@ -8,7 +8,7 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
     return veteran_not_found(file_number) if bgs_service.fetch_veteran_info(file_number).nil?
     return sensitive_record unless bgs_service.check_sensitivity(file_number)
 
-    manifest = Manifest.find_or_create_by_user(user: current_user, file_number: file_number)
+    manifest = Manifest.find_or_create_by(file_number: file_number)
     manifest.start!
     render json: json_manifests(manifest)
   end
@@ -16,7 +16,7 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
   def progress
     manifest = Manifest.find(params[:id])
     return record_not_found unless manifest
-    return sensitive_record unless bgs_service.check_sensitivity(file_number)
+    return sensitive_record unless bgs_service.check_sensitivity(manifest.file_number)
 
     render json: json_manifests(manifest)
   end
