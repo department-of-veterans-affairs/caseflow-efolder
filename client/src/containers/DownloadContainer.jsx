@@ -11,7 +11,7 @@ import {
   resetDefaultManifestState,
   setManifestId
 } from '../actions';
-import { pollManifestFetchEndpoint, restartManifestFetch, startManifestFetch } from '../apiActions';
+import { pollManifestFetchEndpoint, restartManifestFetch } from '../apiActions';
 import DownloadPageFooter from '../components/DownloadPageFooter';
 import DownloadPageHeader from '../components/DownloadPageHeader';
 import PageLoadingIndicator from '../components/PageLoadingIndicator';
@@ -41,7 +41,7 @@ class DownloadContainer extends React.PureComponent {
     ) {
       this.props.restartManifestFetch(manifestId, this.props.csrfToken);
       this.props.pollManifestFetchEndpoint(0, manifestId, this.props.csrfToken);
-    } 
+    }
   }
 
   render() {
