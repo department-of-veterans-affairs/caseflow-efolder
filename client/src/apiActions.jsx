@@ -31,20 +31,11 @@ const setStateFromResponse = (dispatch, resp) => {
   dispatch(setVeteranId(respAttrs.file_number));
   dispatch(setVeteranName(`${respAttrs.veteran_first_name} ${respAttrs.veteran_last_name}`));
 
-  let activeTab = IN_PROGRESS_TAB;
-
-  switch (respAttrs.fetched_files_status) {
-  case MANIFEST_DOWNLOAD_STATE.SUCCEEDED:
-    activeTab = SUCCESS_TAB;
-    break;
-  case MANIFEST_DOWNLOAD_STATE.FAILED:
-    activeTab = ERRORS_TAB;
-    break;
-  default:
-    activeTab = IN_PROGRESS_TAB;
-    break;
+  if (respAttrs.fetched_files_status === MANIFEST_DOWNLOAD_STATE.SUCCEEDED) {
+    dispatch(setActiveDownloadProgressTab(SUCCESS_TAB));
+  } else if (respAttrs.fetched_files_status === MANIFEST_DOWNLOAD_STATE.FAILED) {
+    dispatch(setActiveDownloadProgressTab(ERRORS_TAB));
   }
-  dispatch(setActiveDownloadProgressTab(activeTab));
 };
 
 const baseRequest = (endpoint, csrfToken, method, options = {}) => {
