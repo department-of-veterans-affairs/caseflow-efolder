@@ -237,8 +237,7 @@ class DownloadProgressContainer extends React.PureComponent {
   manifestFailedBanner = () => {
     return <AlertBanner
       title="There was an error downloading this efolder"
-      alertType="error"
-    >
+      alertType="error">
       <p>You can try to download this efolder again using the ‘Retry Download' button below.
       If the problem persists, please send in feedback.</p>
       <ul className="ee-button-list">
@@ -280,9 +279,9 @@ class DownloadProgressContainer extends React.PureComponent {
       return this.manifestFailedBanner();
     } else if (this.props.documentsFetchStatus === MANIFEST_DOWNLOAD_STATE.SUCCEEDED) {
       return this.completeBanner();
-    } else {
-      return this.inProgressBanner();
     }
+
+    return this.inProgressBanner();
   }
 
   render() {
