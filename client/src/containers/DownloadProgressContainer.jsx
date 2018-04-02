@@ -236,11 +236,11 @@ class DownloadProgressContainer extends React.PureComponent {
 
   manifestFailedBanner = () => {
     return <AlertBanner
-      title="There was an error while downloading"
+      title="There was an error downloading this efolder"
       alertType="error"
     >
-      <p>We're sorry, but our systems had an error! Please try to download the case again, and if it still fails
-      please send in feedback.</p>
+      <p>You can try to download this efolder again using the ‘Retry Download' button below.
+      If the problem persists, please send in feedback.</p>
       <ul className="ee-button-list">
         <li>
           <button
