@@ -159,8 +159,8 @@ RSpec.feature "React Downloads" do
     let!(:manifest) { Manifest.create(file_number: veteran_id, fetched_files_status: "pending") }
     let!(:source) do
       [
-        manifest.sources.create(status: :success, name: "VBMS"),
-        manifest.sources.create(status: :success, name: "VVA")
+        manifest.sources.create(status: :success, name: "VBMS", fetched_at: Time.zone.now),
+        manifest.sources.create(status: :success, name: "VVA", fetched_at: Time.zone.now)
       ]
     end
     let!(:records) do
