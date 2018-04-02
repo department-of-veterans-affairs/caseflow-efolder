@@ -27,6 +27,13 @@ class Manifest < ApplicationRecord
     vva_source.start!
   end
 
+  def reset_stale_fetched_files_status!
+    if (finished? || failed?) && fetched_files_at && fetched_files_at < UI_HOURS_UNTIL_EXPIRY.hours.ago
+      update!(fetched_files_at: nil, fetched_files_status: :initialized)
+      start!
+    end
+  end
+
   def download_and_package_files!
     return if pending?
     update(fetched_files_status: :pending)

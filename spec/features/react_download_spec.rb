@@ -237,4 +237,45 @@ RSpec.feature "React Downloads" do
       end
     end
   end
+
+  context "When zipfile was created for efolder in distant past" do
+    let(:veteran_id) { "808909111" }
+
+    scenario "Viewing page for manifest with old zipfile shows search results page" do
+      perform_enqueued_jobs do
+        # Search for an efolder and start a download.
+        visit "/"
+        fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
+        click_button "Search"
+        expect(page).to have_content "Start retrieving efolder"
+
+        within(".cf-app-segment--alt") do
+          click_button "Start retrieving efolder"
+        end
+
+        expect(page).to have_content("Success!")
+
+        within(".cf-app-segment--alt") do
+          click_button "Download efolder"
+        end
+
+        # Wait for the download to complete and return to the homepage.
+        DownloadHelpers.wait_for_download
+        download = DownloadHelpers.downloaded?
+        expect(download).to be_truthy
+        expect(DownloadHelpers.download).to include("Lee, Stan - 2222")
+        click_on "Start over"
+
+        # Change the time that we downloaded the zipfile to be some time in the distant past.
+        manifest = Manifest.last
+        manifest.update(fetched_files_at: Time.zone.now - 50.days)
+
+        # Search for the same efolder and expect to see the search results page instead of the download page.
+        fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
+        click_button "Search"
+
+        expect(page).to have_content "Start retrieving efolder"
+      end
+    end
+  end
 end

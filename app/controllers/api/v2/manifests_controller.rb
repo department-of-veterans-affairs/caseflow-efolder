@@ -9,6 +9,7 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
     return sensitive_record unless bgs_service.check_sensitivity(file_number)
 
     manifest = Manifest.find_or_create_by_user(user: current_user, file_number: file_number)
+    manifest.reset_stale_fetched_files_status!
     manifest.start!
     render json: json_manifests(manifest)
   end
@@ -16,6 +17,8 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
   def progress
     files_download ||= FilesDownload.includes(:manifest).find_by(manifest_id: params[:id], user_id: current_user.id)
     return record_not_found unless files_download
+
+    files_download.manifest.reset_stale_fetched_files_status!
 
     render json: json_manifests(files_download.manifest)
   end
