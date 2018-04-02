@@ -14,12 +14,28 @@ import {
   setVeteranName
 } from './actions';
 import {
-  MANIFEST_DOWNLOAD_STATE,
+  DOCUMENT_DOWNLOAD_STATE,
   ERRORS_TAB,
-  IN_PROGRESS_TAB,
-  SUCCESS_TAB
+  SUCCESS_TAB,
+  IN_PROGRESS_TAB
 } from './Constants';
 import { documentDownloadComplete, documentDownloadStarted, manifestFetchComplete } from './Utils';
+
+const setActiveTab = (dispatch, respAttrs) => {
+  const failedRecords = respAttrs.records.some((record) => record.status === DOCUMENT_DOWNLOAD_STATE.FAILED);
+  const pendingRecords = respAttrs.records.some((record) => record.status === DOCUMENT_DOWNLOAD_STATE.IN_PROGRESS);
+  const allPendingRecords = respAttrs.records.every((record) => record.status === DOCUMENT_DOWNLOAD_STATE.IN_PROGRESS);
+
+  if (allPendingRecords) {
+    dispatch(setActiveDownloadProgressTab(IN_PROGRESS_TAB));
+  } else if (!pendingRecords) {
+    if (failedRecords) {
+      dispatch(setActiveDownloadProgressTab(ERRORS_TAB));
+    } else {
+      dispatch(setActiveDownloadProgressTab(SUCCESS_TAB));
+    }
+  }
+};
 
 const setStateFromResponse = (dispatch, resp) => {
   const respAttrs = resp.body.data.attributes;
@@ -31,11 +47,7 @@ const setStateFromResponse = (dispatch, resp) => {
   dispatch(setVeteranId(respAttrs.file_number));
   dispatch(setVeteranName(`${respAttrs.veteran_first_name} ${respAttrs.veteran_last_name}`));
 
-  if (respAttrs.fetched_files_status === MANIFEST_DOWNLOAD_STATE.SUCCEEDED) {
-    dispatch(setActiveDownloadProgressTab(SUCCESS_TAB));
-  } else if (respAttrs.fetched_files_status === MANIFEST_DOWNLOAD_STATE.FAILED) {
-    dispatch(setActiveDownloadProgressTab(ERRORS_TAB));
-  }
+  setActiveTab(dispatch, respAttrs);
 };
 
 const baseRequest = (endpoint, csrfToken, method, options = {}) => {
