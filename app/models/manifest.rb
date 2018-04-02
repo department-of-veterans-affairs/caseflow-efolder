@@ -102,16 +102,10 @@ class Manifest < ApplicationRecord
     @veteran ||= Veteran.new(file_number: file_number).load_bgs_record!
   end
 
-  def self.find_or_create_by_user(user:, file_number:)
-    manifest = Manifest.find_or_create_by(file_number: file_number)
-    manifest.files_downloads.find_or_create_by(user: user)
-    manifest
-  end
-
   private
 
   def file_download
-    files_downloads.find_by(user: RequestStore[:current_user])
+    files_downloads.find_or_create_by(user: RequestStore[:current_user])
   end
 
   def requested_zip_at

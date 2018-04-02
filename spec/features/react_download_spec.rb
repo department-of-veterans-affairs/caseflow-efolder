@@ -237,4 +237,25 @@ RSpec.feature "React Downloads" do
       end
     end
   end
+
+  context "Two users attempt to view manifest for same Veteran ID" do
+    let(:veteran_id) { "198912130" }
+
+    scenario "Visiting URL for manifest that a different user started" do
+      perform_enqueued_jobs do
+        # User A kicks off the initial search for a given Veteran ID.
+        visit "/"
+        fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
+        click_on "Search"
+        expect(page).to have_content "Start retrieving efolder"
+
+        # Sign in as a different user.
+        User.authenticate!(css_id: "DINOUYE")
+
+        # User B attempts to visit the URL for that manifest.
+        visit "/downloads/#{Manifest.last.id}"
+        expect(page).to have_content "Start retrieving efolder"
+      end
+    end
+  end
 end
