@@ -3,7 +3,7 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
   def start
 
     manifest
-    if (params[:id]) do
+    if params && params[:id] do
       manifest = Manifest.find(params[:id])
       return record_not_found unless manifest
     else
