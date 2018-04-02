@@ -266,9 +266,8 @@ RSpec.feature "React Downloads" do
         expect(DownloadHelpers.download).to include("Lee, Stan - 2222")
         click_on "Start over"
 
-        # Change the time that we downloaded the zipfile to be some time in the distant past.
-        manifest = Manifest.last
-        manifest.update(fetched_files_at: Time.zone.now - 50.days)
+        # Change the time that we fetched the manifest sources to be some time in the distant past.
+        Manifest.last.sources.map { |src| src.update!(fetched_at: Time.zone.now - 50.days) }
 
         # Search for the same efolder and expect to see the search results page instead of the download page.
         fill_in "Search for a Veteran ID number below to get started.", with: veteran_id

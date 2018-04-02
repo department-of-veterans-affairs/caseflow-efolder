@@ -1,15 +1,22 @@
 # TODO: create Api::V2::ApplicationController
 class Api::V2::ManifestsController < Api::V1::ApplicationController
   def start
-    file_number = request.headers["HTTP_FILE_NUMBER"]
-    return missing_header("File Number") unless file_number
 
-    return invalid_file_number unless bgs_service.valid_file_number?(file_number)
-    return veteran_not_found(file_number) if bgs_service.fetch_veteran_info(file_number).nil?
-    return sensitive_record unless bgs_service.check_sensitivity(file_number)
+    manifest
+    if (params[:id]) do
+      manifest = Manifest.find(params[:id])
+      return record_not_found unless manifest
+    else
+      file_number = request.headers["HTTP_FILE_NUMBER"]
+      return missing_header("File Number") unless file_number
 
-    manifest = Manifest.find_or_create_by_user(user: current_user, file_number: file_number)
-    manifest.reset_stale_fetched_files_status!
+      return invalid_file_number unless bgs_service.valid_file_number?(file_number)
+      return veteran_not_found(file_number) if bgs_service.fetch_veteran_info(file_number).nil?
+      return sensitive_record unless bgs_service.check_sensitivity(file_number)
+
+      manifest = Manifest.find_or_create_by_user(user: current_user, file_number: file_number)
+    end
+    
     manifest.start!
     render json: json_manifests(manifest)
   end
@@ -17,8 +24,6 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
   def progress
     files_download ||= FilesDownload.includes(:manifest).find_by(manifest_id: params[:id], user_id: current_user.id)
     return record_not_found unless files_download
-
-    files_download.manifest.reset_stale_fetched_files_status!
 
     render json: json_manifests(files_download.manifest)
   end
