@@ -16,6 +16,7 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
   def refresh
     manifest = Manifest.find(params[:id])
     return record_not_found unless manifest
+    return sensitive_record unless manifest.files_downloads.find_by(user: current_user)
 
     manifest.start!
     render json: json_manifests(manifest)
