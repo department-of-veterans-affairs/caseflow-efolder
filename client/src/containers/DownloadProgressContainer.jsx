@@ -245,7 +245,6 @@ class DownloadProgressContainer extends React.PureComponent {
           <button
             className="usa-button-outline"
             onClick={this.restartDocumentDownload}
-            {...css({ marginLeft: '2rem' })}
           >
             Retry download
           </button>
