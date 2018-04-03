@@ -191,4 +191,31 @@ RSpec.feature "Backend Error Flows" do
       end
     end
   end
+
+  context "When manifest has failed status" do
+    let!(:manifest) { Manifest.create(file_number: veteran_id, fetched_files_status: "failed") }
+    let!(:source) do
+      [
+        manifest.sources.create(status: :success, name: "VBMS"),
+        manifest.sources.create(status: :success, name: "VVA")
+      ]
+    end
+    let!(:files_download) do
+      manifest.files_downloads.find_or_create_by(
+        user: User.first,
+        requested_zip_at: Time.zone.now
+      )
+    end
+
+    scenario "Download progress shows correct information" do
+      visit "/downloads/1"
+
+      expect(page).to have_css ".usa-alert-heading", text: "There was an error downloading this efolder"
+      expect(page).to have_content "You can try to download this efolder again"
+
+      click_on "Retry download"
+
+      expect(page).to have_content "Retrieving Files"
+    end
+  end
 end
