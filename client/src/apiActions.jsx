@@ -21,6 +21,8 @@ import {
 } from './Constants';
 import { documentDownloadComplete, documentDownloadStarted, manifestFetchComplete } from './Utils';
 
+let currentManifestId = null;
+
 const setStateFromResponse = (dispatch, resp) => {
   const respAttrs = resp.body.data.attributes;
 
@@ -74,7 +76,14 @@ const buildErrorMessageFromResponse = (resp) => {
   return description;
 };
 
-export const pollManifestFetchEndpoint = (retryCount, manifestId, csrfToken) => (dispatch) => {
+export const pollManifestFetchEndpoint = (retryCount, manifestId, csrfToken, recursionIndex = 0) => (dispatch) => {
+
+  if (recursionIndex > 0 && currentManifestId !== manifestId) {
+    return;
+  }
+
+  currentManifestId = manifestId;
+
   getRequest(`/api/v2/manifests/${manifestId}`, csrfToken).
     then(
       (response) => { // eslint-disable-line max-statements
@@ -107,7 +116,7 @@ export const pollManifestFetchEndpoint = (retryCount, manifestId, csrfToken) => 
 
         if (retryCount < maxRetryCount) {
           setTimeout(() => {
-            dispatch(pollManifestFetchEndpoint(retryCount + 1, manifestId, csrfToken));
+            dispatch(pollManifestFetchEndpoint(retryCount + 1, manifestId, csrfToken, recursionIndex + 1));
           }, retrySleepMilliseconds);
         } else {
           dispatch(setErrorMessage(retriesExhaustedErrMsg));
