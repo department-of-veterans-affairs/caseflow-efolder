@@ -21,6 +21,8 @@ import {
 } from './Constants';
 import { documentDownloadComplete, documentDownloadStarted, manifestFetchComplete } from './Utils';
 
+let currentManifestId = null;
+
 const setActiveTab = (dispatch, respAttrs) => {
   const failedRecords = respAttrs.records.some((record) => record.status === DOCUMENT_DOWNLOAD_STATE.FAILED);
   const pendingRecords = respAttrs.records.some((record) => record.status === DOCUMENT_DOWNLOAD_STATE.IN_PROGRESS);
@@ -81,7 +83,19 @@ const buildErrorMessageFromResponse = (resp) => {
   return description;
 };
 
-export const pollManifestFetchEndpoint = (retryCount, manifestId, csrfToken) => (dispatch) => {
+export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken) => (dispatch) => {
+  // When a user attempts to download multiple case files, we end up in a state where we
+  // have multiple case files polling at the same time. We then alternate updating the UI
+  // between the multiple case files. This code checks to see if this is the first call to
+  // polling, if it is, then we set the currentManifestId. If in a future poll we find that
+  // the currentManifestId is set to a new manifestId then we know a user has moved on to
+  // a new case file and we cancel this manifest's polling.
+  if (retryCount > 0 && currentManifestId !== manifestId) {
+    return;
+  }
+
+  currentManifestId = manifestId;
+
   getRequest(`/api/v2/manifests/${manifestId}`, csrfToken).
     then(
       (response) => { // eslint-disable-line max-statements
