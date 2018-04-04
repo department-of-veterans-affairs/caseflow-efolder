@@ -21,6 +21,12 @@ import {
 } from './Constants';
 import { documentDownloadComplete, documentDownloadStarted, manifestFetchComplete } from './Utils';
 
+// Solution to multiple outstanding promises changing state back and forth.
+// https://github.com/department-of-veterans-affairs/caseflow-efolder/pull/978
+let outstandingPromise = null;
+
+export const setPromiseManifestId = (manifestId) => outstandingPromise = manifestId;
+
 const setStateFromResponse = (dispatch, resp) => {
   const respAttrs = resp.body.data.attributes;
 
@@ -78,6 +84,10 @@ export const pollManifestFetchEndpoint = (retryCount, manifestId, csrfToken) => 
   getRequest(`/api/v2/manifests/${manifestId}`, csrfToken).
     then(
       (response) => { // eslint-disable-line max-statements
+        if (outstandingPromise && outstandingPromise !== manifestId) {
+          return;
+        }
+
         setStateFromResponse(dispatch, response);
 
         // efolder #959: Large efolders can take more than 20 seconds to fetch manifests. Set timeout to 90 seconds
@@ -118,6 +128,8 @@ export const pollManifestFetchEndpoint = (retryCount, manifestId, csrfToken) => 
 };
 
 export const startDocumentDownload = (manifestId, csrfToken) => (dispatch) => {
+  outstandingPromise = manifestId;
+
   postRequest(`/api/v2/manifests/${manifestId}/files_downloads`, csrfToken).
     then(
       (resp) => {
@@ -136,6 +148,7 @@ export const startManifestFetch = (veteranId, csrfToken, redirectFunction) => (d
 
         const manifestId = resp.body.data.id;
 
+        outstandingPromise = manifestId;
         dispatch(setManifestId(manifestId));
         redirectFunction(`/downloads/${manifestId}`);
       },
