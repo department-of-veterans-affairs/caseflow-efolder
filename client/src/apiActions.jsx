@@ -76,9 +76,14 @@ const buildErrorMessageFromResponse = (resp) => {
   return description;
 };
 
-export const pollManifestFetchEndpoint = (retryCount, manifestId, csrfToken, recursionIndex = 0) => (dispatch) => {
-
-  if (recursionIndex > 0 && currentManifestId !== manifestId) {
+export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken) => (dispatch) => {
+  // When a user attempts to download multiple case files, we end up in a state where we
+  // have multiple case files polling at the same time. We then alternate updating the UI
+  // between the multiple case files. This code checks to see if this is the first call to
+  // polling, if it is, then we set the currentManifestId. If in a future poll we find that
+  // the currentManifestId is set to a new manifestId then we know a user has moved on to
+  // a new case file and we cancel this manifest's polling.
+  if (retryCount > 0 && currentManifestId !== manifestId) {
     return;
   }
 
@@ -116,7 +121,7 @@ export const pollManifestFetchEndpoint = (retryCount, manifestId, csrfToken, rec
 
         if (retryCount < maxRetryCount) {
           setTimeout(() => {
-            dispatch(pollManifestFetchEndpoint(retryCount + 1, manifestId, csrfToken, recursionIndex + 1));
+            dispatch(pollManifestFetchEndpoint(retryCount + 1, manifestId, csrfToken));
           }, retrySleepMilliseconds);
         } else {
           dispatch(setErrorMessage(retriesExhaustedErrMsg));
