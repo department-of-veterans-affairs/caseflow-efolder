@@ -21,7 +21,11 @@ import {
 } from './Constants';
 import { documentDownloadComplete, documentDownloadStarted, manifestFetchComplete } from './Utils';
 
+// Solution to multiple outstanding promises changing state back and forth.
+// https://github.com/department-of-veterans-affairs/caseflow-efolder/pull/978
 let outstandingPromise = null;
+
+export const setPromiseManifestId = (manifestId) => outstandingPromise = manifestId;
 
 const setStateFromResponse = (dispatch, resp) => {
   const respAttrs = resp.body.data.attributes;
@@ -80,7 +84,9 @@ export const pollManifestFetchEndpoint = (retryCount, manifestId, csrfToken) => 
   getRequest(`/api/v2/manifests/${manifestId}`, csrfToken).
     then(
       (response) => { // eslint-disable-line max-statements
-        if (outstandingPromise && outstandingPromise !== manifestId) return;
+        if (outstandingPromise && outstandingPromise !== manifestId) {
+          return;
+        }
 
         setStateFromResponse(dispatch, response);
 
@@ -157,5 +163,3 @@ export const getDownloadHistory = (csrfToken) => (dispatch) => {
       (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
     );
 };
-
-export const setPromiseManifestId = (manifestId) => outstandingPromise = manifestId;
