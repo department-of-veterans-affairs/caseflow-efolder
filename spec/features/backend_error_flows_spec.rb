@@ -131,14 +131,14 @@ RSpec.feature "Backend Error Flows" do
         expect(page).to have_css ".cf-tab.cf-active", text: "Errors (1)"
         expect(page).to have_content "Some files could not be retrieved"
 
-        expect(page).to have_content Caseflow::DocumentTypes::TYPES[documents[1].type_id]
+        expect(page).to have_content Caseflow::DocumentTypes::TYPES[documents[0].type_id]
 
         # Clicking on progress shouldn't change tabs since there number is 0.
         click_on "Progress (0)"
-        expect(page).to have_content Caseflow::DocumentTypes::TYPES[documents[1].type_id]
-
-        click_on "Errors (1)"
         expect(page).to have_content Caseflow::DocumentTypes::TYPES[documents[0].type_id]
+
+        click_on "Completed (1)"
+        expect(page).to have_content Caseflow::DocumentTypes::TYPES[documents[1].type_id]
 
         within first(".usa-alert-body") do
           click_on "Download anyway"
