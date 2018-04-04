@@ -239,7 +239,7 @@ class DownloadProgressContainer extends React.PureComponent {
       title="There was an error downloading this efolder"
       alertType="error">
       <p>You can try to download this efolder again using the ‘Retry Download' button below.
-      If the problem persists, please send in feedback.</p>
+      If the problem persists, please <Link href={this.props.feedbackUrl}>send feedback.</Link></p>
       <ul className="ee-button-list">
         <li>
           <button
@@ -312,7 +312,8 @@ const mapStateToProps = (state) => ({
   },
   documentSources: state.documentSources,
   manifestId: state.manifestId,
-  veteranId: state.veteranId
+  veteranId: state.veteranId,
+  feedbackUrl: state.feedbackUrl
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
