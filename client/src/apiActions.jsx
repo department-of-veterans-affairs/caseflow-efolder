@@ -158,4 +158,4 @@ export const getDownloadHistory = (csrfToken) => (dispatch) => {
     );
 };
 
-export const setCurrentManifest = (manifestId) => (dispatch) => { outstandingPromise = manifestId; }
+export const setPromiseManifestId = (manifestId) => outstandingPromise = manifestId;
