@@ -128,7 +128,7 @@ RSpec.feature "Backend Error Flows" do
           click_button "Start retrieving efolder"
         end
 
-        expect(page).to have_css ".cf-tab.cf-active", text: "Completed (1)"
+        expect(page).to have_css ".cf-tab.cf-active", text: "Errors (1)"
         expect(page).to have_content "Some files could not be retrieved"
 
         expect(page).to have_content Caseflow::DocumentTypes::TYPES[documents[1].type_id]
@@ -180,7 +180,7 @@ RSpec.feature "Backend Error Flows" do
           click_button "Start retrieving efolder"
         end
 
-        expect(page).to have_css ".cf-tab.cf-active", text: "Completed (1)"
+        expect(page).to have_css ".cf-tab.cf-active", text: "Errors (1)"
         expect(page).to have_content "Some files could not be retrieved"
 
         allow(Fakes::DocumentService).to receive(:v2_fetch_document_file).and_return("Test content")

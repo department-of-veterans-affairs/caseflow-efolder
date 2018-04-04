@@ -26,6 +26,10 @@ const setActiveTab = (dispatch, respAttrs) => {
   const pendingRecords = respAttrs.records.some((record) => record.status === DOCUMENT_DOWNLOAD_STATE.IN_PROGRESS);
   const allPendingRecords = respAttrs.records.every((record) => record.status === DOCUMENT_DOWNLOAD_STATE.IN_PROGRESS);
 
+  // When all the records are pending, the pending tab will be selected. Once a single document is completed or
+  // failed the user can choose any tab. Once the download is complete either the completed tab (if there are no errors)
+  // or the error tab (if there are any errors) is automatically selected for the user. Then the user can switch
+  // to any tab with documents.
   if (allPendingRecords) {
     dispatch(setActiveDownloadProgressTab(IN_PROGRESS_TAB));
   } else if (!pendingRecords) {
