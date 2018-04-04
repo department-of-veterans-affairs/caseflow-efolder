@@ -14,14 +14,34 @@ import {
   setVeteranName
 } from './actions';
 import {
-  MANIFEST_DOWNLOAD_STATE,
+  DOCUMENT_DOWNLOAD_STATE,
   ERRORS_TAB,
-  IN_PROGRESS_TAB,
-  SUCCESS_TAB
+  SUCCESS_TAB,
+  IN_PROGRESS_TAB
 } from './Constants';
 import { documentDownloadComplete, documentDownloadStarted, manifestFetchComplete } from './Utils';
 
 let currentManifestId = null;
+
+const setActiveTab = (dispatch, respAttrs) => {
+  const failedRecords = respAttrs.records.some((record) => record.status === DOCUMENT_DOWNLOAD_STATE.FAILED);
+  const pendingRecords = respAttrs.records.some((record) => record.status === DOCUMENT_DOWNLOAD_STATE.IN_PROGRESS);
+  const allPendingRecords = respAttrs.records.every((record) => record.status === DOCUMENT_DOWNLOAD_STATE.IN_PROGRESS);
+
+  // When all the records are pending, the pending tab will be selected. Once a single document is completed or
+  // failed the user can choose any tab. Once the download is complete either the completed tab (if there are no errors)
+  // or the error tab (if there are any errors) is automatically selected for the user. Then the user can switch
+  // to any tab with documents.
+  if (allPendingRecords) {
+    dispatch(setActiveDownloadProgressTab(IN_PROGRESS_TAB));
+  } else if (!pendingRecords) {
+    if (failedRecords) {
+      dispatch(setActiveDownloadProgressTab(ERRORS_TAB));
+    } else {
+      dispatch(setActiveDownloadProgressTab(SUCCESS_TAB));
+    }
+  }
+};
 
 const setStateFromResponse = (dispatch, resp) => {
   const respAttrs = resp.body.data.attributes;
@@ -33,20 +53,7 @@ const setStateFromResponse = (dispatch, resp) => {
   dispatch(setVeteranId(respAttrs.file_number));
   dispatch(setVeteranName(`${respAttrs.veteran_first_name} ${respAttrs.veteran_last_name}`));
 
-  let activeTab = IN_PROGRESS_TAB;
-
-  switch (respAttrs.fetched_files_status) {
-  case MANIFEST_DOWNLOAD_STATE.SUCCEEDED:
-    activeTab = SUCCESS_TAB;
-    break;
-  case MANIFEST_DOWNLOAD_STATE.FAILED:
-    activeTab = ERRORS_TAB;
-    break;
-  default:
-    activeTab = IN_PROGRESS_TAB;
-    break;
-  }
-  dispatch(setActiveDownloadProgressTab(activeTab));
+  setActiveTab(dispatch, respAttrs);
 };
 
 const baseRequest = (endpoint, csrfToken, method, options = {}) => {
