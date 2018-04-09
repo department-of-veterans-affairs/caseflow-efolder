@@ -155,6 +155,26 @@ RSpec.feature "React Downloads" do
     expect(page).to have_css ".progress-bar"
   end
 
+  scenario "Veteran ID does not persist in search bar after searching" do
+    perform_enqueued_jobs do
+      visit "/"
+      fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
+
+      click_button "Search"
+
+      expect(page).to have_content "STAN LEE VETERAN ID #{veteran_id}"
+      expect(page).to have_content "Start retrieving efolder"
+    end
+
+    within(".cf-app-segment--alt") do
+      click_button "Start retrieving efolder"
+    end
+
+    click_on "eFolder Express home page."
+
+    expect(page.find("input#file_number").value).to_not eq(veteran_id)
+  end
+
   context "When manifest endpoint returns different statuses for different documents" do
     let!(:manifest) { Manifest.create(file_number: veteran_id, fetched_files_status: "pending") }
     let!(:source) do
