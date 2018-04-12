@@ -56,6 +56,23 @@ describe DocumentCreator do
       end
     end
 
+    context "when documents contains duplicates" do
+        let(:documents) do
+          [
+            OpenStruct.new(document_id: "1", series_id: "3"),
+            OpenStruct.new(document_id: "2", series_id: "4"),
+            OpenStruct.new(document_id: "2", series_id: "4")
+          ]
+        end
+
+        it "only saves duplicate once" do
+          subject
+          expect(source.reload.records.size).to eq 2
+          expect(source.reload.records.first.version_id).to eq "1"
+          expect(source.reload.records.second.version_id).to eq "2"
+        end
+      end
+
     context "documents have been deleted from VBMS but still present in the DB" do
       let(:documents) do
         [

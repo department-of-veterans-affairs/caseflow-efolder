@@ -55,28 +55,6 @@ describe ManifestFetcher do
         end
       end
 
-      context "when VVA client returns manifest with duplicates" do
-        let(:documents) do
-          [
-            OpenStruct.new(document_id: "1", series_id: "3"),
-            OpenStruct.new(document_id: "2", series_id: "4"),
-            OpenStruct.new(document_id: "2", series_id: "4")
-          ]
-        end
-
-        before do
-          allow(VVAService).to receive(:v2_fetch_documents_for).and_return(documents)
-        end
-
-        it "only saves duplicate once" do
-          expect(subject.size).to eq 2
-          expect(source.reload.status).to eq "success"
-          expect(source.reload.fetched_at).to_not be_nil
-          expect(subject[0].document_id).to eq "1"
-          expect(subject[1].document_id).to eq "2"
-        end
-      end
-
       context "when VVA client returns error" do
         before do
           allow(VVAService).to receive(:v2_fetch_documents_for).and_raise(VVA::ClientError)

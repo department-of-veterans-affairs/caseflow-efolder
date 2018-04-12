@@ -43,7 +43,7 @@ class Fakes::DocumentService
       num_docs: 0
     },
     "DEMODEFAULT" => {
-      manifest_load: 4,
+      manifest_load: 10,
       num_docs: 10,
       max_file_load: 3
     }
