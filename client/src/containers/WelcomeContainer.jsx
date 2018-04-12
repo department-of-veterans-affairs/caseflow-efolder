@@ -5,7 +5,12 @@ import { bindActionCreators } from 'redux';
 
 import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/AppSegment';
 
-import { clearErrorMessage, setVeteranId, setSearchInputText } from '../actions';
+import {
+  clearErrorMessage,
+  clearSearchInputText,
+  setVeteranId,
+  setSearchInputText
+} from '../actions';
 import { startManifestFetch } from '../apiActions';
 import AlertBanner from '../components/AlertBanner';
 import RecentDownloadsContainer from './RecentDownloadsContainer';
@@ -18,6 +23,7 @@ const searchBarNoteTextStyling = css({
 class WelcomeContainer extends React.PureComponent {
   componentDidMount() {
     this.props.clearErrorMessage();
+    this.props.clearSearchInputText();
   }
 
   handleInputChange = (event) => {
@@ -85,6 +91,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   clearErrorMessage,
+  clearSearchInputText,
   setVeteranId,
   startManifestFetch,
   setSearchInputText

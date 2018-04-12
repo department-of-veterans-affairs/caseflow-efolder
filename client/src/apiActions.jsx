@@ -14,12 +14,34 @@ import {
   setVeteranName
 } from './actions';
 import {
-  MANIFEST_DOWNLOAD_STATE,
+  DOCUMENT_DOWNLOAD_STATE,
   ERRORS_TAB,
-  IN_PROGRESS_TAB,
-  SUCCESS_TAB
+  SUCCESS_TAB,
+  IN_PROGRESS_TAB
 } from './Constants';
 import { documentDownloadComplete, documentDownloadStarted, manifestFetchComplete } from './Utils';
+
+let currentManifestId = null;
+
+const setActiveTab = (dispatch, respAttrs) => {
+  const failedRecords = respAttrs.records.some((record) => record.status === DOCUMENT_DOWNLOAD_STATE.FAILED);
+  const pendingRecords = respAttrs.records.some((record) => record.status === DOCUMENT_DOWNLOAD_STATE.IN_PROGRESS);
+  const allPendingRecords = respAttrs.records.every((record) => record.status === DOCUMENT_DOWNLOAD_STATE.IN_PROGRESS);
+
+  // When all the records are pending, the pending tab will be selected. Once a single document is completed or
+  // failed the user can choose any tab. Once the download is complete either the completed tab (if there are no errors)
+  // or the error tab (if there are any errors) is automatically selected for the user. Then the user can switch
+  // to any tab with documents.
+  if (allPendingRecords) {
+    dispatch(setActiveDownloadProgressTab(IN_PROGRESS_TAB));
+  } else if (!pendingRecords) {
+    if (failedRecords) {
+      dispatch(setActiveDownloadProgressTab(ERRORS_TAB));
+    } else {
+      dispatch(setActiveDownloadProgressTab(SUCCESS_TAB));
+    }
+  }
+};
 
 const setStateFromResponse = (dispatch, resp) => {
   const respAttrs = resp.body.data.attributes;
@@ -31,20 +53,7 @@ const setStateFromResponse = (dispatch, resp) => {
   dispatch(setVeteranId(respAttrs.file_number));
   dispatch(setVeteranName(`${respAttrs.veteran_first_name} ${respAttrs.veteran_last_name}`));
 
-  let activeTab = IN_PROGRESS_TAB;
-
-  switch (respAttrs.fetched_files_status) {
-  case MANIFEST_DOWNLOAD_STATE.SUCCEEDED:
-    activeTab = SUCCESS_TAB;
-    break;
-  case MANIFEST_DOWNLOAD_STATE.FAILED:
-    activeTab = ERRORS_TAB;
-    break;
-  default:
-    activeTab = IN_PROGRESS_TAB;
-    break;
-  }
-  dispatch(setActiveDownloadProgressTab(activeTab));
+  setActiveTab(dispatch, respAttrs);
 };
 
 const baseRequest = (endpoint, csrfToken, method, options = {}) => {
@@ -74,7 +83,19 @@ const buildErrorMessageFromResponse = (resp) => {
   return description;
 };
 
-export const pollManifestFetchEndpoint = (retryCount, manifestId, csrfToken) => (dispatch) => {
+export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken) => (dispatch) => {
+  // When a user attempts to download multiple case files, we end up in a state where we
+  // have multiple case files polling at the same time. We then alternate updating the UI
+  // between the multiple case files. This code checks to see if this is the first call to
+  // polling, if it is, then we set the currentManifestId. If in a future poll we find that
+  // the currentManifestId is set to a new manifestId then we know a user has moved on to
+  // a new case file and we cancel this manifest's polling.
+  if (retryCount > 0 && currentManifestId !== manifestId) {
+    return;
+  }
+
+  currentManifestId = manifestId;
+
   getRequest(`/api/v2/manifests/${manifestId}`, csrfToken).
     then(
       (response) => { // eslint-disable-line max-statements

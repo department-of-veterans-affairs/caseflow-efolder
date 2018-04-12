@@ -26,6 +26,10 @@ export default function reducer(state = {}, action = {}) {
     return { ...state,
       errorMessage: initState.errorMessage };
 
+  case Actions.CLEAR_SEARCH_TEXT:
+    return { ...state,
+      searchInputText: initState.searchInputText };
+
   case Actions.HIDE_CONFIRM_DOWNLOAD_MODAL:
     return { ...state,
       confirmDownloadModalIsVisible: false };

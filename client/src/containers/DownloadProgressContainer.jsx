@@ -26,7 +26,8 @@ import {
   IN_PROGRESS_TAB,
   SUCCESS_TAB,
   DOCUMENT_DOWNLOAD_STATE,
-  MANIFEST_SOURCE_FETCH_STATE
+  MANIFEST_SOURCE_FETCH_STATE,
+  MANIFEST_DOWNLOAD_STATE
 } from '../Constants';
 import DownloadProgressTab from './DownloadProgressTab';
 import ManifestDocumentsTable from '../components/ManifestDocumentsTable';
@@ -233,27 +234,60 @@ class DownloadProgressContainer extends React.PureComponent {
     </section>;
   }
 
+  manifestFailedBanner = () => {
+    return <AlertBanner
+      title="There was an error downloading this efolder"
+      alertType="error">
+      <p>You can try to download this efolder again using the ‘Retry Download' button below.
+      If the problem persists, please <Link href={this.props.feedbackUrl}>send feedback.</Link></p>
+      <ul className="ee-button-list">
+        <li>
+          <button
+            className="usa-button-outline"
+            onClick={this.restartDocumentDownload}
+          >
+            Retry download
+          </button>
+        </li>
+      </ul>
+    </AlertBanner>;
+  }
+
+  progressTabsAndTable = () => {
+    return <React.Fragment>
+      <div className="cf-tab-navigation">
+        <DownloadProgressTab name={IN_PROGRESS_TAB} documentCount={this.props.documentsForStatus.progress.length}>
+          <ProgressIcon /> Progress ({this.props.documentsForStatus.progress.length})
+        </DownloadProgressTab>
+
+        <DownloadProgressTab name={SUCCESS_TAB} documentCount={this.props.documentsForStatus.success.length}>
+          <SuccessIcon /> Completed ({this.props.documentsForStatus.success.length})
+        </DownloadProgressTab>
+
+        <DownloadProgressTab name={ERRORS_TAB} documentCount={this.props.documentsForStatus.failed.length}>
+          <FailedIcon /> Errors ({this.props.documentsForStatus.failed.length})
+        </DownloadProgressTab>
+      </div>
+
+      { this.getActiveTable() }
+    </React.Fragment>;
+  }
+
+  banner = () => {
+    if (this.props.documentsFetchStatus === MANIFEST_DOWNLOAD_STATE.FAILED) {
+      return this.manifestFailedBanner();
+    } else if (this.props.documentsFetchStatus === MANIFEST_DOWNLOAD_STATE.SUCCEEDED) {
+      return this.completeBanner();
+    }
+
+    return this.inProgressBanner();
+  }
+
   render() {
     return <React.Fragment>
       <AppSegment filledBackground>
-
-        { documentDownloadComplete(this.props.documentsFetchStatus) ? this.completeBanner() : this.inProgressBanner() }
-
-        <div className="cf-tab-navigation">
-          <DownloadProgressTab name={IN_PROGRESS_TAB} documentCount={this.props.documentsForStatus.progress.length}>
-            <ProgressIcon /> Progress ({this.props.documentsForStatus.progress.length})
-          </DownloadProgressTab>
-
-          <DownloadProgressTab name={SUCCESS_TAB} documentCount={this.props.documentsForStatus.success.length}>
-            <SuccessIcon /> Completed ({this.props.documentsForStatus.success.length})
-          </DownloadProgressTab>
-
-          <DownloadProgressTab name={ERRORS_TAB} documentCount={this.props.documentsForStatus.failed.length}>
-            <FailedIcon /> Errors ({this.props.documentsForStatus.failed.length})
-          </DownloadProgressTab>
-        </div>
-
-        { this.getActiveTable() }
+        { this.banner() }
+        { this.props.documentsFetchStatus !== MANIFEST_DOWNLOAD_STATE.FAILED && this.progressTabsAndTable() }
       </AppSegment>
 
       <DownloadPageFooter>{ this.getFooterDownloadButton() }</DownloadPageFooter>
@@ -278,7 +312,8 @@ const mapStateToProps = (state) => ({
   },
   documentSources: state.documentSources,
   manifestId: state.manifestId,
-  veteranId: state.veteranId
+  veteranId: state.veteranId,
+  feedbackUrl: state.feedbackUrl
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
