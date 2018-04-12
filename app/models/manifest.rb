@@ -23,6 +23,9 @@ class Manifest < ApplicationRecord
   API_HOURS_UNTIL_EXPIRY = 3
 
   def start!
+    # Reset stale manifests.
+    update!(fetched_files_status: :initialized) if requested_zip_at && requested_zip_at < UI_HOURS_UNTIL_EXPIRY.hours.ago
+
     vbms_source.start!
     vva_source.start!
   end

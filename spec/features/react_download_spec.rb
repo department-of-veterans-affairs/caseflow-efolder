@@ -260,6 +260,7 @@ RSpec.feature "React Downloads" do
 
   context "When zipfile was created for efolder in distant past" do
     let(:veteran_id) { "808909111" }
+    after { Timecop.return }
 
     scenario "Viewing page for manifest with old zipfile shows search results page" do
       perform_enqueued_jobs do
@@ -286,8 +287,8 @@ RSpec.feature "React Downloads" do
         expect(DownloadHelpers.download).to include("Lee, Stan - 2222")
         click_on "Start over"
 
-        # Change the time that we fetched the manifest sources to be some time in the distant past.
-        Manifest.last.sources.map { |src| src.update!(fetched_at: Time.zone.now - 50.days) }
+        # Fast forward time so that the manifest becomes "stale" relative to the new time.
+        Timecop.travel(Time.zone.now + 50.days)
 
         # Search for the same efolder and expect to see the search results page instead of the download page.
         fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
