@@ -179,8 +179,8 @@ RSpec.feature "React Downloads" do
     let!(:manifest) { Manifest.create(file_number: veteran_id, fetched_files_status: "pending") }
     let!(:source) do
       [
-        manifest.sources.create(status: :success, name: "VBMS"),
-        manifest.sources.create(status: :success, name: "VVA")
+        manifest.sources.create(status: :success, name: "VBMS", fetched_at: Time.zone.now),
+        manifest.sources.create(status: :success, name: "VVA", fetched_at: Time.zone.now)
       ]
     end
     let!(:records) do
@@ -254,6 +254,47 @@ RSpec.feature "React Downloads" do
         visit "/"
 
         expect(page).to_not have_content(veteran_id)
+      end
+    end
+  end
+
+  context "When zipfile was created for efolder in distant past" do
+    let(:veteran_id) { "808909111" }
+    after { Timecop.return }
+
+    scenario "Viewing page for manifest with old zipfile shows search results page" do
+      perform_enqueued_jobs do
+        # Search for an efolder and start a download.
+        visit "/"
+        fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
+        click_button "Search"
+        expect(page).to have_content "Start retrieving efolder"
+
+        within(".cf-app-segment--alt") do
+          click_button "Start retrieving efolder"
+        end
+
+        expect(page).to have_content("Success!")
+
+        within(".cf-app-segment--alt") do
+          click_button "Download efolder"
+        end
+
+        # Wait for the download to complete and return to the homepage.
+        DownloadHelpers.wait_for_download
+        download = DownloadHelpers.downloaded?
+        expect(download).to be_truthy
+        expect(DownloadHelpers.download).to include("Lee, Stan - 2222")
+        click_on "Start over"
+
+        # Fast forward time so that the manifest becomes "stale" relative to the new time.
+        Timecop.travel(Time.zone.now + 50.days)
+
+        # Search for the same efolder and expect to see the search results page instead of the download page.
+        fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
+        click_button "Search"
+
+        expect(page).to have_content "Start retrieving efolder"
       end
     end
   end
