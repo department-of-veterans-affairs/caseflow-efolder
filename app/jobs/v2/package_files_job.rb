@@ -1,7 +1,7 @@
 class V2::PackageFilesJob < ActiveJob::Base
   queue_as :med_priority
 
-  SECONDS_TO_AUTO_UNLOCK = 14_400
+  SECONDS_TO_AUTO_UNLOCK = 21_600
 
   def perform(manifest)
     s = Redis::Semaphore.new("package_files_#{manifest.id}".to_s,
