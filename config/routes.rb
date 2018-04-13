@@ -33,6 +33,7 @@ Rails.application.routes.draw do
     namespace :v2 do
       namespace :manifests, only: [] do
         post "/", action: :start
+        post "/:id", action: :refresh
         get :history
         get "/:id", action: :progress
       end

@@ -11,7 +11,7 @@ import {
   resetDefaultManifestState,
   setManifestId
 } from '../actions';
-import { pollManifestFetchEndpoint } from '../apiActions';
+import { pollManifestFetchEndpoint, restartManifestFetch } from '../apiActions';
 import DownloadPageFooter from '../components/DownloadPageFooter';
 import DownloadPageHeader from '../components/DownloadPageHeader';
 import PageLoadingIndicator from '../components/PageLoadingIndicator';
@@ -39,6 +39,7 @@ class DownloadContainer extends React.PureComponent {
       !manifestFetchComplete(this.props.documentSources) ||
       this.props.documentsFetchStatus === MANIFEST_DOWNLOAD_STATE.IN_PROGRESS
     ) {
+      this.props.restartManifestFetch(manifestId, this.props.csrfToken);
       this.props.pollManifestFetchEndpoint(0, manifestId, this.props.csrfToken);
     }
   }
@@ -100,6 +101,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   pollManifestFetchEndpoint,
   clearErrorMessage,
   resetDefaultManifestState,
+  restartManifestFetch,
   setManifestId
 }, dispatch);
 
