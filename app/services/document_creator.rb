@@ -37,7 +37,8 @@ class DocumentCreator
       # Re-create documents each time in order to use the latest versions
       # and if documents were deleted from VBMS
       manifest_source.records.delete_all
-      external_documents.map do |document|
+      # Remove any duplicates before adding them.
+      external_documents.uniq(&:document_id).map do |document|
         Record.create_from_external_document(manifest_source, document)
       end
     end
