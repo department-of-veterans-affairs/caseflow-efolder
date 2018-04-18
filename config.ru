@@ -24,17 +24,24 @@ use Rack::Deflater,
 # Customized collector for our own metrics
 use MetricsCollector
 
+# Replace ids and id-like values to keep cardinality low.
+# Otherwise Prometheus crashes on 400k+ data series.
+# '/users/1234/comments' -> '/users/:id/comments'
+# '/hearings/dockets/2017-10-15' -> '/hearings/dockets/:id'
+# '/certifications/new/123C' -> '/certifications/new/:id'
+# '/api/v2/records/7D11AE16-1DFF-49F5-AE31-B9E4675EBC30' -> '/api/v2/records/:id'
+numeric_id_pattern = '\d+'
+date_pattern = '\d{4}-\d{2}-\d{2}'
+vbms_id_pattern = '\d+[CS]?'
+uuid_pattern = '[A-F0-9]{8}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{12}'
+id_matching_regex = %r'/(?:#{numeric_id_pattern}|#{date_pattern}|#{vbms_id_pattern}|#{uuid_pattern})(/|$)'
+
 label_builder = lambda do |env, code|
   {
     code: code,
     method: env["REQUEST_METHOD"].downcase,
     host: env["HTTP_HOST"].to_s,
-    # Replace ids and id-like values to keep cardinality low.
-    # Otherwise Prometheus crashes on 400k+ data series.
-    # '/users/1234/comments' -> '/users/:id/comments'
-    # '/hearings/dockets/2017-10-15' -> '/hearings/dockets/:id'
-    # '/certifications/new/123C' -> '/certifications/new/:id'
-    path: env["PATH_INFO"].to_s.gsub(%r{\/\d+-?\d*-?\d*C?S?(\/|$)}, '/:id\\1')
+    path: env["PATH_INFO"].to_s.gsub(id_matching_regex, '/:id\\1')
   }
 end
 
