@@ -28,9 +28,13 @@ use MetricsCollector
 # Otherwise Prometheus crashes on 400k+ data series.
 # '/users/1234/comments' -> '/users/:id/comments'
 # '/api/v2/records/7D11AE16-1DFF-49F5-AE31-B9E4675EBC30' -> '/api/v2/records/:id'
+# rubocop:disable Style/StringLiterals
 numeric_id_pattern = '\d+'
 uuid_pattern = '[A-F0-9]{8}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{12}'
+# rubocop:enable Style/StringLiterals
+# rubocop:disable Style/PercentLiteralDelimiters
 id_matching_regex = %r'/(?:#{numeric_id_pattern}|#{uuid_pattern})(/|$)'
+# rubocop:enable Style/PercentLiteralDelimiters
 
 label_builder = lambda do |env, code|
   {
