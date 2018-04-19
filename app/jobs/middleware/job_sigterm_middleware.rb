@@ -11,6 +11,6 @@ class JobSigtermMiddleware
     job_finished = true
   ensure
     # Ensures always execute even on SIGTERMs (unless we cannot wrap up fast enough and are killed)
-    msg.visibility_timeout = 0 if !job_finished
+    msg.visibility_timeout = 30 if !job_finished
   end
 end
