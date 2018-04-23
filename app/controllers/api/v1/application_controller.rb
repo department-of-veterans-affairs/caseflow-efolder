@@ -61,7 +61,7 @@ class Api::V1::ApplicationController < BaseController
     # authenticates, then we create the current user based on the css_id and station_id
     # passed in the header. Otherwise we try to create the current user from the session
     # and authorize based on the presence of the Reader role.
-    if true
+    if authenticate_with_token
       return missing_header("Station ID") unless station_id
       return missing_header("CSS ID") unless css_id
 
