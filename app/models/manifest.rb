@@ -31,8 +31,12 @@ class Manifest < ApplicationRecord
   end
 
   def download_and_package_files!
-    return if pending?
-    update(fetched_files_status: :pending)
+    s = Redis::Semaphore.new("package_files_#{id}".to_s, url: Rails.application.secrets.redis_url)
+    s.lock do
+      return if pending?
+      update(fetched_files_status: :pending)
+    end
+
     reset_records
     V2::PackageFilesJob.perform_later(self)
   end

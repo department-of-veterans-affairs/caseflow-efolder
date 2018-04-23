@@ -1,14 +1,7 @@
 class V2::DownloadManifestJob < ActiveJob::Base
   queue_as :high_priority
 
-  SECONDS_TO_AUTO_UNLOCK = 180
-
   def perform(manifest_source, ui_user)
-    s = Redis::Semaphore.new("download_manifest_source_#{manifest_source.id}".to_s,
-                             url: Rails.application.secrets.redis_url,
-                             expiration: SECONDS_TO_AUTO_UNLOCK)
-
-    s.lock(SECONDS_TO_AUTO_UNLOCK)
     return if manifest_source.current?
 
     documents = ManifestFetcher.new(manifest_source: manifest_source).process
@@ -17,8 +10,6 @@ class V2::DownloadManifestJob < ActiveJob::Base
   rescue StandardError => e
     manifest_source.update!(status: :failed)
     raise e
-  ensure
-    s.unlock
   end
 
   def max_attempts

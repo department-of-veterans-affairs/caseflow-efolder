@@ -18,8 +18,12 @@ class ManifestSource < ApplicationRecord
   delegate :file_number, to: :manifest
 
   def start!
-    return if current? || pending?
-    update(status: :pending)
+    s = Redis::Semaphore.new("download_manifest_source_#{id}".to_s, url: Rails.application.secrets.redis_url)
+    s.lock do
+      return if current? || pending?
+      update(status: :pending)
+    end
+
     V2::DownloadManifestJob.perform_later(self, ui_user?)
   end
 
