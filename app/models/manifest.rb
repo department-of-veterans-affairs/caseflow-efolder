@@ -22,6 +22,8 @@ class Manifest < ApplicationRecord
   UI_HOURS_UNTIL_EXPIRY = 72
   API_HOURS_UNTIL_EXPIRY = 3
 
+  SECONDS_TO_AUTO_UNLOCK = 5
+
   def start!
     # Reset stale manifests.
     update!(fetched_files_status: :initialized) if requested_zip_at && requested_zip_at < UI_HOURS_UNTIL_EXPIRY.hours.ago
@@ -31,8 +33,10 @@ class Manifest < ApplicationRecord
   end
 
   def download_and_package_files!
-    s = Redis::Semaphore.new("package_files_#{id}".to_s, url: Rails.application.secrets.redis_url)
-    s.lock do
+    s = Redis::Semaphore.new("package_files_#{id}".to_s,
+                             url: Rails.application.secrets.redis_url,
+                             expiration: SECONDS_TO_AUTO_UNLOCK)
+    s.lock(SECONDS_TO_AUTO_UNLOCK) do
       return if pending?
       update(fetched_files_status: :pending)
     end
