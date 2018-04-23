@@ -5,7 +5,8 @@ class V2::PackageFilesJob < ActiveJob::Base
 
   def perform(manifest)
     s = Redis::Semaphore.new("package_files_#{manifest.id}".to_s,
-                             url: Rails.application.secrets.redis_url)
+                             url: Rails.application.secrets.redis_url,
+                             expiration: SECONDS_TO_AUTO_UNLOCK)
 
     s.lock(SECONDS_TO_AUTO_UNLOCK)
 
