@@ -21,6 +21,9 @@ end
 
 Shoryuken.configure_server do |config|
 
+  Rails.logger = Shoryuken::Logging.logger
+  Rails.logger.level = Logger::INFO
+
   # register all shoryuken middleware
   config.server_middleware do |chain|
     chain.add JobPrometheusMetricMiddleware
