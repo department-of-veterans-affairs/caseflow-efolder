@@ -1,7 +1,6 @@
 require "#{Rails.root}/app/jobs/middleware/job_prometheus_metric_middleware"
 require "#{Rails.root}/app/jobs/middleware/job_data_dog_metric_middleware"
 require "#{Rails.root}/app/jobs/middleware/job_raven_reporter_middleware"
-require "#{Rails.root}/app/jobs/middleware/job_sigterm_middleware"
 
 # set up default exponential backoff parameters
 ActiveJob::QueueAdapters::ShoryukenAdapter::JobWrapper
@@ -29,6 +28,5 @@ Shoryuken.configure_server do |config|
     chain.add JobPrometheusMetricMiddleware
     chain.add JobDataDogMetricMiddleware
     chain.add JobRavenReporterMiddleware
-    chain.add JobSigtermMiddleware
   end
 end
