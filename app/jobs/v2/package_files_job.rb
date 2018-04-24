@@ -1,15 +1,7 @@
 class V2::PackageFilesJob < ActiveJob::Base
   queue_as :med_priority
 
-  SECONDS_TO_AUTO_UNLOCK = 21_600
-
   def perform(manifest)
-    s = Redis::Semaphore.new("package_files_#{manifest.id}".to_s,
-                             url: Rails.application.secrets.redis_url,
-                             expiration: SECONDS_TO_AUTO_UNLOCK)
-
-    s.lock(SECONDS_TO_AUTO_UNLOCK)
-
     return if manifest.recently_downloaded_files?
 
     ZipfileCreator.new(manifest: manifest).process
@@ -17,8 +9,6 @@ class V2::PackageFilesJob < ActiveJob::Base
   rescue StandardError => e
     manifest.update!(fetched_files_status: :failed)
     raise e
-  ensure
-    s.unlock
   end
 
   def max_attempts
