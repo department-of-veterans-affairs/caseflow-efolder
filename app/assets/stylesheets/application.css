@@ -11,6 +11,7 @@
  * file per style scope.
  *
  *= require hopscotch.css.scss
+ *= require _tabs.scss
  *= require _main.scss
  *= require_self
  */
