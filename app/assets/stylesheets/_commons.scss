@@ -401,104 +401,6 @@ svg title {
   color: $color-gray-dark;
 }
 
-.cf-modal {
-  position: fixed;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 100%;
-  display: none;
-
-  &.active {
-    display: block;
-  }
-
-  &::before {
-    content: ' ';
-    background: rgba($color-gray-dark, .4);
-    position: fixed;
-    height: inherit;
-    width: inherit;
-  }
-}
-
-.cf-modal-body {
-  @include transform(translateY(-50%));
-  top: 50%;
-  // Previous two lines vertically center this block
-  background: $color-white;
-  border-radius: 3px;
-  box-shadow: $cf-drop-shadow;
-  color: $color-gray;
-  padding: 3rem;
-  position: relative;
-  margin-left: auto;
-  margin-right: auto;
-  width: 490px;
-
-  table {
-    margin: 0 0 2em;
-  }
-}
-
-.cf-modal-title {
-  font-size: rem(35px);
-  text-align: left;
-}
-
-.cf-modal-close {
-  background: transparent;
-  height: 1.5rem;
-  padding: .1rem;
-  position: absolute;
-  right: rem(10px);
-  width: 1.5rem;
-
-  &:hover,
-  &:focus,
-  &:active {
-    background: transparent;
-
-    path {
-      fill: $color-gray-dark;
-    }
-  }
-}
-
-
-.cf-modal-text,
-.cf-modal-controls {
-  margin: auto;
-  width: 100%;
-}
-
-.cf-modal-text {
-  font-size: rem(20px);
-  line-height: 2;
-  text-align: center;
-}
-
-.cf-modal-normal-text {
-  margin: 0;
-  width: 100%;
-}
-
-.cf-modal-divider {
-  border-bottom: 1px solid $color-gray-lighter;
-  width: 100%;
-  padding-bottom: 30px;
-}
-
-.cf-modal-controls {
-  position: relative;
-  bottom: 0;
-  margin-top: rem(30px);
-}
-
-.cf-modal-link {
-  padding: 0;
-}
-
 div {
   &[id="questionemail"] {
     margin-top: 0;
@@ -678,45 +580,6 @@ div {
 //   from refills.bourbon.io/unstyled/
 //-----------------------------------*/
 
-//===========================
-// Tooltip
-// =========================*/
-
-.cf-tooltip {
-  display: inline-block;
-  position: relative;
-}
-
-.cf-tooltip-trigger {
-  &:hover + .cf-tooltip-text {
-    display: block;
-  }
-}
-
-.cf-tooltip-text {
-  @include transform(translateX(-50%));
-  background: $color-white;
-  box-shadow: 0 0 10px -3px $color-gray;
-  display: none;
-  left: 50%;
-  margin-top: rem(10px);
-  padding: rem(10px);
-  position: absolute;
-  width: rem(300px);
-
-  &::before {
-    @include transform(scaleX(1.2));
-    color: $color-white;
-    content: '\25B2';
-    display: block;
-    font-size: rem(15px);
-    text-align: center;
-    text-shadow: 0 -2px 2px rgba($color-gray, .5);
-    margin-top: rem(-25px);
-    position: relative;
-    z-index: -1;
-  }
-}
 
 //===========================
 // Form controls
@@ -1154,51 +1017,6 @@ fieldset {
   margin-left: rem(20px);
 }
 
-//------------------------------
-// Help page
-// -------------------------------
-[id=help-page] {
-  dt {
-    font-weight: bold;
-    font-size: 1.1em;
-    margin: 3rem auto 0;
-  }
-
-  p {
-    margin-top: 0;
-  }
-
-  img {
-    box-shadow: 0 0 20px -5px rgba($color-gray-dark, .5);
-    clear: both;
-    display: block;
-    margin: 2rem;
-    max-width: 60rem;
-    height: auto;
-  }
-}
-
-.cf-help-image-wrapper {
-  text-align: center;
-}
-
-.cf-help-image {
-  max-width: 50%;
-  height: auto;
-}
-
-.cf-help-divider {
-  margin: 30px auto;
-  border-bottom: 1px solid $color-gray-lighter;
-}
-
-ul {
-  &[id=toc] {
-    li {
-      padding-bottom: 10px;
-    }
-  }
-}
 
 //---------------------------
 // Date picker overrides
