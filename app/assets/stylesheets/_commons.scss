@@ -1182,21 +1182,6 @@ button {
     }
   }
 
-  &.cf-cert {
-    .cf-loading-icon-back {
-      &::after {
-        background: image-url('icons/loading-pill-cf-cert.svg') center center no-repeat;
-      }
-    }
-  }
-
-  &.cf-dispatch {
-    .cf-loading-icon-back {
-      &::after {
-        background: image-url('icons/loading-pill-cf-dispatch.svg') center center no-repeat;
-      }
-    }
-  }
 
   &.cf-efolder {
     .cf-loading-icon-back {
