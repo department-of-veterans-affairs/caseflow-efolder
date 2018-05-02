@@ -1017,80 +1017,6 @@ fieldset {
   margin-left: rem(20px);
 }
 
-
-//---------------------------
-// Date picker overrides
-//----------------------------*/
-.ui-datepicker {
-  background: $cf-background;
-  box-shadow: 0 0 30px rgba($color-base, .8);
-
-  &-header {
-    background: $color-gray;
-    color: $color-white;
-    text-align: center;
-    padding: 1rem;
-    position: relative;
-    width: 100%;
-  }
-
-  &-title {
-    font-weight: bold;
-  }
-
-  &-prev,
-  &-next {
-    color: $color-white;
-    cursor: pointer;
-    font-size: .85em;
-    line-height: 1.6;
-    position: absolute;
-
-    &:hover {
-      color: $color-white;
-    }
-  }
-
-  &-prev {
-    left: 1rem;
-  }
-
-  &-next {
-    right: 1rem;
-  }
-
-  &-calendar {
-    margin: 0;
-
-    th {
-      background: $color-gray-light;
-      color: $color-gray-dark;
-      padding: 1rem;
-      border-color: $color-gray;
-
-      &:first-child {
-        border-left-color: $color-gray-light;
-      }
-
-      &:last-child {
-        border-right-color: $color-gray-light;
-      }
-    }
-
-    td {
-      background: $cf-background;
-      border-color: $color-gray-light;
-      padding: 0;
-      text-align: right;
-    }
-
-    .ui-state-default {
-      display: block;
-      padding: 1rem;
-    }
-  }
-}
-
 .cf-icon-alert {
   margin-right: .25em;
   vertical-align: -.25ex;
@@ -1167,10 +1093,6 @@ button {
   }
 
   // preload app-specific loading button SVGs
-
-  &.cf-cert,
-  &.cf-dispatch,
-  &.cf-efolder,
   &.cf-feedback {
     .cf-loading-icon-front {
       &::after {
@@ -1182,19 +1104,10 @@ button {
     }
   }
 
-
   &.cf-efolder {
     .cf-loading-icon-back {
       &::after {
         background: image-url('icons/loading-pill-cf-efolder.svg') center center no-repeat;
-      }
-    }
-  }
-
-  &.cf-feedback {
-    .cf-loading-icon-back {
-      &::after {
-        background: image-url('icons/loading-pill-cf-feedback.svg') center center no-repeat;
       }
     }
   }
