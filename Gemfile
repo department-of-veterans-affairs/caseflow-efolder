@@ -84,7 +84,15 @@ gem "mini_magick"
 gem "httpclient"
 
 gem "bgs", git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", branch: "07a398fb0102ad93684f5423e73be68ba97c74d2"
-gem "connect_vbms", git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "f014b4772385814cd510712c46698653866f99dd"
+
+# new sha for dev/uat/preprod/demo
+if  ENV["CONNECT_VBMS_ENV"] == "uat" || ENV["CONNECT_VBMS_ENV"] == "preprod" || ENV["CONNECT_VBMS_ENV"] == "demo" 
+  gem "connect_vbms", git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "1a2d9b2d293935d5cf1b2088a1667820d783fcf6"
+# old sha for prod
+else 
+  gem "connect_vbms", git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "783200ca61b57fc75f818334838181993535229a"
+end
+
 gem "connect_vva", git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "ecc1da3f1027e6c270af264de46dc1cb4974fa47"
 
 # catch problematic migrations
