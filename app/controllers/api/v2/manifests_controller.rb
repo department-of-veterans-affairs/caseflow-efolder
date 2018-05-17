@@ -30,7 +30,7 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
   end
 
   def history
-    render json: recent_downloads, each_serializer: Serializers::V2::ManifestSerializer
+    render json: recent_downloads, each_serializer: Serializers::V2::HistorySerializer
   end
 
   private
