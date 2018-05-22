@@ -285,15 +285,18 @@ RSpec.feature "React Downloads" do
         download = DownloadHelpers.downloaded?
         expect(download).to be_truthy
         expect(DownloadHelpers.download).to include("Lee, Stan - 2222")
+
         click_on "Start over"
 
         # Fast forward time so that the manifest becomes "stale" relative to the new time.
         Timecop.travel(Time.zone.now + 50.days)
+        # Assign manifest to a different user (since different session is not possible)
+        @user = User.create(css_id: "123123", station_id: "116")
+        FilesDownload.last.update!(user_id: @user.id)
 
         # Search for the same efolder and expect to see the search results page instead of the download page.
         fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
         click_button "Search"
-
         expect(page).to have_content "Start retrieving efolder"
       end
     end
