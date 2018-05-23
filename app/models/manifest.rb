@@ -26,7 +26,7 @@ class Manifest < ApplicationRecord
 
   def start!
     # Reset stale manifests.
-    update!(fetched_files_status: :initialized) if requested_zip_at && requested_zip_at < UI_HOURS_UNTIL_EXPIRY.hours.ago
+    update!(fetched_files_status: :initialized) if stale?
 
     vbms_source.start!
     vva_source.start!
@@ -43,6 +43,15 @@ class Manifest < ApplicationRecord
 
     reset_records
     V2::PackageFilesJob.perform_later(self)
+  end
+
+  # completed? because it can be recent pending with stale fetched_files_at
+  def stale?
+    completed? && fetched_files_at && fetched_files_at < UI_HOURS_UNTIL_EXPIRY.hours.ago
+  end
+
+  def completed?
+    finished? || failed?
   end
 
   def recently_downloaded_files?
