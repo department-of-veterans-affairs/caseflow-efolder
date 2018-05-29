@@ -50,6 +50,7 @@ class DocumentCreator
     #
     # We can ignore this exception because the race condition that causes it
     # means that another thread just created these records.
+    Rails.logger.info "ActiveRecord::RecordNotUnique thrown for ManifestSource #{manifest_source.id}"
   end
 
   # Override the getter to return only non-restricted documents
