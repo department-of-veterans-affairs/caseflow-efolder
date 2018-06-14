@@ -46,6 +46,21 @@ class Fakes::DocumentService
       manifest_load: 4,
       num_docs: 10,
       max_file_load: 3
+    },
+    "DEMO10" => {
+      manifest_load: 1,
+      num_docs: 10,
+      max_file_load: 1
+    },
+    "DEMO100" => {
+      manifest_load: 1,
+      num_docs: 100,
+      max_file_load: 1
+    },
+    "DEMO1000" => {
+      manifest_load: 1,
+      num_docs: 1000,
+      max_file_load: 1
     }
   }.freeze
 

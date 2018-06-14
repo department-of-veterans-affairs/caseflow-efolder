@@ -23,10 +23,21 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
   end
 
   def progress
+    db_req_count = 0
+    ActiveSupport::Notifications.subscribe do |name|
+      db_req_count += 1 if name == "sql.active_record"
+    end
+
     files_download ||= FilesDownload.includes(:manifest).find_by(manifest_id: params[:id], user_id: current_user.id)
     return record_not_found unless files_download
 
-    render json: json_manifests(files_download.manifest)
+    resp = json_manifests(files_download.manifest)
+
+    file = File.open(ENV["DB_LOG_OUT"], "a")
+    file.write("#{db_req_count}\n")
+    !file.nil? && file.close
+
+    render(json: resp)
   end
 
   def history
