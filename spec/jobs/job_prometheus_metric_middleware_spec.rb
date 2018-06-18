@@ -41,4 +41,16 @@ describe JobPrometheusMetricMiddleware do
       expect(PrometheusService.background_jobs_error_counter.values[labels]).to eq(1)
     end
   end
+
+  context "errors" do
+    before do
+      allow(PrometheusService).to receive(:push_metrics!).and_raise(StandardError)
+    end
+
+    it "catches error" do
+      expect do
+        @middleware.call(nil, nil, :default, body) { nil }
+      end.to_not raise_error(StandardError)
+    end
+  end
 end
