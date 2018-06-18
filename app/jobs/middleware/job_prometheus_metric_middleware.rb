@@ -18,7 +18,7 @@ class JobPrometheusMetricMiddleware
     # No need to actually push in test/development/demo
     PrometheusService.push_metrics! if Rails.env.production?
   rescue StandardError => ex
-    tags = { job: job_class, queue: queue }
+    tags = { job: @job_class, queue: queue }
     context = { message: body }
     Raven.capture_exception(ex, tags: tags, extra: context)
   end
