@@ -4,9 +4,10 @@ require "uri"
 
 class HealthChecksController < ApplicationController
   skip_before_action :authenticate
+  skip_before_action :check_out_of_service
   skip_before_action :check_v2_app_access
   newrelic_ignore_apdex
-  
+
   def initialize
     #@pushgateway = Caseflow::PushgatewayService.new
     
