@@ -25,7 +25,7 @@ class HealthChecksController < ApplicationController
 
   def healthy?
     # Check health of sidecar services
-    if !Rails.deploy_env?(:prod)
+    if ENV.include? "ENABLE_PUSHGATEWAY_HEALTHCHECK"
       #@pushgateway.healthy?
 
       # xxx remove
