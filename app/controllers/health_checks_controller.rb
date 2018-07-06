@@ -1,7 +1,3 @@
-# xxx remove
-require "net/http"
-require "uri"
-
 class HealthChecksController < ApplicationController
   skip_before_action :authenticate
   skip_before_action :check_out_of_service
@@ -9,28 +5,13 @@ class HealthChecksController < ApplicationController
   newrelic_ignore_apdex
 
   def initialize
-    #@pushgateway = Caseflow::PushgatewayService.new
-    
-    # xxx remove
-    @health_uri = URI("http://127.0.0.1:9091/-/healthy")
-  end
-
-  # xxx remove
-  def pushgateway_healthy?
-    # see: https://github.com/prometheus/pushgateway/pull/135
-    res = Net::HTTP.get_response(@health_uri)
-    res.is_a?(Net::HTTPSuccess)
-  rescue StandardError
-    false
+    @pushgateway = Caseflow::PushgatewayService.new
   end
 
   def healthy?
     # Check health of sidecar services
     if ENV.include? "ENABLE_PUSHGATEWAY_HEALTHCHECK"
-      #@pushgateway.healthy?
-
-      # xxx remove
-      pushgateway_healthy?
+      @pushgateway.healthy?
     else
       true
     end
