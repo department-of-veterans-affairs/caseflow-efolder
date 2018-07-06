@@ -3,17 +3,21 @@ class HealthChecksController < ApplicationController
   skip_before_action :check_v2_app_access
   newrelic_ignore_apdex
 
-  def is_healthy?
+  def initialize
+    @pushgateway = Caseflow::PushgatewayService.new
+  end
+
+  def healthy?
     # Check health of sidecar services
     if not Rails.deploy_env?(:prod)
-      Caseflow::PushgatewayService.is_healthy?
+      @pushgateway.healthy?
     else
       true
     end
   end
 
   def show
-    self.is_healthy?
+    self.healthy?
 
     # TODO: wire check into controller
     healthy = true
