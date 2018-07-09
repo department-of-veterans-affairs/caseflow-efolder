@@ -2,7 +2,7 @@
 
 source ENV["GEM_SERVER_URL"] || "https://rubygems.org"
 
-gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons", ref: "e6291950ddac59add73b9fb52ddb3b06c7e028d7"
+gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons", ref: "8dde00d67b7c629e4b871f8dcb3617bfe989b3db"
 
 gem "moment_timezone-rails"
 
