@@ -44,5 +44,4 @@ describe "Health Check API" do
       expect(json["deployed_at"]).to eq("the best day ever")
     end
   end
-  end
 end
