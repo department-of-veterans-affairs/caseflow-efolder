@@ -4,7 +4,7 @@ describe "Health Check API" do
       Rails.application.config.build_version = { deployed_at: "the best day ever" }
     end
 
-    it "should fail health check when pushgateway is offline"
+    it "should fail health check when pushgateway is offline" do
       allow(Caseflow::PushgatewayService).to receive(:healthy?) { false }
 
       get "/health-check"
@@ -16,7 +16,7 @@ describe "Health Check API" do
       expect(json["deployed_at"]).to eq("the best day ever")
     end
 
-    it "should pass health check when pushgateway is online"
+    it "should pass health check when pushgateway is online" do
       allow(Caseflow::PushgatewayService).to receive(:healthy?) { true }
 
       get "/health-check"
