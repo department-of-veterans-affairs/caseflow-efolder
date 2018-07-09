@@ -32,7 +32,7 @@ describe "Health Check API" do
   context "efolder out_of_service" do
     before { Rails.cache.write("out_of_service", true) }
 
-    it "should pass health check when pushgateway is online" do
+    it "should fail health check when pushgateway is offline" do
       allow_any_instance_of(Caseflow::PushgatewayService).to receive(:healthy?) { false }
 
       get "/health-check"
