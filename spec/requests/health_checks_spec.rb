@@ -5,7 +5,7 @@ describe "Health Check API" do
     end
 
     it "should fail health check when pushgateway is offline" do
-      allow(Caseflow::PushgatewayService).to receive(:healthy?) { false }
+      allow_any_instance_of(Caseflow::PushgatewayService).to receive(:healthy?) { false }
 
       get "/health-check"
 
@@ -17,7 +17,7 @@ describe "Health Check API" do
     end
 
     it "should pass health check when pushgateway is online" do
-      allow(Caseflow::PushgatewayService).to receive(:healthy?) { true }
+      allow_any_instance_of(Caseflow::PushgatewayService).to receive(:healthy?) { true }
 
       get "/health-check"
 
