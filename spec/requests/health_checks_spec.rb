@@ -28,4 +28,21 @@ describe "Health Check API" do
       expect(json["deployed_at"]).to eq("the best day ever")
     end
   end
+
+  context "efolder out_of_service" do
+    before { Rails.cache.write("out_of_service", true) }
+
+    it "should pass health check when pushgateway is online" do
+      allow_any_instance_of(Caseflow::PushgatewayService).to receive(:healthy?) { false }
+
+      get "/health-check"
+
+      expect(response).to have_http_status(503)
+
+      json = JSON.parse(response.body)
+      expect(json["healthy"]).to eq(false)
+      expect(json["deployed_at"]).to eq("the best day ever")
+    end
+  end
+  end
 end
