@@ -180,7 +180,7 @@ GEM
     dogstatsd-ruby (3.3.0)
     dotenv (2.2.1)
     dotenv-rails (2.2.1)
-      dotenv (= 2.5.0)
+      dotenv (= 2.2.1)
       railties (>= 3.2, < 5.2)
     erubi (1.7.1)
     erubis (2.7.0)
@@ -322,7 +322,7 @@ GEM
       redis-store (>= 1.2, < 2)
     redis-semaphore (0.3.1)
       redis
-    redis-store (1.5.0)
+    redis-store (1.4.1)
       redis (>= 2.2, < 5)
     ref (2.0.0)
     request_store (1.4.0)
@@ -396,7 +396,7 @@ GEM
       rubyzip (~> 1.2)
     sentry-raven (2.7.2)
       faraday (>= 0.7.6, < 1.0)
-    sexp_processor (4.11.0)
+    sexp_processor (4.10.1)
     shoryuken (3.1.11)
       aws-sdk-core (>= 2)
       concurrent-ruby
