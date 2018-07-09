@@ -124,7 +124,6 @@ end
 
 group :test do
   gem "capybara", "2.6.2"
-  gem "fakeweb", "~> 1.3"
   gem "rspec"
   gem "rspec-rails"
   gem "simplecov"
