@@ -9,10 +9,10 @@ describe "Health Check API" do
 
       get "/health-check"
 
-      expect(response).to be_success
+      expect(response).to have_http_status(503)
 
       json = JSON.parse(response.body)
-      expect(json["healthy"]).to eq(true)
+      expect(json["healthy"]).to eq(false)
       expect(json["deployed_at"]).to eq("the best day ever")
     end
 
@@ -21,10 +21,10 @@ describe "Health Check API" do
 
       get "/health-check"
 
-      expect(response).to have_http_status(503)
+      expect(response).to be_success
 
       json = JSON.parse(response.body)
-      expect(json["healthy"]).to eq(false)
+      expect(json["healthy"]).to eq(true)
       expect(json["deployed_at"]).to eq("the best day ever")
     end
   end
