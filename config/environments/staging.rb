@@ -54,4 +54,7 @@ Rails.application.configure do
 
   ENV["METRICS_USERNAME"] = "caseflow"
   ENV["METRICS_PASSWORD"] = "caseflow"
+
+  # Allow health check to pushgateway
+  ENV["ENABLE_PUSHGATEWAY_HEALTHCHECK"] = "true"
 end
