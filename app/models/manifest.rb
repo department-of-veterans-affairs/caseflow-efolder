@@ -71,7 +71,7 @@ class Manifest < ApplicationRecord
   end
 
   def number_successful_documents
-    records.success.count
+    records.select(&:success?).size
   end
 
   def time_to_complete
@@ -88,7 +88,7 @@ class Manifest < ApplicationRecord
   end
 
   def number_failed_documents
-    records.failed.count
+    records.select(&:failed?).size
   end
 
   def s3_filename
