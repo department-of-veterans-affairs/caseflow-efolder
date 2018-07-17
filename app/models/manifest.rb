@@ -79,7 +79,7 @@ class Manifest < ApplicationRecord
   end
 
   def seconds_left
-    records.initialized.count * Record::AVERAGE_DOWNLOAD_TIME_IN_SECONDS
+    records.select(&:initialized?).count * Record::AVERAGE_DOWNLOAD_TIME_IN_SECONDS
   end
 
   # Zip expiration date will be determined on per user basis

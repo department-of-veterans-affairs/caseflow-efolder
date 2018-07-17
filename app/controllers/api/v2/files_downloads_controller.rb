@@ -39,7 +39,8 @@ class Api::V2::FilesDownloadsController < Api::V1::ApplicationController
   end
 
   def files_download
-    @files_download ||= FilesDownload.includes(:manifest).find_by(manifest_id: params[:manifest_id], user_id: current_user.id)
+    @files_download ||= FilesDownload.includes(:manifest, :sources, :records)
+                                     .find_by(manifest_id: params[:manifest_id], user_id: current_user.id)
   end
 
   def manifest

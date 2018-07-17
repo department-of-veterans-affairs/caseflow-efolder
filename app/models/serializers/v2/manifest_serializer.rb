@@ -8,8 +8,12 @@ class Serializers::V2::ManifestSerializer < ActiveModel::Serializer
   attribute :updated_at
   attribute :fetched_files_at
   attribute :fetched_files_status
-  attribute :number_successful_documents
-  attribute :number_failed_documents
+  attribute :number_successful_documents do
+    object.records.select(&:success?).size
+  end
+  attribute :number_failed_documents do
+    object.records.select(&:failed?).size
+  end
   attribute :zip_expiration_date
   attribute :time_to_complete
   attribute :seconds_left
@@ -20,7 +24,7 @@ class Serializers::V2::ManifestSerializer < ActiveModel::Serializer
         source: source.name,
         status: source.status,
         fetched_at: source.fetched_at,
-        number_of_documents: source.records.count
+        number_of_documents: source.records.size
       }
     end
   end
