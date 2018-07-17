@@ -76,6 +76,7 @@ class Record < ApplicationRecord
       type_description: document.type_description,
       mime_type: document.mime_type,
       received_at: document.received_at,
+      upload_date: document.upload_date,
       jro: document.jro,
       source: document.source
     )
