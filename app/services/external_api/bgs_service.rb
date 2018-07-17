@@ -24,11 +24,13 @@ class ExternalApi::BGSService
   end
 
   def check_sensitivity(file_number)
+    current_user = RequestStore[:current_user]
+
     @bgs_client ||= init_client
-    MetricsService.record("BGS: can_access? (find_flashes): #{file_number}",
+    MetricsService.record("BGS: can_access? (find_by_file_number): #{file_number}",
                           service: :bgs,
                           name: "can_access?") do
-      @bgs_client.can_access?(file_number)
+      @bgs_client.can_access?(file_number, FeatureToggle.enabled?(:can_access_v2, user: current_user))
     end
   end
 
