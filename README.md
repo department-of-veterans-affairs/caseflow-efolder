@@ -68,7 +68,7 @@ Now start both the rails server,
 
 > $ rails s
 
-In a separate terminal, watch for webpack changes:
+In a separate terminal, watch for webpack changes
 
 > $ cd client && yarn run build --watch
 
