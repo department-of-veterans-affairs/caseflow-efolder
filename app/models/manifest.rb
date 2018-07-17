@@ -71,7 +71,7 @@ class Manifest < ApplicationRecord
   end
 
   def number_successful_documents
-    records.success.count
+    records.select(&:success?).size
   end
 
   def time_to_complete
@@ -79,7 +79,7 @@ class Manifest < ApplicationRecord
   end
 
   def seconds_left
-    records.initialized.count * Record::AVERAGE_DOWNLOAD_TIME_IN_SECONDS
+    records.select(&:initialized?).count * Record::AVERAGE_DOWNLOAD_TIME_IN_SECONDS
   end
 
   # Zip expiration date will be determined on per user basis
@@ -88,7 +88,7 @@ class Manifest < ApplicationRecord
   end
 
   def number_failed_documents
-    records.failed.count
+    records.select(&:failed?).size
   end
 
   def s3_filename
