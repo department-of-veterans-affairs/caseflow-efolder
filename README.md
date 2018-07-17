@@ -72,7 +72,7 @@ In a separate terminal, watch for webpack changes:
 
 > $ cd client && yarn run build --watch
 
-And in another seperate terminal, start a jobs worker
+And in another separate terminal, start a jobs worker
 
 > $ bundle exec shoryuken start -q efolder_development_high_priority efolder_development_low_priority efolder_development_med_priority -R
 
