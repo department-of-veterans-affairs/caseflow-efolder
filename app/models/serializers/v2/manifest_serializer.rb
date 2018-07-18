@@ -32,6 +32,7 @@ class Serializers::V2::ManifestSerializer < ActiveModel::Serializer
         type_id: document.type_id,
         type_description: document.type_description,
         received_at: document.received_at,
+        upload_date: document.upload_date,
         version_id: document.version_id,
         source: document.manifest_source.name,
         status: document.status,

@@ -139,6 +139,7 @@ class Fakes::DocumentService
       version: rand(10).to_s,
       mime_type: type[:mime_type],
       received_at: (i * 2).days.ago,
+      upload_date: i.days.ago,
       downloaded_from: service_type
     )
   end
