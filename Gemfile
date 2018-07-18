@@ -84,8 +84,8 @@ gem "mini_magick"
 gem "httpclient"
 
 gem "bgs", git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", branch: "b8b6d0f918d855b61b31f03e01a39d802d587367"
-gem "connect_vbms", git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "d91deab540d7bc46822db1226a382d3deacc7535"
-gem "connect_vva", git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "ecc1da3f1027e6c270af264de46dc1cb4974fa47"
+gem "connect_vbms", git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "828d43d7a7dd3d9c78ad43c368caaa0471ecd1c1"
+gem "connect_vva", git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "f6e3ca26211b28fb8acaab8aa76bddb118b6726e"
 
 # catch problematic migrations
 gem "zero_downtime_migrations"
