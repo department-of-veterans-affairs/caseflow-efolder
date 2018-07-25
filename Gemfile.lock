@@ -21,8 +21,8 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/connect_vbms.git
-  revision: d91deab540d7bc46822db1226a382d3deacc7535
-  ref: d91deab540d7bc46822db1226a382d3deacc7535
+  revision: 828d43d7a7dd3d9c78ad43c368caaa0471ecd1c1
+  ref: 828d43d7a7dd3d9c78ad43c368caaa0471ecd1c1
   specs:
     connect_vbms (1.2.0)
       httpclient (~> 2.8.0)
@@ -35,8 +35,8 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/connect_vva.git
-  revision: ecc1da3f1027e6c270af264de46dc1cb4974fa47
-  ref: ecc1da3f1027e6c270af264de46dc1cb4974fa47
+  revision: f6e3ca26211b28fb8acaab8aa76bddb118b6726e
+  ref: f6e3ca26211b28fb8acaab8aa76bddb118b6726e
   specs:
     connect_vva (0.1)
       savon (~> 2.11, >= 2.11.0)

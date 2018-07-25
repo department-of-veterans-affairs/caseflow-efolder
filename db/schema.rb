@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180516212947) do
+ActiveRecord::Schema.define(version: 20180717182835) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -128,6 +128,7 @@ ActiveRecord::Schema.define(version: 20180516212947) do
     t.integer "conversion_status", default: 0
     t.string "series_id"
     t.integer "version"
+    t.datetime "upload_date"
     t.index ["manifest_source_id", "series_id"], name: "index_records_on_manifest_source_id_and_series_id"
     t.index ["version_id", "manifest_source_id"], name: "index_records_on_version_id_and_manifest_source_id", unique: true
   end
