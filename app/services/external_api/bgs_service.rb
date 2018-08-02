@@ -3,11 +3,11 @@ require "bgs"
 # Thin interface to all things BGS
 class ExternalApi::BGSService
   def parse_veteran_info(veteran_data)
-    ssn = veteran_data[:ssn_nbr]
+    ssn = veteran_data[:ssn]
     last_four_ssn = ssn ? ssn[ssn.length - 4..ssn.length] : nil
     {
-      "veteran_first_name" => veteran_data[:first_nm],
-      "veteran_last_name" => veteran_data[:last_nm],
+      "veteran_first_name" => veteran_data[:first_name],
+      "veteran_last_name" => veteran_data[:last_name],
       "veteran_last_four_ssn" => last_four_ssn
     }
   end
@@ -18,7 +18,7 @@ class ExternalApi::BGSService
       MetricsService.record("BGS: fetch veteran info for vbms id: #{file_number}",
                             service: :bgs,
                             name: "veteran.find_by_file_number") do
-        @bgs_client.people.find_by_file_number(file_number)
+        @bgs_client.veteran.find_by_file_number(file_number)
       end
     parse_veteran_info(veteran_data) if veteran_data
   end
