@@ -15,8 +15,7 @@ class JobPrometheusMetricMiddleware
 
   def record_and_push_metrics(job_class, queue, body)
     PrometheusService.background_jobs_attempt_counter.increment(name: job_class)
-    # No need to actually push in test/development/demo
-    PrometheusService.push_metrics! if Rails.env.production?
+    PrometheusService.push_metrics!
   rescue StandardError => ex
     tags = { job: job_class, queue: queue }
     context = { message: body }
