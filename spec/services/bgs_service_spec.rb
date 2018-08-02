@@ -4,9 +4,9 @@ describe ExternalApi::BGSService do
   context "#parse_veteran_info" do
     before do
       @veteran_info = {
-        ssn_nbr: "123-43-1111",
-        first_nm: "FirstName",
-        last_nm: "LastName"
+        ssn: "123-43-1111",
+        first_name: "FirstName",
+        last_name: "LastName"
       }
     end
 
