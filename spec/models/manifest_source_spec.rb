@@ -103,5 +103,16 @@ describe ManifestSource do
         expect(V2::DownloadManifestJob).to_not have_received(:perform_later)
       end
     end
+
+    context "when starting the job fails" do
+      before do
+        allow(V2::DownloadManifestJob).to receive(:perform_later).and_raise(StandardError.new)
+      end
+
+      it "status ends in state initialized" do
+        expect { subject }.to raise_error(StandardError)
+        expect(source.status).to eq("initialized")
+      end
+    end
   end
 end
