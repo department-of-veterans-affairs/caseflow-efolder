@@ -28,7 +28,13 @@ class ManifestSource < ApplicationRecord
       update(status: :pending)
     end
 
-    V2::DownloadManifestJob.perform_later(self, ui_user?)
+    begin
+      V2::DownloadManifestJob.perform_later(self, ui_user?)
+    rescue StandardError
+      update(status: :initialized)
+
+      raise
+    end
   end
 
   def service

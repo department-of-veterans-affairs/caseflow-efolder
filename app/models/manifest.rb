@@ -41,8 +41,14 @@ class Manifest < ApplicationRecord
       update(fetched_files_status: :pending)
     end
 
-    reset_records
-    V2::PackageFilesJob.perform_later(self)
+    begin
+      reset_records
+      V2::PackageFilesJob.perform_later(self)
+    rescue StandardError
+      update(fetched_files_status: :initialized)
+
+      raise
+    end
   end
 
   # completed? because it can be recent pending with stale fetched_files_at
