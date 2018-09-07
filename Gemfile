@@ -63,7 +63,7 @@ gem "sdoc", "~> 0.4.0", group: :doc
 
 gem "redis-rails", "~> 5.0.2"
 
-gem "rubyzip"
+gem "rubyzip", "~> 1.2.2"
 
 # use to_b method to convert string to boolean
 gem "wannabe_bool"
