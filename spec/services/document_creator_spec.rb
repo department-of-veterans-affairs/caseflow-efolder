@@ -56,6 +56,23 @@ describe DocumentCreator do
       end
     end
 
+    context "when there is a restricted flag" do
+      let(:documents) do
+        [
+          OpenStruct.new(document_id: "1", series_id: "3", type_id: "554"),
+          OpenStruct.new(document_id: "2", series_id: "4", type_id: "554", restricted: true)
+        ]
+      end
+
+      it "skips the restricted documents" do
+        expect(source.records).to eq []
+        subject
+        expect(source.reload.records.size).to eq 1
+        expect(source.reload.records.first.version_id).to eq "1"
+        expect(source.reload.records.first.series_id).to eq "3"
+      end
+    end
+
     context "when documents contains duplicates" do
       let(:documents) do
         [
