@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  root 'downloads#new'
+  root 'application#serve_single_page_app'
 
   post 'auth/saml_callback', to: 'sessions#create'
 
@@ -11,18 +11,6 @@ Rails.application.routes.draw do
   get 'help', to:'help#show'
 
   post 'increment_vva_coachmarks_status', to: 'downloads#increment_vva_coachmarks_status'
-
-  resources :downloads, only: [:new, :create, :show] do
-    post :start, on: :member
-    post :retry, on: :member
-    get :download, on: :member
-    get :progress, on: :member
-
-    # test user download delete route
-    if ENV['TEST_USER_ID']
-      post :delete, on: :member
-    end
-  end
 
   namespace :api do
     namespace :v1 do

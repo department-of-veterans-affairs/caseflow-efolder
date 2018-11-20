@@ -5,10 +5,9 @@ class ApplicationController < BaseController
   before_action :check_out_of_service, except: :authenticate
   before_action :authenticate
   before_action :set_raven_user
-  before_action :check_v2_app_access
 
   def serve_single_page_app
-    can_access_react_app? ? render("gui/single_page_app", layout: false) : redirect_to("/unauthorized")
+    user_is_authorized? ? render("gui/single_page_app", layout: false) : redirect_to("/unauthorized")
   end
 
   def authenticate
@@ -34,21 +33,13 @@ class ApplicationController < BaseController
     redirect_to "/unauthorized" unless current_user.admin?
   end
 
-  def authorize
-    redirect_to "/unauthorized" unless user_is_authorized?
-  end
-
-  def check_v2_app_access
-    serve_single_page_app if can_access_react_app?
-  end
-
   def initial_react_data
     {
       csrfToken: form_authenticity_token,
       dropdownUrls: dropdown_urls,
       efolderAccessImagePath: ActionController::Base.helpers.image_path("help/efolder-access.png"),
       feedbackUrl: feedback_url,
-      recentDownloads: ActiveModelSerializers::SerializableResource.new(current_user.recent_downloads, each_serializer: Serializers::V2::HistorySerializer),
+      # recentDownloads: ActiveModelSerializers::SerializableResource.new(current_user.recent_downloads, each_serializer: Serializers::V2::HistorySerializer),
       referenceGuidePath: ActionController::Base.helpers.asset_path("reference_guide.pdf"),
       trainingGuidePath: ActionController::Base.helpers.asset_path("training_guide.pdf"),
       userDisplayName: current_user.try(:display_name),
@@ -79,10 +70,6 @@ class ApplicationController < BaseController
 
   def user_is_authorized?
     current_user.try(:can?, "Download eFolder") || Rails.env.development?
-  end
-
-  def can_access_react_app?
-    FeatureToggle.enabled?(:efolder_react_app, user: current_user) || Rails.env.development?
   end
 
   def downloads
