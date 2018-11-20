@@ -29,8 +29,8 @@ class ExternalApi::VBMSService
 
   def self.v2_fetch_documents_for(source)
     @vbms_client ||= init_client
-    veteran_file_number = source.file_number
 
+    veteran_file_number = source.file_number
     request = VBMS::Requests::FindDocumentVersionReference.new(veteran_file_number)
 
     begin
