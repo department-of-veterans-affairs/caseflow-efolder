@@ -268,7 +268,7 @@ GEM
     public_suffix (3.0.2)
     puma (3.11.3)
     quantile (0.2.0)
-    rack (2.0.5)
+    rack (2.0.6)
     rack-cors (1.0.2)
     rack-test (0.8.3)
       rack (>= 1.0, < 3)
