@@ -29,7 +29,7 @@ class ManifestSource < ApplicationRecord
     end
 
     begin
-      V2::DownloadManifestJob.perform_later(self, ui_user?)
+      V2::DownloadManifestJob.perform_later(self, RequestStore[:current_user])
     rescue StandardError
       update(status: :initialized)
 
