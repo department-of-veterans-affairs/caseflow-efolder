@@ -13,14 +13,17 @@ class ExternalApi::BGSService
   end
 
   def fetch_veteran_info(file_number)
-    @bgs_client ||= init_client
-    veteran_data ||=
-      MetricsService.record("BGS: fetch veteran info for vbms id: #{file_number}",
-                            service: :bgs,
-                            name: "veteran.find_by_file_number") do
-        @bgs_client.veteran.find_by_file_number(file_number)
-      end
+    veteran_data = fetch_veteran_data(file_number)
     parse_veteran_info(veteran_data) if veteran_data
+  end
+
+  def fetch_veteran_data(file_number)
+    @bgs_client ||= init_client
+    MetricsService.record("BGS: fetch veteran info for vbms id: #{file_number}",
+                          service: :bgs,
+                          name: "veteran.find_by_file_number") do
+      @bgs_client.veteran.find_by_file_number(file_number)
+    end
   end
 
   def check_sensitivity(file_number)
