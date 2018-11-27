@@ -56,7 +56,9 @@ describe V2::DownloadManifestJob do
       end
 
       context "when user is a UI user" do
-        let(:ui_user) { true }
+        before do
+          allow(ApplicationController.helpers).to receive(:ui_user?).and_return(true)
+        end
 
         it "creates document records and does not start caching files in s3" do
           subject
