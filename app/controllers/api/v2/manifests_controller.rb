@@ -1,4 +1,6 @@
 # TODO: create Api::V2::ApplicationController
+# rubocop:disable Metrics/CyclomaticComplexity
+# rubocop:disable Lint/RescueException
 class Api::V2::ManifestsController < Api::V1::ApplicationController
   def start
     file_number = request.headers["HTTP_FILE_NUMBER"]
@@ -8,6 +10,8 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
 
     begin
       veteran_info = bgs_service.fetch_veteran_info(file_number)
+
+    # Exception instead of StandardError since we reraise the error
     rescue Exception => e
       return sensitive_record if e.message.include?("Sensitive File - Access Violation")
       raise e
@@ -44,6 +48,10 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
 
   private
 
+  def check_before_start(file_number)
+
+  end
+
   def json_manifests(manifest)
     ActiveModelSerializers::SerializableResource.new(
       manifest,
@@ -67,3 +75,5 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
     render json: { status: "File number is invalid. Veteran IDs must be 8 or more characters and contain only numbers." }, status: 400
   end
 end
+# rubocop:enable Metrics/CyclomaticComplexity
+# rubocop:enable Lint/RescueException
