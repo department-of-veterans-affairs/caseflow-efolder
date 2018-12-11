@@ -48,10 +48,6 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
 
   private
 
-  def check_before_start(file_number)
-
-  end
-
   def json_manifests(manifest)
     ActiveModelSerializers::SerializableResource.new(
       manifest,
