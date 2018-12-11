@@ -68,7 +68,7 @@ class ExternalApi::VBMSService
 
   def self.init_client
     VBMS::Client.from_env_vars(logger: RailsVBMSLogger.new,
-                               env_name: "prod",
+                               env_name: ENV["CONNECT_VBMS_ENV"],
                                use_forward_proxy: FeatureToggle.enabled?(:vbms_forward_proxy))
   end
 
