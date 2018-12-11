@@ -3,27 +3,26 @@ require "bgs"
 # Thin interface to all things BGS
 class ExternalApi::BGSService
   def parse_veteran_info(veteran_data)
-    ssn = veteran_data[:ssn]
+    ssn = veteran_data[:ssn] ? veteran_data[:ssn] : veteran_data[:soc_sec_number]
     last_four_ssn = ssn ? ssn[ssn.length - 4..ssn.length] : nil
     {
+      "file_number" => veteran_data[:claim_number],
       "veteran_first_name" => veteran_data[:first_name],
       "veteran_last_name" => veteran_data[:last_name],
-      "veteran_last_four_ssn" => last_four_ssn
+      "veteran_last_four_ssn" => last_four_ssn,
+      "return_message" => veteran_data[:return_message]
     }
   end
 
   def fetch_veteran_info(file_number)
-    veteran_data = fetch_veteran_data(file_number)
-    parse_veteran_info(veteran_data) if veteran_data
-  end
-
-  def fetch_veteran_data(file_number)
     @bgs_client ||= init_client
-    MetricsService.record("BGS: fetch veteran info for vbms id: #{file_number}",
-                          service: :bgs,
-                          name: "veteran.find_by_file_number") do
-      @bgs_client.veteran.find_by_file_number(file_number)
-    end
+    veteran_data =
+      MetricsService.record("BGS: fetch veteran info for vbms id: #{file_number}",
+                            service: :bgs,
+                            name: "veteran.find_by_file_number") do
+        @bgs_client.veteran.find_by_file_number(file_number)
+      end
+    parse_veteran_info(veteran_data) if veteran_data
   end
 
   def check_sensitivity(file_number)
@@ -41,6 +40,11 @@ class ExternalApi::BGSService
     number = (file_number || "").strip
     return true if /^\d+$/ =~ number && number.length >= 8 && number.length <= 9
     false
+  end
+
+  def record_found?(veteran_info)
+    return false unless veteran_info && veteran_info["return_message"]
+    veteran_info["return_message"].include?("No BIRLS record found") ? false : true
   end
 
   private

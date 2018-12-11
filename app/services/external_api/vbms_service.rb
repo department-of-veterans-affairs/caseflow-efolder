@@ -38,7 +38,7 @@ class ExternalApi::VBMSService
     rescue VBMS::HTTPError => e
       raise unless e.body.include?("File Number does not exist within the system.")
 
-      alternative_file_number = ExternalApi::BGSService.new.fetch_veteran_data(veteran_file_number)[:claim_number]
+      alternative_file_number = ExternalApi::BGSService.new.fetch_veteran_info(veteran_file_number)["file_number"]
 
       raise if alternative_file_number == veteran_file_number
 
@@ -68,7 +68,7 @@ class ExternalApi::VBMSService
 
   def self.init_client
     VBMS::Client.from_env_vars(logger: RailsVBMSLogger.new,
-                               env_name: ENV["CONNECT_VBMS_ENV"],
+                               env_name: "prod",
                                use_forward_proxy: FeatureToggle.enabled?(:vbms_forward_proxy))
   end
 

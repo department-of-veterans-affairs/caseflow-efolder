@@ -32,7 +32,9 @@ RSpec.feature "React Downloads" do
     User.authenticate!
 
     allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info).with(veteran_id).and_return(veteran_info)
+    allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info).with(claim_number).and_return(veteran_info)
     allow_any_instance_of(Fakes::BGSService).to receive(:valid_file_number?).with(veteran_id).and_return(true)
+    allow_any_instance_of(Fakes::BGSService).to receive(:record_found?).with(veteran_info).and_return(true)
 
     allow(Fakes::VBMSService).to receive(:v2_fetch_documents_for).and_return(documents)
     allow(Fakes::VVAService).to receive(:v2_fetch_documents_for).and_return([])
@@ -49,9 +51,11 @@ RSpec.feature "React Downloads" do
     FeatureToggle.disable!(:efolder_react_app)
   end
 
-  let(:veteran_id) { "12341234" }
+  let(:veteran_id) { "43214321" }
+  let(:claim_number) { "12341234" }
   let(:veteran_info) do
     {
+      "file_number" => claim_number,
       "veteran_first_name" => "Stan",
       "veteran_last_name" => "Lee",
       "veteran_last_four_ssn" => "2222"
@@ -67,8 +71,7 @@ RSpec.feature "React Downloads" do
     fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
 
     click_on "Search"
-
-    expect(page).to have_content "STAN LEE VETERAN ID #{veteran_id}"
+    expect(page).to have_content "STAN LEE VETERAN ID #{claim_number}"
     expect(page).to have_content "We are gathering the list of files in the eFolder now"
 
     manifest = Manifest.last
@@ -78,6 +81,7 @@ RSpec.feature "React Downloads" do
     expect(page).to have_current_path("/downloads/#{manifest.id}")
 
     expect(manifest).to_not be_nil
+    expect(manifest.file_number).to eq(claim_number)
     expect(manifest.veteran_first_name).to eq("Stan")
     expect(manifest.veteran_last_name).to eq("Lee")
     expect(manifest.veteran_last_four_ssn).to eq("2222")
@@ -90,7 +94,7 @@ RSpec.feature "React Downloads" do
 
       click_button "Search"
 
-      expect(page).to have_content "STAN LEE VETERAN ID #{veteran_id}"
+      expect(page).to have_content "STAN LEE VETERAN ID #{claim_number}"
       expect(page).to have_content "Start retrieving efolder"
 
       within(".cf-app-segment--alt") do
@@ -114,7 +118,7 @@ RSpec.feature "React Downloads" do
       click_on "Start over"
 
       history_row = "#download-1"
-      expect(find(history_row)).to have_content(veteran_id)
+      expect(find(history_row)).to have_content(claim_number)
       within(history_row) { click_on("View results") }
       expect(page).to have_content("Success!")
 
@@ -143,7 +147,7 @@ RSpec.feature "React Downloads" do
 
       click_button "Search"
 
-      expect(page).to have_content "STAN LEE VETERAN ID #{veteran_id}"
+      expect(page).to have_content "STAN LEE VETERAN ID #{claim_number}"
       expect(page).to have_content "Start retrieving efolder"
     end
 
@@ -162,7 +166,7 @@ RSpec.feature "React Downloads" do
 
       click_button "Search"
 
-      expect(page).to have_content "STAN LEE VETERAN ID #{veteran_id}"
+      expect(page).to have_content "STAN LEE VETERAN ID #{claim_number}"
       expect(page).to have_content "Start retrieving efolder"
     end
 
@@ -172,7 +176,7 @@ RSpec.feature "React Downloads" do
 
     click_on "eFolder Express home page."
 
-    expect(page.find("input#file_number").value).to_not eq(veteran_id)
+    expect(page.find("input#file_number").value).to_not eq(claim_number)
   end
 
   context "When manifest endpoint returns different statuses for different documents" do
