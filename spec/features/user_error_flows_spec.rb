@@ -29,9 +29,11 @@ RSpec.feature "User Error Flows" do
   let(:veteran_id) { "12341234" }
   let(:veteran_info) do
     {
+      "file_number" => veteran_id,
       "veteran_first_name" => "Stan",
       "veteran_last_name" => "Lee",
-      "veteran_last_four_ssn" => "2222"
+      "veteran_last_four_ssn" => "2222",
+      "return_message" => "BPNQ0301"
     }
   end
 
@@ -82,8 +84,17 @@ RSpec.feature "User Error Flows" do
   end
 
   context "When veteran_id has no veteran info" do
+    let(:veteran_info) do
+      {
+        "file_number" => nil,
+        "veteran_first_name" => nil,
+        "veteran_last_name" => nil,
+        "veteran_last_four_ssn" => nil,
+        "return_message" => "No BIRLS record found"
+      }
+    end
     before do
-      allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info).with(veteran_id).and_return(nil)
+      allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info).with(veteran_id).and_return(veteran_info)
     end
 
     scenario "Requesting veteran_id returns cannot find eFolder" do
@@ -97,7 +108,7 @@ RSpec.feature "User Error Flows" do
 
   context "When veteran id has high sensitivity" do
     before do
-      allow_any_instance_of(Fakes::BGSService).to receive(:sensitive_files).and_return(veteran_id => true)
+      allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info).and_raise("Sensitive File - Access Violation")
     end
 
     scenario "Cannot access it" do
@@ -113,6 +124,7 @@ RSpec.feature "User Error Flows" do
     before do
       allow(Fakes::VBMSService).to receive(:v2_fetch_documents_for).and_return([])
       allow(Fakes::VVAService).to receive(:v2_fetch_documents_for).and_return([])
+      allow_any_instance_of(Fakes::BGSService).to receive(:record_found?).with(veteran_info).and_return(true)
     end
 
     scenario "Download with no documents" do
