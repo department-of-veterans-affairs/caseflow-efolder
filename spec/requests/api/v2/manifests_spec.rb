@@ -30,6 +30,7 @@ describe "Manifests API v2", type: :request do
 
   before do
     allow_any_instance_of(Fakes::BGSService).to receive(:sensitive_files).and_return(veteran_id.to_s => false)
+    allow_any_instance_of(Fakes::BGSService).to receive(:record_found?).and_return(true)
     Timecop.freeze(Time.utc(2015, 1, 1, 17, 0, 0))
   end
 
@@ -186,7 +187,7 @@ describe "Manifests API v2", type: :request do
     let(:veteran_id) { "DEMO456" }
 
     before do
-      allow_any_instance_of(Fakes::BGSService).to receive(:sensitive_files).and_return(veteran_id.to_s => true)
+      allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info).and_raise("Sensitive File - Access Violation")
     end
 
     it "returns 403" do
@@ -200,7 +201,7 @@ describe "Manifests API v2", type: :request do
   context "When user does not exist in BGS" do
     let(:error_string) { "Logon ID VACOHSOLO Not Found in the Benefits Gateway Service (BGS). Contact your ISO if you need assistance gaining access to BGS." }
     before do
-      allow_any_instance_of(Fakes::BGSService).to receive(:check_sensitivity).and_raise(BGS::PublicError.new(error_string))
+      allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info).and_raise(BGS::PublicError.new(error_string))
     end
 
     it "returns 403 forbidden response" do

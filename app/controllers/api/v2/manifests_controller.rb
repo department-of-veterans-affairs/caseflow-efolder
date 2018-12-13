@@ -1,15 +1,24 @@
 # TODO: create Api::V2::ApplicationController
+# rubocop:disable Metrics/CyclomaticComplexity
 class Api::V2::ManifestsController < Api::V1::ApplicationController
   def start
     file_number = request.headers["HTTP_FILE_NUMBER"]
     return missing_header("File Number") unless file_number
 
     return invalid_file_number unless bgs_service.valid_file_number?(file_number)
-    return veteran_not_found(file_number) if bgs_service.fetch_veteran_info(file_number).nil?
-    return sensitive_record unless bgs_service.check_sensitivity(file_number)
 
-    manifest = Manifest.includes(:sources, :records)
-                       .find_or_create_by_user(user: current_user, file_number: file_number)
+    begin
+      veteran_info = bgs_service.fetch_veteran_info(file_number)
+    rescue StandardError => e
+      return sensitive_record if e.message.include?("Sensitive File - Access Violation")
+      raise e
+    end
+
+    return veteran_not_found(file_number) unless bgs_service.record_found?(veteran_info)
+
+    file_number = veteran_info["file_number"] if veteran_info["file_number"]
+
+    manifest = Manifest.includes(:sources, :records).find_or_create_by_user(user: current_user, file_number: file_number)
     manifest.start!
     render json: json_manifests(manifest)
   end
@@ -59,3 +68,4 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
     render json: { status: "File number is invalid. Veteran IDs must be 8 or more characters and contain only numbers." }, status: 400
   end
 end
+# rubocop:enable Metrics/CyclomaticComplexity

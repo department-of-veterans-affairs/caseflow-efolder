@@ -38,7 +38,7 @@ class ExternalApi::VBMSService
     rescue VBMS::HTTPError => e
       raise unless e.body.include?("File Number does not exist within the system.")
 
-      alternative_file_number = ExternalApi::BGSService.new.fetch_veteran_data(veteran_file_number)[:claim_number]
+      alternative_file_number = ExternalApi::BGSService.new.fetch_veteran_info(veteran_file_number)["file_number"]
 
       raise if alternative_file_number == veteran_file_number
 

@@ -3,7 +3,7 @@ describe ExternalApi::BGSService do
 
   context "#parse_veteran_info" do
     before do
-      @veteran_info = {
+      @veteran_data = {
         ssn: "123-43-1111",
         first_name: "FirstName",
         last_name: "LastName"
@@ -11,25 +11,26 @@ describe ExternalApi::BGSService do
     end
 
     context "if bgs service returns a string ssn" do
-      subject { bgs_service.parse_veteran_info(@veteran_info)["veteran_last_four_ssn"] }
+      subject { bgs_service.parse_veteran_info(@veteran_data)["veteran_last_four_ssn"] }
       it { is_expected.to eq("1111") }
     end
 
-    context "if bgs service returns no ssn" do
-      veteran_info = {
-        ssn_nbr: nil
+    context "if bgs service returns no ssn in VetBirlsRecod, but it does in vetCorpRecord" do
+      veteran_data = {
+        ssn: nil,
+        soc_sec_number: "43214321"
       }
-      subject { bgs_service.parse_veteran_info(veteran_info)["veteran_last_four_ssn"] }
-      it { is_expected.to eq(nil) }
+      subject { bgs_service.parse_veteran_info(veteran_data)["veteran_last_four_ssn"] }
+      it { is_expected.to eq("4321") }
     end
 
     context "if bgs service returns last name" do
-      subject { bgs_service.parse_veteran_info(@veteran_info)["veteran_last_name"] }
+      subject { bgs_service.parse_veteran_info(@veteran_data)["veteran_last_name"] }
       it { is_expected.to eq("LastName") }
     end
 
     context "if bgs service returns first name" do
-      subject { bgs_service.parse_veteran_info(@veteran_info)["veteran_first_name"] }
+      subject { bgs_service.parse_veteran_info(@veteran_data)["veteran_first_name"] }
       it { is_expected.to eq("FirstName") }
     end
   end
@@ -54,6 +55,20 @@ describe ExternalApi::BGSService do
 
     context "when shorter than 8 char" do
       let(:file_number) { "456789" }
+      it { is_expected.to eq false }
+    end
+  end
+
+  context "#record_found?" do
+    subject { bgs_service.record_found?(veteran_info) }
+
+    context "when found" do
+      let(:veteran_info) { { "return_message" => "BPNQ0301" } }
+      it { is_expected.to eq true }
+    end
+
+    context "when not found" do
+      let(:veteran_info) { { "return_message" => "No BIRLS record found" } }
       it { is_expected.to eq false }
     end
   end
