@@ -1,6 +1,5 @@
 # TODO: create Api::V2::ApplicationController
 # rubocop:disable Metrics/CyclomaticComplexity
-# rubocop:disable Lint/RescueException
 class Api::V2::ManifestsController < Api::V1::ApplicationController
   def start
     file_number = request.headers["HTTP_FILE_NUMBER"]
@@ -10,9 +9,7 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
 
     begin
       veteran_info = bgs_service.fetch_veteran_info(file_number)
-
-    # Exception instead of StandardError since we reraise the error
-    rescue Exception => e
+    rescue StandardError => e
       return sensitive_record if e.message.include?("Sensitive File - Access Violation")
       raise e
     end
@@ -72,4 +69,3 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
   end
 end
 # rubocop:enable Metrics/CyclomaticComplexity
-# rubocop:enable Lint/RescueException
