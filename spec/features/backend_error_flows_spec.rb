@@ -27,7 +27,6 @@ RSpec.feature "Backend Error Flows" do
   let(:veteran_id) { "12341234" }
   let(:veteran_info) do
     {
-      "file_number" => veteran_id,
       "veteran_first_name" => "Stan",
       "veteran_last_name" => "Lee",
       "veteran_last_four_ssn" => "2222"
@@ -43,7 +42,6 @@ RSpec.feature "Backend Error Flows" do
 
     allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info).with(veteran_id).and_return(veteran_info)
     allow_any_instance_of(Fakes::BGSService).to receive(:valid_file_number?).with(veteran_id).and_return(true)
-    allow_any_instance_of(Fakes::BGSService).to receive(:record_found?).with(veteran_info).and_return(true)
 
     allow(Fakes::VBMSService).to receive(:v2_fetch_documents_for).and_return(documents)
     allow(Fakes::VVAService).to receive(:v2_fetch_documents_for).and_return([])

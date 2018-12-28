@@ -83,7 +83,7 @@ gem "mini_magick"
 
 gem "httpclient"
 
-gem "bgs", git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", ref: "3cab7050e942428724412dff1ccaa887a8190bf5"
+gem "bgs", git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", branch: "b8b6d0f918d855b61b31f03e01a39d802d587367"
 gem "connect_vbms", git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "08735e11cd9fc196c8f889093580b9054fd2f094"
 gem "connect_vva", git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "f6e3ca26211b28fb8acaab8aa76bddb118b6726e"
 

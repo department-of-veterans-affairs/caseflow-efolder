@@ -51,8 +51,8 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/ruby-bgs.git
-  revision: 3cab7050e942428724412dff1ccaa887a8190bf5
-  ref: 3cab7050e942428724412dff1ccaa887a8190bf5
+  revision: b8b6d0f918d855b61b31f03e01a39d802d587367
+  branch: b8b6d0f918d855b61b31f03e01a39d802d587367
   specs:
     bgs (0.2)
       nokogiri (~> 1.8.2)
@@ -198,7 +198,7 @@ GEM
     hashie (3.5.7)
     highline (1.7.10)
     httpclient (2.8.3)
-    httpi (2.4.4)
+    httpi (2.4.3)
       rack
       socksify
     i18n (1.2.0)
