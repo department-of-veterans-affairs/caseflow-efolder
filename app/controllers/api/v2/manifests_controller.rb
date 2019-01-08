@@ -11,6 +11,7 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
       veteran_info = bgs_service.fetch_veteran_info(file_number)
     rescue StandardError => e
       return sensitive_record if e.message.include?("Sensitive File - Access Violation")
+      return vso_denied_record if e.message.include?("Power of Attorney of Folder is '071'. Access to this record is denied.")
       raise e
     end
 
@@ -62,6 +63,10 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
 
   def veteran_not_found(file_number)
     render json: { status: "eFolder Express could not find an eFolder with the Veteran ID #{file_number}. Check to make sure you entered the ID correctly and try again." }, status: 400
+  end
+
+  def vso_denied_record
+    forbidden("This efolder belongs to a Veteran you do not represent. Please contact your supervisor.")
   end
 
   def invalid_file_number
