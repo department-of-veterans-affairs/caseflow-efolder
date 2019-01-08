@@ -107,7 +107,6 @@ RSpec.feature "User Error Flows" do
   end
 
   context "When veteran id has high sensitivity" do
-   
     scenario "Cannot access it" do
       allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info).and_raise("Sensitive File - Access Violation")
       visit "/"
@@ -118,17 +117,15 @@ RSpec.feature "User Error Flows" do
     end
 
     scenario "VSO cannot access it" do
-      allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info).
-        and_raise("Power of Attorney of Folder is '071'. Access to this record is denied.")
+      allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info)
+        .and_raise("Power of Attorney of Folder is '071'. Access to this record is denied.")
       visit "/"
       fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
       click_button "Search"
 
       expect(page).to have_content("This efolder belongs to a Veteran you do not represent")
     end
-
   end
-
 
   context "When veteran case folder has no documents" do
     before do

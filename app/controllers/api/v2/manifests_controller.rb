@@ -1,5 +1,6 @@
 # TODO: create Api::V2::ApplicationController
 # rubocop:disable Metrics/CyclomaticComplexity
+# rubocop:disable Metrics/PerceivedComplexity
 class Api::V2::ManifestsController < Api::V1::ApplicationController
   def start
     file_number = request.headers["HTTP_FILE_NUMBER"]
@@ -74,3 +75,4 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
   end
 end
 # rubocop:enable Metrics/CyclomaticComplexity
+# rubocop:enable Metrics/PerceivedComplexity
