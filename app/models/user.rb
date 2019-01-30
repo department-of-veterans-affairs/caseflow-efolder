@@ -52,7 +52,11 @@ class User < ApplicationRecord
     def from_session_and_request(session, request)
       return nil unless session["user"]
 
-      sesh = CssAuthenticationSession.new(session["user"])
+      # There could be other values in the session that CssAuthenticationSession doesn't accept
+      # as attributes so delete them
+      sesh = CssAuthenticationSession.new(
+        session["user"].symbolize_keys.slice(:id, :name, :roles, :station_id, :css_id, :email)
+      )
       return nil unless sesh.css_id && sesh.station_id
 
       find_or_create_by(css_id: sesh.css_id, station_id: sesh.station_id).tap do |u|
