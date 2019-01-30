@@ -52,7 +52,7 @@ class User < ApplicationRecord
     def from_session_and_request(session, request)
       return nil unless session["user"]
 
-      # There could be other values in the session that CssAuthenticationSession doesn't accept 
+      # There could be other values in the session that CssAuthenticationSession doesn't accept
       # as attributes so delete them
       sesh = CssAuthenticationSession.new(
         session["user"].symbolize_keys.slice(:id, :name, :roles, :station_id, :css_id, :email)
