@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180717182835) do
+ActiveRecord::Schema.define(version: 20190307034524) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -52,7 +52,6 @@ ActiveRecord::Schema.define(version: 20180717182835) do
     t.integer "size"
     t.integer "conversion_status"
     t.index ["completed_at"], name: "index_documents_on_completed_at"
-    t.index ["download_id", "document_id"], name: "index_documents_on_download_id_and_document_id"
     t.index ["download_status"], name: "index_documents_on_download_status"
   end
 
@@ -86,7 +85,7 @@ ActiveRecord::Schema.define(version: 20180717182835) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "requested_zip_at"
-    t.index ["manifest_id", "user_id"], name: "index_files_downloads_on_manifest_id_and_user_id"
+    t.index ["manifest_id", "user_id"], name: "index_files_downloads_on_manifest_id_and_user_id", unique: true
     t.index ["user_id"], name: "index_files_downloads_on_user_id"
   end
 
