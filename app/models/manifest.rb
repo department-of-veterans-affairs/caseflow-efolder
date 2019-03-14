@@ -129,8 +129,22 @@ class Manifest < ApplicationRecord
   end
 
   def self.find_or_create_by_user(user:, file_number:)
-    manifest = Manifest.find_or_create_by!(file_number: file_number)
-    manifest.files_downloads.find_or_create_by!(user: user)
+    manifest = nil
+    begin
+      Manifest.transaction(requires_new: true) do
+        manifest = Manifest.find_or_create_by!(file_number: file_number)
+      end
+    rescue ActiveRecord::RecordNotUnique
+      retry
+    end
+
+    begin
+      FilesDownload.transaction(requires_new: true) do
+        manifest.files_downloads.find_or_create_by!(user: user)
+      end
+    rescue ActiveRecord::RecordNotUnique
+      retry
+    end
     manifest
   end
 
