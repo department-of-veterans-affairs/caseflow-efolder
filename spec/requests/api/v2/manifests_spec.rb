@@ -35,10 +35,10 @@ describe "Manifests API v2", type: :request do
   end
 
   context "View download history" do
-    let(:manifest1) { Manifest.find_or_create_by_user(user: user, file_number: "123C") }
-    let(:manifest2) { Manifest.find_or_create_by_user(user: user, file_number: "567C") }
-    let(:manifest3) { Manifest.find_or_create_by_user(user: user, file_number: "897C") }
-    let(:manifest4) { Manifest.find_or_create_by_user(user: user, file_number: "935C") }
+    let(:manifest1) { Manifest.find_or_create_by!(file_number: "123C") }
+    let(:manifest2) { Manifest.find_or_create_by!(file_number: "567C") }
+    let(:manifest3) { Manifest.find_or_create_by!(file_number: "897C") }
+    let(:manifest4) { Manifest.find_or_create_by!(file_number: "935C") }
 
     let(:another_user) { User.create(css_id: "123C", station_id: "123") }
     let!(:files_download1) { FilesDownload.create(manifest: manifest1, user: user, requested_zip_at: 2.days.ago) }
