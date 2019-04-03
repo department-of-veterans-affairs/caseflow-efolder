@@ -7,6 +7,7 @@ import Link from '@department-of-veterans-affairs/caseflow-frontend-toolkit/comp
 import { MANIFEST_DOWNLOAD_STATE } from '../Constants';
 import { getDownloadHistory } from '../apiActions';
 import { AlertIcon } from '../components/Icons';
+import StatusMessage from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/StatusMessage';
 
 const linkText = (status, failedDocCount) => {
   const icon = failedDocCount ? <AlertIcon /> : null;
@@ -22,7 +23,11 @@ class RecentDownloadsContainer extends React.PureComponent {
 
   render() {
     if (!this.props.recentDownloads.length) {
-      return null;
+      return <StatusMessage>
+        No recent downloads.
+        <br />
+        <Link to="/">Back to search</Link>
+      </StatusMessage>;
     }
 
     return <div>
@@ -51,6 +56,7 @@ class RecentDownloadsContainer extends React.PureComponent {
           )}
         </tbody>
       </table>
+      <Link to="/">Back to search</Link>
     </div>;
   }
 }

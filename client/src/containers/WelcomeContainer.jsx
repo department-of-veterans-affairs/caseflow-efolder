@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/AppSegment';
+import Link from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/Link';
 
 import {
   clearErrorMessage,
@@ -13,7 +14,6 @@ import {
 } from '../actions';
 import { startManifestFetch } from '../apiActions';
 import AlertBanner from '../components/AlertBanner';
-import RecentDownloadsContainer from './RecentDownloadsContainer';
 
 const searchBarNoteTextStyling = css({
   fontStyle: 'italic',
@@ -78,7 +78,7 @@ Note: eFolder Express now includes Virtual VA documents from the Legacy Content 
         </p>
       </div>
 
-      <RecentDownloadsContainer />
+      <Link to="/recent-downloads">Recent downloads...</Link>
     </AppSegment>;
   }
 }
