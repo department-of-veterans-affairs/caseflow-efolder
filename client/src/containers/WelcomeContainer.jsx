@@ -14,7 +14,6 @@ import {
 } from '../actions';
 import { startManifestFetch } from '../apiActions';
 import AlertBanner from '../components/AlertBanner';
-import RecentDownloadsContainer from './RecentDownloadsContainer';
 
 const searchBarNoteTextStyling = css({
   fontStyle: 'italic',
