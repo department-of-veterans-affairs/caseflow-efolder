@@ -58,6 +58,7 @@ class RecentDownloadsContainer extends React.PureComponent {
           )}
         </tbody>
       </table>
+      <Link to="/">Back to search</Link>
     </div>;
   }
 }
