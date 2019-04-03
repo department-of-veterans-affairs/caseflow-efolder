@@ -116,6 +116,7 @@ RSpec.feature "React Downloads" do
       expect(DownloadHelpers.download).to include("Lee, Stan - 2222")
 
       click_on "Start over"
+      click_on "Recent downloads"
 
       history_row = "#download-1"
       expect(find(history_row)).to have_content(claim_number)
@@ -239,6 +240,7 @@ RSpec.feature "React Downloads" do
       click_on "Start over"
 
       history_row = "#download-1"
+      click_on "Recent downloads"
 
       expect(find(history_row)).to have_content(veteran_id)
       expect(find(history_row)).to have_css(".cf-icon-alert")

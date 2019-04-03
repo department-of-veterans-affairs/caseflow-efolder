@@ -159,6 +159,8 @@ RSpec.feature "Backend Error Flows" do
 
         click_on "Start over"
 
+        click_on "Recent downloads"
+
         history_row = "#download-1"
 
         expect(find(history_row)).to have_content(veteran_id)
