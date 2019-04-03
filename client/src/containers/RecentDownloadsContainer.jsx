@@ -9,8 +9,6 @@ import { getDownloadHistory } from '../apiActions';
 import { AlertIcon } from '../components/Icons';
 import StatusMessage from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/StatusMessage';
 
-
-
 const linkText = (status, failedDocCount) => {
   const icon = failedDocCount ? <AlertIcon /> : null;
   const text = status === MANIFEST_DOWNLOAD_STATE.IN_PROGRESS ? 'progress' : 'results';
@@ -28,8 +26,8 @@ class RecentDownloadsContainer extends React.PureComponent {
       return <StatusMessage>
         No recent downloads.
         <br />
-      <Link to="/">Back to search</Link>
-    </StatusMessage>;
+        <Link to="/">Back to search</Link>
+      </StatusMessage>;
     }
 
     return <div>

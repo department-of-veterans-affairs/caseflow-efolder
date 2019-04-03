@@ -78,7 +78,7 @@ Note: eFolder Express now includes Virtual VA documents from the Legacy Content 
         </p>
       </div>
 
-      <Link to="/recent-downloads">{ 'Recent downloads...' }</Link>
+      <Link to="/recent-downloads">Recent downloads...</Link>
     </AppSegment>;
   }
 }
