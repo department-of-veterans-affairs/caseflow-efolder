@@ -55,6 +55,7 @@ You'll need Ruby 2.5.3
 Install dependencies
 
 > $ bundle install
+> $ cd client && yarn && cd -
 
 Create the database
 
@@ -64,15 +65,21 @@ Load the schema
 
 > $ rake db:schema:load
 
-Now start both the rails server,
+Run all the app components:
 
-> $ rails s
+> $ foreman
 
-In a separate terminal, watch for webpack changes
+Or run each component separately.
+
+* the rails server
+
+> $ bundle exec rails s -p 3001
+
+* In a separate terminal, watch for webpack changes
 
 > $ cd client && yarn run build --watch
 
-And in another separate terminal, start a jobs worker
+* And in another separate terminal, start a jobs worker
 
 > $ bundle exec shoryuken start -q efolder_development_high_priority efolder_development_low_priority efolder_development_med_priority -R
 
