@@ -48,9 +48,9 @@ docker-compose down -v
 
 ## First Time Development Setup
 
-You'll need Ruby 2.3.0 if you don't have it.
+You'll need Ruby 2.5.3
 
-> $ rbenv install 2.3.0
+> $ rbenv install 2.5.3
 
 Install dependencies
 
@@ -82,7 +82,7 @@ and running `docker-compose up`. By default if this is not running, TIFFs will g
 
 If you want to test out the DEMO flow (without VBMS connection),
 
-Visit [http://localhost:3000](),
+Visit [http://localhost:3001](),
 Type in a file number with "DEMO" in it. (ie: "DEMO123")
 Watch it download your fake file.
 
@@ -131,4 +131,4 @@ In a separate tab run:
 
 > $ RAILS_ENV=staging bundle exec shoryuken start -q efolder_staging_high_priority efolder_staging_low_priority efolder_staging_med_priority -R
 
-Now when you go to [localhost:3000](localhost:3000) you'll be prompted with a fake login screen. Use any of these [logins](https://github.com/department-of-veterans-affairs/appeals-qa/blob/master/TestData/LOGINS.md) to impersonate a UAT user.
+Now when you go to [localhost:3001](localhost:3001) you'll be prompted with a fake login screen. Use any of these [logins](https://github.com/department-of-veterans-affairs/appeals-qa/blob/master/TestData/LOGINS.md) to impersonate a UAT user.
