@@ -13,6 +13,7 @@ development:
   <<: *default
   <<: *default_local
   database: caseflow_efolder_development
+  port: 15432
 
 staging:
   <<: *default
@@ -23,6 +24,7 @@ test:
   <<: *default
   <<: *default_local
   database: caseflow_efolder_test
+  port: 15432
 
 production:
   <<: *default
