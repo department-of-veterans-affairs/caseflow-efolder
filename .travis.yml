@@ -6,7 +6,7 @@ branches:
     only:
         - master
 rvm:
-  - 2.5.1
+  - 2.5.3
 
 before_install:
   - nvm install $(cat .nvmrc)

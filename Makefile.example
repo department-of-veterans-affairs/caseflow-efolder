@@ -1,0 +1,79 @@
+#
+# developer convenience.
+# Copy this file to Makefile and then you can (e.g.):
+#
+#  % make install
+#  % make run
+#
+#
+
+up:
+	docker-compose up -d
+
+down:
+	docker-compose down
+
+run: up
+	foreman start
+
+test: clean
+	bundle exec rake
+
+clean:
+	rm -f log/vacols.log
+	rm -f log/test.log
+	rm -f app/assets/javascripts/*webpack*
+	rm -rf tmp/capybara
+
+lint:
+	CI=true bundle exec rake lint
+
+jslint:
+	cd client && yarn run lint
+
+security:
+	bundle exec rake security_caseflow
+
+check: test lint
+
+logs:
+	docker-compose logs -f
+
+db:
+	bundle exec rails dbconsole
+
+c:
+	bundle exec rails console
+
+migrate:
+	bundle exec rake db:migrate
+
+rollback:
+	bundle exec rake db:rollback
+
+fresh:
+	git fresh
+
+reset:
+	bundle exec rake db:reset
+
+install:
+	bundle check || bundle install
+	cd client && yarn
+
+update: fresh install migrate
+
+client-test:
+	cd client && yarn run build:test
+
+unsafe:
+	mv .git/hooks/pre-commit .git/hooks/pre-commit-linter
+
+safe:
+	mv .git/hooks/pre-commit-linter .git/hooks/pre-commit
+
+karma:
+	cd client && node_modules/.bin/karma start
+
+
+.PHONY: test run clean lint check logs db update one-test client-test security build ready
