@@ -4,7 +4,7 @@ source ENV["GEM_SERVER_URL"] || "https://rubygems.org"
 
 gem "active_model_serializers"
 gem "activejob_dj_overrides"
-#gem "activerecord-jdbcpostgresql-adapter", platforms: :jruby
+gem "activerecord-jdbcpostgresql-adapter", platforms: :jruby
 gem "aws-sdk", "~> 2"
 gem "bgs", git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", ref: "3cab7050e942428724412dff1ccaa887a8190bf5"
 gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons", ref: "8dde00d67b7c629e4b871f8dcb3617bfe989b3db"
