@@ -4,7 +4,7 @@ source ENV["GEM_SERVER_URL"] || "https://rubygems.org"
 
 gem "active_model_serializers"
 gem "activejob_dj_overrides"
-gem "activerecord-jdbcpostgresql-adapter", platforms: :jruby
+#gem "activerecord-jdbcpostgresql-adapter", platforms: :jruby
 gem "aws-sdk", "~> 2"
 gem "bgs", git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", ref: "3cab7050e942428724412dff1ccaa887a8190bf5"
 gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons", ref: "8dde00d67b7c629e4b871f8dcb3617bfe989b3db"
@@ -51,24 +51,22 @@ end
 group :development, :test do
   gem "brakeman", "3.1.5"
   gem "bundler-audit"
-
+  gem "dotenv-rails"
   gem "pry"
   gem "pry-byebug"
-
-  gem "dotenv-rails"
   gem "rubocop", "~> 0.52.1", require: false
   gem "scss_lint", require: false
 end
 
 group :test do
   gem "capybara", "2.6.2"
+  gem "database_cleaner"
+  gem "launchy"
   gem "rspec"
   gem "rspec-rails"
   gem "simplecov"
   gem "sniffybara", git: "https://github.com/department-of-veterans-affairs/sniffybara.git"
   gem "timecop"
-  gem "database_cleaner"
-  gem "launchy"
 end
 
 group :development do
