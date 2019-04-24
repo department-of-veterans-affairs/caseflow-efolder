@@ -24,7 +24,7 @@ test:
   <<: *default
   <<: *default_local
   database: caseflow_efolder_test
-  port: <%= ENV['POSTGRES_PORT'] || 5432 %>
+  port: <%= ENV['POSTGRES_PORT'] || 15432 %>
 
 production:
   <<: *default
