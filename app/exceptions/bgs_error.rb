@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
-
 # Wraps known BGS errors so that we can better triage what gets reported in Sentry alerts.
 class BGSError < StandardError
-
   def initialize(error)
     super(error.message).tap do |result|
       result.set_backtrace(error.backtrace)
@@ -28,9 +26,9 @@ class BGSError < StandardError
     # Examples: https://sentry.ds.va.gov/department-of-veterans-affairs/efolder/issues/3170/
     /Unable to find SOAP operation:/ => "TransientBGSError",
 
-    # Transient failure when, for example, a WSDL is unavailable. 
+    # Transient failure when, for example, a WSDL is unavailable.
     # Example: https://sentry.ds.va.gov/department-of-veterans-affairs/efolder/issues/3167/
-     /HTTP error \(504\): upstream request timeout/ => "TransientBGSError",
+    /HTTP error \(504\): upstream request timeout/ => "TransientBGSError",
 
     # Like above
     #
@@ -41,7 +39,6 @@ class BGSError < StandardError
     /TUX-20306 - An unexpected error was encountered/ => "TransientBGSError"
   }.freeze
 
-
   class << self
     def from_bgs_error(bgs_error)
       bgs_error_message = extract_error_message(bgs_error)
@@ -49,7 +46,7 @@ class BGSError < StandardError
       KNOWN_ERRORS.each do |msg_str, error_class_name|
         next unless bgs_error_message.match(msg_str)
 
-        error_class = "#{error_class_name}".constantize
+        error_class = error_class_name.to_s.constantize
 
         new_error = error_class.new(bgs_error)
         break
@@ -70,5 +67,7 @@ class BGSError < StandardError
   end
 end
 # Many BGS calls fail in off-hours because BGS has maintenance time. These errors are classified
-# as transient errors and we ignore them in our reporting tools. 
-class TransientBGSError < BGSError; end
+# as transient errors and we ignore them in our reporting tools.
+
+class TransientBGSError < BGSError
+end
