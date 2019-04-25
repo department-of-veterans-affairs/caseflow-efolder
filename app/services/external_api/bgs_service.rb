@@ -23,6 +23,8 @@ class ExternalApi::BGSService
         @bgs_client.veteran.find_by_file_number(file_number)
       end
     parse_veteran_info(veteran_data) if veteran_data
+  rescue StandardError => e
+    raise ::BGSError.from_bgs_error(e)
   end
 
   def check_sensitivity(file_number)
