@@ -1,13 +1,7 @@
 # frozen_string_literal: true
 
 # Wraps known BGS errors so that we can better triage what gets reported in Sentry alerts.
-class BGSError < StandardError
-  def initialize(error)
-    super(error.message).tap do |result|
-      result.set_backtrace(error.backtrace)
-    end
-  end
-
+class BGSError < DependencyError
   KNOWN_ERRORS = {
     # Example: https://sentry.ds.va.gov/department-of-veterans-affairs/efolder/issues/3156/
     /Connection timed out - connect\(2\) for "bepprod\.vba\.va\.gov" port 443/ => "TransientBGSError",
@@ -38,33 +32,6 @@ class BGSError < StandardError
     # Example: https://sentry.ds.va.gov/department-of-veterans-affairs/caseflow/issues/3188/
     /TUX-20306 - An unexpected error was encountered/ => "TransientBGSError"
   }.freeze
-
-  class << self
-    def from_bgs_error(bgs_error)
-      bgs_error_message = extract_error_message(bgs_error)
-      new_error = nil
-      KNOWN_ERRORS.each do |msg_str, error_class_name|
-        next unless bgs_error_message.match(msg_str)
-
-        error_class = error_class_name.to_s.constantize
-
-        new_error = error_class.new(bgs_error)
-        break
-      end
-      new_error ||= new(bgs_error)
-    end
-
-    private
-
-    def extract_error_message(bgs_error)
-      if bgs_error.try(:body)
-        # https://sentry.ds.va.gov/department-of-veterans-affairs/caseflow/issues/3124/
-        bgs_error.body.encode("UTF-8", invalid: :replace, undef: :replace, replace: "")
-      else
-        bgs_error.message
-      end
-    end
-  end
 end
 # Many BGS calls fail in off-hours because BGS has maintenance time. These errors are classified
 # as transient errors and we ignore them in our reporting tools.

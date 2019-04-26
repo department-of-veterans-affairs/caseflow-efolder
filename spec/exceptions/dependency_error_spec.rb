@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe BGSError do
+describe DependencyError do
   describe "#new" do
     it "preserves backtrace" do
       trace = %w[foo bar]
@@ -21,12 +21,16 @@ describe BGSError do
     end
   end
 
-  describe ".from_bgs_error" do
-    subject { described_class.from_bgs_error(error) }
-    let(:error) { BGS::ShareError.new("Connection timed out - connect(2) for \"bepprod.vba.va.gov\" port 443") }
+  describe ".from_dependency_error" do
+    let(:bgs_error) { BGS::ShareError.new("Connection timed out - connect(2) for \"bepprod.vba.va.gov\" port 443") }
+    let(:vbms_error) { VBMS::HTTPError.new(500, "HTTPClient::ReceiveTimeoutError: exection expired") }
 
-    it "re-casts the exception" do
-      expect(subject).to be_a(TransientBGSError)
+    it "re-casts BGS exception" do
+      expect(BGSError.from_dependency_error(bgs_error)).to be_a(TransientBGSError)
+    end
+
+    it "re-casts VBMS exception" do
+      expect(VBMSError.from_dependency_error(vbms_error)).to be_a(TransientVBMSError)
     end
   end
 end

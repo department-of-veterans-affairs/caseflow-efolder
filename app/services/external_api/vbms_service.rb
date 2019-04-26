@@ -33,21 +33,11 @@ class ExternalApi::VBMSService
     veteran_file_number = source.file_number
     request = VBMS::Requests::FindDocumentVersionReference.new(veteran_file_number)
 
-    begin
-      documents = send_and_log_request(veteran_file_number, request)
-    rescue VBMS::HTTPError => e
-      raise unless e.body.include?("File Number does not exist within the system.")
-
-      alternative_file_number = ExternalApi::BGSService.new.fetch_veteran_info(veteran_file_number)["file_number"]
-
-      raise if alternative_file_number == veteran_file_number
-
-      request = VBMS::Requests::FindDocumentVersionReference.new(alternative_file_number)
-      documents = send_and_log_request(alternative_file_number, request)
-    end
-
+    documents = send_and_log_request(veteran_file_number, request)
     Rails.logger.info("VBMS Document list length: #{documents.length}")
     documents
+  rescue StandardError => e
+    raise ::VBMSError.from_dependency_error(e)
   end
 
   def self.fetch_document_file(document)
@@ -64,6 +54,8 @@ class ExternalApi::VBMSService
     request = VBMS::Requests::GetDocumentContent.new(document.document_id)
     result = send_and_log_request(document.document_id, request)
     result&.content
+  rescue StandardError => e
+    raise ::VBMSError.from_dependency_error(e)
   end
 
   def self.init_client
@@ -79,8 +71,8 @@ class ExternalApi::VBMSService
                           name: name) do
       @vbms_client.send_request(request)
     end
-  rescue VBMS::ClientError => e
+  rescue StandardError => e
     Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
-    raise e
+    raise ::VBMSError.from_dependency_error(e)
   end
 end
