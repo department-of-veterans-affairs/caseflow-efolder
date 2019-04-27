@@ -1,33 +1,28 @@
 # frozen_string_literal: true
 
-# Wraps known BGS errors so that we can better triage what gets reported in Sentry alerts.
+# Wraps known VBMS errors so that we can better triage what gets reported in Sentry alerts.
 class VBMSError < DependencyError
   KNOWN_ERRORS = {
     # Example: https://sentry.ds.va.gov/department-of-veterans-affairs/efolder/issues/2161/
-    /HTTPClient::ReceiveTimeoutError: exection expired/ => "TransientVBMSError",
+    /HTTPClient::ReceiveTimeoutError: execution expired/ => "VBMSError::Transient",
 
     # Example: https://sentry.ds.va.gov/department-of-veterans-affairs/efolder/issues/2322/
-    /HTTPClient::SendTimeoutError: exection expired/ => "TransientVBMSError",
+    /HTTPClient::SendTimeoutError: execution expired/ => "VBMSError::Transient",
 
     # Example: https://sentry.ds.va.gov/department-of-veterans-affairs/efolder/issues/4708/
-    /HTTPClient::KeepAliveDisconnected:/ => "TransientVBMSError",
+    /HTTPClient::KeepAliveDisconnected:/ => "VBMSError::Transient",
 
     # Example: https://sentry.ds.va.gov/department-of-veterans-affairs/efolder/issues/2847/
-    /HTTPClient::ConnectTimeoutError: exection expired/ => "TransientVBMSError",
+    /HTTPClient::ConnectTimeoutError: execution expired/ => "VBMSError::Transient",
 
     # Examples: https://sentry.ds.va.gov/department-of-veterans-affairs/efolder/issues/3170/
-    /Unable to find SOAP operation:/ => "TransientVBMSError",
-
-    # Example: https://sentry.ds.va.gov/department-of-veterans-affairs/efolder/issues/4713/
-    /Connection refused - connect\(2\) for "localhost" port 10001/ => "ECONNREFUSEDVBMSError",
+    /Unable to find SOAP operation:/ => "VBMSError::Transient",
 
     # Example: https://sentry.ds.va.gov/department-of-veterans-affairs/efolder/issues/2557/
-    /Connection reset by peer - SSL_connect/ => "ECONNRESETVBMSError"
+    /Connection reset by peer - SSL_connect/ => "VBMSError::Transient"
   }.freeze
 end
-# Many BGS calls fail in off-hours because BGS has maintenance time. These errors are classified
+# Many VBMS calls fail in off-hours because VBMS has maintenance time. These errors are classified
 # as transient errors and we ignore them in our reporting tools.
 
-class TransientVBMSError < VBMSError; end
-class ECONNREFUSEDVBMSError < VBMSError; end
-class ECONNRESETVBMSError < VBMSError; end
+class VBMSError::Transient < VBMSError; end
