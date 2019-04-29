@@ -24,7 +24,7 @@ class ExternalApi::BGSService
       end
     parse_veteran_info(veteran_data) if veteran_data
   rescue StandardError => e
-    raise ::BGSError.from_bgs_error(e)
+    raise ::BGSError.from_dependency_error(e)
   end
 
   def check_sensitivity(file_number)
