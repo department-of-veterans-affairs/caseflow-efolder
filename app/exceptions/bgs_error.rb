@@ -1,7 +1,12 @@
 # frozen_string_literal: true
 
 # Wraps known BGS errors so that we can better triage what gets reported in Sentry alerts.
+# Many BGS calls fail in off-hours because BGS has maintenance time. These errors are classified
+# as transient errors and we ignore them in our reporting tools.
 class BGSError < DependencyError
+  class Transient < BGSError; end
+  class SensitiveFileViolation < BGSError; end
+
   KNOWN_ERRORS = {
     # Example: https://sentry.ds.va.gov/department-of-veterans-affairs/efolder/issues/3156/
     /Connection timed out - connect\(2\) for "bepprod\.vba\.va\.gov" port 443/ => "BGSError::Transient",
@@ -30,10 +35,9 @@ class BGSError < DependencyError
     /HTTP error \(503\): upstream connect error/ => "BGSError::Transient",
 
     # Example: https://sentry.ds.va.gov/department-of-veterans-affairs/caseflow/issues/3188/
-    /TUX-20306 - An unexpected error was encountered/ => "BGSError::Transient"
+    /TUX-20306 - An unexpected error was encountered/ => "BGSError::Transient",
+
+    # https://sentry.ds.va.gov/department-of-veterans-affairs/efolder/issues/2207/events/314264/
+    /Sensitive File - Access Violation/ => "BGSError::SensitiveFileViolation"
   }.freeze
 end
-# Many BGS calls fail in off-hours because BGS has maintenance time. These errors are classified
-# as transient errors and we ignore them in our reporting tools.
-
-class BGSError::Transient < BGSError; end
