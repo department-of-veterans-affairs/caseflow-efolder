@@ -2,7 +2,12 @@
 
 # Wraps known VBMS errors so that we can better triage what gets reported in Sentry alerts.
 class VBMSError < DependencyError
+  class Transient < VBMSError; end
+  class DocumentNotFound < VBMSError; end
+
   KNOWN_ERRORS = {
+    /Document not found/ => "VBMSError::DocumentNotFound",
+
     # Example: https://sentry.ds.va.gov/department-of-veterans-affairs/efolder/issues/2161/
     /HTTPClient::ReceiveTimeoutError: execution expired/ => "VBMSError::Transient",
 
@@ -22,7 +27,3 @@ class VBMSError < DependencyError
     /Connection reset by peer - SSL_connect/ => "VBMSError::Transient"
   }.freeze
 end
-# Many VBMS calls fail in off-hours because VBMS has maintenance time. These errors are classified
-# as transient errors and we ignore them in our reporting tools.
-
-class VBMSError::Transient < VBMSError; end
