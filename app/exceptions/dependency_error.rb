@@ -26,12 +26,13 @@ class DependencyError < StandardError
     private
 
     def extract_error_message(error)
-      if error.try(:body)
-        # https://sentry.ds.va.gov/department-of-veterans-affairs/caseflow/issues/3124/
-        error.body.encode("UTF-8", invalid: :replace, undef: :replace, replace: "")
-      else
-        error.message
-      end
+      msg = if error.try(:body)
+              # https://sentry.ds.va.gov/department-of-veterans-affairs/caseflow/issues/3124/
+              error.body.encode("UTF-8", invalid: :replace, undef: :replace, replace: "")
+            else
+              error.message
+            end
+      "#{error.class.to_s}: #{msg}"
     end
   end
 end
