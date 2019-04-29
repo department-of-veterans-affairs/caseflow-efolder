@@ -4,8 +4,12 @@
 class VBMSError < DependencyError
   class Transient < VBMSError; end
   class DocumentNotFound < VBMSError; end
+  class ResultSetTooBig < VBMSError; end
 
   KNOWN_ERRORS = {
+    # https://sentry.ds.va.gov/department-of-veterans-affairs/efolder/issues/4812/events/314288/
+    /Requested result set exceeds acceptable size/ => "VBMSError::ResultSetTooBig",
+
     /Document not found/ => "VBMSError::DocumentNotFound",
 
     # Example: https://sentry.ds.va.gov/department-of-veterans-affairs/efolder/issues/2161/
