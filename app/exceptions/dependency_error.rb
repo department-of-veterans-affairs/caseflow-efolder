@@ -32,7 +32,7 @@ class DependencyError < StandardError
             else
               error.message
             end
-      "#{error.class.to_s}: #{msg}"
+      "#{error.class}: #{msg}"
     end
   end
 end
