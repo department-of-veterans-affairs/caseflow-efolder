@@ -36,8 +36,6 @@ class ExternalApi::VBMSService
     documents = send_and_log_request(veteran_file_number, request)
     Rails.logger.info("VBMS Document list length: #{documents.length}")
     documents
-  rescue StandardError => e
-    raise ::VBMSError.from_dependency_error(e)
   end
 
   def self.fetch_document_file(document)
@@ -54,8 +52,6 @@ class ExternalApi::VBMSService
     request = VBMS::Requests::GetDocumentContent.new(document.document_id)
     result = send_and_log_request(document.document_id, request)
     result&.content
-  rescue StandardError => e
-    raise ::VBMSError.from_dependency_error(e)
   end
 
   def self.init_client
