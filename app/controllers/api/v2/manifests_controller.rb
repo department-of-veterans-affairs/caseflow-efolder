@@ -58,7 +58,7 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
   end
 
   def recent_downloads
-    @recent_downloads ||= current_user.recent_downloads
+    @recent_downloads ||= distribute_reads { current_user.recent_downloads.to_a }
   end
 
   def bgs_service
