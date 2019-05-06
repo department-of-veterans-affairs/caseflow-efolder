@@ -6,6 +6,7 @@ class VBMSError < DependencyError
   class DocumentNotFound < VBMSError; end
   class ResultSetTooBig < VBMSError; end
   class FilenumberDoesNotExist < VBMSError; end
+  class NoSOAPBody < VBMSError; end
 
   KNOWN_ERRORS = {
     # https://sentry.ds.va.gov/department-of-veterans-affairs/efolder/issues/4812/events/314288/
@@ -30,6 +31,12 @@ class VBMSError < DependencyError
 
     # Examples: https://sentry.ds.va.gov/department-of-veterans-affairs/efolder/issues/3170/
     /Unable to find SOAP operation:/ => "VBMSError::Transient",
+
+    # https://sentry.ds.va.gov/department-of-veterans-affairs/efolder/issues/4801/events/321718/
+    /upstream connect error or disconnect/ => "VBMSError::Transient",
+
+    # https://sentry.ds.va.gov/department-of-veterans-affairs/efolder/issues/4811/events/321736/
+    /No SOAP body results found in response/ => "VBMSError::NoSOAPBody",
 
     # Example: https://sentry.ds.va.gov/department-of-veterans-affairs/efolder/issues/2557/
     /Connection reset by peer - SSL_connect/ => "VBMSError::Transient"
