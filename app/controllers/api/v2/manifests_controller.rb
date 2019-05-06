@@ -37,8 +37,7 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
   def progress
     files_download = nil
     distribute_reads do
-      files_download ||= FilesDownload.includes(:manifest, :sources, :records)
-                                      .find_by(manifest_id: params[:id], user_id: current_user.id)
+      files_download ||= FilesDownload.find_with_manifest(manifest_id: params[:id], user_id: current_user.id)
     end
     return record_not_found unless files_download
     render json: json_manifests(files_download.manifest)
