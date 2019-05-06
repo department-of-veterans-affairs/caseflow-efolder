@@ -36,4 +36,6 @@ production:
         name: primary
         url: <%= ENV["POSTGRES_URL"] %>
       - name: replica
-        url: <%= ENV["POSTGRES_REPLICA_URL"] %>
+        url: <%= ENV["POSTGRES_URL"] %>
+# use different env var once replica db is ready
+#        url: <%= ENV["POSTGRES_REPLICA_URL"] %>
