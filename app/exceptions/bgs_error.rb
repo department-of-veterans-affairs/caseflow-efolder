@@ -37,6 +37,9 @@ class BGSError < DependencyError
     # Example: https://sentry.ds.va.gov/department-of-veterans-affairs/caseflow/issues/3188/
     /TUX-20306 - An unexpected error was encountered/ => "BGSError::Transient",
 
+    # https://sentry.ds.va.gov/department-of-veterans-affairs/efolder/issues/3188/events/321905/
+    /The Tuxedo service is down/ => "BGSError::Transient",
+
     # https://sentry.ds.va.gov/department-of-veterans-affairs/efolder/issues/2207/events/314264/
     /Sensitive File - Access Violation/ => "BGSError::SensitiveFileViolation"
   }.freeze
