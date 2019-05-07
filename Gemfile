@@ -11,6 +11,7 @@ gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow
 gem "coffee-rails", "> 4.1.0"
 gem "connect_vbms", git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "dddc821c2335c7de234a5454e4b4874e3f658420"
 gem "connect_vva", git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "f6e3ca26211b28fb8acaab8aa76bddb118b6726e"
+gem "distribute_reads"
 gem "dogstatsd-ruby"
 gem "httpclient"
 gem "jbuilder", "~> 2.0"

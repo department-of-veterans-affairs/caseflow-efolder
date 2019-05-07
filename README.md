@@ -107,6 +107,15 @@ In order to run tests, you will first need to globally install phantomJS
 
 > $ (sudo) npm install -g phantomjs
 
+The CI environment uses standard ports for services like PostgreSQL and Redis but local tests require a different port.
+Add this to a `.env` file in your application root directory:
+
+```
+POSTGRES_PORT=15432
+REDIS_URL_CACHE=redis://localhost:16379/0/cache/
+REDIS_URL_SIDEKIQ=redis://localhost:16379
+```
+
 Then to run the test suite:
 
 > $ rake

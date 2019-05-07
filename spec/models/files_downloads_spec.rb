@@ -36,4 +36,15 @@ describe FilesDownload do
       end
     end
   end
+
+  context ".find_with_manifest" do
+    let!(:user) { User.create(css_id: "Foo", station_id: "112") }
+    let!(:manifest) { Manifest.find_or_create_by_user(user: user, file_number: "1234") }
+
+    it "includes sources and records" do
+      files_download = described_class.find_with_manifest(user_id: user.id, manifest_id: manifest.id)
+
+      expect(files_download).to eq(manifest.files_downloads.last)
+    end
+  end
 end
