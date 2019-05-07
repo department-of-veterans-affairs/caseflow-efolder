@@ -103,7 +103,7 @@ describe "Manifests API v2", type: :request do
       }.to_json
     end
 
-    it "returns empty array" do
+    xit "returns empty array" do
       perform_enqueued_jobs do
         post "/api/v2/manifests", params: nil, headers: headers
         expect(response.code).to eq("200")

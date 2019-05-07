@@ -28,4 +28,14 @@ test:
 
 production:
   <<: *default
-  url: <%= ENV["POSTGRES_URL"] %>
+  url: postgresql-makara:///
+  makara:
+    sticky: true
+    connections:
+      - role: master
+        name: primary
+        url: <%= ENV["POSTGRES_URL"] %>
+      - name: replica
+        url: <%= ENV["POSTGRES_URL"] %>
+# use different env var once replica db is ready
+#        url: <%= ENV["POSTGRES_REPLICA_URL"] %>
