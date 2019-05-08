@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190506184440) do
+ActiveRecord::Schema.define(version: 20190508135156) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -52,6 +52,7 @@ ActiveRecord::Schema.define(version: 20190506184440) do
     t.integer "size"
     t.integer "conversion_status"
     t.index ["completed_at"], name: "index_documents_on_completed_at"
+    t.index ["download_id"], name: "index_documents_on_download_id"
     t.index ["download_status"], name: "index_documents_on_download_status"
   end
 
