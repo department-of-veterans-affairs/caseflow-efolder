@@ -38,6 +38,9 @@ class VBMSError < DependencyError
     # https://sentry.ds.va.gov/department-of-veterans-affairs/efolder/issues/4811/events/321736/
     /No SOAP body results found in response/ => "VBMSError::NoSOAPBody",
 
+    # https://sentry.ds.va.gov/department-of-veterans-affairs/efolder/issues/4810/events/329774/
+    /Unable to parse SOAP message/ => "VBMSError::NoSOAPBody",
+
     # Example: https://sentry.ds.va.gov/department-of-veterans-affairs/efolder/issues/2557/
     /Connection reset by peer - SSL_connect/ => "VBMSError::Transient"
   }.freeze
