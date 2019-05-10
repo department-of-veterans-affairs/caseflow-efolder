@@ -47,6 +47,11 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
     render json: recent_downloads, each_serializer: Serializers::V2::HistorySerializer
   end
 
+  def document_count
+    doc_counter = DocumentCounter.new(manifest: Manifest.find(params[:id]))
+    render json: { documents: doc_counter.count }
+  end
+
   private
 
   def json_manifests(manifest)
