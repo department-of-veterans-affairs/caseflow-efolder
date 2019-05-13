@@ -108,7 +108,7 @@ describe "Manifests API v2", type: :request do
       allow(VVAService).to receive(:v2_fetch_documents_for).and_return([])
     end
 
-    let!(:response_body) do
+    let!(:expected_body) do
       {
         data: {
           id: manifest.id.to_s,
@@ -143,14 +143,20 @@ describe "Manifests API v2", type: :request do
             records: []
           }
         }
-      }.to_json
+      }
     end
 
     it "returns empty array" do
       perform_enqueued_jobs do
         post "/api/v2/manifests", params: nil, headers: headers
         expect(response.code).to eq("200")
-        expect(response.body).to eq(response_body)
+
+        got_body = JSON.parse(response.body, symbolize_names: true)
+        expected_sources = expected_body[:data][:attributes].delete(:sources)
+        got_sources = got_body[:data][:attributes].delete(:sources)
+
+        expect(got_body).to eq(expected_body)
+        expect(got_sources).to contain_exactly(*expected_sources)
       end
     end
   end
