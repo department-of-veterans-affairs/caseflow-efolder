@@ -6,8 +6,8 @@ class DocumentCounter
   def count
     total = 0
     manifest.sources.each do |source|
-      documents = ManifestFetcher.new(manifest_source: source).fetch_documents
-      total += DocumentCreator.new(external_documents: documents).external_documents.count
+      documents = ManifestFetcher.new(manifest_source: source).documents
+      total += DocumentFilter.new(documents: documents).filter.count
     end
     total
   end

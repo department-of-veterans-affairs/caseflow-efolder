@@ -5,13 +5,13 @@ describe DocumentCounter do
   let(:vbms_documents) do
     [
       OpenStruct.new(document_id: "1", series_id: "3"),
-      OpenStruct.new(document_id: "2", series_id: "4", type_id: DocumentCreator::RESTRICTED_TYPES.sample)
+      OpenStruct.new(document_id: "2", series_id: "4", type_id: DocumentFilter::RESTRICTED_TYPES.sample)
     ]
   end
   let(:vva_documents) do
     [
       OpenStruct.new(document_id: "11", series_id: "3"),
-      OpenStruct.new(document_id: "12", series_id: "4", type_id: DocumentCreator::RESTRICTED_TYPES.sample)
+      OpenStruct.new(document_id: "12", series_id: "4", type_id: DocumentFilter::RESTRICTED_TYPES.sample)
     ]
   end
   let(:vva_fetcher) { ManifestFetcher.new(manifest_source: vva_source) }
