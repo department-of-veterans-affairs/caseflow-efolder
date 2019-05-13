@@ -18,8 +18,8 @@ describe DocumentCounter do
   let(:vbms_fetcher) { ManifestFetcher.new(manifest_source: vbms_source) }
 
   before do
-    allow(vva_fetcher).to receive(:fetch_documents).and_return(vva_documents)
-    allow(vbms_fetcher).to receive(:fetch_documents).and_return(vbms_documents)
+    allow(vva_fetcher).to receive(:documents).and_return(vva_documents)
+    allow(vbms_fetcher).to receive(:documents).and_return(vbms_documents)
     allow(ManifestFetcher).to receive(:new).with(manifest_source: vva_source).and_return(vva_fetcher)
     allow(ManifestFetcher).to receive(:new).with(manifest_source: vbms_source).and_return(vbms_fetcher)
   end
