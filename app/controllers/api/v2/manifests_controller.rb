@@ -48,8 +48,15 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
   end
 
   def document_count
-    doc_counter = DocumentCounter.new(manifest: Manifest.find(params[:id]))
-    render json: { documents: doc_counter.count }
+    manifest_id = params[:id]
+    cache_key = "manifest-doc-count-#{manifest_id}"
+    doc_count = Rails.cache.fetch(cache_key) do
+      doc_counter = DocumentCounter.new(manifest: Manifest.find(manifest_id))
+      doc_counter.count
+    rescue ActiveRecord::RecordNotFound
+      return record_not_found
+    end
+    render json: { documents: doc_count }
   end
 
   private

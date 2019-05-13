@@ -36,6 +36,7 @@ Rails.application.routes.draw do
         post "/:id", action: :refresh
         get :history
         get "/:id", action: :progress
+        get "/:id/doccount", action: :document_count
       end
       resources :manifests, only: [] do
         post :files_downloads, to: "files_downloads#start"
