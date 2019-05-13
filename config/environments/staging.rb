@@ -49,9 +49,6 @@ Rails.application.configure do
   config.sqs_create_queues = true
   config.sqs_endpoint = 'http://localhost:4576'
 
-  # URL for feedback app. If not present, link points to Sharepoint.
-  ENV["CASEFLOW_FEEDBACK_URL"] = "https://dsva-appeals-feedback-demo-1748368704.us-gov-west-1.elb.amazonaws.com/"
-
   ENV["METRICS_USERNAME"] = "caseflow"
   ENV["METRICS_PASSWORD"] = "caseflow"
 
