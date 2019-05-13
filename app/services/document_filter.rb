@@ -1,4 +1,4 @@
-class DocumentCreator
+class DocumentFilter
   include ActiveModel::Model
 
   attr_accessor :documents
