@@ -13,6 +13,7 @@ import PrivateRoute from './PrivateRoute';
 import UnauthorizedContainer from './UnauthorizedContainer';
 import WelcomeContainer from './WelcomeContainer';
 import RecentDownloadsContainer from './RecentDownloadsContainer';
+import FeedbackContainer from './FeedbackContainer';
 
 class InitContainer extends React.PureComponent {
   render() {
@@ -35,6 +36,7 @@ class InitContainer extends React.PureComponent {
               <Route exact path="/out-of-service" component={OutOfServiceContainer} />
               <Route exact path="/unauthorized" component={UnauthorizedContainer} />
               <Route exact path="/recent-downloads" component={RecentDownloadsContainer} />
+              <Route exact path="/feedback" component={FeedbackContainer} />
               <Route component={NotFoundMessage} />
             </Switch>
           </main>

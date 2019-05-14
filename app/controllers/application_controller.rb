@@ -103,11 +103,7 @@ class ApplicationController < BaseController
   end
 
   def feedback_url
-    return "https://vaww.vaco.portal.va.gov/sites/BVA/olkm/DigitalService/Lists/Feedback/NewForm.aspx" unless ENV["CASEFLOW_FEEDBACK_URL"]
-
-    param_object = { redirect: request.original_url, subject: "eFolder Express" }
-
-    ENV["CASEFLOW_FEEDBACK_URL"] + "?" + param_object.to_param
+    "/feedback"
   end
   helper_method :feedback_url
 
