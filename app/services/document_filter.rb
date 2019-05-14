@@ -32,6 +32,9 @@ class DocumentFilter
   RESTRICTED_TYPES = IGNORED_DOC_TYPES + FIDUCIARY_DOC_TYPES + RESTRICTED_VVA_DOC_TYPES
 
   def filter
-    (@documents || []).reject { |doc| RESTRICTED_TYPES.include?(doc.type_id) || doc.try(:restricted) }
+    (@documents || []).reject do |doc|
+      doc_type = doc.try(:doc_type) || doc.type_id
+      RESTRICTED_TYPES.include?(doc_type) || doc.try(:restricted)
+    end
   end
 end

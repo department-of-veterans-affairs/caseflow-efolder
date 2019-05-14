@@ -34,7 +34,7 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
   def document_count
     manifest_id = params[:id]
     cache_key = "manifest-doc-count-#{manifest_id}"
-    doc_count = Rails.cache.fetch(cache_key) do
+    doc_count = Rails.cache.fetch(cache_key, 2.hours) do
       doc_counter = DocumentCounter.new(manifest: Manifest.find(manifest_id))
       doc_counter.count
     end
