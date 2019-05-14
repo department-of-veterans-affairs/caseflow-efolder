@@ -44,6 +44,7 @@ Rails.application.routes.draw do
         get :zip, to: "files_downloads#zip"
       end
       resources :records, only: :show, param: :version_id
+      resources :veterans, only: :index
     end
   end
 
