@@ -44,10 +44,6 @@ Rails.application.configure do
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 
-  # URL for feedback app. If not present, the feedback link defaults
-  # to Sharepoint. This can also be in Jenkins.
-  ENV["CASEFLOW_FEEDBACK_URL"] = "test.feedback.url"
-
   # Allow health check to pushgateway
   ENV["ENABLE_PUSHGATEWAY_HEALTHCHECK"] = "true"
 end

@@ -42,7 +42,7 @@ describe DocumentCreator do
     context "when there are restricted document types" do
       let(:documents) do
         [
-          OpenStruct.new(document_id: "1", series_id: "3", type_id: DocumentCreator::RESTRICTED_TYPES.sample),
+          OpenStruct.new(document_id: "1", series_id: "3", type_id: DocumentFilter::RESTRICTED_TYPES.sample),
           OpenStruct.new(document_id: "2", series_id: "4", type_id: "554")
         ]
       end
