@@ -1,4 +1,4 @@
-class Api::V2::FilesDownloadsController < Api::V1::ApplicationController
+class Api::V2::FilesDownloadsController < Api::V2::ApplicationController
   before_action :files_download_exists?
 
   def start
