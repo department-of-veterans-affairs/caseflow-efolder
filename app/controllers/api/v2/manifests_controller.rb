@@ -1,24 +1,8 @@
 # TODO: create Api::V2::ApplicationController
-# rubocop:disable Metrics/CyclomaticComplexity
-# rubocop:disable Metrics/PerceivedComplexity
 class Api::V2::ManifestsController < Api::V1::ApplicationController
   def start
-    file_number = request.headers["HTTP_FILE_NUMBER"]
-    return missing_header("File Number") unless file_number
-
-    return invalid_file_number unless bgs_service.valid_file_number?(file_number)
-
-    begin
-      veteran_info = bgs_service.fetch_veteran_info(file_number)
-    rescue StandardError => e
-      return sensitive_record if e.message.include?("Sensitive File - Access Violation")
-      return vso_denied_record if e.message.include?("Power of Attorney of Folder is")
-      raise e
-    end
-
-    return veteran_not_found(file_number) unless bgs_service.record_found?(veteran_info)
-
-    file_number = veteran_info["file_number"] if veteran_info["file_number"]
+    file_number = verify_veteran_file_number
+    return if performed?
 
     manifest = Manifest.includes(:sources, :records).find_or_create_by_user(user: current_user, file_number: file_number)
     manifest.start!
@@ -45,6 +29,18 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
 
   def history
     render json: recent_downloads, each_serializer: Serializers::V2::HistorySerializer
+  end
+
+  def document_count
+    manifest_id = params[:id]
+    cache_key = "manifest-doc-count-#{manifest_id}"
+    doc_count = Rails.cache.fetch(cache_key, expires_in: 2.hours) do
+      doc_counter = DocumentCounter.new(manifest: Manifest.find(manifest_id))
+      doc_counter.count
+    end
+    render json: { documents: doc_count }
+  rescue ActiveRecord::RecordNotFound
+    return record_not_found
   end
 
   private
@@ -75,6 +71,27 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
   def invalid_file_number
     render json: { status: "File number is invalid. Veteran IDs must be 8 or more characters and contain only numbers." }, status: 400
   end
+
+  def verify_veteran_file_number
+    file_number = request.headers["HTTP_FILE_NUMBER"]
+    return missing_header("File Number") unless file_number
+
+    return invalid_file_number unless bgs_service.valid_file_number?(file_number)
+
+    fetch_veteran_by_file_number(file_number)
+  end
+
+  def fetch_veteran_by_file_number(file_number)
+    begin
+      veteran_info = bgs_service.fetch_veteran_info(file_number)
+    rescue StandardError => e
+      return sensitive_record if e.message.include?("Sensitive File - Access Violation")
+      return vso_denied_record if e.message.include?("Power of Attorney of Folder is")
+      raise e
+    end
+
+    return veteran_not_found(file_number) unless bgs_service.record_found?(veteran_info)
+
+    veteran_info["file_number"] || file_number
+  end
 end
-# rubocop:enable Metrics/CyclomaticComplexity
-# rubocop:enable Metrics/PerceivedComplexity
