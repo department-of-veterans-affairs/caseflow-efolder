@@ -1,14 +1,22 @@
 class DocumentCounter
   include ActiveModel::Model
 
-  attr_accessor :manifest
+  attr_accessor :manifest, :veteran
 
   def count
     total = 0
-    manifest.sources.each do |source|
-      documents = ManifestFetcher.new(manifest_source: source).documents
+    services.each do |service|
+      documents = service.v2_fetch_documents_for(manifest || veteran)
       total += DocumentFilter.new(documents: documents).filter.count
     end
     total
+  end
+
+  private
+
+  def services
+    return manifest.sources.map(&:service) if manifest
+    return [VBMSService, VVAService] if veteran
+    []
   end
 end
