@@ -61,7 +61,7 @@ describe "Manifests API v2", type: :request do
 
   context "document count" do
     let(:manifest) { Manifest.find_or_create_by!(file_number: "123C") }
-    let(:api_url) { "/api/v2/manifests/#{manifest.id}/doccount" }
+    let(:api_url) { "/api/v2/manifests/#{manifest.id}/document_count" }
 
     context "manifest does not exist" do
       let(:manifest) { Manifest.new(id: 0) }
