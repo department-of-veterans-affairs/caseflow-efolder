@@ -55,11 +55,11 @@ class Fakes::DocumentService
   }.freeze
 
   ### Fakes v2 START
-  def self.v2_fetch_documents_for(source)
-    demo = DEMOS[source.file_number] || DEMOS["DEMODEFAULT"]
+  def self.v2_fetch_documents_for(file_number)
+    demo = DEMOS[file_number] || DEMOS["DEMODEFAULT"]
     return [] if !demo || demo[:num_docs] <= 0
 
-    sleep_and_check_for_error(demo, source.try(:name) || source.try(:id))
+    sleep_and_check_for_error(demo, file_number)
 
     (1..(demo[:num_docs] || 0)).to_a.map do |i|
       create_document(i)
