@@ -1,4 +1,4 @@
-class Api::V2::RecordsController < Api::V1::ApplicationController
+class Api::V2::RecordsController < Api::V2::ApplicationController
   before_action :validate_access
 
   def show

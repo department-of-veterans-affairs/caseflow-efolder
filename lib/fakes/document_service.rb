@@ -46,15 +46,20 @@ class Fakes::DocumentService
       manifest_load: 4,
       num_docs: 10,
       max_file_load: 3
+    },
+    "DEMOFAST" => {
+      manifest_load: 0,
+      num_docs: 10,
+      max_file_load: 1
     }
   }.freeze
 
   ### Fakes v2 START
-  def self.v2_fetch_documents_for(source)
-    demo = DEMOS[source.file_number] || DEMOS["DEMODEFAULT"]
+  def self.v2_fetch_documents_for(file_number)
+    demo = DEMOS[file_number] || DEMOS["DEMODEFAULT"]
     return [] if !demo || demo[:num_docs] <= 0
 
-    sleep_and_check_for_error(demo, source.name)
+    sleep_and_check_for_error(demo, file_number)
 
     (1..(demo[:num_docs] || 0)).to_a.map do |i|
       create_document(i)
@@ -132,7 +137,7 @@ class Fakes::DocumentService
 
     OpenStruct.new(
       vbms_filename: "happy-thursday-#{SecureRandom.hex}.#{type[:ext]}",
-      type_id: Document::TYPES.keys.sample,
+      type_id: (11..20).to_a.sample,
       document_id: "{#{SecureRandom.hex(4).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(6).upcase}}",
       version_id: "{#{SecureRandom.hex(4).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(6).upcase}}",
       series_id: "{#{SecureRandom.hex(4).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(2).upcase}-#{SecureRandom.hex(6).upcase}}",

@@ -27,10 +27,9 @@ class ExternalApi::VBMSService
     documents
   end
 
-  def self.v2_fetch_documents_for(source)
+  def self.v2_fetch_documents_for(veteran_file_number)
     @vbms_client ||= init_client
 
-    veteran_file_number = source.file_number
     request = VBMS::Requests::FindDocumentVersionReference.new(veteran_file_number)
 
     documents = send_and_log_request(veteran_file_number, request)
