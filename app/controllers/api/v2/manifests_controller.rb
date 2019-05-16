@@ -30,18 +30,6 @@ class Api::V2::ManifestsController < Api::V2::ApplicationController
     render json: recent_downloads, each_serializer: Serializers::V2::HistorySerializer
   end
 
-  def document_count
-    manifest_id = params[:id]
-    cache_key = "manifest-doc-count-#{manifest_id}"
-    doc_count = Rails.cache.fetch(cache_key, expires_in: 2.hours) do
-      doc_counter = DocumentCounter.new(manifest: Manifest.find(manifest_id))
-      doc_counter.count
-    end
-    render json: { documents: doc_count }
-  rescue ActiveRecord::RecordNotFound
-    return record_not_found
-  end
-
   private
 
   def json_manifests(manifest)

@@ -4,9 +4,8 @@ class Api::V2::VeteransController < Api::V2::ApplicationController
     return if performed?
 
     cache_key = "veteran-doc-count-#{file_number}"
-    veteran = Veteran.new(file_number: file_number)
     doc_count = Rails.cache.fetch(cache_key, expires_in: 2.hours) do
-      doc_counter = DocumentCounter.new(veteran: veteran)
+      doc_counter = DocumentCounter.new(veteran_file_number: file_number)
       doc_counter.count
     end
     render json: { documents: doc_count }

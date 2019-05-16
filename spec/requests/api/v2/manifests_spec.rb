@@ -59,49 +59,6 @@ describe "Manifests API v2", type: :request do
     end
   end
 
-  context "document count" do
-    let(:manifest) { Manifest.find_or_create_by!(file_number: "123C") }
-    let(:api_url) { "/api/v2/manifests/#{manifest.id}/document_count" }
-
-    context "manifest does not exist" do
-      let(:manifest) { Manifest.new(id: 0) }
-
-      it "returns 404" do
-        get api_url, headers: headers
-        expect(response.code).to eq("404")
-        body = JSON.parse(response.body)
-        expect(body["errors"][0]["detail"]).to match(/A record with that ID was not found in our systems/)
-      end
-    end
-
-    context "manifest has no records" do
-      it "returns 0" do
-        get api_url, headers: headers
-        expect(response.code).to eq("200")
-        expect(response.body).to eq({ documents: 0 }.to_json)
-      end
-    end
-
-    context "manifest has records" do
-      before do
-        allow_any_instance_of(DocumentCounter).to receive(:count).and_return(10)
-      end
-
-      it "returns count" do
-        get api_url, headers: headers
-        expect(response.code).to eq("200")
-        expect(response.body).to eq({ documents: 10 }.to_json)
-      end
-
-      it "caches result" do
-        cache_key = "manifest-doc-count-#{manifest.id}"
-        expect(Rails.cache.exist?(cache_key)).to eq(false)
-        get api_url, headers: headers
-        expect(Rails.cache.exist?(cache_key)).to eq(true)
-      end
-    end
-  end
-
   context "When the manifest has no records" do
     before do
       allow(VBMSService).to receive(:v2_fetch_documents_for).and_return([])

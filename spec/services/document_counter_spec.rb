@@ -1,8 +1,4 @@
 describe DocumentCounter do
-  let(:manifest) { Manifest.create(file_number: "DEMOFAST") }
-  let!(:vva_source) { ManifestSource.create(name: "VVA", manifest: manifest) }
-  let!(:vbms_source) { ManifestSource.create(name: "VBMS", manifest: manifest) }
-  let(:veteran) { Veteran.new(file_number: "DEMOFAST") }
   let(:vva_documents) do
     [
       OpenStruct.new(document_id: "11", series_id: "3"),
@@ -15,20 +11,10 @@ describe DocumentCounter do
   end
 
   describe "#count" do
-    context "with manifest" do
-      subject { described_class.new(manifest: manifest) }
+    subject { described_class.new(veteran_file_number: "DEMOFAST") }
 
-      it "returns total unrestricted document count for all sources" do
-        expect(subject.count).to eq(11)
-      end
-    end
-
-    context "with veteran" do
-      subject { described_class.new(veteran: veteran) }
-
-      it "returns total unrestricted document count for all sources" do
-        expect(subject.count).to eq(11)
-      end
+    it "returns total unrestricted document count for all sources" do
+      expect(subject.count).to eq(11) # 10 for DEMOFAST + 1 unrestricted vva_documents
     end
   end
 end

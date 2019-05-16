@@ -1,22 +1,15 @@
 class DocumentCounter
   include ActiveModel::Model
 
-  attr_accessor :manifest, :veteran
+  attr_accessor :veteran_file_number
 
   def count
     total = 0
-    services.each do |service|
-      documents = service.v2_fetch_documents_for(manifest || veteran)
+    [VBMSService, VVAService].each do |service|
+      source = OpenStruct.new(file_number: veteran_file_number)
+      documents = service.v2_fetch_documents_for(source)
       total += DocumentFilter.new(documents: documents).filter.count
     end
     total
-  end
-
-  private
-
-  def services
-    return manifest.sources.map(&:service) if manifest
-    return [VBMSService, VVAService] if veteran
-    []
   end
 end
