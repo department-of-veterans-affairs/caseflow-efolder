@@ -6,8 +6,7 @@ class DocumentCounter
   def count
     total = 0
     [VBMSService, VVAService].each do |service|
-      source = OpenStruct.new(file_number: veteran_file_number)
-      documents = service.v2_fetch_documents_for(source)
+      documents = service.v2_fetch_documents_for(veteran_file_number)
       total += DocumentFilter.new(documents: documents).filter.count
     end
     total

@@ -13,12 +13,12 @@ class ExternalApi::VVAService
     documents
   end
 
-  def self.v2_fetch_documents_for(source)
+  def self.v2_fetch_documents_for(file_number)
     @vva_client ||= init_client
-    documents ||= MetricsService.record("VVA: get document list for: #{source.file_number}",
+    documents ||= MetricsService.record("VVA: get document list for: #{file_number}",
                                         service: :vva,
                                         name: "document_list.get_by_claim_number") do
-      @vva_client.document_list.get_by_claim_number(source.file_number)
+      @vva_client.document_list.get_by_claim_number(file_number)
     end
     Rails.logger.info("VVA Document list length: #{documents.length}")
     documents
