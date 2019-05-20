@@ -1,4 +1,4 @@
-describe "Veterans API v2", type: :request do
+describe "Document Counts API v2", type: :request do
   include ActiveJob::TestHelper
 
   let!(:current_user) do
@@ -29,7 +29,7 @@ describe "Veterans API v2", type: :request do
 
   describe "#index" do
     it "returns veteran document count" do
-      get "/api/v2/veterans", params: nil, headers: headers
+      get "/api/v2/document_counts", params: nil, headers: headers
 
       expect(response.code).to eq("200")
 

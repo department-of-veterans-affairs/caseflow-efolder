@@ -1,4 +1,4 @@
-class Api::V2::VeteransController < Api::V2::ApplicationController
+class Api::V2::DocumentCountsController < Api::V2::ApplicationController
   def index
     file_number = verify_veteran_file_number
     return if performed?
