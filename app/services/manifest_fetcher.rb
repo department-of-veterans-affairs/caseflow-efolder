@@ -16,6 +16,6 @@ class ManifestFetcher
   end
 
   def documents
-    manifest_source.service.v2_fetch_documents_for(manifest_source)
+    manifest_source.service.v2_fetch_documents_for(manifest_source.file_number)
   end
 end
