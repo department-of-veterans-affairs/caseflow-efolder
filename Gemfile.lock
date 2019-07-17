@@ -7,8 +7,8 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/caseflow-commons
-  revision: 8dde00d67b7c629e4b871f8dcb3617bfe989b3db
-  ref: 8dde00d67b7c629e4b871f8dcb3617bfe989b3db
+  revision: cd7f48d86dad4584b46ca9527367d6e0db2dd582
+  branch: pek-security-task
   specs:
     caseflow (0.3.8)
       aws-sdk (~> 2.10)
@@ -171,7 +171,7 @@ GEM
     coffee-script-source (1.12.2)
     concurrent-ruby (1.1.5)
     crass (1.0.4)
-    d3-rails (4.13.0)
+    d3-rails (5.9.2)
       railties (>= 3.1)
     database_cleaner (1.6.2)
     delayed_job (4.1.4)
@@ -243,8 +243,7 @@ GEM
       railties (>= 3.1)
     multi_json (1.13.1)
     multipart-post (2.0.0)
-    neat (2.1.0)
-      sass (~> 3.4)
+    neat (4.0.0)
       thor (~> 0.19)
     newrelic_rpm (4.8.0.341)
     nio4r (2.3.1)
