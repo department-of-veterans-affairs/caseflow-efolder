@@ -69,6 +69,6 @@ if (env.COMMON_PIPELINE_TASK == 'bake') {
   commonPipeline.bake(APP_NAME, APP_VERSION, DEPLOY_MESSAGE);
 } else if (env.COMMON_PIPELINE_TASK == 'build') {
   commonPipeline.build(APP_NAME, APP_VERSION, DEPLOY_MESSAGE);
-} else {
+} else if (env.COMMON_PIPELINE_TASK == 'deploy'){
   commonPipeline.deploy(APP_NAME, APP_VERSION, DEPLOY_MESSAGE);
 }
