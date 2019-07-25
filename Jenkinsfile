@@ -65,4 +65,10 @@ node('deploy') {
 // Execute the common pipeline.
 // Note that this must be outside of the node block since the common pipeline
 // runs another set of stages.
-commonPipeline.deploy(APP_NAME, APP_VERSION, DEPLOY_MESSAGE);
+if (env.COMMON_PIPELINE_TASK == 'bake') {
+  commonPipeline.bake(APP_NAME, APP_VERSION, DEPLOY_MESSAGE);
+} else if (env.COMMON_PIPELINE_TASK == 'build') {
+  commonPipeline.build(APP_NAME, APP_VERSION, DEPLOY_MESSAGE);
+} else if (env.COMMON_PIPELINE_TASK == 'deploy'){
+  commonPipeline.deploy(APP_NAME, APP_VERSION, DEPLOY_MESSAGE);
+}
