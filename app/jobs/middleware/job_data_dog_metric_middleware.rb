@@ -16,10 +16,10 @@ class JobDataDogMetricMiddleware
           job: job_class
         }
       )
-    rescue StandardError => ex
+    rescue StandardError => error
       tags = { job: job_class, queue: queue }
       context = { message: body }
-      Raven.capture_exception(ex, tags: tags, extra: context)
+      Raven.capture_exception(error, tags: tags, extra: context) unless error.ignorable?
     end
   end
 end
