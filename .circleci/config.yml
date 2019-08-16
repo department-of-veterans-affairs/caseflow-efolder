@@ -53,3 +53,10 @@ jobs:
           name: Rake
           command: |
             ~/project/ci-bin/capture-log "bundle exec rake"
+
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - rake
