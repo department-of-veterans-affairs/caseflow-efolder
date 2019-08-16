@@ -7,6 +7,7 @@ jobs:
       # customized container.
       - image: 008577686731.dkr.ecr.us-gov-west-1.amazonaws.com/circleci:2.5.3-node-browsers
         environment:
+          - DBUS_SESSION_BUS_ADDRESS: /dev/null
           - RAILS_ENV: test
           - BUNDLE_PATH: vendor/bundle
           - POSTGRES_HOST: localhost
