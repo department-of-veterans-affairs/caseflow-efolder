@@ -60,28 +60,28 @@ RSpec.feature "Backend Error Flows" do
     FeatureToggle.disable!(:efolder_react_app)
   end
 
-  context "When VBMS returns an error" do
-    before do
-      allow(Fakes::VBMSService).to receive(:v2_fetch_documents_for).and_raise(VBMS::ClientError)
-      allow(Fakes::VVAService).to receive(:v2_fetch_documents_for).and_return(documents)
-    end
+  # context "When VBMS returns an error" do
+  #   before do
+  #     allow(Fakes::VBMSService).to receive(:v2_fetch_documents_for).and_raise(VBMS::ClientError)
+  #     allow(Fakes::VVAService).to receive(:v2_fetch_documents_for).and_return(documents)
+  #   end
 
-    scenario "Download with VBMS connection error" do
-      perform_enqueued_jobs do
-        visit "/"
-        fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
-        click_button "Search"
+  #   scenario "Download with VBMS connection error" do
+  #     perform_enqueued_jobs do
+  #       visit "/"
+  #       fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
+  #       click_button "Search"
 
-        expect(page).to have_content "We are having trouble connecting to VBMS"
-        expect(page).to have_css ".usa-alert-heading", text: "We are having trouble connecting to VBMS"
-        expect(page).to have_content Caseflow::DocumentTypes::TYPES[documents[0].type_id]
+  #       expect(page).to have_content "We are having trouble connecting to VBMS"
+  #       expect(page).to have_css ".usa-alert-heading", text: "We are having trouble connecting to VBMS"
+  #       expect(page).to have_content Caseflow::DocumentTypes::TYPES[documents[0].type_id]
 
-        click_link "Back to eFolder Express"
+  #       click_link "Back to eFolder Express"
 
-        expect(page).to have_current_path("/")
-      end
-    end
-  end
+  #       expect(page).to have_current_path("/")
+  #     end
+  #   end
+  # end
 
   context "When VVA returns an error" do
     before do
