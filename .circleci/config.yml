@@ -69,11 +69,6 @@ jobs:
             ~/project/ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:schema:load"
 
       - run:
-          name: Install phantomjs
-          command: |
-            npm install phantomjs
-
-      - run:
           name: Rake
           command: |
             ~/project/ci-bin/capture-log "bundle exec rake"
