@@ -71,7 +71,7 @@ jobs:
       - run:
           name: Install phantomjs
           command: |
-            npm install -g phantomjs
+            npm install phantomjs
 
       - run:
           name: Rake
