@@ -250,7 +250,7 @@ GEM
       thor (~> 0.19)
     newrelic_rpm (4.8.0.341)
     nio4r (2.3.1)
-    nokogiri (1.10.3)
+    nokogiri (1.10.4)
       mini_portile2 (~> 2.4.0)
     nori (2.6.0)
     omniauth (1.8.1)
@@ -500,6 +500,7 @@ DEPENDENCIES
   mini_magick
   moment_timezone-rails
   newrelic_rpm
+  nokogiri (>= 1.10.4)
   omniauth-saml-va!
   pg (~> 0.18)
   prometheus-client (~> 0.7.1)
