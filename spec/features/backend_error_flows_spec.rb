@@ -60,7 +60,7 @@ RSpec.feature "Backend Error Flows" do
     FeatureToggle.disable!(:efolder_react_app)
   end
 
-  context "When VBMS returns an error", pending: true do
+  context "When VBMS returns an error" do
     before do
       allow(Fakes::VBMSService).to receive(:v2_fetch_documents_for).and_raise(VBMS::ClientError)
       allow(Fakes::VVAService).to receive(:v2_fetch_documents_for).and_return(documents)
