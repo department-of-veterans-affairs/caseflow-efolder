@@ -2,7 +2,7 @@ class CssAuthenticationSession
   include ActiveModel::Model
   include ActiveModel::Serializers::JSON
 
-  attr_accessor :id, :name, :roles, :station_id
+  attr_accessor :id, :name, :roles, :station_id, :first_name, :last_name
   attr_reader :css_id, :email
 
   def email=(value)
@@ -26,6 +26,8 @@ class CssAuthenticationSession
       new(id: auth_hash.uid,
           css_id: auth_hash.uid,
           email: raw_css_response["http://vba.va.gov/css/common/emailAddress"],
+          first_name: first_name,
+          last_name: last_name,
           name: "#{first_name} #{last_name}",
           roles: raw_css_response.attributes["http://vba.va.gov/css/caseflow/role"],
           station_id: raw_css_response["http://vba.va.gov/css/common/stationId"])
