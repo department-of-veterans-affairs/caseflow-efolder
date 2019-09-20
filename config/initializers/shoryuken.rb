@@ -1,4 +1,3 @@
-require "#{Rails.root}/app/jobs/middleware/job_prometheus_metric_middleware"
 require "#{Rails.root}/app/jobs/middleware/job_data_dog_metric_middleware"
 require "#{Rails.root}/app/jobs/middleware/job_raven_reporter_middleware"
 
