@@ -14,7 +14,7 @@ class ApplicationController < BaseController
   def authenticate
     return true unless current_user.nil?
 
-    Rails.logger.info("original_url #{request.original_url} saved as return_to prior to SAML auth. Referer #{request.referrer}")
+    Rails.logger.info("original_url #{request.original_url} saved as return_to prior to SAML auth. Referer #{request.referer}")
     Rails.logger.info("existing session.return_to #{session['return_to']}")
     session["return_to"] = request.original_url
     redirect_to((ENV["SSO_HOST"] || "") + "/auth/samlva")
