@@ -13,10 +13,7 @@ class MetricsService
     end
 
     if service
-      metric = PrometheusService.send("#{service}_request_latency".to_sym)
-
       latency = stopwatch.real
-      metric.set({ app: @app, name: name }, latency)
       DataDogService.emit_gauge(
         metric_group: "service",
         metric_name: "request_latency",
@@ -32,11 +29,7 @@ class MetricsService
     Rails.logger.info("FINISHED #{description}: #{stopwatch}")
     return_value
   rescue StandardError
-    if service
-      metric = PrometheusService.send("#{service}_request_error_counter".to_sym)
-      metric.increment(app: @app, name: name)
-      increment_datadog_counter("request_error", service, name)
-    end
+    increment_datadog_counter("request_error", service, name) if service
 
     Rails.logger.info("RESCUED #{description}")
 
@@ -44,11 +37,7 @@ class MetricsService
     # This is just to capture the metric.
     raise
   ensure
-    if service
-      metric = PrometheusService.send("#{service}_request_attempt_counter".to_sym)
-      metric.increment(app: @app, name: name)
-      increment_datadog_counter("request_attempt", service, name)
-    end
+    increment_datadog_counter("request_attempt", service, name) if service
   end
   # rubocop:enable Metrics/MethodLength
 
