@@ -1,6 +1,7 @@
 require "benchmark"
 
 # see https://dropwizard.github.io/metrics/3.1.0/getting-started/ for abstractions on metric types
+# :nocov:
 class MetricsService
   # rubocop:disable Metrics/MethodLength
   @app = "eFolder"
@@ -53,3 +54,4 @@ class MetricsService
     )
   end
 end
+# :nocov:
