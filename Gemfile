@@ -24,7 +24,6 @@ gem "newrelic_rpm"
 gem "nokogiri", ">=1.10.4"
 gem "omniauth-saml-va", git: "https://github.com/department-of-veterans-affairs/omniauth-saml-va", ref: "fbe2b878c250b14ee996ef6699c42df2c42e41a1"
 gem "pg", "~> 0.18", platforms: :ruby
-gem "prometheus-client", "~> 0.7.1"
 gem "puma"
 gem "rack-cors", require: "rack/cors"
 gem "rails", "5.1.6.2"
