@@ -53,6 +53,9 @@ Rails.application.configure do
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 
+  ENV["METRICS_USERNAME"] = "caseflow"
+  ENV["METRICS_PASSWORD"] = "caseflow"
+
   config.sqs_create_queues = true
   config.sqs_endpoint = 'http://localhost:14576'
 

@@ -31,7 +31,7 @@ gem "redis-namespace"
 gem "redis-rails", "~> 5.0.2"
 gem "redis-semaphore"
 gem "request_store"
-gem "rubyzip", ">= 1.3.0"
+gem "rubyzip", "~> 1.2.2"
 gem "sass-rails", "~> 5.0"
 gem "sdoc", "~> 0.4.0", group: :doc
 gem "sentry-raven"

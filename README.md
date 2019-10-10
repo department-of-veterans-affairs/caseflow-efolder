@@ -113,6 +113,7 @@ Add this to a `.env` file in your application root directory:
 ```
 POSTGRES_PORT=15432
 REDIS_URL_CACHE=redis://localhost:16379/0/cache/
+REDIS_URL_SIDEKIQ=redis://localhost:16379
 ```
 
 Then to run the test suite:
