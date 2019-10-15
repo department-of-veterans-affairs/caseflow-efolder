@@ -20,7 +20,6 @@ class ManifestSource < ApplicationRecord
   SECONDS_TO_AUTO_UNLOCK = 5
 
   def start!
-    binding.pry
     s = Redis::Semaphore.new("download_manifest_source_#{id}".to_s,
                              url: Rails.application.secrets.redis_url_cache,
                              expiration: SECONDS_TO_AUTO_UNLOCK)
