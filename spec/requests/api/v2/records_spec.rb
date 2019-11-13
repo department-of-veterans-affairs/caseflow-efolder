@@ -11,11 +11,12 @@ describe "Records API v2", type: :request do
     let(:manifest2) { Manifest.create(file_number: "5678") }
     let(:source2) { ManifestSource.create(name: %w[VBMS VVA].sample, manifest: manifest2) }
 
-    let(:full_version_id) { "{333-333}" }
+    let(:version_id) { "333-333" }
+    let(:full_version_id) { "{#{version_id}}" }
 
     let!(:record) do
       Record.create(
-        created_at: Time.zone.now - 1.day,
+        created_at: Time.zone.now - 5.days,
         version_id: full_version_id,
         source: source,
         series_id: "{4444-4444}",
@@ -36,8 +37,6 @@ describe "Records API v2", type: :request do
         mime_type: "application/pdf"
       )
     end
-
-    let(:version_id) { record.version_id.tr("{}", "") }
 
     context "when user does not have Reader role" do
       let!(:current_user) do
