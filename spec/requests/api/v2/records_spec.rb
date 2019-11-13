@@ -1,14 +1,14 @@
 describe "Records API v2", type: :request do
   include ActiveJob::TestHelper
 
-  context "Record by document ID" do
+  context "Record by document ID", focus: true do
     let!(:current_user) do
       User.authenticate!(roles: ["Reader"])
     end
 
     let(:manifest) { Manifest.create(file_number: "1234") }
     let(:source) { ManifestSource.create(name: %w[VBMS VVA].sample, manifest: manifest) }
-    let(:manifest2) { Manifest.cerate(file_number: "5678") }
+    let(:manifest2) { Manifest.create(file_number: "5678") }
     let(:source2) { ManifestSource.create(name: %w[VBMS VVA].sample, manifest: manifest2) }
 
     let(:full_version_id) { "{333-333}" }
