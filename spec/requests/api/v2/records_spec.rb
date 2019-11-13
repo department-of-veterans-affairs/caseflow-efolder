@@ -14,7 +14,7 @@ describe "Records API v2", type: :request do
     let(:version_id) { "333-333" }
     let(:full_version_id) { "{#{version_id}}" }
 
-    let!(:record) do
+    let(:record) do
       Record.create(
         created_at: Time.zone.now - 5.days,
         version_id: full_version_id,
@@ -26,7 +26,7 @@ describe "Records API v2", type: :request do
       )
     end
 
-    let!(:record2) do
+    let(:record2) do
       Record.create(
         created_at: Time.zone.now,
         version_id: full_version_id,
