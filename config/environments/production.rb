@@ -68,7 +68,7 @@ Rails.application.configure do
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
-  config.i18n.fallbacks = [I18n.default_locale]
+  config.i18n.fallbacks = true
 
   # Send deprecation notices to registered listeners.
   config.active_support.deprecation = :notify
@@ -91,7 +91,7 @@ Rails.application.configure do
 
   config.bgs_environment = ENV["BGS_ENVIRONMENT"] || "beplinktest"
   config.vva_wsdl = ENV["VVA_WSDL"]
-
+  
   config.s3_enabled = true
   config.s3_bucket_name = ENV["AWS_BUCKET_NAME"]
 
