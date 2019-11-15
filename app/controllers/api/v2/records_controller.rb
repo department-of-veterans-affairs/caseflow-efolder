@@ -32,7 +32,11 @@ class Api::V2::RecordsController < Api::V2::ApplicationController
   end
 
   def record
-    @record ||= Record.includes(:manifest_source).find_by(version_id: "{" + params[:version_id] + "}")
+    @record ||= Record.includes(:manifest_source).where(version_id: version_id).order(created_at: :desc).first
+  end
+
+  def version_id
+    "{" + params[:version_id] + "}"
   end
 
   def validate_access
