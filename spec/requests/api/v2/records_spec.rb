@@ -1,7 +1,7 @@
 describe "Records API v2", type: :request do
   include ActiveJob::TestHelper
 
-  context "Record by document ID", focus: true do
+  context "Record by document ID" do
     let!(:current_user) do
       User.authenticate!(roles: ["Reader"])
     end
@@ -11,14 +11,14 @@ describe "Records API v2", type: :request do
     let(:manifest2) { Manifest.create(file_number: "5678") }
     let(:source2) { ManifestSource.create(name: %w[VBMS VVA].sample, manifest: manifest2) }
 
-    let(:version_id) { "333-333" }
+    let(:version_id) { "3333-3333" }
     let(:full_version_id) { "{#{version_id}}" }
 
-    let(:record) do
-      Record.create(
+    let!(:record) do
+      Record.create!(
         created_at: Time.zone.now - 5.days,
         version_id: full_version_id,
-        source: source,
+        manifest_source: source,
         series_id: "{4444-4444}",
         received_at: Time.utc(2015, 9, 6, 1, 0, 0),
         type_id: "825",
@@ -26,11 +26,11 @@ describe "Records API v2", type: :request do
       )
     end
 
-    let(:record2) do
-      Record.create(
+    let!(:record2) do
+      Record.create!(
         created_at: Time.zone.now,
         version_id: full_version_id,
-        source: source2,
+        manifest_source: source2,
         series_id: "{4444-4444}",
         received_at: Time.utc(2015, 9, 6, 1, 0, 0),
         type_id: "825",
@@ -55,14 +55,14 @@ describe "Records API v2", type: :request do
     end
 
     context "when user has access to the corresponding manifest record" do
-      let!(:files_download) { FilesDownload.create(user: current_user, manifest: manifest) }
+      let!(:files_download) { FilesDownload.create(user: current_user, manifest: manifest2) }
 
       it "returns the latest document" do
         allow(S3Service).to receive(:fetch_content).and_return("hello there")
         get "/api/v2/records/#{version_id}"
         expect(response.code).to eq("200")
         expect(response.body).to eq("hello there")
-        expect(response.type).to eq(record2.mime_type)
+        expect(response.media_type).to eq(record2.mime_type)
         expect(response.headers["Cache-Control"]).to match(/2592000/)
       end
 
