@@ -250,7 +250,7 @@ GEM
       thor (~> 0.19)
     newrelic_rpm (4.8.0.341)
     nio4r (2.3.1)
-    nokogiri (1.10.4)
+    nokogiri (1.10.5)
       mini_portile2 (~> 2.4.0)
     nori (2.6.0)
     omniauth (1.8.1)
@@ -273,7 +273,8 @@ GEM
     public_suffix (3.0.2)
     puma (3.11.3)
     rack (2.0.7)
-    rack-cors (1.0.2)
+    rack-cors (1.1.0)
+      rack (>= 2.0.0)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rails (5.1.6.2)
@@ -497,13 +498,13 @@ DEPENDENCIES
   mini_magick
   moment_timezone-rails
   newrelic_rpm
-  nokogiri (>= 1.10.4)
+  nokogiri (>= 1.10.5)
   omniauth-saml-va!
   pg (~> 0.18)
   pry
   pry-byebug
   puma
-  rack-cors
+  rack-cors (>= 1.0.4)
   rails (= 5.1.6.2)
   rails_stdout_logging
   rb-readline
