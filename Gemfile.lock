@@ -7,10 +7,10 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/caseflow-commons
-  revision: 8dde00d67b7c629e4b871f8dcb3617bfe989b3db
-  ref: 8dde00d67b7c629e4b871f8dcb3617bfe989b3db
+  revision: ffb77dd0395cbd5b7c1a5729f7f8275b5ec681fa
+  ref: ffb77dd0395cbd5b7c1a5729f7f8275b5ec681fa
   specs:
-    caseflow (0.3.8)
+    caseflow (0.4.0)
       aws-sdk (~> 2.10)
       bourbon (= 4.2.7)
       d3-rails
@@ -21,8 +21,8 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/connect_vbms.git
-  revision: dddc821c2335c7de234a5454e4b4874e3f658420
-  ref: dddc821c2335c7de234a5454e4b4874e3f658420
+  revision: dc5776ae4d9674b035789b74072e8032a9cf6e45
+  ref: dc5776ae4d9674b035789b74072e8032a9cf6e45
   specs:
     connect_vbms (1.2.0)
       httpclient (~> 2.8.0)
@@ -35,8 +35,8 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/connect_vva.git
-  revision: f6e3ca26211b28fb8acaab8aa76bddb118b6726e
-  ref: f6e3ca26211b28fb8acaab8aa76bddb118b6726e
+  revision: dfd1aeb2605c1f237f520bcdc41b059202e8944d
+  ref: dfd1aeb2605c1f237f520bcdc41b059202e8944d
   specs:
     connect_vva (0.1)
       savon (~> 2.11, >= 2.11.0)
@@ -51,12 +51,12 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/ruby-bgs.git
-  revision: e94aff758739c499978041953e6d50fe58057e89
-  ref: e94aff758739c499978041953e6d50fe58057e89
+  revision: 8257194357a282bc8846630b9a00e8905117ac59
+  ref: 8257194357a282bc8846630b9a00e8905117ac59
   specs:
     bgs (0.2)
       httpclient
-      nokogiri (~> 1.10)
+      nokogiri (~> 1.10.4)
       savon (~> 2.12)
 
 GIT
@@ -170,8 +170,10 @@ GEM
       execjs
     coffee-script-source (1.12.2)
     concurrent-ruby (1.1.5)
-    crass (1.0.4)
-    d3-rails (4.13.0)
+    crack (0.4.3)
+      safe_yaml (~> 1.0.0)
+    crass (1.0.5)
+    d3-rails (5.9.2)
       railties (>= 3.1)
     database_cleaner (1.6.2)
     delayed_job (4.1.4)
@@ -198,7 +200,8 @@ GEM
       builder (>= 2.1.2)
     haml (4.0.7)
       tilt
-    hashie (3.5.7)
+    hashdiff (1.0.0)
+    hashie (3.6.0)
     highline (1.7.10)
     httpclient (2.8.3)
     httpi (2.4.4)
@@ -223,7 +226,7 @@ GEM
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
       ruby_dep (~> 1.2)
-    loofah (2.2.3)
+    loofah (2.3.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.7.1)
@@ -234,7 +237,7 @@ GEM
     mime-types (3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
-    mini_magick (4.8.0)
+    mini_magick (4.9.4)
     mini_mime (1.0.1)
     mini_portile2 (2.4.0)
     minitest (5.11.3)
@@ -243,16 +246,15 @@ GEM
       railties (>= 3.1)
     multi_json (1.13.1)
     multipart-post (2.0.0)
-    neat (2.1.0)
-      sass (~> 3.4)
+    neat (4.0.0)
       thor (~> 0.19)
     newrelic_rpm (4.8.0.341)
     nio4r (2.3.1)
-    nokogiri (1.10.3)
+    nokogiri (1.10.5)
       mini_portile2 (~> 2.4.0)
     nori (2.6.0)
-    omniauth (1.8.1)
-      hashie (>= 3.4.6, < 3.6.0)
+    omniauth (1.9.0)
+      hashie (>= 3.4.6, < 3.7.0)
       rack (>= 1.6.2, < 3)
     omniauth-saml (1.10.0)
       omniauth (~> 1.3, >= 1.3.2)
@@ -262,8 +264,6 @@ GEM
       ast (~> 2.4.0)
     pg (0.21.0)
     powerpack (0.1.1)
-    prometheus-client (0.7.1)
-      quantile (~> 0.2.0)
     pry (0.11.3)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
@@ -272,9 +272,9 @@ GEM
       pry (~> 0.10)
     public_suffix (3.0.2)
     puma (3.11.3)
-    quantile (0.2.0)
     rack (2.0.7)
-    rack-cors (1.0.2)
+    rack-cors (1.1.0)
+      rack (>= 2.0.0)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rails (5.1.6.2)
@@ -369,7 +369,7 @@ GEM
     ruby_dep (1.5.0)
     ruby_parser (3.7.3)
       sexp_processor (~> 4.1)
-    rubyzip (1.2.2)
+    rubyzip (1.3.0)
     safe_yaml (1.0.4)
     sass (3.5.5)
       sass-listen (~> 4.0.0)
@@ -430,7 +430,7 @@ GEM
       ref
     thor (0.20.3)
     thread_safe (0.3.6)
-    tilt (2.0.8)
+    tilt (2.0.10)
     timecop (0.9.1)
     turbolinks (5.1.0)
       turbolinks-source (~> 5.1)
@@ -446,6 +446,10 @@ GEM
     wasabi (3.5.0)
       httpi (~> 2.0)
       nokogiri (>= 1.4.2)
+    webmock (3.6.2)
+      addressable (>= 2.3.6)
+      crack (>= 0.3.2)
+      hashdiff (>= 0.4.0, < 2.0.0)
     websocket-driver (0.6.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.3)
@@ -494,13 +498,13 @@ DEPENDENCIES
   mini_magick
   moment_timezone-rails
   newrelic_rpm
+  nokogiri (>= 1.10.5)
   omniauth-saml-va!
   pg (~> 0.18)
-  prometheus-client (~> 0.7.1)
   pry
   pry-byebug
   puma
-  rack-cors
+  rack-cors (>= 1.0.4)
   rails (= 5.1.6.2)
   rails_stdout_logging
   rb-readline
@@ -511,7 +515,7 @@ DEPENDENCIES
   rspec
   rspec-rails
   rubocop (~> 0.52.1)
-  rubyzip (~> 1.2.2)
+  rubyzip (>= 1.3.0)
   sass-rails (~> 5.0)
   scss_lint
   sdoc (~> 0.4.0)
@@ -527,6 +531,7 @@ DEPENDENCIES
   uglifier (>= 1.3.0)
   uswds-rails!
   wannabe_bool
+  webmock
   zaru
   zero_downtime_migrations
 

@@ -21,7 +21,7 @@ class ManifestSource < ApplicationRecord
 
   def start!
     s = Redis::Semaphore.new("download_manifest_source_#{id}".to_s,
-                             url: Rails.application.secrets.redis_url,
+                             url: Rails.application.secrets.redis_url_cache,
                              expiration: SECONDS_TO_AUTO_UNLOCK)
     s.lock(SECONDS_TO_AUTO_UNLOCK) do
       return if current? || pending?

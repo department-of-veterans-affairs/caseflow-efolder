@@ -7,7 +7,11 @@ class SessionsController < ApplicationController
   def create
     session["user"] = CssAuthenticationSession.from_css_auth_hash(css_auth_hash).as_json
 
-    redirect_to session.delete("return_to") || "/"
+    will_redirect_to = session.delete("return_to") || "/"
+
+    Rails.logger.info("Authenticated session for #{session['user']} will redirect to #{will_redirect_to}")
+
+    redirect_to will_redirect_to
   end
 
   def destroy
