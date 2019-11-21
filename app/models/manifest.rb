@@ -34,7 +34,7 @@ class Manifest < ApplicationRecord
 
   def download_and_package_files!
     s = Redis::Semaphore.new("package_files_#{id}".to_s,
-                             url: Rails.application.secrets.redis_url,
+                             url: Rails.application.secrets.redis_url_cache,
                              expiration: SECONDS_TO_AUTO_UNLOCK)
     s.lock(SECONDS_TO_AUTO_UNLOCK) do
       return if pending?
