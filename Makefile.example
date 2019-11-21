@@ -7,72 +7,66 @@
 #
 #
 
-up:
+up:	## Start Docker
 	docker-compose up -d
 
-down:
+down:	## Stop Docker
 	docker-compose down
 
-run: up
+run: up	## Start Rails
 	foreman start
 
-test: clean
+test: clean	## Run the rspec suite
 	bundle exec rake
 
-clean:
+clean:	## Remove old files
 	rm -f log/vacols.log
 	rm -f log/test.log
 	rm -f app/assets/javascripts/*webpack*
 	rm -rf tmp/capybara
 
-lint:
+lint:	## Run the linter
 	CI=true bundle exec rake lint
 
-jslint:
+jslint:	## Run the js linter
 	cd client && yarn run lint
 
-security:
-	bundle exec rake security_caseflow
+security:	## Run security task
+	bundle exec rake security
 
 check: test lint
 
-logs:
+logs:	## Follow the Docker logs
 	docker-compose logs -f
 
-db:
+db:	## Connect with psql
 	bundle exec rails dbconsole
 
-c:
+c:	## Start Rails console
 	bundle exec rails console
 
-migrate:
+migrate:	## Run pending migrations
 	bundle exec rake db:migrate
 
-rollback:
+rollback:	## Rollback last migration
 	bundle exec rake db:rollback
 
-fresh:
+fresh:	## git master
 	git fresh
 
-reset:
+reset:	## Reset the db
 	bundle exec rake db:reset
 
-install:
+install:	## bundle/yarn install dependencies
 	bundle check || bundle install
 	cd client && yarn
 
 update: fresh install migrate
 
-client-test:
+client-test:	## Run js tests
 	cd client && yarn run build:test
 
-unsafe:
-	mv .git/hooks/pre-commit .git/hooks/pre-commit-linter
-
-safe:
-	mv .git/hooks/pre-commit-linter .git/hooks/pre-commit
-
-karma:
+karma:	## Start client karma server
 	cd client && node_modules/.bin/karma start
 
 
