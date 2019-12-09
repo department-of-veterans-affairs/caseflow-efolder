@@ -51,8 +51,8 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/ruby-bgs.git
-  revision: 8257194357a282bc8846630b9a00e8905117ac59
-  ref: 8257194357a282bc8846630b9a00e8905117ac59
+  revision: abffaad34aa9c62afca70756277011d73bcee711
+  ref: abffaad34aa9c62afca70756277011d73bcee711
   specs:
     bgs (0.2)
       httpclient
@@ -271,7 +271,7 @@ GEM
       byebug (~> 10.0)
       pry (~> 0.10)
     public_suffix (3.0.2)
-    puma (3.11.3)
+    puma (3.12.2)
     rack (2.0.7)
     rack-cors (1.1.0)
       rack (>= 2.0.0)
