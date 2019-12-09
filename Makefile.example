@@ -51,9 +51,6 @@ migrate:	## Run pending migrations
 rollback:	## Rollback last migration
 	bundle exec rake db:rollback
 
-fresh:	## git master
-	git fresh
-
 reset:	## Reset the db
 	bundle exec rake db:reset
 
@@ -69,5 +66,8 @@ client-test:	## Run js tests
 karma:	## Start client karma server
 	cd client && node_modules/.bin/karma start
 
+# Self-documented makefile from https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
+help:  ## Shows help
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 .PHONY: test run clean lint check logs db update one-test client-test security build ready
