@@ -6,7 +6,7 @@ gem "active_model_serializers"
 gem "activejob_dj_overrides"
 gem "activerecord-jdbcpostgresql-adapter", platforms: :jruby
 gem "aws-sdk", "~> 2"
-gem "bgs", git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", ref: "8257194357a282bc8846630b9a00e8905117ac59"
+gem "bgs", git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", ref: "abffaad34aa9c62afca70756277011d73bcee711"
 gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons", ref: "ffb77dd0395cbd5b7c1a5729f7f8275b5ec681fa"
 gem "coffee-rails", "> 4.1.0"
 gem "connect_vbms", git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "dc5776ae4d9674b035789b74072e8032a9cf6e45"
