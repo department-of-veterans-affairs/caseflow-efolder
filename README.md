@@ -49,40 +49,40 @@ docker-compose down -v
 ## First Time Development Setup
 
 You'll need Ruby 2.5.3
-
-> $ rbenv install 2.5.3
-
+```
+$ rbenv install 2.5.3
+```
 Install dependencies
-
-> $ bundle install
-> $ cd client && yarn && cd -
-
+```
+$ bundle install
+$ cd client && yarn && cd -
+```
 Create the database
-
-> $ rake db:create
-
+```
+$ rake db:create
+```
 Load the schema
-
-> $ rake db:schema:load
-
+```
+$ rake db:schema:load
+```
 Run all the app components:
-
-> $ foreman
-
+```
+$ foreman
+```
 Or run each component separately.
 
 * the rails server
-
-> $ bundle exec rails s -p 3001
-
+```
+$ bundle exec rails s -p 3001
+```
 * In a separate terminal, watch for webpack changes
-
-> $ cd client && yarn run build --watch
-
+```
+$ cd client && yarn run build --watch
+```
 * And in another separate terminal, start a jobs worker
-
-> $ bundle exec shoryuken start -q efolder_development_high_priority efolder_development_low_priority efolder_development_med_priority -R
-
+```
+$ bundle exec shoryuken start -q efolder_development_high_priority efolder_development_low_priority efolder_development_med_priority -R
+```
 If you want to convert TIFF files to PDFs then you also need to run the image converter service. You can
 do this by cloning the appeals-deployment repo, navigating to `ansible/utility-roles/imagemagick/files`
 and running `docker-compose up`. By default if this is not running, TIFFs will gracefully not convert.
@@ -96,17 +96,16 @@ Watch it download your fake file.
 ## Running Migrations
 
 If a pending migration exists, you will need to run them against both the development and test database:
-
-> $ rake db:migrate
-
-> $ RAILS_ENV=test rake db:migrate
-
+```
+$ rake db:migrate
+$ RAILS_ENV=test rake db:migrate
+```
 ## Running Tests
 
 In order to run tests, you will first need to globally install phantomJS
-
-> $ (sudo) npm install -g phantomjs
-
+```
+$ (sudo) npm install -g phantomjs
+```
 The CI environment uses standard ports for services like PostgreSQL and Redis but local tests require a different port.
 Add this to a `.env` file in your application root directory:
 
@@ -117,9 +116,9 @@ REDIS_URL_SIDEKIQ=redis://localhost:16379
 ```
 
 Then to run the test suite:
-
-> $ rake
-
+```
+$ rake
+```
 ## Monitoring
 We use NewRelic to monitor the app. By default, it's disabled locally. To enable it, do:
 
@@ -135,16 +134,16 @@ You may wish to do this if you are debugging our NewRelic integration, for insta
 First, you'll need a VA machine. Next, you'll need the secrets file. These come from the appeals deployment repo. Run [decrypt.sh](https://github.com/department-of-veterans-affairs/appeals-deployment/blob/master/decrypt.sh) and source the appropriate secrets environment.
 
 Then you must setup the staging DB. Run:
-
-> $ RAILS_ENV=staging rake db:create
-> $ RAILS_ENV=staging rake db:schema:load
-
+```
+$ RAILS_ENV=staging rake db:create
+$ RAILS_ENV=staging rake db:schema:load
+```
 Finally, you can run the server and shoryuken. In one tab you can run:
-
-> $ rails s -e staging
-
+```
+$ rails s -e staging
+```
 In a separate tab run:
-
-> $ RAILS_ENV=staging bundle exec shoryuken start -q efolder_staging_high_priority efolder_staging_low_priority efolder_staging_med_priority -R
-
+```
+$ RAILS_ENV=staging bundle exec shoryuken start -q efolder_staging_high_priority efolder_staging_low_priority efolder_staging_med_priority -R
+```
 Now when you go to [localhost:3001](localhost:3001) you'll be prompted with a fake login screen. Use any of these [logins](https://github.com/department-of-veterans-affairs/appeals-qa/blob/master/TestData/LOGINS.md) to impersonate a UAT user.
