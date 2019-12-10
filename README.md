@@ -28,10 +28,14 @@ brew services stop postgresql
 brew services stop redis
 ```
 
+Copy Makefile.example into your own Makefile so you have easy access to common commands
+```
+$ cp Makefile.example Makefile
+```
+
 Start all containers
 ```
-docker-compose up -d
-# run without -d to start your environment and view container logging in the foreground
+make up
 
 docker-compose ps
 # this shows you the status of all of your dependencies
@@ -40,7 +44,7 @@ docker-compose ps
 Turning off dependencies
 ```
 # this stops all containers
-docker-compose down
+make down
 
 # this will reset your setup back to scratch. You will need to setup your database schema again if you do this (see below)
 docker-compose down -v
@@ -54,20 +58,26 @@ $ rbenv install 2.5.3
 ```
 Install dependencies
 ```
-$ bundle install
-$ cd client && yarn && cd -
+$ make install
+```
+The local DB requires a different port. This change will also allow you to run local tests.
+Add this to a `.env` file in your application root directory:
+```
+POSTGRES_PORT=15432
+REDIS_URL_CACHE=redis://localhost:16379/0/cache/
+REDIS_URL_SIDEKIQ=redis://localhost:16379
 ```
 Create the database
 ```
-$ rake db:create
+$ bundle exec rake db:create
 ```
 Load the schema
 ```
-$ rake db:schema:load
+$ bundle exec rake db:schema:load
 ```
 Run all the app components:
 ```
-$ foreman
+$ make run
 ```
 Or run each component separately.
 
@@ -89,16 +99,16 @@ and running `docker-compose up`. By default if this is not running, TIFFs will g
 
 If you want to test out the DEMO flow (without VBMS connection),
 
-Visit [http://localhost:3001](),
-Type in a file number with "DEMO" in it. (ie: "DEMO123")
+Visit [http://localhost:3001](http://localhost:3001),
+Test using one of the [fake files in this list](https://github.com/department-of-veterans-affairs/caseflow-efolder/blob/master/lib/fakes/document_service.rb#L7), all beginnning with "DEMO" (i.e. "DEMO1")
 Watch it download your fake file.
 
 ## Running Migrations
 
 If a pending migration exists, you will need to run them against both the development and test database:
 ```
-$ rake db:migrate
-$ RAILS_ENV=test rake db:migrate
+$ make migrate
+$ RAILS_ENV=test bundle exec rake db:migrate
 ```
 ## Running Tests
 
@@ -106,18 +116,9 @@ In order to run tests, you will first need to globally install phantomJS
 ```
 $ (sudo) npm install -g phantomjs
 ```
-The CI environment uses standard ports for services like PostgreSQL and Redis but local tests require a different port.
-Add this to a `.env` file in your application root directory:
-
-```
-POSTGRES_PORT=15432
-REDIS_URL_CACHE=redis://localhost:16379/0/cache/
-REDIS_URL_SIDEKIQ=redis://localhost:16379
-```
-
 Then to run the test suite:
 ```
-$ rake
+$ make test
 ```
 ## Monitoring
 We use NewRelic to monitor the app. By default, it's disabled locally. To enable it, do:
