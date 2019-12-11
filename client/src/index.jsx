@@ -6,11 +6,18 @@ import ReduxBase from '@department-of-veterans-affairs/caseflow-frontend-toolkit
 import reducer, { initState } from './reducer';
 import InitContainer from './containers/InitContainer';
 
-module.exports = {
+const efolderExpress = {
   init(props) {
-    render(<ReduxBase reducer={reducer} initialState={{ ...initState,
-      ...props }}>
-      <InitContainer />
-    </ReduxBase>, document.getElementById('efolder_express_app'));
+    render(
+      <ReduxBase reducer={reducer} initialState={{ 
+        ...initState,
+        ...props
+      }}>
+        <InitContainer />
+      </ReduxBase>,
+      document.getElementById('efolder_express_app')
+    );
   }
 };
+
+export default efolderExpress;
