@@ -2,9 +2,6 @@ require "vbms"
 require "vva"
 require "zip"
 
-# support files larger than 4G
-Zip.write_zip64_support = true
-
 class DownloadDocuments
   include Caseflow::DocumentTypes
 

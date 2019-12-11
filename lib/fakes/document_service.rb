@@ -84,10 +84,20 @@ class Fakes::DocumentService
 
   def self.file_content(record)
     if record.mime_type == "application/pdf"
-      IO.binread(Rails.root + "lib/pdfs/#{record.id % 5}.pdf")
+      filename = Rails.root + "lib/pdfs/#{record.id % 5}.pdf"
     else
-      IO.binread(Rails.root + "lib/tiffs/#{record.id % 5}.tiff")
+      filename = Rails.root + "lib/tiffs/#{record.id % 5}.tiff"
     end
+    fsize = File.size(filename)
+    buf = String.new(capacity: fsize) # pre-allocate to reduce number of mallocs
+    # for large files we must read in chunks.
+    # common page size is 4096 (4K) so we want 10k pages of memory (or about 40MB) per chunk.
+    chunk_size = 1024 * 4 * 10_000
+    chunk_size = fsize if fsize < chunk_size
+    File.open(filename, 'rb').each(nil, chunk_size) do |chunk|
+      buf += chunk
+    end
+    buf
   end
   ### Fakes v2 END
 

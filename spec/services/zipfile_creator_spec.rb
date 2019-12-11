@@ -56,6 +56,66 @@ describe ZipfileCreator do
       end
     end
 
+    context "when manifest has so many files that combined add up to 4G+ .zip", large_files: true do
+      let(:number_of_files) { 65 }
+      let!(:records) do
+        number_of_files.times do |n|
+          manifest.vbms_source.records.create(
+            received_at: Time.utc(2015, 1, 3, 17, 0, 0),
+            type_description: "test#{n}",
+            version_id: "{ABC123-DEF123-GHI456A-#{n}}",
+            series_id: "{ABC321-DEF123-GHI456A-#{n}}",
+            mime_type: "application/pdf"
+          )
+        end
+      end
+
+      before do
+        # ensure at least one of our .pdf files is 500+ MB so we can triger the large .zip file.
+        pdf_dir = Rails.root + "lib/pdfs"
+        # we arbitrarily overrite 2.pdf with a large amount of random data
+        large_file = "#{pdf_dir}/2.pdf"
+        if File.size(large_file) < 500_000_000
+          puts "The expected large file #{large_file} is not large. Overwriting it with random data."
+          puts "You will *not* want to commit this file in any Git changes, so revert it before commit:"
+          puts "  git checkout #{large_file}"
+          puts "after this test finishes."
+          system("openssl rand -out #{large_file} -base64 $(( 2**29 * 3/4 ))")
+        end
+
+        # avoid reading/writing huge file multiple times into memory.
+        allow(S3Service).to receive(:store_file) do |filename, content, type|
+          type ||= :content
+          S3Service.files ||= {}
+          tmpfile = "#{dir_path}#{filename}"
+          if type == :content
+            File.open(tmpfile, "wb") { |f| f.write(content) }
+          elsif type == :filepath
+            FileUtils.cp content, tmpfile
+          else
+            fail "Unknown type #{type}"
+          end
+          S3Service.files[filename] = tmpfile
+        end
+        allow(S3Service).to receive(:fetch_file) do |filename, dest_filepath|
+          S3Service.files ||= {}
+          unless FileUtils.identical?(S3Service.files[filename], dest_filepath) # may already exist
+            FileUtils.cp S3Service.files[filename], dest_filepath
+          end
+        end
+      end
+
+      it "should create a valid zip64 file" do
+        subject
+        expect(manifest.zipfile_size).to be > 4_100_000_000
+        expect(manifest.number_successful_documents).to eq number_of_files
+        S3Service.fetch_file(manifest.s3_filename, zip_path)
+        Zip::File.open(zip_path) do |zip_file|
+          expect(zip_file.size).to eq number_of_files
+        end
+      end
+    end
+
     context "when manifest has records and VVA is down" do
       before do
         allow(VVAService).to receive(:v2_fetch_document_file).and_raise(VVA::ClientError)

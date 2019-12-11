@@ -1,8 +1,5 @@
 require "zip"
 
-# support files larger than 4G
-Zip.write_zip64_support = true
-
 class ZipfileCreator
   include ActiveModel::Model
 

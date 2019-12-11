@@ -29,11 +29,18 @@ end
 #
 # The `.rspec` file also contains a few flags that are not defaults but that
 # users commonly want.
+
+def test_large_files?
+  ENV.fetch('TEST_LARGE_FILES', false)
+end
+
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
   config.filter_run focus: true
   config.run_all_when_everything_filtered = true
+
+  config.filter_run_excluding :large_files unless test_large_files?
 
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
