@@ -93,16 +93,18 @@ describe ZipfileCreator do
           elsif type == :filepath
             FileUtils.cp content, tmpfile
           else
-            fail "Unknown type #{type}"
+            raise "Unknown type #{type}"
           end
           S3Service.files[filename] = tmpfile
         end
+        # rubocop:disable Style/IfUnlessModifier
         allow(S3Service).to receive(:fetch_file) do |filename, dest_filepath|
           S3Service.files ||= {}
           unless FileUtils.identical?(S3Service.files[filename], dest_filepath) # may already exist
             FileUtils.cp S3Service.files[filename], dest_filepath
           end
         end
+        # rubocop:enable Style/IfUnlessModifier
       end
 
       it "should create a valid zip64 file" do

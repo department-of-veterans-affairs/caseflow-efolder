@@ -31,7 +31,7 @@ end
 # users commonly want.
 
 def test_large_files?
-  ENV.fetch('TEST_LARGE_FILES', false)
+  ENV.fetch("TEST_LARGE_FILES", false)
 end
 
 #
