@@ -9,7 +9,7 @@ import InitContainer from './containers/InitContainer';
 const efolderExpress = {
   init(props) {
     render(
-      <ReduxBase reducer={reducer} initialState={{ 
+      <ReduxBase reducer={reducer} initialState={{
         ...initState,
         ...props
       }}>
