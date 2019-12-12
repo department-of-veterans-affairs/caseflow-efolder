@@ -84,3 +84,5 @@ Naming/HeredocDelimiterNaming:
 Rails/DynamicFindBy:
   Enabled: false
 
+Style/TrailingCommaInLiteral:
+  Enabled: false
