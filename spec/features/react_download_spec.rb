@@ -227,15 +227,15 @@ RSpec.feature "React Downloads" do
 
       expect(page).to have_css ".cf-tab.cf-active", text: "Progress (1)"
       expect(page).to have_content "1 of 3 files remaining"
-      expect(page).to have_content Caseflow::DocumentTypes::TYPES[records[0].type_id]
+      expect(page).to have_content Caseflow::DocumentTypes::TYPES[records[0].type_id.to_i]
 
       click_on "Completed (1)"
       expect(page).to have_css ".cf-tab.cf-active", text: "Completed (1)"
-      expect(page).to have_content Caseflow::DocumentTypes::TYPES[records[1].type_id]
+      expect(page).to have_content Caseflow::DocumentTypes::TYPES[records[1].type_id.to_i]
 
       click_on "Errors (1)"
       expect(page).to have_css ".cf-tab.cf-active", text: "Errors (1)"
-      expect(page).to have_content Caseflow::DocumentTypes::TYPES[records[2].type_id]
+      expect(page).to have_content Caseflow::DocumentTypes::TYPES[records[2].type_id.to_i]
 
       click_on "Start over"
 
