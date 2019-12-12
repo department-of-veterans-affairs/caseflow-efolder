@@ -25,10 +25,16 @@ clean:	## Remove old files
 	rm -rf tmp/capybara
 
 lint:	## Run the linter
-	CI=true bundle exec rake lint
+	CI=true bundle exec rake efolder:lint
+
+rubocop:	## Run rubocop
+	bundle exec rake lint
 
 jslint:	## Run the js linter
 	cd client && yarn run lint
+
+csslint: ## Run the scss linter
+	scss-lint --color
 
 security:	## Run security task
 	bundle exec rake security

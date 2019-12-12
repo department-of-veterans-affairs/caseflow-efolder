@@ -76,7 +76,7 @@ jobs:
       - run:
           name: Lint
           command: |
-            ~/project/ci-bin/capture-log "make -f Makefile.example lint jslint"
+            ~/project/ci-bin/capture-log "make -f Makefile.example lint"
 
       - run:
           name: Security
