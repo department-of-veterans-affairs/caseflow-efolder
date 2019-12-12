@@ -27,6 +27,7 @@ task :symlink_assets do
   manifest_data.each do |asset_name, file_name|
     # Only symlink .woff font files.
     next unless asset_name =~ /\.woff2?$/
+
     puts "linking #{asset_name}"
 
     file_path = File.join(Rails.root, "public/assets", file_name)

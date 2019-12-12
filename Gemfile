@@ -55,7 +55,7 @@ group :development, :test do
   gem "dotenv-rails"
   gem "pry"
   gem "pry-byebug"
-  gem "rubocop", "~> 0.52.1", require: false
+  gem "rubocop", "~> 0.67.2", require: false
   gem "scss_lint", require: false
 end
 
