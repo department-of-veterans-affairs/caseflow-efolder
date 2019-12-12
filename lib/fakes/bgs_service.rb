@@ -11,19 +11,22 @@ class Fakes::BGSService
         "file_number" => file_number,
         "veteran_first_name" => "Joe",
         "veteran_last_name" => "Snuffy",
-        "veteran_last_four_ssn" => "1234"
+        "veteran_last_four_ssn" => "1234",
+        "return_message" => "BPNQ0301",
       },
       {
         "file_number" => file_number,
         "veteran_first_name" => "Bob",
         "veteran_last_name" => "Marley",
-        "veteran_last_four_ssn" => "3232"
+        "veteran_last_four_ssn" => "3232",
+        "return_message" => "BPNQ0301",
       },
       {
         "file_number" => file_number,
         "veteran_first_name" => "James",
         "veteran_last_name" => "Ross",
-        "veteran_last_four_ssn" => "4221"
+        "veteran_last_four_ssn" => "4221",
+        "return_message" => "BPNQ0301",
       }
     ].sample
   end
