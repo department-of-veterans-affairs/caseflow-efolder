@@ -17,24 +17,29 @@ run: up	## Start Rails
 	foreman start
 
 test: clean	## Run the rspec suite
-	bundle exec rake
+	bundle exec rspec
 
 clean:	## Remove old files
-	rm -f log/vacols.log
 	rm -f log/test.log
 	rm -f app/assets/javascripts/*webpack*
 	rm -rf tmp/capybara
 
 lint:	## Run the linter
-	CI=true bundle exec rake lint
+	CI=true bundle exec rake efolder:lint
+
+rubocop:	## Run rubocop
+	bundle exec rake lint
 
 jslint:	## Run the js linter
 	cd client && yarn run lint
 
+csslint: ## Run the scss linter
+	scss-lint --color
+
 security:	## Run security task
 	bundle exec rake security
 
-check: test lint
+check: test lint jslint
 
 logs:	## Follow the Docker logs
 	docker-compose logs -f
@@ -60,14 +65,8 @@ install:	## bundle/yarn install dependencies
 
 update: fresh install migrate
 
-client-test:	## Run js tests
-	cd client && yarn run build:test
-
-karma:	## Start client karma server
-	cd client && node_modules/.bin/karma start
-
 # Self-documented makefile from https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 help:  ## Shows help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-.PHONY: test run clean lint check logs db update one-test client-test security build ready
+.PHONY: test run clean lint jslint check logs db update security install reset migrate rollback c
