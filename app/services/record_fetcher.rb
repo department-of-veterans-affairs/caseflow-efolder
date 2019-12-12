@@ -9,6 +9,7 @@ class RecordFetcher
   def process
     s = Redis::Semaphore.new("record_#{record.id}".to_s,
                              url: Rails.application.secrets.redis_url_cache,
+                             stale_client_timeout: 5,
                              expiration: SECONDS_TO_AUTO_UNLOCK)
     s.lock(SECONDS_TO_AUTO_UNLOCK)
     content_from_s3 || content_from_vbms
@@ -28,7 +29,7 @@ class RecordFetcher
   end
 
   def content_from_s3
-    @content_from_s3 ||= MetricsService.record("S3: fetch content for: #{record.s3_filename}",
+    @content_from_s3 ||= MetricsService.record("S3: RecordFetcher fetch content for: #{record.s3_filename}",
                                                service: :s3,
                                                name: "content_from_s3") do
       S3Service.fetch_content(record.s3_filename)
