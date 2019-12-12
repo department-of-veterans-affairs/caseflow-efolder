@@ -30,7 +30,7 @@ brew services stop redis
 
 Copy Makefile.example into your own Makefile so you have easy access to common commands
 ```
-$ cp Makefile.example Makefile
+cp Makefile.example Makefile
 ```
 
 Start all containers
@@ -54,11 +54,11 @@ docker-compose down -v
 
 You'll need Ruby 2.5.3
 ```
-$ rbenv install 2.5.3
+rbenv install 2.5.3
 ```
 Install dependencies
 ```
-$ make install
+make install
 ```
 The local DB requires a different port. This change will also allow you to run local tests.
 Add this to a `.env` file in your application root directory:
@@ -69,29 +69,29 @@ REDIS_URL_SIDEKIQ=redis://localhost:16379
 ```
 Create the database
 ```
-$ bundle exec rake db:create
+bundle exec rake db:create
 ```
 Load the schema
 ```
-$ bundle exec rake db:schema:load
+bundle exec rake db:schema:load
 ```
 Run all the app components:
 ```
-$ make run
+make run
 ```
 Or run each component separately.
 
 * the rails server
 ```
-$ bundle exec rails s -p 3001
+bundle exec rails s -p 3001
 ```
 * In a separate terminal, watch for webpack changes
 ```
-$ cd client && yarn run build --watch
+cd client && yarn run build --watch
 ```
 * And in another separate terminal, start a jobs worker
 ```
-$ bundle exec shoryuken start -q efolder_development_high_priority efolder_development_low_priority efolder_development_med_priority -R
+bundle exec shoryuken start -q efolder_development_high_priority efolder_development_low_priority efolder_development_med_priority -R
 ```
 If you want to convert TIFF files to PDFs then you also need to run the image converter service. You can
 do this by cloning the appeals-deployment repo, navigating to `ansible/utility-roles/imagemagick/files`
@@ -107,18 +107,18 @@ Watch it download your fake file.
 
 If a pending migration exists, you will need to run them against both the development and test database:
 ```
-$ make migrate
-$ RAILS_ENV=test bundle exec rake db:migrate
+make migrate
+RAILS_ENV=test bundle exec rake db:migrate
 ```
 ## Running Tests
 
 In order to run tests, you will first need to globally install phantomJS
 ```
-$ (sudo) npm install -g phantomjs
+(sudo) npm install -g phantomjs
 ```
 Then to run the test suite:
 ```
-$ make test
+make test
 ```
 ## Monitoring
 We use NewRelic to monitor the app. By default, it's disabled locally. To enable it, do:
@@ -136,15 +136,15 @@ First, you'll need a VA machine. Next, you'll need the secrets file. These come 
 
 Then you must setup the staging DB. Run:
 ```
-$ RAILS_ENV=staging rake db:create
-$ RAILS_ENV=staging rake db:schema:load
+RAILS_ENV=staging rake db:create
+RAILS_ENV=staging rake db:schema:load
 ```
 Finally, you can run the server and shoryuken. In one tab you can run:
 ```
-$ rails s -e staging
+rails s -e staging
 ```
 In a separate tab run:
 ```
-$ RAILS_ENV=staging bundle exec shoryuken start -q efolder_staging_high_priority efolder_staging_low_priority efolder_staging_med_priority -R
+RAILS_ENV=staging bundle exec shoryuken start -q efolder_staging_high_priority efolder_staging_low_priority efolder_staging_med_priority -R
 ```
 Now when you go to [localhost:3001](localhost:3001) you'll be prompted with a fake login screen. Use any of these [logins](https://github.com/department-of-veterans-affairs/appeals-qa/blob/master/TestData/LOGINS.md) to impersonate a UAT user.
