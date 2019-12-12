@@ -55,7 +55,7 @@ Capybara.register_driver(:sniffybara_headless) do |app|
   chrome_options.args << "--window-size=1200,1200"
 
   options = {
-    port: 51_674,
+    service: ::Selenium::WebDriver::Service.chrome(args: { port: 51_674 }),
     browser: :chrome,
     options: chrome_options
   }
@@ -80,3 +80,6 @@ Capybara.default_max_wait_time = 5
 # Capybara uses puma by default, but for some reason, some of our tests don't
 # pass with puma. See: https://github.com/teamcapybara/capybara/issues/2170
 Capybara.server = :webrick
+
+# backcompat with version 2.x where "foo bar" would also match "foo\nbar"
+Capybara.default_normalize_ws = true
