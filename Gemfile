@@ -60,7 +60,8 @@ group :development, :test do
 end
 
 group :test do
-  gem "capybara", "2.6.2"
+  gem "capybara"
+  gem "capybara-screenshot"
   gem "database_cleaner"
   gem "launchy"
   gem "rspec"
@@ -68,6 +69,7 @@ group :test do
   gem "simplecov"
   gem "sniffybara", git: "https://github.com/department-of-veterans-affairs/sniffybara.git"
   gem "timecop"
+  gem "webdrivers"
   gem "webmock"
 end
 
