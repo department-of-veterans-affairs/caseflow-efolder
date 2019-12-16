@@ -17,7 +17,7 @@ run: up	## Start Rails
 	foreman start
 
 test: clean	## Run the rspec suite
-	CI=true bundle exec rspec
+	bundle exec rspec
 
 clean:	## Remove old files
 	rm -f log/test.log
