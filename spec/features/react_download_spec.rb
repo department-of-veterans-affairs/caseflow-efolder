@@ -141,7 +141,7 @@ RSpec.feature "React Downloads" do
     end
   end
 
-  scenario "Loading bar appears when waiting for case to download" do
+  scenario "Loading bar appears when waiting for case to download", download: true do
     perform_enqueued_jobs do
       visit "/"
       fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
