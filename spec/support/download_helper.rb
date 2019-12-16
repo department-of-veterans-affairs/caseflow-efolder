@@ -32,6 +32,8 @@ module DownloadHelpers
       sleep 1
       counter += 1
       puts "... waited #{counter}"
+      puts "#{WORKDIR} contains: "
+      pp downloads
     end
   end
 
