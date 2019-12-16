@@ -465,7 +465,7 @@ RSpec.feature "Downloads" do
     expect(page).to have_content("Something went wrong...")
   end
 
-  scenario "Completed download" do
+  scenario "Completed download", download: true do
     veteran_info = {
       "12" => {
         "veteran_first_name" => "Stan",

@@ -87,7 +87,7 @@ RSpec.feature "React Downloads" do
     expect(manifest.veteran_last_four_ssn).to eq("2222")
   end
 
-  scenario "Happy path, zip file is downloaded" do
+  scenario "Happy path, zip file is downloaded", download: true do
     perform_enqueued_jobs do
       visit "/"
       fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
@@ -268,7 +268,7 @@ RSpec.feature "React Downloads" do
     let(:veteran_id) { "808909111" }
     after { Timecop.return }
 
-    scenario "Viewing page for manifest with old zipfile shows search results page" do
+    scenario "Viewing page for manifest with old zipfile shows search results page", download: true do
       perform_enqueued_jobs do
         # Search for an efolder and start a download.
         visit "/"
