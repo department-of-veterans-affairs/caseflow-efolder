@@ -25,6 +25,9 @@ jobs:
 
       # localstack image
       - image: localstack/localstack:latest
+        environment:
+          - SERVICES=sqs
+
     parallelism: 1
     resource_class: large
     steps:
