@@ -1,4 +1,5 @@
 class DownloadsController < ApplicationController
+  # :nocov:
   before_action :authorize
 
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
@@ -152,4 +153,5 @@ class DownloadsController < ApplicationController
     { "progress": 0, "completed": 1, "errored": 2 }[current_tab.to_sym]
   end
   helper_method :current_document_status
+  # :nocov:
 end
