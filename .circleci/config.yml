@@ -73,6 +73,14 @@ jobs:
           command: |
             ~/project/ci-bin/capture-log "make -f Makefile.example test"
 
+      - store_artifacts:
+          name: Store test results as artifact
+          path: ~/test-results
+
+      - store_artifacts:
+          name: Store capybara screenshots
+          path: ~/project/tmp/capybara
+
       - run:
           name: Lint
           command: |
