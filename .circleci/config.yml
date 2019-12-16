@@ -22,6 +22,9 @@ jobs:
 
       # This is the circleci provided Redis container.
       - image: circleci/redis:4.0.10
+
+      # localstack image
+      - image: localstack/localstack:latest
     parallelism: 1
     resource_class: large
     steps:
