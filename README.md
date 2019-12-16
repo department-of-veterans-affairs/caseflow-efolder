@@ -52,9 +52,9 @@ docker-compose down -v
 
 ## First Time Development Setup
 
-You'll need Ruby 2.5.3
+You'll need the proper version of Ruby
 ```
-rbenv install 2.5.3
+rbenv install `cat .ruby-version`
 ```
 Install dependencies
 ```
@@ -105,7 +105,7 @@ Watch it download your fake file.
 
 ## Running Migrations
 
-If a pending migration exists, you will need to run them against both the development and test database:
+If a pending migration exists, you will need to run them against both the development and test database.
 ```
 make migrate
 RAILS_ENV=test bundle exec rake db:migrate
