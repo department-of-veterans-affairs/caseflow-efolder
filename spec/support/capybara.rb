@@ -50,7 +50,12 @@ Capybara.register_driver(:sniffybara_headless) do |app|
                                 default_directory: download_directory)
 
   chrome_options.add_preference(:browser,
+                                set_download_behavior: { behavior: 'allow' },
                                 disk_cache_dir: cache_directory)
+
+  chrome_options.add_preference(:safebrowsing,
+                                enabled: false,
+                                disable_download_protection: true)
 
   chrome_options.args << "--headless"
   chrome_options.args << "--disable-gpu"
