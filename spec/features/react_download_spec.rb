@@ -160,7 +160,7 @@ RSpec.feature "React Downloads" do
     expect(page).to have_css ".progress-bar"
   end
 
-  scenario "Veteran ID does not persist in search bar after searching" do
+  scenario "Veteran ID does not persist in search bar after searching", download: true do
     perform_enqueued_jobs do
       visit "/"
       fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
