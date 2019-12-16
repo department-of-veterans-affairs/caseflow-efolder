@@ -28,10 +28,14 @@ brew services stop postgresql
 brew services stop redis
 ```
 
+Copy Makefile.example into your own Makefile so you have easy access to common commands
+```
+cp Makefile.example Makefile
+```
+
 Start all containers
 ```
-docker-compose up -d
-# run without -d to start your environment and view container logging in the foreground
+make up
 
 docker-compose ps
 # this shows you the status of all of your dependencies
@@ -40,7 +44,7 @@ docker-compose ps
 Turning off dependencies
 ```
 # this stops all containers
-docker-compose down
+make down
 
 # this will reset your setup back to scratch. You will need to setup your database schema again if you do this (see below)
 docker-compose down -v
@@ -48,78 +52,74 @@ docker-compose down -v
 
 ## First Time Development Setup
 
-You'll need Ruby 2.5.3
-
-> $ rbenv install 2.5.3
-
+You'll need the proper version of Ruby
+```
+rbenv install `cat .ruby-version`
+```
 Install dependencies
-
-> $ bundle install
-> $ cd client && yarn && cd -
-
+```
+make install
+```
+The local DB requires a different port. This change will also allow you to run local tests.
+Add this to a `.env` file in your application root directory:
+```
+POSTGRES_PORT=15432
+REDIS_URL_CACHE=redis://localhost:16379/0/cache/
+REDIS_URL_SIDEKIQ=redis://localhost:16379
+```
 Create the database
-
-> $ rake db:create
-
+```
+bundle exec rake db:create
+```
 Load the schema
-
-> $ rake db:schema:load
-
+```
+bundle exec rake db:schema:load
+```
 Run all the app components:
-
-> $ foreman
-
+```
+make run
+```
 Or run each component separately.
 
 * the rails server
-
-> $ bundle exec rails s -p 3001
-
+```
+bundle exec rails s -p 3001
+```
 * In a separate terminal, watch for webpack changes
-
-> $ cd client && yarn run build --watch
-
+```
+cd client && yarn run build --watch
+```
 * And in another separate terminal, start a jobs worker
-
-> $ bundle exec shoryuken start -q efolder_development_high_priority efolder_development_low_priority efolder_development_med_priority -R
-
+```
+bundle exec shoryuken start -q efolder_development_high_priority efolder_development_low_priority efolder_development_med_priority -R
+```
 If you want to convert TIFF files to PDFs then you also need to run the image converter service. You can
 do this by cloning the appeals-deployment repo, navigating to `ansible/utility-roles/imagemagick/files`
 and running `docker-compose up`. By default if this is not running, TIFFs will gracefully not convert.
 
 If you want to test out the DEMO flow (without VBMS connection),
 
-Visit [http://localhost:3001](),
-Type in a file number with "DEMO" in it. (ie: "DEMO123")
+Visit [http://localhost:3001](http://localhost:3001),
+Test using one of the [fake files in this list](https://github.com/department-of-veterans-affairs/caseflow-efolder/blob/master/lib/fakes/document_service.rb#L7), all beginnning with "DEMO" (i.e. "DEMO1")
 Watch it download your fake file.
 
 ## Running Migrations
 
-If a pending migration exists, you will need to run them against both the development and test database:
-
-> $ rake db:migrate
-
-> $ RAILS_ENV=test rake db:migrate
-
+If a pending migration exists, you will need to run them against both the development and test database.
+```
+make migrate
+RAILS_ENV=test bundle exec rake db:migrate
+```
 ## Running Tests
 
 In order to run tests, you will first need to globally install phantomJS
-
-> $ (sudo) npm install -g phantomjs
-
-The CI environment uses standard ports for services like PostgreSQL and Redis but local tests require a different port.
-Add this to a `.env` file in your application root directory:
-
 ```
-POSTGRES_PORT=15432
-REDIS_URL_CACHE=redis://localhost:16379/0/cache/
-REDIS_URL_SIDEKIQ=redis://localhost:16379
+(sudo) npm install -g phantomjs
 ```
-
 Then to run the test suite:
-
-> $ rake
-
+```
+make test
+```
 ## Monitoring
 We use NewRelic to monitor the app. By default, it's disabled locally. To enable it, do:
 
@@ -135,16 +135,16 @@ You may wish to do this if you are debugging our NewRelic integration, for insta
 First, you'll need a VA machine. Next, you'll need the secrets file. These come from the appeals deployment repo. Run [decrypt.sh](https://github.com/department-of-veterans-affairs/appeals-deployment/blob/master/decrypt.sh) and source the appropriate secrets environment.
 
 Then you must setup the staging DB. Run:
-
-> $ RAILS_ENV=staging rake db:create
-> $ RAILS_ENV=staging rake db:schema:load
-
+```
+RAILS_ENV=staging rake db:create
+RAILS_ENV=staging rake db:schema:load
+```
 Finally, you can run the server and shoryuken. In one tab you can run:
-
-> $ rails s -e staging
-
+```
+rails s -e staging
+```
 In a separate tab run:
-
-> $ RAILS_ENV=staging bundle exec shoryuken start -q efolder_staging_high_priority efolder_staging_low_priority efolder_staging_med_priority -R
-
+```
+RAILS_ENV=staging bundle exec shoryuken start -q efolder_staging_high_priority efolder_staging_low_priority efolder_staging_med_priority -R
+```
 Now when you go to [localhost:3001](localhost:3001) you'll be prompted with a fake login screen. Use any of these [logins](https://github.com/department-of-veterans-affairs/appeals-qa/blob/master/TestData/LOGINS.md) to impersonate a UAT user.
