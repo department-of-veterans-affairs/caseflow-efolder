@@ -87,7 +87,7 @@ RSpec.feature "React Downloads" do
     expect(manifest.veteran_last_four_ssn).to eq("2222")
   end
 
-  scenario "Happy path, zip file is downloaded" do
+  scenario "Happy path, zip file is downloaded", download: true do
     perform_enqueued_jobs do
       visit "/"
       fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
@@ -141,7 +141,7 @@ RSpec.feature "React Downloads" do
     end
   end
 
-  scenario "Loading bar appears when waiting for case to download" do
+  scenario "Loading bar appears when waiting for case to download", download: true do
     perform_enqueued_jobs do
       visit "/"
       fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
@@ -160,7 +160,7 @@ RSpec.feature "React Downloads" do
     expect(page).to have_css ".progress-bar"
   end
 
-  scenario "Veteran ID does not persist in search bar after searching" do
+  scenario "Veteran ID does not persist in search bar after searching", download: true do
     perform_enqueued_jobs do
       visit "/"
       fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
@@ -227,15 +227,15 @@ RSpec.feature "React Downloads" do
 
       expect(page).to have_css ".cf-tab.cf-active", text: "Progress (1)"
       expect(page).to have_content "1 of 3 files remaining"
-      expect(page).to have_content Caseflow::DocumentTypes::TYPES[records[0].type_id]
+      expect(page).to have_content Caseflow::DocumentTypes::TYPES[records[0].type_id.to_i]
 
       click_on "Completed (1)"
       expect(page).to have_css ".cf-tab.cf-active", text: "Completed (1)"
-      expect(page).to have_content Caseflow::DocumentTypes::TYPES[records[1].type_id]
+      expect(page).to have_content Caseflow::DocumentTypes::TYPES[records[1].type_id.to_i]
 
       click_on "Errors (1)"
       expect(page).to have_css ".cf-tab.cf-active", text: "Errors (1)"
-      expect(page).to have_content Caseflow::DocumentTypes::TYPES[records[2].type_id]
+      expect(page).to have_content Caseflow::DocumentTypes::TYPES[records[2].type_id.to_i]
 
       click_on "Start over"
 
@@ -268,7 +268,7 @@ RSpec.feature "React Downloads" do
     let(:veteran_id) { "808909111" }
     after { Timecop.return }
 
-    scenario "Viewing page for manifest with old zipfile shows search results page" do
+    scenario "Viewing page for manifest with old zipfile shows search results page", download: true do
       perform_enqueued_jobs do
         # Search for an efolder and start a download.
         visit "/"

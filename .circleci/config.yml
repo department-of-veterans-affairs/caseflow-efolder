@@ -22,6 +22,12 @@ jobs:
 
       # This is the circleci provided Redis container.
       - image: circleci/redis:4.0.10
+
+      # localstack image
+      - image: localstack/localstack:latest
+        environment:
+          - SERVICES=sqs
+
     parallelism: 1
     resource_class: large
     steps:
@@ -72,6 +78,18 @@ jobs:
           name: RSpec
           command: |
             ~/project/ci-bin/capture-log "make -f Makefile.example test"
+
+      - store_test_results:
+          name: Store test results as summary
+          path: ~/test-results
+
+      - store_artifacts:
+          name: Store test results as artifact
+          path: ~/test-results
+
+      - store_artifacts:
+          name: Store capybara screenshots
+          path: ~/project/tmp/capybara
 
       - run:
           name: Lint

@@ -266,7 +266,7 @@ RSpec.feature "Downloads" do
   end
 
   scenario "Download with no documents" do
-    download = @user_download.create(status: :no_documents)
+    download = @user_download.create(file_number: "666000", status: :no_documents)
     visit download_path(download)
 
     expect(page).to have_css ".cf-app-msg-screen", text: "No Documents in eFolder"
@@ -465,7 +465,7 @@ RSpec.feature "Downloads" do
     expect(page).to have_content("Something went wrong...")
   end
 
-  scenario "Completed download" do
+  scenario "Completed download", download: true do
     veteran_info = {
       "12" => {
         "veteran_first_name" => "Stan",

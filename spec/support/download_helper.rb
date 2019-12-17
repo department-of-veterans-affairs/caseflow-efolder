@@ -25,8 +25,15 @@ module DownloadHelpers
   end
 
   def wait_for_download
-    Timeout.timeout(TIMEOUT) do
-      sleep 1 until downloaded?
+    puts "Waiting for download"
+    counter = 0
+    while counter < TIMEOUT do
+      break if downloaded?
+      sleep 1
+      counter += 1
+      puts "... waited #{counter}"
+      puts "#{WORKDIR} contains: "
+      pp downloads
     end
   end
 
