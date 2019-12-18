@@ -56,6 +56,6 @@
   },
   "devDependencies": {
     "@department-of-veterans-affairs/eslint-config-appeals": "https://github.com/department-of-veterans-affairs/eslint-config-appeals#f50522e",
-    "eslint": "^4.15.0"
+    "eslint": "^4.18.2"
   }
 }
