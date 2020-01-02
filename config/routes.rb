@@ -24,6 +24,11 @@ Rails.application.routes.draw do
     end
   end
 
+  if Rails.env.test?
+    get 'test', to: 'test#index'
+    post 'test/touch_file', to: 'test#touch_file'
+  end
+
   namespace :api do
     namespace :v1 do
       resources :documents, only: :show
