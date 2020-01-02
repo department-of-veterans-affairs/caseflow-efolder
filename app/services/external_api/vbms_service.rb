@@ -16,6 +16,19 @@ class RailsVBMSLogger
   end
 end
 
+class RailsVBMSDebugLogger
+  def log(event, data)
+    case event
+    when :request
+      puts "#{Time.zone.now} VBMS Request"
+      pp data
+    when :response
+      puts "#{Time.zone.now} VBMS Response"
+      pp data
+    end
+  end
+end
+
 class ExternalApi::VBMSService
   def self.fetch_documents_for(download)
     @vbms_client ||= init_client
