@@ -19,9 +19,7 @@ module Caseflow
 
     def self.fetch_content(filename)
       Rails.logger.debug("Fakes::S3.fetch_content #{filename} present? #{self.files[filename].present?}")
-      r = self.files[filename]
-      Rails.logger.debug("Fakes::S3.fetch_content #{filename} got r")
-      r
+      self.files[filename]
     end
 
     def self.stream_content(key)
