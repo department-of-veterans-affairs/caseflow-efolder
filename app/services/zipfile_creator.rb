@@ -6,12 +6,14 @@ class ZipfileCreator
   attr_accessor :manifest
 
   def process
+    puts "start ZipfileCreator.perform"
     records = manifest.records
     return if records.empty?
 
     t = Tempfile.new
     write_to_tempfile(t, records)
 
+    puts "wrote Tempfile.zip #{t.path}"
     S3Service.store_file(manifest.s3_filename, t.path, :filepath)
     manifest.update(
       zipfile_size: File.size(t.path),

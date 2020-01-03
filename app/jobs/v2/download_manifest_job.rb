@@ -2,6 +2,7 @@ class V2::DownloadManifestJob < ActiveJob::Base
   queue_as :high_priority
 
   def perform(manifest_source, user = nil)
+    puts "start V2::DownloadManifestJob"
     return if manifest_source.current?
     RequestStore.store[:current_user] = user if user
 
