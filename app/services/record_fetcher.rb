@@ -22,7 +22,11 @@ class RecordFetcher
   private
 
   def content_from_vbms
-    content = record.service.v2_fetch_document_file(record)
+    content = MetricsService.record("VBMS: fetch document file for #{record.s3_filename}",
+                                    service: :vbms,
+                                    name: record.service.class.to_s.underscore) do
+      record.service.v2_fetch_document_file(record)
+    end
     content = MetricsService.record("ImageConverterService for #{record.s3_filename}",
                                     service: :image_converter,
                                     name: "image_converter_service") do

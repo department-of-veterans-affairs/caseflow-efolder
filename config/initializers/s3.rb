@@ -1,26 +1,23 @@
 module Caseflow
   class Fakes::S3Service
-    cattr_accessor :files
+    cattr_accessor :files, default: {}
 
     def self.exists?(_key)
       true
     end
 
     def self.store_file(filename, content, type = :content)
-      self.files ||= {}
       content = IO.read(content) if type == :filepath
       self.files[filename] = content
     end
 
     def self.fetch_file(filename, dest_filepath)
-      self.files ||= {}
       File.open(dest_filepath, "wb") do |f|
         f.write(files[filename])
       end
     end
 
     def self.fetch_content(filename)
-      self.files ||= {}
       Rails.logger.debug("Fakes::S3.fetch_content #{filename} present? #{self.files[filename].present?}")
       self.files[filename]
     end
