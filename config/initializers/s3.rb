@@ -21,7 +21,7 @@ module Caseflow
 
     def self.fetch_content(filename)
       self.files ||= {}
-      Rails.logger.debug("Fakes::S3.fetch_content #{filename} #{self.files[filename].length} bytes")
+      Rails.logger.debug("Fakes::S3.fetch_content #{filename} present? #{self.files[filename].present?}")
       self.files[filename]
     end
 
