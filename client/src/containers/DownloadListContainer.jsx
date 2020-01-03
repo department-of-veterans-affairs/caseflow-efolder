@@ -44,8 +44,6 @@ class DownloadListContainer extends React.PureComponent {
           </AlertBanner>
         }
 
-        <pre>{ JSON.stringify(this.props.documentSources, null, 2) }</pre>
-
         <p>eFolder Express found a total of {totalDocumentsCount} documents ({documentCountDescriptions.join(' and ')})
           for {this.props.veteranName} #{this.props.veteranId}. Verify the Veteran ID and click the&nbsp;
           {startDownloadButtonLabel} button below to start retrieving the eFolder.

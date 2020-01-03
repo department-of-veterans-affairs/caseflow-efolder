@@ -23,8 +23,16 @@ class RecordFetcher
 
   def content_from_vbms
     content = record.service.v2_fetch_document_file(record)
-    content = ImageConverterService.new(image: content, record: record).process
-    S3Service.store_file(record.s3_filename, content)
+    content = MetricsService.record("ImageConverterService for #{record.s3_filename}",
+                                    service: :image_converter,
+                                    name: "image_converter_service") do
+      ImageConverterService.new(image: content, record: record).process
+    end
+    MetricsService.record("S3: RecordFetcher store content for #{record.s3_filename}",
+                          service: :s3,
+                          name: "content_from_vbms") do
+      S3Service.store_file(record.s3_filename, content)
+    end
     content
   end
 
