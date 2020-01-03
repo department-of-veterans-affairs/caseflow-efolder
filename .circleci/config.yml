@@ -92,6 +92,10 @@ jobs:
           name: Store capybara screenshots
           path: ~/project/tmp/capybara
 
+      - store_artifacts:
+          name: Store rails test log
+          path: ~/project/log/test.log
+
       - run:
           name: Lint
           command: |
