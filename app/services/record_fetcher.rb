@@ -11,24 +11,18 @@ class RecordFetcher
                              url: Rails.application.secrets.redis_url_cache,
                              stale_client_timeout: 5,
                              expiration: SECONDS_TO_AUTO_UNLOCK)
-    #s.lock(SECONDS_TO_AUTO_UNLOCK)
-    Rails.logger.debug("semaphore locked for #{record.service.name} for record_#{record.id}")
+    s.lock(SECONDS_TO_AUTO_UNLOCK)
     content_from_s3 || content_from_vbms
   rescue *EXCEPTIONS
     nil
   ensure
-    #s.unlock
-    Rails.logger.debug("semaphore unlocked for record_#{record.id}")
+    s.unlock
   end
 
   private
 
   def content_from_vbms
-    content = MetricsService.record("VBMS: fetch document file for #{record.s3_filename}",
-                                    service: :vbms,
-                                    name: record.service.class.to_s.underscore) do
-      record.service.v2_fetch_document_file(record)
-    end
+    content = record.service.v2_fetch_document_file(record)
     content = MetricsService.record("ImageConverterService for #{record.s3_filename}",
                                     service: :image_converter,
                                     name: "image_converter_service") do
