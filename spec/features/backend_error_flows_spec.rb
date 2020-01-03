@@ -72,6 +72,8 @@ feature "Backend Error Flows" do
         fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
         click_button "Search"
 
+        expect(page).to have_content "We are having trouble connecting to VBMS"
+
         expect(page).to have_css ".usa-alert-heading", text: "We are having trouble connecting to VBMS"
         expect(page).to have_content Caseflow::DocumentTypes::TYPES[documents[0].type_id]
 
@@ -93,6 +95,8 @@ feature "Backend Error Flows" do
         visit "/"
         fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
         click_button "Search"
+
+        expect(page).to have_content "We are having trouble connecting to VVA"
 
         expect(page).to have_css ".usa-alert-heading", text: "We are having trouble connecting to VVA"
         expect(page).to have_content Caseflow::DocumentTypes::TYPES[documents[0].type_id]
