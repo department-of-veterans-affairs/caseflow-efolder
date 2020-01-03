@@ -62,7 +62,7 @@ feature "Backend Error Flows" do
 
   context "When VBMS returns an error" do
     before do
-      allow(Fakes::VBMSService).to receive(:v2_fetch_documents_for).and_raise(VBMS::ClientError)
+      allow(Fakes::VBMSService).to receive(:v2_fetch_documents_for).and_raise(VBMS::ClientError.new("vbms returned an error"))
       allow(Fakes::VVAService).to receive(:v2_fetch_documents_for).and_return(documents)
     end
 
