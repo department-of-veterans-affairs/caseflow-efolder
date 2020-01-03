@@ -78,7 +78,7 @@ jobs:
           name: RSpec
           command: |
             mkdir -p ~/test-results/rspec
-            ~/project/ci-bin/capture-log "CI=true bundle exec rspec -o ~/test-results/rspec/rspec.xml"
+            ~/project/ci-bin/capture-log "make -f Makefile.example test"
 
       - store_test_results:
           name: Store test results as summary
