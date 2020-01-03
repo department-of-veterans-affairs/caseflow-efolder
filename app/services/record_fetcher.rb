@@ -12,11 +12,13 @@ class RecordFetcher
                              stale_client_timeout: 5,
                              expiration: SECONDS_TO_AUTO_UNLOCK)
     s.lock(SECONDS_TO_AUTO_UNLOCK)
+    Rails.logger.debug("semaphore locked for #{record.service.class} for record_#{record.id}")
     content_from_s3 || content_from_vbms
   rescue *EXCEPTIONS
     nil
   ensure
     s.unlock
+    Rails.logger.debug("semaphore unlocked for record_#{record.id}")
   end
 
   private
