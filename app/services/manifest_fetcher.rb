@@ -11,7 +11,6 @@ class ManifestFetcher
     documents
   rescue *EXCEPTIONS => e
     manifest_source.update!(status: :failed)
-    puts "Marked #{manifest_source.name} as status=failed, logged exception #{e}"
     ExceptionLogger.capture(e)
     []
   end

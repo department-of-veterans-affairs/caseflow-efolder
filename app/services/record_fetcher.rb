@@ -12,9 +12,7 @@ class RecordFetcher
                              stale_client_timeout: 5,
                              expiration: SECONDS_TO_AUTO_UNLOCK)
     s.lock(SECONDS_TO_AUTO_UNLOCK)
-    return content_from_s3 if content_from_s3
-    Rails.logger.info("no s3 content")
-    content_from_vbms
+    content_from_s3 || content_from_vbms
   rescue *EXCEPTIONS
     nil
   ensure
@@ -24,7 +22,6 @@ class RecordFetcher
   private
 
   def content_from_vbms
-    Rails.logger.info("RecordFetcher.content_from_vbms")
     content = MetricsService.record("#{record.manifest_source.name} v2_fetch_document_file",
                                     service: record.manifest_source.name.downcase.to_sym,
                                     name: "v2_fetch_document_file") do
@@ -44,7 +41,6 @@ class RecordFetcher
   end
 
   def content_from_s3
-    Rails.logger.info("RecordFetcher.content_from_s3")
     @content_from_s3 ||= MetricsService.record("S3: RecordFetcher fetch content for: #{record.s3_filename}",
                                                service: :s3,
                                                name: "content_from_s3") do
