@@ -111,7 +111,7 @@ feature "Backend Error Flows" do
       allow(Fakes::DocumentService).to receive(:v2_fetch_document_file) do |arg|
         case arg.id
         when 1
-          raise VBMS::ClientError
+          raise VBMS::ClientError.new("arg.id 1 failed")
         else
           "Test content"
         end
