@@ -5,6 +5,9 @@ require "capybara-screenshot/rspec"
 require "selenium-webdriver"
 require "webdrivers"
 
+# make sure we have latest (CircleCI has cached older version)
+Webdrivers::Chromedriver.update
+
 Webdrivers.logger.level = :DEBUG if ENV["DEBUG"]
 
 Sniffybara::Driver.run_configuration_file = File.expand_path("VA-axe-run-configuration.json", __dir__)

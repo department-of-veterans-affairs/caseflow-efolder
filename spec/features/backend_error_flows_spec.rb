@@ -118,7 +118,7 @@ feature "Backend Error Flows" do
       end
     end
 
-    scenario "Download the eFolder anyway" do
+    scenario "Download the eFolder anyway", download: true do
       perform_enqueued_jobs do
         visit "/"
         fill_in "Search for a Veteran ID number below to get started.", with: veteran_id

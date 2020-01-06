@@ -78,7 +78,7 @@ jobs:
           name: RSpec
           command: |
             mkdir -p ~/test-results/rspec
-            ~/project/ci-bin/capture-log "make -f Makefile.example test | tee ~/test-results/rspec/rspec.out"
+            ~/project/ci-bin/capture-log "DEBUG=true make -f Makefile.example test | tee ~/test-results/rspec/rspec.out"
 
       - store_test_results:
           name: Store test results as summary
