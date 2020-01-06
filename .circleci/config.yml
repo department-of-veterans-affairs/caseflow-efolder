@@ -74,7 +74,7 @@ jobs:
             ~/project/ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:create"
             ~/project/ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:schema:load"
 
-      - run
+      - run:
           name: Update Chrome/ChromeDriver
           command: |
             wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
