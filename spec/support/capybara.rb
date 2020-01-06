@@ -51,6 +51,7 @@ Capybara.register_driver(:sniffybara_headless) do |app|
 
   chrome_options.add_preference(:browser,
                                 set_download_behavior: { behavior: 'allow' },
+                                download_path: download_directory,
                                 disk_cache_dir: cache_directory)
 
   chrome_options.add_preference(:safebrowsing,
