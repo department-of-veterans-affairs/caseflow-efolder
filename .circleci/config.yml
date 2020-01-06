@@ -74,11 +74,21 @@ jobs:
             ~/project/ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:create"
             ~/project/ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:schema:load"
 
+      - run
+          name: Update Chrome/ChromeDriver
+          command: |
+            wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+            sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+            sudo apt-get update
+            sudo apt-get install google-chrome-stable
+            bundle exec rake webdrivers:chromedriver:remove
+            bundle exec rake webdrivers:chromedriver:update
+
       - run:
           name: RSpec
           command: |
             mkdir -p ~/test-results/rspec
-            ~/project/ci-bin/capture-log "DEBUG=true make -f Makefile.example test | tee ~/test-results/rspec/rspec.out"
+            ~/project/ci-bin/capture-log "make -f Makefile.example test | tee ~/test-results/rspec/rspec.out"
 
       - store_test_results:
           name: Store test results as summary
