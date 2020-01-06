@@ -13,8 +13,8 @@ class RecordFetcher
                              expiration: SECONDS_TO_AUTO_UNLOCK)
     s.lock(SECONDS_TO_AUTO_UNLOCK)
     content_from_s3 || content_from_vbms
-  rescue *EXCEPTIONS
-    nil
+  rescue *EXCEPTIONS => error
+    Rails.logger.error("Caught #{error}")
   ensure
     s.unlock
   end
