@@ -84,6 +84,7 @@ feature "Backend Error Flows" do
 
   context "When VVA returns an error" do
     before do
+      allow(DataDogService).to receive(:emit_gauge) { true }
       allow(Fakes::VVAService).to receive(:v2_fetch_documents_for).and_raise(VVA::ClientError)
       allow(Fakes::VBMSService).to receive(:v2_fetch_documents_for).and_return(documents)
     end
