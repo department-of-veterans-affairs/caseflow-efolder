@@ -17,11 +17,19 @@ feature "ActiveJob Helpers" do
 
         expect(page).to have_content('file touch queued')
 
+        # first one shows the job ran ok
         DownloadHelpers.wait_for_download
         download = DownloadHelpers.downloaded?
         expect(download).to be_truthy
 
         expect(DownloadHelpers.download).to include("touched-file.txt")
+
+        click_button 'download'
+
+        # second one shows the file downloaded ok
+        DownloadHelpers.wait_for_download(num: 2)
+
+        expect(DownloadHelpers.downloads.last).to include("touched-file-download.txt")
       end
     end
   end

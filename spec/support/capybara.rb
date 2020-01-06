@@ -61,6 +61,7 @@ Capybara.register_driver(:sniffybara_headless) do |app|
   chrome_options.args << "--headless"
   chrome_options.args << "--disable-gpu"
   chrome_options.args << "--window-size=1200,1200"
+  chrome_options.args << "--enable-logging=stderr --v=1"
 
   options = {
     service: ::Selenium::WebDriver::Service.chrome(args: { port: 51_674 }),
@@ -80,15 +81,6 @@ end
 
 Capybara::Screenshot.register_driver(:sniffybara_headless) do |driver, path|
   driver.browser.save_screenshot(path)
-  bridge = driver.browser.send(:bridge)
-  path = '/session/:session_id/chromium/send_command'
-  path[':session_id'] = bridge.session_id
-
-  bridge.http.call(:post, path, cmd: 'Page.setDownloadBehavior',
-                                params: {
-                                  behavior: 'allow',
-                                  downloadPath: download_directory
-                            })
 end
 
 Capybara.default_driver = ENV["CI"] ? :sniffybara_headless : :parallel_sniffybara

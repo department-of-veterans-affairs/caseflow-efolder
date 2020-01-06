@@ -27,6 +27,7 @@ Rails.application.routes.draw do
   if Rails.env.test?
     get 'test', to: 'test#index'
     post 'test/touch_file', to: 'test#touch_file'
+    post 'test/download', to: 'test#download'
   end
 
   namespace :api do

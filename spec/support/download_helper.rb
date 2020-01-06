@@ -24,11 +24,12 @@ module DownloadHelpers
     File.size(download)
   end
 
-  def wait_for_download
+  def wait_for_download(num: nil)
     Rails.logger.info("Waiting for download")
     counter = 0
     while counter < TIMEOUT do
-      break if downloaded?
+      break if num.nil? && downloaded?
+      break if num && downloaded_exactly?(num)
       sleep 1
       counter += 1
       Rails.logger.info("... waited #{counter}")
@@ -38,6 +39,10 @@ module DownloadHelpers
 
   def downloaded?
     !downloading? && downloads.any?
+  end
+
+  def downloaded_exactly?(num)
+    !downloading? && downloads.count == num
   end
 
   def downloading?
