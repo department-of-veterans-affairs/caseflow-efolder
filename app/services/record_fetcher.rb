@@ -22,6 +22,7 @@ class RecordFetcher
   private
 
   def content_from_vbms
+    Rails.logger.info("RecordFetcher.content_from_vbms")
     content = MetricsService.record("#{record.manifest_source.name} v2_fetch_document_file",
                                     service: record.manifest_source.name.downcase.to_sym,
                                     name: "v2_fetch_document_file") do
@@ -41,6 +42,7 @@ class RecordFetcher
   end
 
   def content_from_s3
+    Rails.logger.info("RecordFetcher.content_from_s3")
     @content_from_s3 ||= MetricsService.record("S3: RecordFetcher fetch content for: #{record.s3_filename}",
                                                service: :s3,
                                                name: "content_from_s3") do
