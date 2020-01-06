@@ -5,7 +5,7 @@ require "capybara-screenshot/rspec"
 require "selenium-webdriver"
 require "webdrivers"
 
-# make sure we have latest (CircleCI has cached older version)
+# make sure we have latest (CircleCI may have cached older version)
 Webdrivers::Chromedriver.update
 
 Webdrivers.logger.level = :DEBUG if ENV["DEBUG"]
