@@ -12,7 +12,7 @@ class RecordFetcher
                              stale_client_timeout: 5,
                              expiration: SECONDS_TO_AUTO_UNLOCK)
     s.lock(SECONDS_TO_AUTO_UNLOCK)
-    return content_from_s3 if content_from_s3
+    #return content_from_s3 if content_from_s3
     Rails.logger.info("no s3 content")
     content_from_vbms
   rescue *EXCEPTIONS
