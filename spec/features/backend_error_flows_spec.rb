@@ -35,7 +35,7 @@ feature "Backend Error Flows" do
   end
 
   before do
-    allow(DataDogService).to receive(:emit_gauge) { true }
+#    allow(DataDogService).to receive(:emit_gauge) { true }
 
     @user = User.create(css_id: "123123", station_id: "116")
 
