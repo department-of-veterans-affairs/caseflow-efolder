@@ -2,7 +2,6 @@ class V2::PackageFilesJob < ActiveJob::Base
   queue_as :med_priority
 
   def perform(manifest)
-    puts "start V2::PackageFilesJob"
     return if manifest.recently_downloaded_files?
 
     ZipfileCreator.new(manifest: manifest).process
