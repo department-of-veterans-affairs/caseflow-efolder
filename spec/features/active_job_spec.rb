@@ -22,14 +22,14 @@ feature "ActiveJob Helpers" do
         download = DownloadHelpers.downloaded?
         expect(download).to be_truthy
 
-        expect(DownloadHelpers.download).to include("touched-file.txt")
+        expect(DownloadHelpers.download).to eq("touched-file.txt")
 
         click_button 'download'
 
         # second one shows the file downloaded ok
         DownloadHelpers.wait_for_download(num: 2)
 
-        expect(DownloadHelpers.downloads.last).to include("touched-file-download.txt")
+        expect(DownloadHelpers.downloads).to contain_exactly("touched-file.txt", "touched-file-download.txt")
       end
     end
   end

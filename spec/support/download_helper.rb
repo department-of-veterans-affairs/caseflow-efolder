@@ -8,7 +8,9 @@ module DownloadHelpers
   module_function
 
   def downloads
-    Dir.glob("#{WORKDIR}/*")
+    Dir.chdir(WORKDIR) do
+      Dir.glob("*")
+    end
   end
 
   def download
