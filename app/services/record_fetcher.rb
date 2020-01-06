@@ -15,6 +15,7 @@ class RecordFetcher
     content_from_s3 || content_from_vbms
   rescue *EXCEPTIONS => error
     Rails.logger.error("Caught #{error}")
+    nil
   ensure
     s.unlock
   end
