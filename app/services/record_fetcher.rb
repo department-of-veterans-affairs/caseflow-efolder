@@ -30,6 +30,7 @@ class RecordFetcher
                                     name: "v2_fetch_document_file") do
       record.service.v2_fetch_document_file(record)
     end
+    return content
     content = MetricsService.record("ImageConverterService for #{record.s3_filename}",
                                     service: :image_converter,
                                     name: "image_converter_service") do
