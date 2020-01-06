@@ -35,6 +35,8 @@ feature "Backend Error Flows" do
   end
 
   before do
+    allow(DataDogService).to receive(:emit_gauge) { true }
+
     @user = User.create(css_id: "123123", station_id: "116")
 
     FeatureToggle.enable!(:efolder_react_app)
@@ -84,8 +86,7 @@ feature "Backend Error Flows" do
 
   context "When VVA returns an error" do
     before do
-      allow(DataDogService).to receive(:emit_gauge) { true }
-      allow(Fakes::VVAService).to receive(:v2_fetch_documents_for).and_raise(VVA::ClientError)
+      allow(Fakes::VVAService).to receive(:v2_fetch_documents_for).and_raise(VVA::ClientError.new("vva returned an error"))
       allow(Fakes::VBMSService).to receive(:v2_fetch_documents_for).and_return(documents)
     end
 
@@ -117,7 +118,7 @@ feature "Backend Error Flows" do
       end
     end
 
-    scenario "Download the eFolder anyway" do
+    scenario "Download the eFolder anyway", download: true do
       perform_enqueued_jobs do
         visit "/"
         fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
