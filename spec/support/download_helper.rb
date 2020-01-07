@@ -7,10 +7,14 @@ module DownloadHelpers
 
   module_function
 
-  def downloads
+  def download_filenames
     Dir.chdir(WORKDIR) do
       Dir.glob("*")
     end
+  end
+
+  def downloads
+    Dir.glob("#{WORKDIR}/*")
   end
 
   def download
@@ -52,6 +56,6 @@ module DownloadHelpers
   end
 
   def clear_downloads
-    FileUtils.rm_f(Dir.glob("#{WORKDIR}/*"))
+    FileUtils.rm_f(downloads)
   end
 end
