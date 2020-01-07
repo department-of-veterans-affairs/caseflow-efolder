@@ -23,6 +23,7 @@ clean:	## Remove old files
 	rm -f log/test.log
 	rm -f app/assets/javascripts/*webpack*
 	rm -rf tmp/capybara
+	rm -rf coverage
 
 lint:	## Run the linter
 	CI=true bundle exec rake efolder:lint

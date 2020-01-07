@@ -120,6 +120,28 @@ Then to run the test suite:
 ```
 make test
 ```
+
+### Test coverage
+
+We use the [simplecov](https://github.com/colszowka/simplecov) gem to evaluate test coverage as part of the CircleCI process.
+
+If you see a test coverage failure at CircleCI, you can evaluate test coverage locally for the affected files using
+the [single_cov](https://github.com/grosser/single_cov) gem.
+
+Add the line to any rspec file locally:
+
+```
+SingleCov.covered!
+```
+
+and run that file under rspec.
+
+```
+SINGLE_COV=true bundle exec rspec spec/path/to/file_spec.rb
+```
+
+Missing test coverage will be reported automatically at the end of the test run.
+
 ## Monitoring
 We use NewRelic to monitor the app. By default, it's disabled locally. To enable it, do:
 

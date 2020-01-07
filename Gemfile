@@ -64,7 +64,8 @@ group :test do
   gem "launchy"
   gem "rspec"
   gem "rspec-rails"
-  gem "simplecov"
+  gem "simplecov", require: false
+  gem "single_cov", require: false
   gem "sniffybara", git: "https://github.com/department-of-veterans-affairs/sniffybara.git"
   gem "timecop"
   gem "webdrivers"
