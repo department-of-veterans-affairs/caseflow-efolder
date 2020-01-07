@@ -39,8 +39,12 @@ module DownloadHelpers
       sleep 1
       counter += 1
       Rails.logger.info("... waited #{counter}")
-      Rails.logger.info("#{WORKDIR} contains: #{downloads.pretty_inspect}")
+      Rails.logger.info("#{WORKDIR} contains: #{downloads_listing.pretty_inspect}")
     end
+  end
+
+  def downloads_listing
+    `ls -l #{WORKDIR}`
   end
 
   def downloaded?
