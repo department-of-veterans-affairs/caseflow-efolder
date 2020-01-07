@@ -52,6 +52,6 @@ module DownloadHelpers
   end
 
   def clear_downloads
-    FileUtils.rm_f(downloads)
+    FileUtils.rm_f(Dir.glob("#{WORKDIR}/*"))
   end
 end

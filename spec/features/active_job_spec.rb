@@ -9,6 +9,10 @@ feature "ActiveJob Helpers" do
     DownloadHelpers.clear_downloads
   end
 
+  after do
+    DownloadHelpers.clear_downloads
+  end
+
   context "when job is queued" do
     scenario "the job runs" do
       perform_enqueued_jobs do
