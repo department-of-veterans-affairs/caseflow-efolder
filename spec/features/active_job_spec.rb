@@ -14,7 +14,7 @@ feature "ActiveJob Helpers" do
   end
 
   context "when job is queued" do
-    scenario "the job runs" do
+    scenario "the job runs", download: true do
       perform_enqueued_jobs do
         visit '/test'
         click_button 'test'
