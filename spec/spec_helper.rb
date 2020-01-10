@@ -34,12 +34,16 @@ def test_large_files?
   ENV.fetch("TEST_LARGE_FILES", false)
 end
 
+def test_downloads?
+  ENV.fetch("TEST_DOWNLOADS", false)
+end
+
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
   config.filter_run focus: true
   config.run_all_when_everything_filtered = true
-  config.filter_run_excluding download: true
+  config.filter_run_excluding download: true unless test_downloads?
 
   config.filter_run_excluding :large_files unless test_large_files?
 
