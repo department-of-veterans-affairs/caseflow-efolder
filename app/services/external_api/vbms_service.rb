@@ -16,6 +16,19 @@ class RailsVBMSLogger
   end
 end
 
+class RailsVBMSDebugLogger
+  def log(event, data)
+    case event
+    when :request
+      puts "#{Time.zone.now} VBMS Request"
+      pp data
+    when :response
+      puts "#{Time.zone.now} VBMS Response"
+      pp data
+    end
+  end
+end
+
 class ExternalApi::VBMSService
   def self.fetch_documents_for(download)
     @vbms_client ||= init_client
@@ -30,9 +43,16 @@ class ExternalApi::VBMSService
   def self.v2_fetch_documents_for(veteran_file_number)
     @vbms_client ||= init_client
 
-    request = VBMS::Requests::FindDocumentVersionReference.new(veteran_file_number)
+    documents = []
 
-    documents = send_and_log_request(veteran_file_number, request)
+    if FeatureToggle.enabled?(:vbms_pagination, user: RequestStore[:current_user])
+      service = VBMS::Service::PagedDocuments.new(client: @vbms_client)
+      documents = call_and_log_service(service: service, vbms_id: veteran_file_number)[:documents]
+    else
+      request = VBMS::Requests::FindDocumentVersionReference.new(veteran_file_number)
+      documents = send_and_log_request(veteran_file_number, request)
+    end
+
     Rails.logger.info("VBMS Document list length: #{documents.length}")
     documents
   end
@@ -65,6 +85,15 @@ class ExternalApi::VBMSService
                           service: :vbms,
                           name: name) do
       @vbms_client.send_request(request)
+    end
+  end
+
+  def self.call_and_log_service(service:, vbms_id:)
+    name = service.class.name.split("::").last
+    MetricsService.record("call #{service.class} for #{vbms_id}",
+                          service: :vbms,
+                          name: name) do
+      service.call(file_number: vbms_id)
     end
   end
 end
