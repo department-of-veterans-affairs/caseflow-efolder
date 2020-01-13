@@ -5,6 +5,9 @@ require "capybara-screenshot/rspec"
 require "selenium-webdriver"
 require "webdrivers"
 
+# make sure we have latest (CircleCI may have cached older version)
+Webdrivers::Chromedriver.update
+
 Webdrivers.logger.level = :DEBUG if ENV["DEBUG"]
 
 Sniffybara::Driver.run_configuration_file = File.expand_path("VA-axe-run-configuration.json", __dir__)
@@ -51,6 +54,7 @@ Capybara.register_driver(:sniffybara_headless) do |app|
 
   chrome_options.add_preference(:browser,
                                 set_download_behavior: { behavior: 'allow' },
+                                download_path: download_directory,
                                 disk_cache_dir: cache_directory)
 
   chrome_options.add_preference(:safebrowsing,
@@ -60,6 +64,7 @@ Capybara.register_driver(:sniffybara_headless) do |app|
   chrome_options.args << "--headless"
   chrome_options.args << "--disable-gpu"
   chrome_options.args << "--window-size=1200,1200"
+  chrome_options.args << "--enable-logging=stderr --v=1"
 
   options = {
     service: ::Selenium::WebDriver::Service.chrome(args: { port: 51_674 }),

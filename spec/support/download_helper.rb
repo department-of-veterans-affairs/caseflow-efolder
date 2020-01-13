@@ -7,6 +7,12 @@ module DownloadHelpers
 
   module_function
 
+  def download_filenames
+    Dir.chdir(WORKDIR) do
+      Dir.glob("*")
+    end
+  end
+
   def downloads
     Dir.glob("#{WORKDIR}/*")
   end
@@ -24,21 +30,29 @@ module DownloadHelpers
     File.size(download)
   end
 
-  def wait_for_download
-    puts "Waiting for download"
+  def wait_for_download(num: nil)
+    Rails.logger.info("Waiting for download")
     counter = 0
     while counter < TIMEOUT do
-      break if downloaded?
+      break if num.nil? && downloaded?
+      break if num && downloaded_exactly?(num)
       sleep 1
       counter += 1
-      puts "... waited #{counter}"
-      puts "#{WORKDIR} contains: "
-      pp downloads
+      Rails.logger.info("... waited #{counter}")
+      Rails.logger.info("#{WORKDIR} contains: #{downloads_listing.pretty_inspect}")
     end
+  end
+
+  def downloads_listing
+    `ls -l #{WORKDIR}`
   end
 
   def downloaded?
     !downloading? && downloads.any?
+  end
+
+  def downloaded_exactly?(num)
+    !downloading? && downloads.count == num
   end
 
   def downloading?

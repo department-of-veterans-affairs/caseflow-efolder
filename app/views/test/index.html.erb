@@ -1,0 +1,11 @@
+<html lang="en">
+ <% flash.each do |key, value| %>
+  <%= content_tag :div, value, class: "flash #{key}" %>
+ <% end %>
+ <form method="POST" action="/test/touch_file" >
+  <button>test</button>
+ </form>
+ <form method="POST" action="/test/download" >
+  <button>download</button>
+ </form>
+</html>
