@@ -13,7 +13,7 @@ class MetricsService
       return_value = yield
     end
 
-    if service
+    if service && Rails.env.production?
       latency = stopwatch.real
       DataDogService.emit_gauge(
         metric_group: "service",

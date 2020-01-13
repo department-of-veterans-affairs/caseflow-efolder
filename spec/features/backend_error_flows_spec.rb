@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.feature "Backend Error Flows", skip: "flakey at CircleCI -- possibly due to timing of perform_enqueued_jobs" do
+feature "Backend Error Flows" do
   include ActiveJob::TestHelper
 
   let(:documents) do
@@ -35,6 +35,8 @@ RSpec.feature "Backend Error Flows", skip: "flakey at CircleCI -- possibly due t
   end
 
   before do
+    allow(DataDogService).to receive(:emit_gauge) { true } # mock DD during tests
+
     @user = User.create(css_id: "123123", station_id: "116")
 
     FeatureToggle.enable!(:efolder_react_app)
@@ -60,9 +62,9 @@ RSpec.feature "Backend Error Flows", skip: "flakey at CircleCI -- possibly due t
     FeatureToggle.disable!(:efolder_react_app)
   end
 
-  context "When VBMS returns an error", skip: "flakey test" do
+  context "When VBMS returns an error" do
     before do
-      allow(Fakes::VBMSService).to receive(:v2_fetch_documents_for).and_raise(VBMS::ClientError)
+      allow(Fakes::VBMSService).to receive(:v2_fetch_documents_for).and_raise(VBMS::ClientError.new("vbms returned an error"))
       allow(Fakes::VVAService).to receive(:v2_fetch_documents_for).and_return(documents)
     end
 
@@ -82,9 +84,9 @@ RSpec.feature "Backend Error Flows", skip: "flakey at CircleCI -- possibly due t
     end
   end
 
-  context "When VVA returns an error", skip: "flakey test" do
+  context "When VVA returns an error" do
     before do
-      allow(Fakes::VVAService).to receive(:v2_fetch_documents_for).and_raise(VVA::ClientError)
+      allow(Fakes::VVAService).to receive(:v2_fetch_documents_for).and_raise(VVA::ClientError.new("vva returned an error"))
       allow(Fakes::VBMSService).to receive(:v2_fetch_documents_for).and_return(documents)
     end
 
@@ -109,14 +111,14 @@ RSpec.feature "Backend Error Flows", skip: "flakey at CircleCI -- possibly due t
       allow(Fakes::DocumentService).to receive(:v2_fetch_document_file) do |arg|
         case arg.id
         when 1
-          raise VBMS::ClientError
+          raise VBMS::ClientError.new("arg.id 1 failed")
         else
           "Test content"
         end
       end
     end
 
-    scenario "Download the eFolder anyway" do
+    scenario "Download the eFolder anyway", download: true do
       perform_enqueued_jobs do
         visit "/"
         fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
