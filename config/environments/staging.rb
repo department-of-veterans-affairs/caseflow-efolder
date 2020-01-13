@@ -48,7 +48,4 @@ Rails.application.configure do
 
   config.sqs_create_queues = true
   config.sqs_endpoint = 'http://localhost:4576'
-
-  # Allow health check to pushgateway
-  ENV["ENABLE_PUSHGATEWAY_HEALTHCHECK"] = "true"
 end

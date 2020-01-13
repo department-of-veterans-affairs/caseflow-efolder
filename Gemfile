@@ -4,12 +4,11 @@ source ENV["GEM_SERVER_URL"] || "https://rubygems.org"
 
 gem "active_model_serializers"
 gem "activejob_dj_overrides"
-gem "activerecord-jdbcpostgresql-adapter", platforms: :jruby
 gem "aws-sdk", "~> 2"
-gem "bgs", git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", ref: "abffaad34aa9c62afca70756277011d73bcee711"
+gem "bgs", git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", ref: "85845c2d6a2c8190762d07a365e92972259e98b9"
 gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons", ref: "ffb77dd0395cbd5b7c1a5729f7f8275b5ec681fa"
 gem "coffee-rails", "> 4.1.0"
-gem "connect_vbms", git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "0e830e72ccda3b18568c4a98fa0abdad3ef08815"
+gem "connect_vbms", git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "a97a56f72d4a08f634c7f569fdcc83615362a8b2"
 gem "connect_vva", git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "dfd1aeb2605c1f237f520bcdc41b059202e8944d"
 gem "distribute_reads"
 gem "dogstatsd-ruby"
@@ -26,7 +25,7 @@ gem "omniauth-saml-va", git: "https://github.com/department-of-veterans-affairs/
 gem "pg", "~> 0.18", platforms: :ruby
 gem "puma"
 gem "rack-cors", ">= 1.0.4"
-gem "rails", "5.1.6.2"
+gem "rails", "5.2.4.1"
 gem "redis-namespace"
 gem "redis-rails", "~> 5.0.2"
 gem "redis-semaphore"
@@ -37,7 +36,6 @@ gem "sdoc", "~> 0.4.0", group: :doc
 gem "sentry-raven"
 gem "shoryuken", "3.1.11"
 gem "therubyracer", platforms: :ruby
-gem "therubyrhino", platforms: :jruby
 gem "turbolinks"
 gem "uglifier", ">= 1.3.0"
 gem "uswds-rails", git: "https://github.com/18F/uswds-rails-gem.git"
