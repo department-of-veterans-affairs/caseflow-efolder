@@ -42,7 +42,9 @@ RSpec.feature "React Downloads" do
 
     S3Service.files = {}
 
-    allow(S3Service).to receive(:stream_content).and_return("streamed content")
+    allow(S3Service).to receive(:stream_content) do |key|
+      Enumerator.new { |y| y << S3Service.files[key] }
+    end
 
     DownloadHelpers.clear_downloads
   end
@@ -61,6 +63,7 @@ RSpec.feature "React Downloads" do
       "veteran_last_four_ssn" => "2222"
     }
   end
+  let(:zip_file_name) { "Lee, Stan - 2222" }
 
   scenario "Creating a download" do
     expect(V2::DownloadManifestJob).to receive(:perform_later).twice
@@ -87,6 +90,20 @@ RSpec.feature "React Downloads" do
     expect(manifest.veteran_last_four_ssn).to eq("2222")
   end
 
+  def validate_downloaded_zip_file(filename)
+    DownloadHelpers.wait_for_download
+    download = DownloadHelpers.downloaded?
+    expect(download).to be_truthy
+
+    expect(DownloadHelpers.download).to include(filename)
+    expect(DownloadHelpers.filesize).to be > 32 # any smaller is invalid zip
+
+    zip_path = DownloadHelpers.download
+    Zip::File.open(zip_path) do |zip_file|
+      expect(zip_file.size).to eq documents.count
+    end
+  end
+
   scenario "Happy path, zip file is downloaded", download: true do
     perform_enqueued_jobs do
       visit "/"
@@ -109,11 +126,7 @@ RSpec.feature "React Downloads" do
         click_button "Download efolder"
       end
 
-      DownloadHelpers.wait_for_download
-      download = DownloadHelpers.downloaded?
-      expect(download).to be_truthy
-
-      expect(DownloadHelpers.download).to include("Lee, Stan - 2222")
+      validate_downloaded_zip_file(zip_file_name)
 
       click_on "Start over"
       click_on "Recent downloads"
@@ -287,10 +300,7 @@ RSpec.feature "React Downloads" do
         end
 
         # Wait for the download to complete and return to the homepage.
-        DownloadHelpers.wait_for_download
-        download = DownloadHelpers.downloaded?
-        expect(download).to be_truthy
-        expect(DownloadHelpers.download).to include("Lee, Stan - 2222")
+        validate_downloaded_zip_file(zip_file_name)
 
         click_on "Start over"
 
