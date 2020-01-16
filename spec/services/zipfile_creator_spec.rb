@@ -201,18 +201,5 @@ describe ZipfileCreator do
         end
       end
     end
-
-    context "when manifest is empty" do
-      let!(:records) { [] }
-
-      it "creates empty file" do
-        subject
-        expect(manifest.number_successful_documents).to eq 0
-        expect(manifest.number_failed_documents).to eq 0
-        S3Service.fetch_file(manifest.s3_filename, zip_path)
-        expect(File.exists?(zip_path)).to be_truthy
-        expect(File.size(zip_path)).to eq 0
-      end
-    end
   end
 end

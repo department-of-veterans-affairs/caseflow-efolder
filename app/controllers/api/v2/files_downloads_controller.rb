@@ -27,7 +27,6 @@ class Api::V2::FilesDownloadsController < Api::V2::ApplicationController
     headers["Content-Length"] = manifest.zipfile_size.to_s
 
     # Setting this to "no" will allow unbuffered responses for HTTP streaming applications
-    # see https://piotrmurach.com/articles/streaming-large-zip-files-in-rails/
     headers["X-Accel-Buffering"] = "no"
     headers["Cache-Control"] ||= "no-cache"
   end

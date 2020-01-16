@@ -4,6 +4,7 @@ source ENV["GEM_SERVER_URL"] || "https://rubygems.org"
 
 gem "active_model_serializers"
 gem "activejob_dj_overrides"
+gem "activerecord-jdbcpostgresql-adapter", platforms: :jruby
 gem "aws-sdk", "~> 2"
 gem "bgs", git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", ref: "85845c2d6a2c8190762d07a365e92972259e98b9"
 gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons", ref: "25a32b274c64af2048d41561487e8e4296f9608c"
@@ -25,7 +26,7 @@ gem "omniauth-saml-va", git: "https://github.com/department-of-veterans-affairs/
 gem "pg", "~> 0.18", platforms: :ruby
 gem "puma"
 gem "rack-cors", ">= 1.0.4"
-gem "rails", "5.2.4.1"
+gem "rails", "5.1.6.2"
 gem "redis-namespace"
 gem "redis-rails", "~> 5.0.2"
 gem "redis-semaphore"
@@ -36,6 +37,7 @@ gem "sdoc", "~> 0.4.0", group: :doc
 gem "sentry-raven"
 gem "shoryuken", "3.1.11"
 gem "therubyracer", platforms: :ruby
+gem "therubyrhino", platforms: :jruby
 gem "turbolinks"
 gem "uglifier", ">= 1.3.0"
 gem "uswds-rails", git: "https://github.com/18F/uswds-rails-gem.git"
@@ -64,8 +66,7 @@ group :test do
   gem "launchy"
   gem "rspec"
   gem "rspec-rails"
-  gem "simplecov", require: false
-  gem "single_cov", require: false
+  gem "simplecov"
   gem "sniffybara", git: "https://github.com/department-of-veterans-affairs/sniffybara.git"
   gem "timecop"
   gem "webdrivers"
