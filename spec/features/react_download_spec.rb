@@ -101,6 +101,8 @@ RSpec.feature "React Downloads" do
     zip_path = DownloadHelpers.download
     Zip::File.open(zip_path) do |zip_file|
       expect(zip_file.size).to eq documents.count
+      contents = zip_file.map { |entry| entry.get_input_stream.read }
+      expect(contents).to eq(["Test content", "Test content"])
     end
   end
 
