@@ -51,6 +51,10 @@ db:	## Connect with psql
 c:	## Start Rails console
 	bundle exec rails console
 
+db-migrate: migrate
+
+etl-migrate: migrate
+
 migrate:	## Run pending migrations
 	bundle exec rake db:migrate
 
