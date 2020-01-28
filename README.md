@@ -170,3 +170,10 @@ In a separate tab run:
 RAILS_ENV=staging bundle exec shoryuken start -q efolder_staging_high_priority efolder_staging_low_priority efolder_staging_med_priority -R
 ```
 Now when you go to [localhost:3001](localhost:3001) you'll be prompted with a fake login screen. Use any of these [logins](https://github.com/department-of-veterans-affairs/appeals-qa/blob/master/TestData/LOGINS.md) to impersonate a UAT user.
+
+## SAML Auth and SSO
+
+See [internal wiki page](https://github.com/department-of-veterans-affairs/appeals-deployment/wiki/CSS-SAML-Workflow) for background.
+
+This application acts as a Service Provider to the VA IAM SAML SSO IdP (Identity Provider). The cookie set here is shared by Caseflow.
+
