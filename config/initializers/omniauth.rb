@@ -5,10 +5,8 @@ ENV_SAML_KEY = 'SSOI_SAML_PRIVATE_KEY_LOCATION'
 ENV_SAML_CRT = 'SSOI_SAML_CERTIFICATE_LOCATION'
 ENV_SAML_ID = 'SSOI_SAML_ID'
 
+# we will switch back to the all-SSOI naming once feature toggle is removed.
 ENV_IAM_XML = 'IAM_SAML_XML_LOCATION'
-ENV_IAM_KEY = 'IAM_SAML_PRIVATE_KEY_LOCATION'
-ENV_IAM_CRT = 'IAM_SAML_CERTIFICATE_LOCATION'
-ENV_SAML_ID = 'IAM_SAML_ID'
 
 Rails.application.config.ssoi_login_path = "/auth/samlva"
 
@@ -29,9 +27,9 @@ if use_ssoi_iam?
   # for transition to new IdP. Once fully deployed, we can remove the older ENV vars and certs.
   Rails.application.config.middleware.use OmniAuth::Builder do
     provider :samlva,
-      ENV[ENV_IAM_ID],
-      ENV[ENV_IAM_KEY],
-      ENV[ENV_IAM_CRT],
+      ENV[ENV_SAML_ID],
+      ENV[ENV_SAML_KEY],
+      ENV[ENV_SAML_CRT],
       ENV[ENV_IAM_XML],
       true,
       callback_path: '/auth/saml_callback',
