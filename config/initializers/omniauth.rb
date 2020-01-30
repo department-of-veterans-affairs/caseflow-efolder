@@ -27,7 +27,7 @@ if use_ssoi_iam?
   # for transition to new IdP. Once fully deployed, we can remove the older ENV vars and certs.
   Rails.application.config.middleware.use OmniAuth::Builder do
     provider :samlva,
-      ENV[ENV_SAML_ID],
+      "https://efolder.cf.ds.va.gov", # same in all envs # ENV[ENV_SAML_ID],
       ENV[ENV_SAML_KEY],
       ENV[ENV_SAML_CRT],
       ENV[ENV_IAM_XML],
