@@ -82,10 +82,11 @@ class ExternalApi::BGSService
 
   private
 
-  def init_client
-    # Fetch current_user from global thread
-    current_user = RequestStore[:current_user]
+  def current_user
+    RequestStore[:current_user]
+  end
 
+  def init_client
     forward_proxy_url = FeatureToggle.enabled?(:bgs_forward_proxy) ? ENV["RUBY_BGS_PROXY_BASE_URL"] : nil
 
     # We hardcode the ip since all clients show up as a single IP anyway.
@@ -99,6 +100,7 @@ class ExternalApi::BGSService
       ssl_cert_file: ENV["BGS_CERT_LOCATION"],
       ssl_ca_cert: ENV["BGS_CA_CERT_LOCATION"],
       forward_proxy_url: forward_proxy_url,
+      jumpbox_url: ENV["RUBY_BGS_JUMPBOX_URL"],
       log: true
     )
   end

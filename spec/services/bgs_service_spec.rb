@@ -1,4 +1,8 @@
 describe ExternalApi::BGSService do
+  before do
+    RequestStore[:current_user] = User.new(css_id: "RADIOHEAD", station_id: "203")
+  end
+
   let(:bgs_service) { ExternalApi::BGSService.new }
 
   context "#parse_veteran_info" do

@@ -42,7 +42,6 @@ Rails.application.configure do
   # Suppress logger output for asset requests.
   config.assets.quiet = true
 
-  config.bgs_environment = "beplinktest"
   config.vva_wsdl = "https://vbaphid521ldb.vba.va.gov:7002/VABFI/services/vva?wsdl"
 
   config.s3_enabled = true

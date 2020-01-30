@@ -36,7 +36,6 @@ Rails.application.configure do
   # Raises helpful error messages.
   config.assets.raise_runtime_errors = true
 
-  config.bgs_environment = "beplinktest"
   config.vva_wsdl = "https://vbaphid521ldb.vba.va.gov:7002/VABFI/services/vva?wsdl"
 
   config.s3_enabled = true
