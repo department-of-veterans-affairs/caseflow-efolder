@@ -1,6 +1,19 @@
 class Fakes::BGSService
   include ActiveModel::Model
 
+  def fetch_user_info(username)
+    return {} if username == "error"
+
+    {
+      css_id: username,
+      station_id: "101",
+      first_name: "Jane",
+      last_name: "Doe",
+      email: "jane.doe@example.com",
+      roles: ["Download eFolder", "Establish Claim"]
+    }
+  end
+
   def demo?(file_number)
     !!(file_number =~ /^DEMO/)
   end
