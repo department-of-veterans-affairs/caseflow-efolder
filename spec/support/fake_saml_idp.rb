@@ -76,12 +76,19 @@ class FakeSamlIdp < Sinatra::Base
         email_address: ->(principal) { principal.email }
       }
 
+      saml_format_unspecified = "urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified"
+      saml_format_email = "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
+
       config.attributes = {
         email: {
           getter: :email,
-          name_format: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
-          name_id_format: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
+          name_format: saml_format_email,
+          name_id_format: saml_format_email
         },
+        issueInstant: { getter: :issue_instant, name_format: saml_format_unspecified },
+        proofingAuth: { getter: :proofing_auth, name_format: saml_format_unspecified },
+        assureLevel: { getter: :assure_level, name_format: saml_format_unspecified },
+        adSamAccountName: { getter: :ad_sam_account_name, name_format: saml_format_unspecified },
       }
 
       config.service_provider.finder = lambda do |_issuer_or_entity_id|
@@ -96,12 +103,26 @@ class FakeSamlIdp < Sinatra::Base
     end
   end
 
+  def user_attrs
+    {
+      issue_instant: Time.zone.now.iso8601,
+      proofing_auth: "VA-PIV",
+      assure_level: "3",
+      ad_sam_account_name: "THE_CSS_ID",
+      transaction_id: SecureRandom.uuid,
+      ad_upn: "some.body@va.gov",
+      ad_email: "some.body@va.gov",
+      first_name: "Some",
+      last_name: "Body",
+      role: "some role"
+    }
+  end
+
   def user
-    binding.pry
     if saml_request&.name_id
-      User.new(email: "someone@example.com")
+      OpenStruct.new(user_attrs.merge(email: "nameid@example.com"))
     else
-      User.new(email: "other@example.com")
+      OpenStruct.new(user_attrs.merge(email: "other@example.com"))
     end
   end
 end

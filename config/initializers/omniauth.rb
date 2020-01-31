@@ -19,7 +19,7 @@ def ssoi_authentication_enabled?
 end
 
 def use_ssoi_iam?
-  FeatureToggle.enabled?(:use_ssoi_iam)
+  Rails.env.production? && FeatureToggle.enabled?(:use_ssoi_iam)
 rescue
   false
 end

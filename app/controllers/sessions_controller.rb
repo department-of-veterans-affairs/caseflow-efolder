@@ -7,6 +7,8 @@ class SessionsController < ApplicationController
   def create
     session["user"] = build_user
 
+    binding.pry
+
     will_redirect_to = session.delete("return_to") || "/"
 
     Rails.logger.info("Authenticated session for #{session['user']} will redirect to #{will_redirect_to}")

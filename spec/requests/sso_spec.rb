@@ -1,4 +1,11 @@
 describe 'SSO' do
+  before do
+    FeatureToggle.enable!(:use_ssoi_iam)
+  end
+  after do
+    FeatureToggle.disable!(:use_ssoi_iam)
+  end
+
   it 'uses external SAML IdP' do
     expect(User.count).to eq 0
 
