@@ -1,0 +1,20 @@
+<EntitiesDescriptor ID="hzWzvqEHbmo7ByZjWZ0V64snyw24Qw1Z" xmlns="urn:oasis:names:tc:SAML:2.0:metadata">
+    <EntityDescriptor ID="EzGApRGf5S5ywvs414fsdyDk5UanYf2A" entityID="http://idp.example.com/sso">
+        <IDPSSODescriptor WantAuthnRequestsSigned="false" ID="sY7GTCNyff9h5IFBwURvUynYnz0fDy4h" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+            <KeyDescriptor use="signing">
+                <ns1:KeyInfo Id="LbYWL3yVJ8rcP5kJGU3wnZTfhgykxMVQ" xmlns:ns1="http://www.w3.org/2000/09/xmldsig#">
+                    <ns1:X509Data>
+                        <ns1:X509IssuerSerial>
+                            <ns1:X509IssuerName>C=us,ST=Example,O=Example IdP,CN=idp.example.com</ns1:X509IssuerName>
+                            <ns1:X509SerialNumber>17169973580193466</ns1:X509SerialNumber>
+                        </ns1:X509IssuerSerial>
+                        <!-- cert is self-signed and expires Jan 28 20:53:19 2030 GMT -->
+                        <ns1:X509Certificate>MIIDazCCAlKgAwIBAgIBADANBgkqhkiG9w0BAQ0FADBPMQswCQYDVQQGEwJ1czEQMA4GA1UECAwHRXhhbXBsZTEUMBIGA1UECgwLRXhhbXBsZSBJZFAxGDAWBgNVBAMMD2lkcC5leGFtcGxlLmNvbTAeFw0yMDAxMzEyMDUzMTlaFw0zMDAxMjgyMDUzMTlaME8xCzAJBgNVBAYTAnVzMRAwDgYDVQQIDAdFeGFtcGxlMRQwEgYDVQQKDAtFeGFtcGxlIElkUDEYMBYGA1UEAwwPaWRwLmV4YW1wbGUuY29tMIIBIzANBgkqhkiG9w0BAQEFAAOCARAAMIIBCwKCAQIAttaJmp+UZj+qPImMabvuHSAZ6cahd3zH1ky+bsSPyaUdz6u2kl983aOPVgrZVGFh+p27qvJU4SyOr1HMK99ExCil44W9vnUlcO3Fq6+0UkG8xOrtTtkkDhYBYzkCqX4M9TEYWeFnHijmTS8KXNA2i2DuF/Y1H/+eToTsGOne7sAq2CoRnmPiO57N5LVShOrhsRrZ6pLzkZ0OlRi/+zm9+GOMLOTAB5ClN4wb4GOZLdWR1JWiRmxI0qRWImJh4q3AKpWHdHvcuFudOTPxYWAhsfsM6gee2q4hgBJtjBdb8zCbDMDJ/yYREicPHjbrwkxtKbUR9n1bB75vNT2QwrzxhMcCAwEAAaNQME4wHQYDVR0OBBYEFP84P4cHw5EykRSZu/CmggsWT8DUMB8GA1UdIwQYMBaAFP84P4cHw5EykRSZu/CmggsWT8DUMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQENBQADggECAA1xPP4OZQKD+U5wSQmJuD6D5JwVpMFWBOfc0kkmD705RJWk4iNanykOwM4MQQLJ+b06H87guvLt03BwDfTwVWoMAb9ZhKvFFYsNlNKAtlLldiCno2d9KcFblPJnb+chf35vSkmnVpS/EeEW+R90C43dOVuWvlTrFTyxlrL5wISJQBOkOWNTheO8+sKLoufFt4R9CemSnozREURm4vPoc9RV1VGwDXdJ8a8PjkxWm3pe79z8iLGWmU97asUJbM2gmJg52cbe1rTa9P0fwHJfC64WTB8k7xG+xbWc2Ga2zqBUuib3OpYYpoOBj3NzzdHJpIeGjpBj2u1Z/HGrhvqFvnZ1</ns1:X509Certificate>
+                        <ns1:X509SubjectName>C=us,ST=Example,O=Example IdP,CN=idp.example.com</ns1:X509SubjectName>
+                    </ns1:X509Data>
+                </ns1:KeyInfo>
+            </KeyDescriptor>
+            <SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="http://idp.example.com/saml2sso"/>
+        </IDPSSODescriptor>
+    </EntityDescriptor>
+</EntitiesDescriptor>

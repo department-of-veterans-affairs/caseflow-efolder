@@ -20,6 +20,8 @@ end
 
 def use_ssoi_iam?
   FeatureToggle.enabled?(:use_ssoi_iam)
+rescue
+  false
 end
 
 # :nocov:
@@ -35,8 +37,8 @@ if use_ssoi_iam?
       true,
       callback_path: '/auth/saml_callback',
       path_prefix: '/auth',
-      name_identifier_format: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
-      va_iam_provider: :css
+      name_identifier_format: "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
+      va_iam_provider: :css # TODO
   end
 elsif ssoi_authentication_enabled?
   puts "ssoi_authentication_enabled"
@@ -51,6 +53,20 @@ elsif ssoi_authentication_enabled?
       path_prefix: '/auth',
       name_identifier_format: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
       va_iam_provider: :css
+  end
+elsif Rails.env.test?
+  puts "test"
+  Rails.application.config.middleware.use OmniAuth::Builder do
+    provider :samlva,
+      "www.example.com",
+      Rails.root + "spec/support/saml/idp-example-com.key",
+      Rails.root + "spec/support/saml/idp-example-com.crt",
+      Rails.root + "spec/support/saml/test-iam-metadata.xml",
+      true,
+      callback_path: '/auth/saml_callback',
+      path_prefix: '/auth',
+      name_identifier_format: "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
+      va_iam_provider: :css # TODO
   end
 else
   puts "fakes/test_auth_strategy"
