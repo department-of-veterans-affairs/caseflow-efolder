@@ -17,7 +17,7 @@ describe 'SSO' do
     binding.pry
 
     expect(resp_xml).to match(
-      /<NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"\/>/
+      /<NameID Format="urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress">other@example.com/
     )
 
     post '/auth/saml_callback', params: { SAMLResponse: saml_idp_resp }

@@ -37,7 +37,7 @@ if use_ssoi_iam?
       true,
       callback_path: '/auth/saml_callback',
       path_prefix: '/auth',
-      name_identifier_format: "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
+      name_identifier_format: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
       va_iam_provider: :css # TODO
   end
 elsif ssoi_authentication_enabled?
@@ -65,7 +65,7 @@ elsif Rails.env.test?
       true,
       callback_path: '/auth/saml_callback',
       path_prefix: '/auth',
-      name_identifier_format: "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
+      name_identifier_format: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
       va_iam_provider: :css # TODO
   end
 else

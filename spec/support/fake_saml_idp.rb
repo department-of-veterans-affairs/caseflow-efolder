@@ -73,14 +73,14 @@ class FakeSamlIdp < Sinatra::Base
       config.single_logout_service_post_location = "#{idp_base_url}/saml/logout"
 
       config.name_id.formats = {
-        persistent: ->(principal) { principal.email }
+        email_address: ->(principal) { principal.email }
       }
 
       config.attributes = {
         email: {
           getter: :email,
-          name_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS,
-          name_id_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS,
+          name_format: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
+          name_id_format: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
         },
       }
 
@@ -97,10 +97,11 @@ class FakeSamlIdp < Sinatra::Base
   end
 
   def user
+    binding.pry
     if saml_request&.name_id
-      User.last
+      User.new(email: "someone@example.com")
     else
-      User.new
+      User.new(email: "other@example.com")
     end
   end
 end
