@@ -19,7 +19,7 @@ def ssoi_authentication_enabled?
 end
 
 def use_ssoi_iam?
-  FeatureToggle.enabled?(:use_ssoi_iam)
+  return ENV.has_key?(ENV_IAM_XML)
 end
 
 # :nocov:
