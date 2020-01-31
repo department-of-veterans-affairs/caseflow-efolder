@@ -19,7 +19,10 @@ def ssoi_authentication_enabled?
 end
 
 def use_ssoi_iam?
-  return ENV.has_key?(ENV_IAM_XML)
+  return FeatureToggle.enabled?(:use_ssoi_iam)
+rescue
+  false # during AMI build step Redis is unavailable and FeatureToggle does not work.
+        # we just care about it during actual app startup during deployment step.
 end
 
 # :nocov:
