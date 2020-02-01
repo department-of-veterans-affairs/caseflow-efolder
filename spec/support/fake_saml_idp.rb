@@ -80,15 +80,7 @@ class FakeSamlIdp < Sinatra::Base
       saml_format_email = "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
 
       user_attributes = Hash[
-        user_attrs.keys.map do |attr|
-          [
-            attr,
-            {
-              getter: attr.to_s.underscore,
-              name_format: saml_format_unspecified,
-            }
-          ]
-        end
+        user_attrs.keys.map { |attr| [attr, { name_format: saml_format_unspecified }] }
       ]
 
       config.attributes = {
