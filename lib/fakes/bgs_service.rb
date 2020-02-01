@@ -4,6 +4,10 @@ class Fakes::BGSService
   def fetch_user_info(username)
     return {} if username == "error"
 
+    return multiple_stations_user if username == "multiple-stations"
+
+    fail BGS::NoActiveStations if username == "zero-stations"
+
     {
       css_id: "BVADOEJANE",
       station_id: "101",
@@ -11,6 +15,28 @@ class Fakes::BGSService
       last_name: "Doe",
       email: "jane.doe@example.com",
       roles: ["Download eFolder", "Establish Claim"]
+    }
+  end
+
+  def multiple_stations_user
+    {
+      css_id: "BVADOEJANE",
+      stations: [
+        {
+          id: "101",
+          first_name: "Jane",
+          last_name: "Doe",
+          email: "jane.doe@example.com",
+          roles: ["Download eFolder", "Establish Claim"]
+        },
+        {
+          id: "123",
+          first_name: "Jane",
+          last_name: "Doe",
+          email: "jane.doe@example.com",
+          roles: ["VSO"]
+        }
+      ]
     }
   end
 

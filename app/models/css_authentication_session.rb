@@ -5,7 +5,7 @@ class CssAuthenticationSession
   attr_accessor :id, :name, :roles, :station_id, :first_name, :last_name
   attr_reader :css_id, :email
 
-  class BadCssInfo < StandardError; end
+  class BadCssAuthorization < StandardError; end
 
   def email=(value)
     @email = value&.strip
@@ -42,7 +42,7 @@ class CssAuthenticationSession
       username = saml_attributes["adSamAccountName"]
       user_info = BGSService.new.fetch_user_info(username)
 
-      fail BadCssInfo, "Missing CSS info for #{username}" unless user_info[:css_id]
+      fail BadCssAuthorization, "Missing CSS info for #{username}" unless user_info[:css_id]
 
       new(user_info.merge(id: username, name: "#{user_info[:first_name]} #{user_info[:last_name]}"))
     end
