@@ -5,7 +5,7 @@ class Fakes::BGSService
     return {} if username == "error"
 
     {
-      css_id: username,
+      css_id: "BVADOEJANE",
       station_id: "101",
       first_name: "Jane",
       last_name: "Doe",

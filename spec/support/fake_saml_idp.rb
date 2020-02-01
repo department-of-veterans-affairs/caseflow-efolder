@@ -79,17 +79,25 @@ class FakeSamlIdp < Sinatra::Base
       saml_format_unspecified = "urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified"
       saml_format_email = "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
 
+      user_attributes = Hash[
+        user_attrs.keys.map do |attr|
+          [
+            attr,
+            {
+              getter: attr.to_s.underscore,
+              name_format: saml_format_unspecified,
+            }
+          ]
+        end
+      ]
+
       config.attributes = {
         email: {
           getter: :email,
           name_format: saml_format_email,
           name_id_format: saml_format_email
-        },
-        issueInstant: { getter: :issue_instant, name_format: saml_format_unspecified },
-        proofingAuth: { getter: :proofing_auth, name_format: saml_format_unspecified },
-        assureLevel: { getter: :assure_level, name_format: saml_format_unspecified },
-        adSamAccountName: { getter: :ad_sam_account_name, name_format: saml_format_unspecified },
-      }
+        }
+      }.merge(user_attributes)
 
       config.service_provider.finder = lambda do |_issuer_or_entity_id|
         sp_cert = OpenSSL::X509::Certificate.new(config.x509_certificate)
@@ -97,7 +105,7 @@ class FakeSamlIdp < Sinatra::Base
           cert: sp_cert,
           fingerprint: OpenSSL::Digest::SHA1.hexdigest(sp_cert.to_der),
           private_key: config.secret_key,
-          assertion_consumer_logout_service_url: 'http://www.example.com/auth/logout',
+          assertion_consumer_logout_service_url: 'http://efolder.example.com/auth/logout',
         }
       end
     end
@@ -105,24 +113,26 @@ class FakeSamlIdp < Sinatra::Base
 
   def user_attrs
     {
-      issue_instant: Time.zone.now.iso8601,
-      proofing_auth: "VA-PIV",
-      assure_level: "3",
-      ad_sam_account_name: "THE_CSS_ID",
-      transaction_id: SecureRandom.uuid,
-      ad_upn: "some.body@va.gov",
-      ad_email: "some.body@va.gov",
-      first_name: "Some",
-      last_name: "Body",
+      issueInstant: Time.zone.now.iso8601,
+      proofingAuth: "VA-PIV",
+      assurLevel: "3",
+      adSamAccountName: "ACCOUNT_NAME",
+      transactionId: SecureRandom.uuid,
+      adUPN: "some.body@va.gov",
+      adEmail: "some.body@va.gov",
+      firstName: "Some",
+      lastName: "Body",
       role: "some role"
     }
   end
 
   def user
+    # we must convert keys to underscores because SamlIdp::AssertionBuilder expects that.
+    underscored_keys = Hash[user_attrs.map { |k, v| [k.to_s.underscore, v] }]
     if saml_request&.name_id
-      OpenStruct.new(user_attrs.merge(email: "nameid@example.com"))
+      OpenStruct.new(underscored_keys.merge(email: "nameid@example.com"))
     else
-      OpenStruct.new(user_attrs.merge(email: "other@example.com"))
+      OpenStruct.new(underscored_keys.merge(email: "other@example.com"))
     end
   end
 end

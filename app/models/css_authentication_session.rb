@@ -36,11 +36,15 @@ class CssAuthenticationSession
     end
 
     def from_iam_auth_hash(auth_hash)
-      user_info = BGSService.new.fetch_user_info(auth_hash.uid)
+      saml_attributes = auth_hash.extra.raw_info
 
-      fail BadCssInfo, "Missing CSS info for #{auth_hash.uid}" unless user_info[:css_id]
+      # under this IdP, the auth_hash.uid value is the email, but we need the username
+      username = saml_attributes["adSamAccountName"]
+      user_info = BGSService.new.fetch_user_info(username)
 
-      new(user_info.merge(id: auth_hash.uid, name: "#{user_info[:first_name]} #{user_info[:last_name]}"))
+      fail BadCssInfo, "Missing CSS info for #{username}" unless user_info[:css_id]
+
+      new(user_info.merge(id: username, name: "#{user_info[:first_name]} #{user_info[:last_name]}"))
     end
   end
 end
