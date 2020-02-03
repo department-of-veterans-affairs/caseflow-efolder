@@ -1,5 +1,3 @@
-SingleCov.covered! file: 'app/controllers/sessions_controller.rb'
-
 describe 'SSO' do
   before do
     FeatureToggle.enable!(:use_ssoi_iam)
