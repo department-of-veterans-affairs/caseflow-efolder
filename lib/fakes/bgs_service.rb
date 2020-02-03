@@ -15,7 +15,7 @@ class Fakes::BGSService
 
     {
       css_id: "BVALASTFIRST",
-      station_id: station_id || "101",
+      station_id: station_id.present? ? station_id : "101",
       first_name: "First",
       last_name: "Last",
       email: "first.last@test.gov",

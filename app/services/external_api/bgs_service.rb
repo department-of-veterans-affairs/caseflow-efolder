@@ -66,7 +66,7 @@ class ExternalApi::BGSService
 
     fail BGS::InvalidStation if station_id && !stations.map { |station| station[:id] }.include?(station_id)
 
-    station_id ||= stations.first[:id]
+    station_id = stations.first[:id] if station_id.blank? # treat "" like nil
     application ||= resp[:user_application]
     profile = client.common_security.get_security_profile(username: css_id, station_id: station_id, application: application)
     # example

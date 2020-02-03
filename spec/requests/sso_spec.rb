@@ -14,7 +14,14 @@ describe 'SSO' do
     it 'uses external SAML IdP' do
       expect(User.count).to eq 0
 
-      get '/'
+      get "/"
+      expect(response).to redirect_to("/login")
+
+      get "/login"
+      expect(response).to be_successful
+
+      # fill out the form
+      post "/login", params: { username: "ACCOUNT_NAME", station_id: "" }
       expect(response).to redirect_to(/auth\/samlva/)
 
       # manually follow the redirect
@@ -33,6 +40,7 @@ describe 'SSO' do
       post '/auth/saml_callback', params: { SAMLResponse: saml_idp_resp }
 
       expect(response).to redirect_to('http://efolder.example.com/')
+
       user = session["user"]
       expect(user).to_not be_nil
       expect(user["id"]).to eq "ACCOUNT_NAME" # only attribute from SAML we keep.
@@ -42,9 +50,9 @@ describe 'SSO' do
       # In reality these are identical most of the time, so here we are just
       # exercising our application logic to verify where our canonical values derive.
       # So, e.g., the NameID email will not equal the email from BGS.
-      expect(user["email"]).to eq "jane.doe@example.com"
-      expect(user["name"]).to eq "Jane Doe"
-      expect(user["css_id"]).to eq "BVADOEJANE"
+      expect(user["email"]).to eq "first.last@test.gov"
+      expect(user["name"]).to eq "First Last"
+      expect(user["css_id"]).to eq "BVALASTFIRST"
       expect(user["roles"]).to eq ["Download eFolder", "Establish Claim"]
       expect(user["station_id"]).to eq "101"
     end

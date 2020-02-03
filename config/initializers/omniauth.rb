@@ -26,7 +26,6 @@ end
 
 # :nocov:
 if use_ssoi_iam?
-  puts "use_sso_iam true"
   # for transition to new IdP. Once fully deployed, we can remove the older ENV vars and certs.
   Rails.application.config.middleware.use OmniAuth::Builder do
     provider :samlva,
@@ -41,7 +40,6 @@ if use_ssoi_iam?
       va_iam_provider: :css # TODO
   end
 elsif ssoi_authentication_enabled?
-  puts "ssoi_authentication_enabled"
   Rails.application.config.middleware.use OmniAuth::Builder do
     provider :samlva,
       ENV[ENV_SAML_ID],
@@ -55,7 +53,6 @@ elsif ssoi_authentication_enabled?
       va_iam_provider: :css
   end
 elsif Rails.env.test?
-  puts "test"
   Rails.application.config.middleware.use OmniAuth::Builder do
     provider :samlva,
       "efolder.example.com",
@@ -70,7 +67,6 @@ elsif Rails.env.test?
   end
 else
   # local development uses 'fake' SAML IdP not the test IdP.
-  puts "fakes/test_auth_strategy"
   require 'fakes/test_auth_strategy'
 
   Rails.application.config.middleware.use OmniAuth::Builder do
