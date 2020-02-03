@@ -42,7 +42,7 @@ class SessionsController < ApplicationController
 
     redirect_to will_redirect_to
   rescue StandardError => error
-    Rails.logger.error(error)
+    Rails.logger.error(error.backtrace.join("\n"))
     flash[:error] = error
     redirect_to url_for_sso_host("/login")
   end

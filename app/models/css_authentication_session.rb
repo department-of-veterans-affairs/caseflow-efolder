@@ -45,7 +45,8 @@ class CssAuthenticationSession
       # and (b) in non-production environments we allow user to assert a test username.
 
       # under this IdP, the auth_hash.uid value is the email, but we need the username.
-      username = saml_attributes["adSamAccountName"] if username.blank? # treat "" like nil
+      # in development env, saml_attributes will be nil.
+      username = saml_attributes&.[]("adSamAccountName") if username.blank? # treat "" like nil
       user_info = BGSService.new.fetch_user_info(username, station_id)
 
       fail BadCssAuthorization, "Missing CSS info for #{username}" unless user_info[:css_id]
