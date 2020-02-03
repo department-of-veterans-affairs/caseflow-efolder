@@ -4,6 +4,8 @@ class SessionsController < ApplicationController
   skip_before_action :authenticate, only: [:create, :login, :login_creds]
   skip_before_action :check_v2_app_access
 
+  class MissingSAMLRequest < StandardError; end
+
   ## Auth flow
   ##
   ## original unauthenticated request -> /login
@@ -26,11 +28,17 @@ class SessionsController < ApplicationController
   end
 
   def create
+    fail MissingSAMLRequest unless css_auth_hash.present?
+
     session["user"] = build_user
 
     will_redirect_to = session.delete("return_to") || "/"
 
-    Rails.logger.info("Authenticated session for #{session['user']} will redirect to #{will_redirect_to}")
+    will_redirect_to = "/" if will_redirect_to == "/login" # avoid UX pitfall if user starts at /login
+
+    Rails.logger.info("Authenticated session for #{session['user']['css_id']} will redirect to #{will_redirect_to}")
+
+    flash[:success] = "Authenticated session for #{session['user']['css_id']}"
 
     redirect_to will_redirect_to
   rescue StandardError => error
@@ -69,7 +77,7 @@ class SessionsController < ApplicationController
 
   def username
     # never allow username override in AWS prod env.
-    return nil if Rails.deploy_env?(:prod)
+    return nil unless allow_assert_username?
 
     session_login["username"] || params.permit(:username)[:username]
   end

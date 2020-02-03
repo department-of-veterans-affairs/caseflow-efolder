@@ -4,4 +4,5 @@ module BGS
   class InvalidApplication < StandardError; end
   class NoActiveStations < StandardError; end
   class NoCaseflowAccess < StandardError; end
+  class StationAssertionRequired < StandardError; end
 end

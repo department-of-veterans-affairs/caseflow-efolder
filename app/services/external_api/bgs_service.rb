@@ -61,7 +61,7 @@ class ExternalApi::BGSService
 
     fail BGS::NoActiveStations unless stations.any?
 
-    fail "Must assert a station" if stations.size > 1 && station_id.blank?
+    fail BGS::StationAssertionRequired if stations.size > 1 && station_id.blank?
 
     fail BGS::InvalidStation if station_id.present? && !stations.map { |station| station[:id] }.include?(station_id)
 

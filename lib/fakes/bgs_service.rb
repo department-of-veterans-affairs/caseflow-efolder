@@ -6,7 +6,10 @@ class Fakes::BGSService
   def fetch_user_info(username, station_id = nil)
     return {} if username == "error"
 
-    return multiple_stations_user if username == "multiple-stations"
+    if username == "multiple-stations"
+      fail StationAssertionRequired unless station_id.present?
+      return multiple_stations_user
+    end
 
     fail BGS::NoActiveStations if username == "zero-stations"
     fail BGS::InvalidStation if station_id == "invalid"
