@@ -3,7 +3,7 @@ RSpec.feature "Help" do
     User.authenticate!
 
     visit("/")
-    click_on "first last"
+    click_on "First Last"
     expect(page).to have_content("Help")
 
     # rubocop:disable Lint/HandleExceptions
