@@ -21,7 +21,8 @@ end
 def use_ssoi_iam?
   Rails.env.production? && FeatureToggle.enabled?(:use_ssoi_iam)
 rescue
-  false
+  false # during AMI build step Redis is unavailable and FeatureToggle does not work.
+        # we just care about it during actual app startup during deployment step.
 end
 
 # :nocov:

@@ -68,6 +68,7 @@ class ExternalApi::BGSService
     station_id = stations.first[:id] if station_id.blank? # treat "" like nil
     application ||= resp[:user_application]
     profile = client.common_security.get_security_profile(username: css_id, station_id: station_id, application: application)
+
     # example
     # {:appl_role=>"User", :bdn_num=>"1002", :email_address=>"caseflow@example.com",
     #  :file_num=>nil, :first_name=>"TEST", :functions=>[
