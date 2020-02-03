@@ -1,4 +1,5 @@
 require "bgs"
+require "bgs_errors"
 
 # Thin interface to all things BGS
 class ExternalApi::BGSService
@@ -51,12 +52,6 @@ class ExternalApi::BGSService
     veteran_info["return_message"].include?("No BIRLS record found") ? false : true
   end
 
-  class ::BGS::InvalidUsername < StandardError; end
-  class ::BGS::NoActiveStations < StandardError; end
-  class ::BGS::NoCaseflowAccess < StandardError; end
-  class ::BGS::InvalidStation < StandardError; end
-  class ::BGS::InvalidApplication < StandardError; end
-
   def fetch_user_info(username, station_id = nil, application = "CASEFLOW")
     resp = client.common_security.get_css_user_stations(username)
     # example
@@ -68,6 +63,8 @@ class ExternalApi::BGSService
 
     # TODO if we have more than one station
     fail "more than one station" if stations.size > 1
+
+    fail BGS::InvalidStation if station_id && !stations.map { |station| station[:id] }.include?(station_id)
 
     station_id ||= stations.first[:id]
     application ||= resp[:user_application]

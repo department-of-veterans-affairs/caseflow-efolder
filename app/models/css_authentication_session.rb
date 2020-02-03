@@ -35,12 +35,18 @@ class CssAuthenticationSession
           station_id: raw_css_response["http://vba.va.gov/css/common/stationId"])
     end
 
-    def from_iam_auth_hash(auth_hash)
+    def from_iam_auth_hash(auth_hash, username = nil, station_id = nil)
       saml_attributes = auth_hash.extra.raw_info
 
-      # under this IdP, the auth_hash.uid value is the email, but we need the username
-      username = saml_attributes["adSamAccountName"]
-      user_info = BGSService.new.fetch_user_info(username)
+      # At this point we are authenticated via PIV but we must still perform
+      # the authorization step via BGS common security.
+      # We allow for explicit username/station_id to be used for authorization,
+      # since (a) a user may have multiple stations and we allow them to assert one,
+      # and (b) in non-production environments we allow user to assert a test username.
+
+      # under this IdP, the auth_hash.uid value is the email, but we need the username.
+      username ||= saml_attributes["adSamAccountName"]
+      user_info = BGSService.new.fetch_user_info(username, station_id)
 
       fail BadCssAuthorization, "Missing CSS info for #{username}" unless user_info[:css_id]
 

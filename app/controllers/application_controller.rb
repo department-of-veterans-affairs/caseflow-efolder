@@ -17,7 +17,8 @@ class ApplicationController < BaseController
     Rails.logger.info("original_url #{request.original_url} saved as return_to prior to SAML auth. Referer #{request.referer}")
     Rails.logger.info("existing session.return_to #{session['return_to']}")
     session["return_to"] = request.original_url
-    redirect_to((ENV["SSO_HOST"] || "") + "/auth/samlva")
+    redirect_path = FeatureToggle.enabled?(:use_ssoi_iam) ? "/login" : "/auth/samlva"
+    redirect_to((ENV["SSO_HOST"] || "") + redirect_path)
   end
 
   def set_raven_user

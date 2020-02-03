@@ -1,0 +1,40 @@
+<% flash.each do |key, value| %>
+  <div class="cf-app-segment">
+    <div class="usa-alert usa-alert-<%= key %>" role="alert">
+      <div class="usa-alert-body">
+        <h2 class="usa-alert-heading"><%= key.upcase %></h2>
+        <p class="usa-alert-text">
+          <%= value %>
+        </p>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<div class="cf-app-segment">
+  <div class="">
+    <h1>VA Single Sign-On: CSS Authorization</h1>
+
+    <%= form_for "/login", method: :post, html: { class: "usa-form" } do %>
+     <fieldset>
+      <div role="auth">
+        <% if allow_assert_username? %>
+          <div class="cf-form-textinput">
+            <%= label_tag(:username, "Test User ID") %>
+            <%= text_field_tag(:username, "", { class: "cf-form-textinput" }) %>
+          </div>
+        <% end %>
+  
+        <div class="cf-form-textinput">
+          <%= label_tag(:station_id, "Station ID") %>
+          <%= text_field_tag(:station_id, "", { class: "cf-form-textinput" }) %>
+        </div>
+
+        <button type="submit" class="usa-button">
+          Continue to PIV Authentication
+        </button>
+      </div>
+     </fieldset>
+    <% end %>
+  </div>
+</div>

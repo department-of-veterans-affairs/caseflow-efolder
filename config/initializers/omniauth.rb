@@ -58,7 +58,7 @@ elsif Rails.env.test?
   puts "test"
   Rails.application.config.middleware.use OmniAuth::Builder do
     provider :samlva,
-      "www.example.com",
+      "efolder.example.com",
       Rails.root + "spec/support/saml/idp-example-com.key",
       Rails.root + "spec/support/saml/idp-example-com.crt",
       Rails.root + "spec/support/saml/test-iam-metadata.xml",
@@ -69,6 +69,7 @@ elsif Rails.env.test?
       va_iam_provider: :css # TODO
   end
 else
+  # local development uses 'fake' SAML IdP not the test IdP.
   puts "fakes/test_auth_strategy"
   require 'fakes/test_auth_strategy'
 

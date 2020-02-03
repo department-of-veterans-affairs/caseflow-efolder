@@ -1,19 +1,24 @@
+require 'bgs_errors'
+
 class Fakes::BGSService
   include ActiveModel::Model
 
-  def fetch_user_info(username)
+  def fetch_user_info(username, station_id = nil)
     return {} if username == "error"
 
     return multiple_stations_user if username == "multiple-stations"
 
     fail BGS::NoActiveStations if username == "zero-stations"
+    fail BGS::InvalidStation if station_id == "invalid"
+    fail BGS::InvalidUsername if username == "invalid"
+    fail BGS::NoCaseflowAccess if station_id == "noaccess"
 
     {
-      css_id: "BVADOEJANE",
-      station_id: "101",
-      first_name: "Jane",
-      last_name: "Doe",
-      email: "jane.doe@example.com",
+      css_id: "BVALASTFIRST",
+      station_id: station_id || "101",
+      first_name: "First",
+      last_name: "Last",
+      email: "first.last@test.gov",
       roles: ["Download eFolder", "Establish Claim"]
     }
   end
