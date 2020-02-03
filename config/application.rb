@@ -61,5 +61,7 @@ module CaseflowEfolder
     config.cache_store = :redis_store, Rails.application.secrets.redis_url_cache, { expires_in: 24.hours }
 
     config.analytics_account = "UA-74789258-2"
+
+    config.bgs_environment = ENV["BGS_ENVIRONMENT"] || "beplinktest"
   end
 end

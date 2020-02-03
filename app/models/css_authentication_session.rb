@@ -5,6 +5,8 @@ class CssAuthenticationSession
   attr_accessor :id, :name, :roles, :station_id, :first_name, :last_name
   attr_reader :css_id, :email
 
+  class BadCssInfo < StandardError; end
+
   def email=(value)
     @email = value&.strip
   end
@@ -31,6 +33,14 @@ class CssAuthenticationSession
           name: "#{first_name} #{last_name}",
           roles: raw_css_response.attributes["http://vba.va.gov/css/caseflow/role"],
           station_id: raw_css_response["http://vba.va.gov/css/common/stationId"])
+    end
+
+    def from_iam_auth_hash(auth_hash)
+      user_info = BGSService.new.fetch_user_info(auth_hash.uid)
+
+      fail BadCssInfo, "Missing CSS info for #{auth_hash.uid}" unless user_info[:css_id]
+
+      new(user_info.merge(id: auth_hash.uid, name: "#{user_info[:first_name]} #{user_info[:last_name]}"))
     end
   end
 end

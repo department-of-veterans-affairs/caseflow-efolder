@@ -5,6 +5,9 @@ ENV_SAML_KEY = 'SSOI_SAML_PRIVATE_KEY_LOCATION'
 ENV_SAML_CRT = 'SSOI_SAML_CERTIFICATE_LOCATION'
 ENV_SAML_ID = 'SSOI_SAML_ID'
 
+# we will switch back to the all-SSOI naming once feature toggle is removed.
+ENV_IAM_XML = 'IAM_SAML_XML_LOCATION'
+
 Rails.application.config.ssoi_login_path = "/auth/samlva"
 
 def ssoi_authentication_enabled?
@@ -15,8 +18,29 @@ def ssoi_authentication_enabled?
   return ENV.has_key?(ENV_SAML_XML) && ENV.has_key?(ENV_SAML_KEY) && ENV.has_key?(ENV_SAML_CRT)
 end
 
+def use_ssoi_iam?
+  return FeatureToggle.enabled?(:use_ssoi_iam)
+rescue
+  false # during AMI build step Redis is unavailable and FeatureToggle does not work.
+        # we just care about it during actual app startup during deployment step.
+end
+
 # :nocov:
-if ssoi_authentication_enabled?
+if use_ssoi_iam?
+  # for transition to new IdP. Once fully deployed, we can remove the older ENV vars and certs.
+  Rails.application.config.middleware.use OmniAuth::Builder do
+    provider :samlva,
+      "https://efolder.cf.ds.va.gov", # same in all envs # ENV[ENV_SAML_ID],
+      ENV[ENV_SAML_KEY],
+      ENV[ENV_SAML_CRT],
+      ENV[ENV_IAM_XML],
+      true,
+      callback_path: '/auth/saml_callback',
+      path_prefix: '/auth',
+      name_identifier_format: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+      va_iam_provider: :css
+  end
+elsif ssoi_authentication_enabled?
   Rails.application.config.middleware.use OmniAuth::Builder do
     provider :samlva,
       ENV[ENV_SAML_ID],

@@ -71,4 +71,21 @@ describe CssAuthenticationSession do
       expect(subject.station_id).to eq("123")
     end
   end
+
+  describe ".from_iam_auth_hash" do
+    before do
+    end
+
+    let(:auth_hash) do
+      OpenStruct.new(uid: "UID")
+    end
+
+    subject { described_class.from_iam_auth_hash(auth_hash) }
+
+    it "parses authz from BGS" do
+      expect(subject.email).to eq "jane.doe@example.com"
+      expect(subject.css_id).to eq "UID"
+      expect(subject.name).to eq "Jane Doe"
+    end
+  end
 end
