@@ -61,10 +61,9 @@ class ExternalApi::BGSService
 
     fail BGS::NoActiveStations unless stations.any?
 
-    # TODO if we have more than one station
-    fail "more than one station" if stations.size > 1
+    fail "Must assert a station" if stations.size > 1 && station_id.blank?
 
-    fail BGS::InvalidStation if station_id && !stations.map { |station| station[:id] }.include?(station_id)
+    fail BGS::InvalidStation if station_id.present? && !stations.map { |station| station[:id] }.include?(station_id)
 
     station_id = stations.first[:id] if station_id.blank? # treat "" like nil
     application ||= resp[:user_application]

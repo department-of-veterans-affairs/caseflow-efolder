@@ -40,7 +40,8 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    session["user"] = nil
+    reset_session
+    RequestStore[:current_user] = nil
     redirect_to "/"
   end
 

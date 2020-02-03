@@ -2,38 +2,11 @@ require "rails_helper"
 
 RSpec.feature "Downloads" do
   before do
-    @user = User.create(css_id: "123123", station_id: "116")
-    @user_download = Download.where(user: @user)
-
+    @user = User.create(css_id: "123123", station_id: "116") # TODO make this a let()
+    @user_download = Download.where(user: @user) #TODO make this a let()
     allow(DownloadAllManifestJob).to receive(:perform_later)
     allow(DownloadFilesJob).to receive(:perform_later)
     User.authenticate!
-  end
-
-  scenario "Not login bounces to login page" do
-    User.unauthenticate!
-
-    visit("/")
-    expect(page).to have_content("Test VA Saml")
-    fill_in "css_id", with: "css_id"
-    fill_in "station_id", with: "station_id"
-    click_on "Sign In"
-
-    puts page.current_path
-    expect(page).to have_current_path(root_path)
-  end
-
-  scenario "Logging out" do
-    User.unauthenticate!
-
-    visit("/")
-    fill_in "css_id", with: "css_id"
-    fill_in "station_id", with: "station_id"
-    click_on "Sign In"
-
-    click_on "First Last"
-    click_on "Sign out"
-    expect(page).to have_content("Test VA Saml")
   end
 
   context "when user has access to efolder react app" do

@@ -73,19 +73,48 @@ describe CssAuthenticationSession do
   end
 
   describe ".from_iam_auth_hash" do
-    before do
-    end
-
     let(:auth_hash) do
-      OpenStruct.new(uid: "UID")
+      OpenStruct.new(extra: OpenStruct.new(raw_info: { adSamAccountName: saml_username }))
     end
 
-    subject { described_class.from_iam_auth_hash(auth_hash) }
+    let(:username) { nil }
+    let(:saml_username) { nil }
+    let(:station_id) { nil }
 
-    it "parses authz from BGS" do
-      expect(subject.email).to eq "jane.doe@example.com"
-      expect(subject.css_id).to eq "UID"
-      expect(subject.name).to eq "Jane Doe"
+    subject { described_class.from_iam_auth_hash(auth_hash, username, station_id) }
+
+    context "username defined in SAML payload" do
+      let(:saml_username) { "as reported from SAML" }
+
+      it "parses authz from BGS" do
+        expect(subject.email).to eq "first.last@test.gov"
+        expect(subject.css_id).to eq "BVALASTFIRST"
+        expect(subject.name).to eq "First Last"
+      end
+    end
+
+    context "invalid username" do
+      let(:username) { "invalid" }
+
+      it "raises InvalidUsername error" do
+        expect { subject }.to raise_error(BGS::InvalidUsername)
+      end
+    end
+
+    context "invalid station id" do
+      let(:station_id) { "invalid" }
+
+      it "raises InvalidStation error" do
+        expect { subject }.to raise_error(BGS::InvalidStation)
+      end
+    end
+
+    context "user has no stations active" do
+      let(:username) { "zero-stations" }
+
+      it "raises NoActiveStations error" do
+        expect { subject }.to raise_error(BGS::NoActiveStations)
+      end
     end
   end
 end
