@@ -10,7 +10,7 @@ describe 'SSO' do
     host! "efolder.example.com"
   end
 
-  def saml_idp_handshake
+  def saml_idp_handshake(insert_error = false)
     get '/auth/samlva'
     expect(response).to redirect_to(/idp.example.com/)
 
@@ -20,6 +20,14 @@ describe 'SSO' do
     expect(resp_xml).to match(
       /<NameID Format="urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress">other@example.com/
     )
+
+    if insert_error
+      new_xml = resp_xml.gsub(
+        /NameID Format="urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"/,
+        'NameID Format="urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"'
+      )
+      saml_idp_resp = Base64.encode64(new_xml)
+    end
 
     post '/auth/saml_callback', params: { SAMLResponse: saml_idp_resp }
   end
@@ -92,6 +100,28 @@ describe 'SSO' do
 
       expect(user).to_not be_nil
       expect(user["id"]).to eq "foobar"
+    end
+  end
+
+  context "auth/failure" do
+    it "sets error, redirects" do
+      get "/auth/failure?message=oops"
+
+      expect(response).to redirect_to("/login")
+      expect(flash[:error]).to_not be_nil
+    end
+  end
+
+  context "bad SAMLResponse" do
+    it "redirects to /login with error message" do
+      post "/login"
+      saml_idp_handshake(true)
+
+      expect(response).to redirect_to(/auth\/failure/)
+
+      get response.location
+      expect(response).to redirect_to("/login")
+      expect(flash[:error]).to_not be_nil
     end
   end
 
