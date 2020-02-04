@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   root 'downloads#new'
 
   post 'auth/saml_callback', to: 'sessions#create'
+  get 'auth/failure', to: 'sessions#failure'
 
   get 'login', to: 'sessions#login'
   post 'login', to: 'sessions#login_creds'

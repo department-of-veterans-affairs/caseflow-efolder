@@ -32,9 +32,10 @@ class SessionsController < ApplicationController
 
     session["user"] = build_user
 
-    will_redirect_to = session.delete("return_to") || "/"
+    will_redirect_to = session.delete("return_to") || url_for_sso_host("/")
 
-    will_redirect_to = "/" if will_redirect_to == "/login" # avoid UX pitfall if user starts at /login
+    # avoid UX pitfall if user starts at /login
+    will_redirect_to = url_for_sso_host("/") if will_redirect_to == url_for_sso_host("/login")
 
     Rails.logger.info("Authenticated session for #{session['user']['css_id']} will redirect to #{will_redirect_to}")
 
@@ -44,6 +45,12 @@ class SessionsController < ApplicationController
   rescue StandardError => error
     Rails.logger.error(error.backtrace.join("\n"))
     flash[:error] = error
+    redirect_to url_for_sso_host("/login")
+  end
+
+  # omniauth endpoint for invalid saml tickets
+  def failure
+    flash[:error] = params.permit(:message)[:message]
     redirect_to url_for_sso_host("/login")
   end
 
