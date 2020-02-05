@@ -47,6 +47,10 @@ class CssAuthenticationSession
       # under this IdP, the auth_hash.uid value is the email, but we need the username.
       # in development env, saml_attributes will be nil.
       username = saml_attributes&.[]("adSamAccountName") if username.blank? # treat "" like nil
+
+      # set global object so that BGS service understands "current_user"
+      RequestStore[:current_user] = OpenStruct.new(station_id: station_id, css_id: username)
+
       user_info = BGSService.new.fetch_user_info(username, station_id)
 
       fail BadCssAuthorization, "Missing CSS info for #{username}" unless user_info[:css_id]

@@ -4,6 +4,8 @@ class Fakes::BGSService
   include ActiveModel::Model
 
   def fetch_user_info(username, station_id = nil)
+    fail "Must defined current_user" unless RequestStore[:current_user] # mock what real service requires
+
     return {} if username == "error"
 
     if username == "multiple-stations"
