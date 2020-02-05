@@ -55,7 +55,16 @@ class CssAuthenticationSession
 
       fail BadCssAuthorization, "Missing CSS info for #{username}" unless user_info[:css_id]
 
-      new(user_info.merge(id: username, name: "#{user_info[:first_name]} #{user_info[:last_name]}"))
+      new(
+        id: username,
+        css_id: user_info[:css_id],
+        email: user_info[:email],
+        first_name: user_info[:first_name],
+        last_name: user_info[:last_name],
+        roles: user_info[:roles],
+        station_id: user_info[:station_id],
+        name: "#{user_info[:first_name]} #{user_info[:last_name]}",
+      )
     end
   end
 end
