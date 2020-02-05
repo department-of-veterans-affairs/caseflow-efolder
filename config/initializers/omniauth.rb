@@ -19,7 +19,7 @@ def ssoi_authentication_enabled?
 end
 
 def use_ssoi_iam?
-  return FeatureToggle.enabled?(:use_ssoi_iam)
+  Rails.env.production? && FeatureToggle.enabled?(:use_ssoi_iam)
 rescue
   false # during AMI build step Redis is unavailable and FeatureToggle does not work.
         # we just care about it during actual app startup during deployment step.
@@ -37,8 +37,8 @@ if use_ssoi_iam?
       true,
       callback_path: '/auth/saml_callback',
       path_prefix: '/auth',
-      name_identifier_format: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
-      va_iam_provider: :css
+      name_identifier_format: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
+      va_iam_provider: :css # TODO
   end
 elsif ssoi_authentication_enabled?
   Rails.application.config.middleware.use OmniAuth::Builder do
@@ -53,7 +53,21 @@ elsif ssoi_authentication_enabled?
       name_identifier_format: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
       va_iam_provider: :css
   end
+elsif Rails.env.test?
+  Rails.application.config.middleware.use OmniAuth::Builder do
+    provider :samlva,
+      "efolder.example.com",
+      Rails.root + "spec/support/saml/idp-example-com.key",
+      Rails.root + "spec/support/saml/idp-example-com.crt",
+      Rails.root + "spec/support/saml/test-iam-metadata.xml",
+      true,
+      callback_path: '/auth/saml_callback',
+      path_prefix: '/auth',
+      name_identifier_format: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
+      va_iam_provider: :css # TODO
+  end
 else
+  # local development uses 'fake' SAML IdP not the test IdP.
   require 'fakes/test_auth_strategy'
 
   Rails.application.config.middleware.use OmniAuth::Builder do

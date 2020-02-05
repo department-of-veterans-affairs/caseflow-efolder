@@ -1,4 +1,5 @@
 require "bgs"
+require "bgs_errors"
 
 # Thin interface to all things BGS
 class ExternalApi::BGSService
@@ -51,15 +52,23 @@ class ExternalApi::BGSService
     veteran_info["return_message"].include?("No BIRLS record found") ? false : true
   end
 
-  def fetch_user_info(username)
+  def fetch_user_info(username, station_id = nil, application = "CASEFLOW")
     resp = client.common_security.get_css_user_stations(username)
     # example
     # {:network_login_name=>"CF_Q_283", :user_application=>"CASEFLOW", :user_stations=>{:enabled=>true, :id=>"283", :name=>"Hines SDC", :role=>"User"}}
-    # TODO if we have more than one station
     css_id = resp[:network_login_name] # probably the same as username but just in case.
-    station_id = Array.wrap(resp[:user_stations]).first[:id]
+    stations = Array.wrap(resp[:user_stations]).select { |station| station[:enabled] }
 
-    resp2 = client.common_security.get_security_profile(username: css_id, station_id: station_id, application: "CASEFLOW")
+    fail BGS::NoActiveStations unless stations.any?
+
+    fail BGS::StationAssertionRequired if stations.size > 1 && station_id.blank?
+
+    fail BGS::InvalidStation if station_id.present? && !stations.map { |station| station[:id] }.include?(station_id)
+
+    station_id = stations.first[:id] if station_id.blank? # treat "" like nil
+    application ||= resp[:user_application]
+    profile = client.common_security.get_security_profile(username: css_id, station_id: station_id, application: application)
+
     # example
     # {:appl_role=>"User", :bdn_num=>"1002", :email_address=>"caseflow@example.com",
     #  :file_num=>nil, :first_name=>"TEST", :functions=>[
@@ -69,14 +78,20 @@ class ExternalApi::BGSService
     #  :job_title=>"Example Review Officer", :last_name=>"ONE", :message=>"Success", :middle_name=>nil, :participant_id=>"123"
     # }
     {
+      sensitivity_level: profile[:sec_level],
+      participant_id: profile[:participant_id],
       css_id: css_id,
       station_id: station_id,
-      first_name: resp2[:first_name],
-      last_name: resp2[:last_name],
-      email: resp2[:email_address],
-      roles: Array.wrap(resp2[:functions]).select { |func| func[:assigned_value] == "YES" }.map { |func| func[:name] }
+      first_name: profile[:first_name].strip,
+      last_name: profile[:last_name].strip,
+      email: profile[:email_address].strip,
+      roles: Array.wrap(profile[:functions]).select { |func| func[:assigned_value] == "YES" }.map { |func| func[:name] }
     }
-  rescue BGS::ShareError
+  rescue BGS::ShareError => error
+    fail BGS::InvalidUsername if error.message =~ /Unable to get user authroization/
+    fail BGS::InvalidStation if error.message =~ /is invalid station number/
+    fail BGS::InvalidApplication if error.message =~ /Application Does Not Exist/
+    fail BGS::NoCaseflowAccess if error.message =~ /TODO unknown error string/
     {}
   end
 

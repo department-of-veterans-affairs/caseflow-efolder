@@ -7,7 +7,7 @@ module StubbableUser
 
     def authenticate!(options = {})
       css_id = options[:css_id] || "123123"
-      user_name = options[:user_name] || "first last"
+      user_name = options[:user_name] || "First Last"
       Functions.grant!("System Admin", users: [css_id]) if options[:roles]&.include?("System Admin")
 
       self.stub = find_or_create_by(css_id: css_id, station_id: "116").tap do |u|

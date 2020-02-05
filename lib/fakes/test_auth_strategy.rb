@@ -2,6 +2,11 @@ require "omniauth/strategies/developer"
 require "omniauth/form"
 
 class EfolderAuthForm < OmniAuth::Form
+  def hidden_field(name, value)
+    @html << "\n<input type='hidden' name='#{name}' value='#{value}' />"
+    self
+  end
+
   def header(title, header_info)
     @html << <<-HTML
     <!DOCTYPE html>
@@ -24,10 +29,15 @@ class OmniAuth::Strategies::TestAuthStrategy < OmniAuth::Strategies::Developer
   # custom form rendering
   def request_phase
     form = EfolderAuthForm.new(title: "Test VA Saml", url: callback_path)
-    options.fields.each do |field|
-      form.text_field field.to_s.capitalize.tr("_", " "), field.to_s
+    if FeatureToggle.enabled?(:use_ssoi_iam)
+      form.hidden_field :username, session["login"]["username"]
+      form.hidden_field :station_id, session["login"]["station_id"]
+    else
+      options.fields.each do |field|
+        form.text_field field.to_s.capitalize.tr("_", " "), field.to_s
+      end
     end
-    form.button "Sign In"
+    form.button "Fake PIV Login"
     form.to_response
   end
 
@@ -54,5 +64,6 @@ class OmniAuth::Strategies::TestAuthStrategy < OmniAuth::Strategies::Developer
     hash
   end
 
+  # TODO not needed after IAM is final.
   option :fields, [:css_id, :station_id]
 end

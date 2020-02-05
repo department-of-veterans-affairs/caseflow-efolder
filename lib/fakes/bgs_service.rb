@@ -1,16 +1,52 @@
+require 'bgs_errors'
+
 class Fakes::BGSService
   include ActiveModel::Model
 
-  def fetch_user_info(username)
+  def fetch_user_info(username, station_id = nil)
+    fail "Must define current_user" unless RequestStore[:current_user] # mock what real service requires
+
     return {} if username == "error"
 
+    if username == "multiple-stations"
+      fail StationAssertionRequired unless station_id.present?
+      return multiple_stations_user
+    end
+
+    fail BGS::NoActiveStations if username == "zero-stations"
+    fail BGS::InvalidStation if station_id == "invalid"
+    fail BGS::InvalidUsername if username == "invalid"
+    fail BGS::NoCaseflowAccess if station_id == "noaccess"
+
     {
-      css_id: username,
-      station_id: "101",
-      first_name: "Jane",
-      last_name: "Doe",
-      email: "jane.doe@example.com",
+      css_id: "BVALASTFIRST",
+      station_id: station_id.present? ? station_id : "101",
+      first_name: "First",
+      last_name: "Last",
+      email: "first.last@test.gov",
       roles: ["Download eFolder", "Establish Claim"]
+    }
+  end
+
+  def multiple_stations_user
+    {
+      css_id: "BVADOEJANE",
+      stations: [
+        {
+          id: "101",
+          first_name: "Jane",
+          last_name: "Doe",
+          email: "jane.doe@example.com",
+          roles: ["Download eFolder", "Establish Claim"]
+        },
+        {
+          id: "123",
+          first_name: "Jane",
+          last_name: "Doe",
+          email: "jane.doe@example.com",
+          roles: ["VSO"]
+        }
+      ]
     }
   end
 
