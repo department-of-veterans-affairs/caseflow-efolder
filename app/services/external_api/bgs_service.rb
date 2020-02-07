@@ -82,9 +82,9 @@ class ExternalApi::BGSService
       participant_id: profile[:participant_id],
       css_id: css_id,
       station_id: station_id,
-      first_name: profile[:first_name].strip,
-      last_name: profile[:last_name].strip,
-      email: profile[:email_address].strip,
+      first_name: profile[:first_name]&.strip,
+      last_name: profile[:last_name]&.strip,
+      email: profile[:email_address]&.strip,
       roles: Array.wrap(profile[:functions]).select { |func| func[:assigned_value] == "YES" }.map { |func| func[:name] }
     }
   rescue BGS::ShareError => error
