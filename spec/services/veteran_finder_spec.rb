@@ -54,5 +54,34 @@ describe VeteranFinder do
         }
       ])
     end
+
+    context "no veteran found" do
+      let(:veteran_info) { nil }
+
+      it "returns nil" do
+        expect(subject).to be_nil
+      end
+    end
+
+    context "one veteran found" do
+      let(:veteran_info) { { veteran_ssn => veteran_record.merge(ptcpnt_id: "123", file_number: veteran_ssn) } }
+
+      it "returns array of one" do
+        expect(subject.count).to eq(1)
+        expect(subject).to eq([
+          {
+            ssn: veteran_ssn,
+            claim: veteran_claim_number,
+            file: veteran_ssn,
+            participant_id: "123",
+            "file_number" => veteran_ssn,
+            "veteran_first_name" => veteran_record[:first_name],
+            "veteran_last_name"  => veteran_record[:last_name],
+            "veteran_last_four_ssn" => veteran_ssn[-4..-1],
+            "return_message" => veteran_record[:return_message]
+          }
+        ])
+      end
+    end
   end
 end
