@@ -21,8 +21,8 @@ class SessionsController < ApplicationController
 
   # POST to set username/station_id and redirect to SAML login
   def login_creds
-    session_login["username"] = params.permit(:username)[:username] if allow_assert_username?
-    session_login["station_id"] = params.permit(:station_id)[:station_id]
+    session_login["username"] = params.permit(:username)[:username]&.strip if allow_assert_username?
+    session_login["station_id"] = params.permit(:station_id)[:station_id]&.strip
 
     redirect_to url_for_sso_host("/auth/samlva")
   end
