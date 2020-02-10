@@ -12,15 +12,19 @@ class Veteran
     self
   end
 
-  def self.bgs
-    @bgs_service ||= BGSService.new
-  end
-
   def found?
     bgs_record != :not_found
   end
 
+  def bgs_record
+    @bgs_record ||= (fetch_bgs_record || :not_found)
+  end
+
   private
+
+  def bgs
+    @bgs ||= BGSService.new
+  end
 
   # TODO: mimic what we have in Caseflow
   def set_attrs_from_bgs_record
@@ -29,11 +33,7 @@ class Veteran
     self.last_four_ssn = bgs_record["veteran_last_four_ssn"]
   end
 
-  def bgs_record
-    @bgs_record ||= (fetch_bgs_record || :not_found)
-  end
-
   def fetch_bgs_record
-    self.class.bgs.fetch_veteran_info(file_number)
+    bgs.fetch_veteran_info(file_number)
   end
 end
