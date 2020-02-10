@@ -21,8 +21,9 @@ describe VeteranFinder do
     end
 
     let(:bgs) { Fakes::BGSService.new }
+    let(:file_number) { veteran_ssn }
 
-    subject { described_class.new(bgs: bgs).find(veteran_ssn) }
+    subject { described_class.new(bgs: bgs).find(file_number) }
 
     before do
       allow(bgs).to receive(:veteran_info).and_return(veteran_info)
@@ -53,6 +54,22 @@ describe VeteranFinder do
           "return_message" => veteran_record[:return_message]
         }
       ])
+    end
+
+    context "call with SSN" do
+      let(:file_number) { veteran_ssn }
+
+      it "returns SSN-as-file-number first" do
+        expect(subject.first[:file]).to eq(veteran_ssn)
+      end
+    end
+
+    context "call with claim number" do
+      let(:file_number) { veteran_claim_number }
+
+      it "returns claim-as-file-number first" do
+        expect(subject.first[:file]).to eq(veteran_claim_number)
+      end
     end
 
     context "no veteran found" do
