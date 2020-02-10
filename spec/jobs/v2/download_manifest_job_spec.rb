@@ -1,6 +1,7 @@
 describe V2::DownloadManifestJob do
   context "#perform" do
-    let(:manifest) { Manifest.create(file_number: "1234") }
+    let(:file_number) { "1234" }
+    let(:manifest) { Manifest.create(file_number: file_number) }
     let(:source) { ManifestSource.create(name: %w[VBMS VVA].sample, manifest: manifest) }
     let(:ui_user) { false }
 
@@ -15,6 +16,7 @@ describe V2::DownloadManifestJob do
 
     before do
       allow(V2::SaveFilesInS3Job).to receive(:perform_later)
+      allow_any_instance_of(VeteranFinder).to receive(:find) { [ { file: file_number } ] }
     end
 
     context "when document list is empty" do

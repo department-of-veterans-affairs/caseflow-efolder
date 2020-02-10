@@ -35,6 +35,10 @@ feature "Backend Error Flows" do
   end
 
   before do
+    allow_any_instance_of(VeteranFinder).to receive(:find) { [ { file: veteran_info["file_number"] } ] }
+  end
+
+  before do
     allow(DataDogService).to receive(:emit_gauge) { true } # mock DD during tests
 
     @user = User.create(css_id: "123123", station_id: "116")
@@ -43,7 +47,7 @@ feature "Backend Error Flows" do
 
     User.authenticate!
 
-    allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info).with(veteran_id).and_return(veteran_info)
+    allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info).and_return(veteran_info)
     allow_any_instance_of(Fakes::BGSService).to receive(:valid_file_number?).with(veteran_id).and_return(true)
     allow_any_instance_of(Fakes::BGSService).to receive(:record_found?).with(veteran_info).and_return(true)
 
