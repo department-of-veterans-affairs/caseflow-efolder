@@ -59,6 +59,69 @@ describe "Manifests API v2", type: :request do
     end
   end
 
+  context "When more than one BGS Veteran record matches the file number" do
+    before do
+      allow_any_instance_of(Fakes::BGSService).to receive(:veteran_info).and_return(veteran_info)
+      allow_any_instance_of(VeteranFinder).to receive(:find) { [ { file: veteran_claim_number }, { file: veteran_ssn } ] }
+      allow(VBMSService).to receive(:v2_fetch_documents_for) { documents }
+      allow(VVAService).to receive(:v2_fetch_documents_for) { documents }
+    end
+
+    # not a let() because we do not want to memoize the document_id values
+    def documents
+      [
+        OpenStruct.new(
+          document_id: SecureRandom.base64,
+          series_id: "1234",
+          type_id: Caseflow::DocumentTypes::TYPES.keys.sample,
+          version: "1",
+          mime_type: "txt",
+          received_at: Time.now.utc
+        ),
+        OpenStruct.new(
+          document_id: SecureRandom.base64,
+          series_id: "5678",
+          type_id: Caseflow::DocumentTypes::TYPES.keys.sample,
+          version: "1",
+          mime_type: "txt",
+          received_at: Time.now.utc
+        )
+      ]
+    end
+
+    let(:veteran_record) do
+      {
+        "veteran_first_name" => "Bob",
+        "veteran_last_name" => "Marley",
+        "veteran_last_four_ssn" => "1234",
+        "return_message" => "BPNQ0301",
+      }
+    end
+    let(:veteran_claim_number) { "12345678" }
+    let(:veteran_ssn) { "666001234" }
+    let(:veteran_info) do
+      {
+        veteran_claim_number => veteran_record,
+        veteran_ssn          => veteran_record
+      }
+    end
+
+    it "checks all the efolder records" do
+      perform_enqueued_jobs do
+        post "/api/v2/manifests", params: nil, headers: headers
+        expect(response.code).to eq("200")
+
+        expect(VBMSService).to have_received(:v2_fetch_documents_for).twice
+        expect(VVAService).to have_received(:v2_fetch_documents_for).twice
+
+        got_body = JSON.parse(response.body, symbolize_names: true)
+        got_records = got_body.dig(:data, :attributes, :records)
+
+        expect(got_records.size).to eq(8) # 2 sources * 2 documents * 2 veteran file numbers
+      end
+    end
+  end
+
   context "When the manifest has no records" do
     before do
       allow(VBMSService).to receive(:v2_fetch_documents_for).and_return([])

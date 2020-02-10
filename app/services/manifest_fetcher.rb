@@ -16,6 +16,18 @@ class ManifestFetcher
   end
 
   def documents
-    manifest_source.service.v2_fetch_documents_for(manifest_source.file_number)
+    @documents ||= fetch_documents
+  end
+
+  def fetch_documents
+    # fetch documents for all the "file numbers" known for this veteran
+    file_numbers.map do |file_number|
+      manifest_source.service.v2_fetch_documents_for(file_number)
+    end.flatten
+  end
+
+  def file_numbers
+    vet_finder = VeteranFinder.new
+    vet_finder.find(manifest_source.file_number).map { |vn| vn[:file] }.compact.uniq
   end
 end

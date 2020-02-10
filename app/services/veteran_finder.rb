@@ -4,15 +4,19 @@
 # this may return multiple BGS records, uniquely identified by participant_id
 
 class VeteranFinder
+  def initialize(bgs: nil)
+    @bgs = bgs
+  end
+
   def find(file_number)
     bgs_rec = bgs_record_for(file_number)
 
     return unless bgs_rec
 
     bgs_rec_numbers = bgs_numbers(bgs_rec)
-    bgs_rec2 = find_duplicate_bgs_rec(bgs_rec_numbers)
+    dupe_bgs_rec = find_duplicate_bgs_rec(bgs_rec_numbers)
 
-    return [bgs_rec_numbers, bgs_numbers(bgs_rec2)] if bgs_rec2
+    return [bgs_rec_numbers, bgs_numbers(dupe_bgs_rec)] if dupe_bgs_rec
 
     [bgs_rec_numbers]
   end
