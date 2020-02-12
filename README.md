@@ -9,7 +9,7 @@ FOIA Requests that give veterans access to their own VA files take **way** too l
 
 ## Start up your docker based environment
 
-We use [docker](https://docs.docker.com/) and [docker-compose](https://docs.docker.com/compose/) to mock a production environment locally.  Prior knowledge of docker is not required, but slowly learning how docker works is encouraged.
+We use [docker](https://docs.docker.com/) and [docker-compose](https://docs.docker.com/compose/) to mock a production Renvironment locally.  Prior knowledge of docker is not required, but slowly learning how docker works is encouraged.
 Please ask a team member for an overview, and/or slowly review the docs linked.
 
 Your development setup of caseflow currently runs Redis, postgres and OracleDB (VACOLS) in Docker.
@@ -60,6 +60,7 @@ Install dependencies
 ```
 make install
 ```
+
 The local DB requires a different port. This change will also allow you to run local tests.
 Add this to a `.env` file in your application root directory:
 ```
@@ -112,11 +113,7 @@ RAILS_ENV=test bundle exec rake db:migrate
 ```
 ## Running Tests
 
-In order to run tests, you will first need to globally install phantomJS
-```
-(sudo) npm install -g phantomjs
-```
-Then to run the test suite:
+Run the test suite:
 ```
 make test
 ```
