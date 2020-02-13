@@ -63,7 +63,9 @@ describe "Manifests API v2", type: :request do
     before do
       allow_any_instance_of(Fakes::BGSService).to receive(:veteran_info).and_return(veteran_info)
       allow_any_instance_of(VeteranFinder).to receive(:find) { [ { file: veteran_claim_number }, { file: veteran_ssn } ] }
-      allow(VBMSService).to receive(:v2_fetch_documents_for) { documents }
+      allow(VBMSService).to receive(:v2_fetch_documents_for).with(veteran_claim_number) { documents }
+      allow(VBMSService).to receive(:v2_fetch_documents_for).with(veteran_ssn) { documents }
+      allow(VBMSService).to receive(:v2_fetch_documents_for).with(veteran_id) { documents }
       allow(VVAService).to receive(:v2_fetch_documents_for) { documents }
     end
 
@@ -111,13 +113,14 @@ describe "Manifests API v2", type: :request do
         post "/api/v2/manifests", params: nil, headers: headers
         expect(response.code).to eq("200")
 
-        expect(VBMSService).to have_received(:v2_fetch_documents_for).twice
-        expect(VVAService).to have_received(:v2_fetch_documents_for).twice
+        # once for each "file number"
+        expect(VBMSService).to have_received(:v2_fetch_documents_for).exactly(3).times
+        expect(VVAService).to have_received(:v2_fetch_documents_for).exactly(3).times
 
         got_body = JSON.parse(response.body, symbolize_names: true)
         got_records = got_body.dig(:data, :attributes, :records)
 
-        expect(got_records.size).to eq(8) # 2 sources * 2 documents * 2 veteran file numbers
+        expect(got_records.size).to eq(12) # 2 sources * 2 documents * 3 veteran file numbers
       end
     end
   end

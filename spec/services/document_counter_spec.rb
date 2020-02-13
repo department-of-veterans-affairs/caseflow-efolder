@@ -9,6 +9,7 @@ describe DocumentCounter do
 
   before do
     allow(Fakes::VVAService).to receive(:v2_fetch_documents_for).and_return(vva_documents)
+    allow_any_instance_of(VeteranFinder).to receive(:find) { [ { file: "DEMOFAST" } ] }
   end
 
   describe "#count" do

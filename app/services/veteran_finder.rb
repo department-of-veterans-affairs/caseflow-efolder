@@ -21,9 +21,20 @@ class VeteranFinder
     [bgs_rec_numbers]
   end
 
+  def find_uniq_file_numbers(file_number)
+    find(file_number).map { |vn| vn[:file].present? ? vn[:file] : vn["file_number"] }.compact.uniq
+  end
+
   private
 
   def find_duplicate_bgs_rec(bgs_rec_numbers)
+    if bgs_rec_numbers[:file].blank?
+      # log sentry
+      error = StandardError.new("Missing :file number in #{bgs_rec_numbers}")
+      Raven.capture_exception(error)
+      return
+    end
+
     if bgs_rec_numbers[:file].to_s == bgs_rec_numbers[:ssn].to_s
       # look again by claim number
       bgs_record_for(bgs_rec_numbers[:claim])

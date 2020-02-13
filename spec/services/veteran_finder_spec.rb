@@ -80,6 +80,27 @@ describe VeteranFinder do
       end
     end
 
+    context "BGS reports no :file_number" do
+      let(:veteran_info) { { veteran_ssn => veteran_record.merge(ptcpnt_id: "123", file_number: "") } }
+
+      it "logs exception and uses claim_number" do
+        expect(Raven).to receive(:capture_exception)
+        expect(subject).to eq([
+          {
+            ssn: veteran_ssn,
+            claim: veteran_claim_number,
+            file: "",
+            participant_id: "123",
+            "file_number" => veteran_claim_number,
+            "veteran_first_name" => veteran_record[:first_name],
+            "veteran_last_name"  => veteran_record[:last_name],
+            "veteran_last_four_ssn" => veteran_ssn[-4..-1],
+            "return_message" => veteran_record[:return_message]
+          }
+        ])
+      end
+    end
+
     context "one veteran found" do
       let(:veteran_info) { { veteran_ssn => veteran_record.merge(ptcpnt_id: "123", file_number: veteran_ssn) } }
 
