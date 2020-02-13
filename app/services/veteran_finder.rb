@@ -4,6 +4,8 @@
 # this may return multiple BGS records, uniquely identified by participant_id
 
 class VeteranFinder
+  class MissingNumber < StandardError; end
+
   def initialize(bgs: nil)
     @bgs = bgs
   end
@@ -30,7 +32,7 @@ class VeteranFinder
   def find_duplicate_bgs_rec(bgs_rec_numbers)
     if bgs_rec_numbers[:file].blank?
       # log sentry
-      error = StandardError.new("Missing :file number in #{bgs_rec_numbers}")
+      error = MissingNumber.new("Missing :file number in #{bgs_rec_numbers}")
       Raven.capture_exception(error)
       return
     end
@@ -42,7 +44,9 @@ class VeteranFinder
       # look again by ssn
       bgs_record_for(bgs_rec_numbers[:ssn])
     else
-      fail "Found BGS file_number not equal to SSN or claim number: #{bgs_rec_numbers}"
+      error = MissingNumber.new("Found BGS file_number not equal to SSN or claim number: #{bgs_rec_numbers}")
+      Raven.capture_exception(error)
+      nil
     end
   end
 
