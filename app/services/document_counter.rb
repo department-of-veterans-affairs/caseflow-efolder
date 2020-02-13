@@ -7,7 +7,7 @@ class DocumentCounter
     total = 0
     [VBMSService, VVAService].each do |service|
       documents = service.v2_fetch_documents_for(veteran_file_number)
-      total += DocumentFilter.new(documents: documents).filter.count
+      total += DocumentFilter.new(documents: documents).filter.uniq(&:document_id).count
     end
     total
   end
