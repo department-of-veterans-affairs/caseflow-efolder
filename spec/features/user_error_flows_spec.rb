@@ -44,7 +44,7 @@ RSpec.feature "User Error Flows" do
 
     User.authenticate!
 
-    allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info).with(veteran_id).and_return(veteran_info)
+    allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info).and_return(veteran_info)
     allow_any_instance_of(Fakes::BGSService).to receive(:valid_file_number?).with(veteran_id).and_return(true)
     allow_any_instance_of(Fakes::BGSService).to receive(:valid_file_number?).with(invalid_veteran_id).and_return(false)
 
@@ -94,7 +94,7 @@ RSpec.feature "User Error Flows" do
       }
     end
     before do
-      allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info).with(veteran_id).and_return(veteran_info)
+      allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info).and_return(veteran_info)
     end
 
     scenario "Requesting veteran_id returns cannot find eFolder" do

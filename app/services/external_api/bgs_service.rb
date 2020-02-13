@@ -13,7 +13,7 @@ class ExternalApi::BGSService
     ssn = veteran_data[:ssn] ? veteran_data[:ssn] : veteran_data[:soc_sec_number]
     last_four_ssn = ssn ? ssn[ssn.length - 4..ssn.length] : nil
     {
-      "file_number" => veteran_data[:claim_number],
+      "file_number" => veteran_data[:file_number],
       "veteran_first_name" => veteran_data[:first_name],
       "veteran_last_name" => veteran_data[:last_name],
       "veteran_last_four_ssn" => last_four_ssn,
@@ -21,13 +21,14 @@ class ExternalApi::BGSService
     }
   end
 
-  def fetch_veteran_info(file_number)
+  def fetch_veteran_info(file_number, parsed: true)
     veteran_data =
       MetricsService.record("BGS: fetch veteran info for vbms id: #{file_number}",
                             service: :bgs,
                             name: "veteran.find_by_file_number") do
         client.veteran.find_by_file_number(file_number)
       end
+    return veteran_data unless parsed
     parse_veteran_info(veteran_data) if veteran_data
   end
 

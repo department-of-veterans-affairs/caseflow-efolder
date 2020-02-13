@@ -9,6 +9,10 @@ describe ManifestFetcher do
     ]
   end
 
+  before do
+    allow_any_instance_of(VeteranFinder).to receive(:find) { [ { file: "1234" } ] }
+  end
+
   context "#process" do
     subject { ManifestFetcher.new(manifest_source: source).process }
 

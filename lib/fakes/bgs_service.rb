@@ -80,9 +80,14 @@ class Fakes::BGSService
     ].sample
   end
 
-  def fetch_veteran_info(file_number)
+  def fetch_veteran_info(file_number, parsed: true)
     return demo_veteran_info(file_number) if demo?(file_number)
     (veteran_info || {})[file_number]
+  end
+
+  def parse_veteran_info(veteran_data)
+    # call through with dummy client
+    ExternalApi::BGSService.new(client: true).parse_veteran_info(veteran_data)
   end
 
   def valid_file_number?(file_number)

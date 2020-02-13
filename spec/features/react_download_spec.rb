@@ -31,8 +31,7 @@ RSpec.feature "React Downloads" do
 
     User.authenticate!
 
-    allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info).with(veteran_id).and_return(veteran_info)
-    allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info).with(claim_number).and_return(veteran_info)
+    allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info).and_return(veteran_info)
     allow_any_instance_of(Fakes::BGSService).to receive(:valid_file_number?).with(veteran_id).and_return(true)
     allow_any_instance_of(Fakes::BGSService).to receive(:record_found?).with(veteran_info).and_return(true)
 
@@ -64,6 +63,10 @@ RSpec.feature "React Downloads" do
     }
   end
   let(:zip_file_name) { "Lee, Stan - 2222" }
+
+  before do
+    allow_any_instance_of(VeteranFinder).to receive(:find) { [ { file: claim_number } ] }
+  end
 
   scenario "Creating a download" do
     expect(V2::DownloadManifestJob).to receive(:perform_later).twice
