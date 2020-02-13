@@ -35,14 +35,14 @@ class VeteranFinder
       return
     end
 
-    if bgs_rec_numbers[:file].to_s == bgs_rec_numbers[:ssn].to_s
+    if bgs_rec_numbers[:claim].present? && bgs_rec_numbers[:file].to_s == bgs_rec_numbers[:ssn].to_s
       # look again by claim number
       bgs_record_for(bgs_rec_numbers[:claim])
-    elsif bgs_rec_numbers[:file].to_s == bgs_rec_numbers[:claim].to_s
+    elsif bgs_rec_numbers[:ssn].present? && bgs_rec_numbers[:file].to_s == bgs_rec_numbers[:claim].to_s
       # look again by ssn
       bgs_record_for(bgs_rec_numbers[:ssn])
     else
-      fail "Found BGS file_number not equal to SSN or claim number: #{bgs_rec_numbers[:file]}"
+      fail "Found BGS file_number not equal to SSN or claim number: #{bgs_rec_numbers}"
     end
   end
 
