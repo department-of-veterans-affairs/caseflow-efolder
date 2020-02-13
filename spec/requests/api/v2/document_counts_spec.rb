@@ -24,6 +24,7 @@ describe "Document Counts API v2", type: :request do
   before do
     allow_any_instance_of(Fakes::BGSService).to receive(:sensitive_files).and_return(veteran_id.to_s => false)
     allow_any_instance_of(Fakes::BGSService).to receive(:record_found?).and_return(true)
+    allow_any_instance_of(VeteranFinder).to receive(:find) { [ { file: veteran_id } ] }
     Timecop.freeze(Time.utc(2015, 1, 1, 17, 0, 0))
   end
 
