@@ -12,8 +12,9 @@ class ExternalApi::BGSService
   def parse_veteran_info(veteran_data)
     ssn = veteran_data[:ssn] ? veteran_data[:ssn] : veteran_data[:soc_sec_number]
     last_four_ssn = ssn ? ssn[ssn.length - 4..ssn.length] : nil
+    file_number = veteran_data[:file_number].present? ? veteran_data[:file_number] : veteran_data[:claim_number]
     {
-      "file_number" => veteran_data[:file_number],
+      "file_number" => file_number,
       "veteran_first_name" => veteran_data[:first_name],
       "veteran_last_name" => veteran_data[:last_name],
       "veteran_last_four_ssn" => last_four_ssn,
