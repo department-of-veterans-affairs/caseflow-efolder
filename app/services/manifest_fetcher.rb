@@ -28,6 +28,6 @@ class ManifestFetcher
 
   def file_numbers
     vet_finder = VeteranFinder.new
-    vet_finder.find(manifest_source.file_number).map { |vn| vn[:file] }.compact.uniq
+    [manifest_source.file_number, vet_finder.find_uniq_file_numbers(manifest_source.file_number)].flatten.uniq
   end
 end

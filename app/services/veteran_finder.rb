@@ -21,6 +21,10 @@ class VeteranFinder
     [bgs_rec_numbers]
   end
 
+  def find_uniq_file_numbers(file_number)
+    find(file_number).map { |vn| vn[:file].present? ? vn[:file] : vn["file_number"] }.compact.uniq
+  end
+
   private
 
   def find_duplicate_bgs_rec(bgs_rec_numbers)
