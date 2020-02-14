@@ -30,7 +30,6 @@ describe "Manifests API v2", type: :request do
 
   before do
     allow_any_instance_of(Fakes::BGSService).to receive(:sensitive_files).and_return(veteran_id.to_s => false)
-    allow_any_instance_of(Fakes::BGSService).to receive(:record_found?).and_return(true)
     Timecop.freeze(Time.utc(2015, 1, 1, 17, 0, 0))
   end
 
@@ -281,6 +280,20 @@ describe "Manifests API v2", type: :request do
       expect(response.code).to eq("403")
       body = JSON.parse(response.body)
       expect(body["status"]).to eq(error_string)
+    end
+  end
+
+  context "When file number is not found in BGS" do
+    let(:veteran_id) { "40400000" }
+    let(:error_string) { "eFolder Express could not find an eFolder with the Veteran ID 40400000. Check to make sure you entered the ID correctly and try again." }
+
+    it "returns a 400 with not found message" do
+      perform_enqueued_jobs do
+        post "/api/v2/manifests", params: nil, headers: headers
+        expect(response.code).to eq("400")
+        body = JSON.parse(response.body)
+        expect(body["status"]).to eq(error_string)
+      end
     end
   end
 end
