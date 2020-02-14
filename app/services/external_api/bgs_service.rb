@@ -51,6 +51,10 @@ class ExternalApi::BGSService
 
   def record_found?(veteran_info)
     return false unless veteran_info && veteran_info["return_message"]
+
+    # sometimes a reality check is needed on data, regardless of return_message
+    return false unless veteran_info["file_number"].present? || veteran_info["veteran_last_four_ssn"].present?
+
     veteran_info["return_message"].include?("No BIRLS record found") ? false : true
   end
 

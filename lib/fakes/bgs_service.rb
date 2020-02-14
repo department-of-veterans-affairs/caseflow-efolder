@@ -54,6 +54,10 @@ class Fakes::BGSService
     !!(file_number =~ /^DEMO/)
   end
 
+  def not_found?(file_number)
+    !!(file_number =~ /^404/)
+  end
+
   def demo_veteran_info(file_number)
     [
       {
@@ -92,6 +96,7 @@ class Fakes::BGSService
 
   def valid_file_number?(file_number)
     return true if demo?(file_number.strip)
+    return true if not_found?(file_number.strip)
   end
 
   def check_sensitivity(file_number)
@@ -100,6 +105,10 @@ class Fakes::BGSService
 
   def record_found?(veteran_info)
     return false unless veteran_info && veteran_info["return_message"]
+
+    # sometimes a reality check is needed on data, regardless of return_message
+    return false unless veteran_info["file_number"].present? || veteran_info["veteran_last_four_ssn"].present?
+
     veteran_info["return_message"].include?("No BIRLS record found") ? false : true
   end
 
