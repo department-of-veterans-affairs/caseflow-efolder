@@ -40,8 +40,6 @@ class SessionsController < ApplicationController
 
     Rails.logger.info("Authenticated session for #{session['user']['css_id']} will redirect to #{will_redirect_to}")
 
-    flash[:success] = "Authenticated session for #{session['user']['css_id']}"
-
     redirect_to will_redirect_to
   rescue StandardError => error
     Rails.logger.error("#{error}\n#{error.backtrace.join("\n")}")
