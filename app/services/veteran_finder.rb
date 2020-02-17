@@ -33,6 +33,8 @@ class VeteranFinder
     # common enough in missing BGS data that we just return nil
     return if bgs_rec_numbers[:file].blank?
 
+    return if bgs_rec_numbers[:ssn].blank?
+
     if bgs_rec_numbers[:claim].present? && bgs_rec_numbers[:file].to_s == bgs_rec_numbers[:ssn].to_s
       # look again by claim number
       bgs_record_for(bgs_rec_numbers[:claim])
