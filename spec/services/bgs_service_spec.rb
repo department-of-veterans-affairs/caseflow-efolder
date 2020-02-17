@@ -66,8 +66,18 @@ describe ExternalApi::BGSService do
   context "#record_found?" do
     subject { bgs_service.record_found?(veteran_info) }
 
-    context "when found" do
+    context "when found with no file/claim/ssn" do
       let(:veteran_info) { { "return_message" => "BPNQ0301" } }
+      it { is_expected.to eq false }
+    end
+
+    context "when found with file or claim" do
+      let(:veteran_info) { { "return_message" => "BPNQ0301", "file_number" => "1234" } }
+      it { is_expected.to eq true }
+    end
+
+    context "when found with ssn" do
+      let(:veteran_info) { { "return_message" => "BPNQ0301", "veteran_last_four_ssn" => "1234" } }
       it { is_expected.to eq true }
     end
 
