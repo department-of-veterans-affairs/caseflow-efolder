@@ -1,5 +1,5 @@
 class BGSService
-  def self.new
-    !BaseController.dependencies_faked? ? ExternalApi::BGSService.new : Fakes::BGSService.new
+  def self.new(args)
+    !BaseController.dependencies_faked? ? ExternalApi::BGSService.new(args) : Fakes::BGSService.new(args)
   end
 end

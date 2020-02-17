@@ -3,6 +3,8 @@ require 'bgs_errors'
 class Fakes::BGSService
   include ActiveModel::Model
 
+  attr_accessor :client
+
   def fetch_user_info(username, station_id = nil)
     fail "Must define current_user" unless RequestStore[:current_user] # mock what real service requires
 
