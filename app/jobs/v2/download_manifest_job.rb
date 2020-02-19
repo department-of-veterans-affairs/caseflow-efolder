@@ -1,9 +1,10 @@
-class V2::DownloadManifestJob < ActiveJob::Base
+class V2::DownloadManifestJob < ApplicationJob
   queue_as :high_priority
 
   def perform(manifest_source, user = nil)
     return if manifest_source.current?
     RequestStore.store[:current_user] = user if user
+    Raven.extra_context(manifest_source: manifest_source.id)
 
     documents = ManifestFetcher.new(manifest_source: manifest_source).process
 
