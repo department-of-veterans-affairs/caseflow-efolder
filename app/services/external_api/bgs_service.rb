@@ -58,7 +58,24 @@ class ExternalApi::BGSService
     veteran_info["return_message"].include?("No BIRLS record found") ? false : true
   end
 
+  # if we want to use IAM PIV authn but fake the CSS authz
+  def iam_fake_authz(username, station_id)
+    # UAT convention is to append the station_id as part of the username
+    username_parts = username.match(/^(CF_[a-z]+|CASEFLOW)_(\d+)$/i)
+    station_id ||= username_parts[2]
+    {
+      css_id: username,
+      station_id: station_id,
+      first_name: 'FAKE',
+      last_name: username,
+      email: username,
+      roles: ["Download eFolder", "System Admin", "Establish Claim", "Mail Intake"] # yes, all of them
+    }
+  end
+
   def fetch_user_info(username, station_id = nil, application = "CASEFLOW")
+    return iam_fake_authz(username, station_id) if !Rails.deploy_env?(:prod) && FeatureToggle.enabled?(:use_ssoi_iam_fake_authz)
+
     resp = client.common_security.get_css_user_stations(username)
     # example
     # {:network_login_name=>"CF_Q_283", :user_application=>"CASEFLOW", :user_stations=>{:enabled=>true, :id=>"283", :name=>"Hines SDC", :role=>"User"}}
