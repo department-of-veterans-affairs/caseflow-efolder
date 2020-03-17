@@ -3,7 +3,7 @@ require "vva"
 # Thin interface to talk to Virtual VA
 class ExternalApi::VVAService
   def self.fetch_documents_for(download)
-    @vva_client ||= init_client
+    @vva_client = init_client
     documents ||= MetricsService.record("VVA: get document list for: #{download.file_number}",
                                         service: :vva,
                                         name: "document_list.get_by_claim_number") do
@@ -14,7 +14,7 @@ class ExternalApi::VVAService
   end
 
   def self.v2_fetch_documents_for(file_number)
-    @vva_client ||= init_client
+    @vva_client = init_client
     documents ||= MetricsService.record("VVA: get document list for: #{file_number}",
                                         service: :vva,
                                         name: "document_list.get_by_claim_number") do
@@ -25,7 +25,7 @@ class ExternalApi::VVAService
   end
 
   def self.fetch_document_file(document)
-    @vva_client ||= init_client
+    @vva_client = init_client
     result ||= MetricsService.record("VVA: fetch document content for: #{document.document_id}",
                                      service: :vva,
                                      name: "document_content.get_by_document_id") do
