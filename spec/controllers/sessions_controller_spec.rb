@@ -12,6 +12,16 @@ describe SessionsController do
 
       expect(response).to be_successful
     end
+
+    context "when already authenticated" do
+      it "redirects to root" do
+        allow(controller).to receive(:current_user) { true }
+
+        get :login
+
+        expect(response).to redirect_to "/"
+      end
+    end
   end
 
   describe "#login_creds" do
