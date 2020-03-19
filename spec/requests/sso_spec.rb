@@ -1,12 +1,5 @@
 describe 'SSO' do
   before do
-    FeatureToggle.enable!(:use_ssoi_iam)
-  end
-  after do
-    FeatureToggle.disable!(:use_ssoi_iam)
-  end
-
-  before do
     host! "efolder.example.com"
   end
 

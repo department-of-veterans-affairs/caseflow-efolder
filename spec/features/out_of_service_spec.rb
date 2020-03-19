@@ -1,14 +1,6 @@
 require "rails_helper"
 
 RSpec.feature "Out of Service" do
-  before do
-    FeatureToggle.enable!(:use_ssoi_iam) # must align with config/initializers/omniauth
-  end
-
-  after do
-    FeatureToggle.disable!(:use_ssoi_iam)
-  end
-
   context "Out of service is disabled" do
     context "user is already authenticated" do
       before { User.authenticate! }
