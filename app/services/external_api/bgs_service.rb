@@ -76,7 +76,9 @@ class ExternalApi::BGSService
   def fetch_user_info(username, station_id = nil, application = "CASEFLOW")
     return iam_fake_authz(username, station_id) if !Rails.deploy_env?(:prod) && FeatureToggle.enabled?(:use_ssoi_iam_fake_authz)
 
-    resp = client.common_security.get_css_user_stations(username)
+    # always use system user for initial request
+    station_client = init_client(username: User.system_user.css_id, station_id: User.system_user.station_id)
+    resp = station_client.common_security.get_css_user_stations(username)
     # example
     # {:network_login_name=>"CF_Q_283", :user_application=>"CASEFLOW", :user_stations=>{:enabled=>true, :id=>"283", :name=>"Hines SDC", :role=>"User"}}
     css_id = resp[:network_login_name] # probably the same as username but just in case.
@@ -124,7 +126,7 @@ class ExternalApi::BGSService
     RequestStore[:current_user]
   end
 
-  def init_client
+  def init_client(username: current_user.css_id, station_id: current_user.station_id)
     forward_proxy_url = FeatureToggle.enabled?(:bgs_forward_proxy) ? ENV["RUBY_BGS_PROXY_BASE_URL"] : nil
 
     # We hardcode the ip since all clients show up as a single IP anyway.
@@ -132,8 +134,8 @@ class ExternalApi::BGSService
       env: Rails.application.config.bgs_environment,
       application: "CASEFLOW",
       client_ip: "10.236.66.133",
-      client_station_id: current_user.station_id,
-      client_username: current_user.css_id,
+      client_station_id: station_id,
+      client_username: username,
       ssl_cert_key_file: ENV["BGS_KEY_LOCATION"],
       ssl_cert_file: ENV["BGS_CERT_LOCATION"],
       ssl_ca_cert: ENV["BGS_CA_CERT_LOCATION"],
