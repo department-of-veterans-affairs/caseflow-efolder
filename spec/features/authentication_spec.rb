@@ -1,14 +1,6 @@
 require "rails_helper"
 
 RSpec.feature "Authentication" do
-  before do
-    FeatureToggle.enable!(:use_ssoi_iam) # must align with config/initializers/omniauth
-  end
-
-  after do
-    FeatureToggle.disable!(:use_ssoi_iam)
-  end
-
   scenario "Unauthenticated request bounces to login page" do
     visit("/")
     expect(current_path).to eq("/login")

@@ -1,11 +1,4 @@
 describe SessionsController do
-  before do
-    FeatureToggle.enable!(:use_ssoi_iam)
-  end
-  after do
-    FeatureToggle.disable!(:use_ssoi_iam)
-  end
-
   describe "#login" do
     it "returns login form" do
       get :login

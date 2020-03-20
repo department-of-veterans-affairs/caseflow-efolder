@@ -29,41 +29,15 @@ class OmniAuth::Strategies::TestAuthStrategy < OmniAuth::Strategies::Developer
   # custom form rendering
   def request_phase
     form = EfolderAuthForm.new(title: "Test VA Saml", url: callback_path)
-    if FeatureToggle.enabled?(:use_ssoi_iam)
-      form.hidden_field :username, session["login"]["username"]
-      form.hidden_field :station_id, session["login"]["station_id"]
-    else
-      options.fields.each do |field|
-        form.text_field field.to_s.capitalize.tr("_", " "), field.to_s
-      end
-    end
+    form.hidden_field :username, session["login"]["username"]
+    form.hidden_field :station_id, session["login"]["station_id"]
     form.button "Fake PIV Login"
     form.to_response
   end
 
   def auth_hash
     hash = super
-
     hash.uid = hash["info"]["css_id"]
-
-    if FeatureToggle.enabled?(:use_ssoi_iam)
-      hash
-    else
-      ssoi_auth_hash(hash)
-    end
-  end
-
-  def ssoi_auth_hash(hash)
-    hash.extra = OmniAuth::AuthHash.new(raw_info: OneLogin::RubySaml::Attributes.new(
-      "http://vba.va.gov/css/common/emailAddress" => ["test@test.gov"],
-      "http://vba.va.gov/css/common/fName" => ["First"],
-      "http://vba.va.gov/css/common/lName" => ["Last"],
-      "http://vba.va.gov/css/caseflow/role" => ["Download eFolder", "System Admin"],
-      "http://vba.va.gov/css/common/stationId" => [hash["info"]["station_id"]]
-    ))
     hash
   end
-
-  # TODO not needed after IAM is final.
-  option :fields, [:css_id, :station_id]
 end
