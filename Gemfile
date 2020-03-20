@@ -47,7 +47,7 @@ group :development, :production, :staging do
 end
 
 group :development, :test do
-  gem "brakeman", "3.1.5"
+  gem "brakeman"
   gem "bundler-audit"
   gem "dotenv-rails"
   gem "pry"
