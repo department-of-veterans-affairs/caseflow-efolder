@@ -21,8 +21,7 @@ gem "mini_magick"
 gem "moment_timezone-rails"
 gem "newrelic_rpm"
 gem "nokogiri", ">=1.10.5"
-gem "omniauth-saml-va", git: "https://github.com/department-of-veterans-affairs/omniauth-saml-va", branch: "pek-iam-ssoi"
-#gem "omniauth-saml-va", git: "https://github.com/department-of-veterans-affairs/omniauth-saml-va", ref: "fbe2b878c250b14ee996ef6699c42df2c42e41a1"
+gem "omniauth-saml-va", git: "https://github.com/department-of-veterans-affairs/omniauth-saml-va", ref: "fbe2b878c250b14ee996ef6699c42df2c42e41a1"
 gem "pg", "~> 0.18", platforms: :ruby
 gem "puma"
 gem "rack-cors", ">= 1.0.4"
@@ -33,7 +32,6 @@ gem "redis-semaphore"
 gem "request_store"
 gem "rubyzip", ">= 1.3.0"
 gem "sass-rails", "~> 5.0"
-gem "sdoc", "~> 0.4.0", group: :doc
 gem "sentry-raven"
 gem "shoryuken", "3.1.11"
 gem "therubyracer", platforms: :ruby
@@ -49,7 +47,7 @@ group :development, :production, :staging do
 end
 
 group :development, :test do
-  gem "brakeman", "3.1.5"
+  gem "brakeman"
   gem "bundler-audit"
   gem "dotenv-rails"
   gem "pry"

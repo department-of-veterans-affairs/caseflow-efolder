@@ -40,8 +40,6 @@ class SessionsController < ApplicationController
 
     Rails.logger.info("Authenticated session for #{session['user']['css_id']} will redirect to #{will_redirect_to}")
 
-    flash[:success] = "Authenticated session for #{session['user']['css_id']}"
-
     redirect_to will_redirect_to
   rescue StandardError => error
     Rails.logger.error("#{error}\n#{error.backtrace.join("\n")}")
@@ -95,10 +93,6 @@ class SessionsController < ApplicationController
   end
 
   def build_user
-    if FeatureToggle.enabled?(:use_ssoi_iam)
-      CssAuthenticationSession.from_iam_auth_hash(css_auth_hash, username, station_id).as_json
-    else
-      CssAuthenticationSession.from_css_auth_hash(css_auth_hash).as_json
-    end
+    CssAuthenticationSession.from_iam_auth_hash(css_auth_hash, username, station_id).as_json
   end
 end

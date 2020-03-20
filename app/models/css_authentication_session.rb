@@ -20,21 +20,6 @@ class CssAuthenticationSession
   end
 
   class << self
-    def from_css_auth_hash(auth_hash)
-      raw_css_response = auth_hash.extra.raw_info
-      first_name = raw_css_response["http://vba.va.gov/css/common/fName"]
-      last_name = raw_css_response["http://vba.va.gov/css/common/lName"]
-
-      new(id: auth_hash.uid,
-          css_id: auth_hash.uid,
-          email: raw_css_response["http://vba.va.gov/css/common/emailAddress"],
-          first_name: first_name,
-          last_name: last_name,
-          name: "#{first_name} #{last_name}",
-          roles: raw_css_response.attributes["http://vba.va.gov/css/caseflow/role"],
-          station_id: raw_css_response["http://vba.va.gov/css/common/stationId"])
-    end
-
     def from_iam_auth_hash(auth_hash, username = nil, station_id = nil)
       saml_attributes = auth_hash.extra.raw_info
 
