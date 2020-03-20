@@ -32,7 +32,6 @@ gem "redis-semaphore"
 gem "request_store"
 gem "rubyzip", ">= 1.3.0"
 gem "sass-rails", "~> 5.0"
-gem "sdoc", "~> 0.4.0", group: :doc
 gem "sentry-raven"
 gem "shoryuken", "3.1.11"
 gem "therubyracer", platforms: :ruby
@@ -48,7 +47,7 @@ group :development, :production, :staging do
 end
 
 group :development, :test do
-  gem "brakeman", "3.1.5"
+  gem "brakeman"
   gem "bundler-audit"
   gem "dotenv-rails"
   gem "pry"
