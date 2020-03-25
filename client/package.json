@@ -10,23 +10,6 @@
     "lint:fix": "yarn run lint --fix"
   },
   "dependencies": {
-    "@department-of-veterans-affairs/caseflow-frontend-toolkit": "https://github.com/department-of-veterans-affairs/caseflow-frontend-toolkit#a05abe6",
-    "es5-shim": "^4.5.10",
-    "glamor": "^2.20.40",
-    "history": "^4.7.2",
-    "imports-loader": "^0.7.1",
-    "prop-types": "^15.6.0",
-    "react": "^16.2.0",
-    "react-copy-to-clipboard": "^5.0.1",
-    "react-dom": "^16.2.0",
-    "react-redux": "^5.0.6",
-    "react-router-dom": "^4.2.2",
-    "redux": "^3.7.2",
-    "redux-thunk": "^2.2.0",
-    "superagent": "^3.8.2",
-    "superagent-no-cache": "^0.1.1",
-    "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.10",
     "@babel/cli": "^7.0.0",
     "@babel/core": "^7.0.0",
     "@babel/plugin-proposal-class-properties": "^7.0.0",
@@ -51,11 +34,29 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/register": "^7.7.0",
     "@babel/runtime-corejs2": "^7.0.0",
+    "@department-of-veterans-affairs/caseflow-frontend-toolkit": "https://github.com/department-of-veterans-affairs/caseflow-frontend-toolkit#a05abe6",
     "babel-loader": "^8.0.0",
-    "react-hot-loader": "^4.12.18"
+    "es5-shim": "^4.5.10",
+    "glamor": "^2.20.40",
+    "history": "^4.7.2",
+    "imports-loader": "^0.7.1",
+    "prop-types": "^15.6.0",
+    "react": "^16.2.0",
+    "react-copy-to-clipboard": "^5.0.1",
+    "react-dom": "^16.2.0",
+    "react-hot-loader": "^4.12.18",
+    "react-redux": "^5.0.6",
+    "react-router-dom": "^4.2.2",
+    "redux": "^3.7.2",
+    "redux-thunk": "^2.2.0",
+    "superagent": "^3.8.2",
+    "superagent-no-cache": "^0.1.1",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
   },
   "devDependencies": {
-    "@department-of-veterans-affairs/eslint-config-appeals": "https://github.com/department-of-veterans-affairs/eslint-config-appeals#f50522e",
-    "eslint": "^4.15.0"
+    "@department-of-veterans-affairs/eslint-config-appeals": "https://github.com/department-of-veterans-affairs/eslint-config-appeals#8ecb62a",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.8.0"
   }
 }
