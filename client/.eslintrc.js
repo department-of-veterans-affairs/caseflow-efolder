@@ -9,5 +9,15 @@ module.exports = {
     },
     ecmaVersion: 10,
     sourceType: 'module'
+  },
+  settings: {
+    react: {
+      version: '16.12'
+    },
+    'import/resolver': {
+      node: {
+        extensions: ['.js', '.jsx', '.json']
+      }
+    }
   }
 };
