@@ -15,7 +15,11 @@ import { aliasForSource } from '../Utils';
 const startDownloadButtonLabel = 'Start retrieving efolder';
 
 class DownloadListContainer extends React.PureComponent {
-  startDownload = () => this.props.startDocumentDownload(this.props.manifestId, this.props.csrfToken);
+  startDownload = () =>
+    this.props.startDocumentDownload(
+      this.props.manifestId,
+      this.props.csrfToken
+    );
 
   render() {
     let totalDocumentsCount = 0;
@@ -24,7 +28,9 @@ class DownloadListContainer extends React.PureComponent {
 
     for (const src of this.props.documentSources) {
       totalDocumentsCount += src.number_of_documents;
-      documentCountDescriptions.push(`${src.number_of_documents} from ${aliasForSource(src.source)}`);
+      documentCountDescriptions.push(
+        `${src.number_of_documents} from ${aliasForSource(src.source)}`
+      );
       if (src.status === MANIFEST_SOURCE_FETCH_STATE.FAILED) {
         unavailableDocumentSources.push(src.source);
       }
@@ -32,35 +38,60 @@ class DownloadListContainer extends React.PureComponent {
 
     const unavailableSourceText = unavailableDocumentSources.join(', ');
 
-    return <React.Fragment>
-      <AppSegment filledBackground>
-        { unavailableSourceText &&
-          <AlertBanner title={`We are having trouble connecting to ${unavailableSourceText}`} alertType="warning">
-            <p>Please wait a few minutes and try searching this eFolder again using the "Back to eFolder Express"&nbsp;
-              button below. If you continue to experience issues, you can also&nbsp;
-              <Link href={this.props.feedbackUrl}>send feedback</Link> to reach our support team.
-            </p>
-            <Link to="/"><button className="usa-button usa-button-outline">Back to eFolder Express</button></Link>
-          </AlertBanner>
-        }
+    return (
+      <React.Fragment>
+        <AppSegment filledBackground>
+          {unavailableSourceText && (
+            <AlertBanner
+              title={`We are having trouble connecting to ${unavailableSourceText}`}
+              alertType="warning"
+            >
+              <p>
+                Please wait a few minutes and try searching this eFolder again
+                using the "Back to eFolder Express"&nbsp; button below. If you
+                continue to experience issues, you can also&nbsp;
+                <Link href={this.props.feedbackUrl}>send feedback</Link> to
+                reach our support team.
+              </p>
+              <Link to="/">
+                <button className="usa-button usa-button-outline">
+                  Back to eFolder Express
+                </button>
+              </Link>
+            </AlertBanner>
+          )}
 
-        <p>eFolder Express found a total of {totalDocumentsCount} documents ({documentCountDescriptions.join(' and ')})
-          for {this.props.veteranName} #{this.props.veteranId}. Verify the Veteran ID and click the&nbsp;
-          {startDownloadButtonLabel} button below to start retrieving the eFolder.
-        </p>
-        <p>
-          <button className="cf-submit cf-retrieve-button" onClick={this.startDownload}>
+          <p>
+            eFolder Express found a total of {totalDocumentsCount} documents (
+            {documentCountDescriptions.join(' and ')}) for{' '}
+            {this.props.veteranName} #{this.props.veteranId}. Verify the Veteran
+            ID and click the&nbsp;
+            {startDownloadButtonLabel} button below to start retrieving the
+            eFolder.
+          </p>
+          <p>
+            <button
+              className="cf-submit cf-retrieve-button"
+              onClick={this.startDownload}
+            >
+              {startDownloadButtonLabel}
+            </button>
+          </p>
+          <ManifestDocumentsTable
+            documents={this.props.documents}
+            summary="Files in veteran's eFolder"
+          />
+        </AppSegment>
+        <DownloadPageFooter>
+          <button
+            className="cf-submit cf-retrieve-button ee-right-button"
+            onClick={this.startDownload}
+          >
             {startDownloadButtonLabel}
           </button>
-        </p>
-        <ManifestDocumentsTable documents={this.props.documents} summary="Files in veteran's eFolder" />
-      </AppSegment>
-      <DownloadPageFooter>
-        <button className="cf-submit cf-retrieve-button ee-right-button" onClick={this.startDownload}>
-          {startDownloadButtonLabel}
-        </button>
-      </DownloadPageFooter>
-    </React.Fragment>;
+        </DownloadPageFooter>
+      </React.Fragment>
+    );
   }
 }
 
@@ -74,6 +105,10 @@ const mapStateToProps = (state) => ({
   veteranName: state.veteranName
 });
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({ startDocumentDownload }, dispatch);
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators({ startDocumentDownload }, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(DownloadListContainer);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DownloadListContainer);
