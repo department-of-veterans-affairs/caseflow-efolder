@@ -25,7 +25,7 @@ gem "omniauth-saml-va", git: "https://github.com/department-of-veterans-affairs/
 gem "pg", "~> 0.18", platforms: :ruby
 gem "puma"
 gem "rack-cors", ">= 1.0.4"
-gem "rails", "5.2.4.1"
+gem "rails", "5.2.4.2"
 gem "redis-namespace"
 gem "redis-rails", "~> 5.0.2"
 gem "redis-semaphore"
