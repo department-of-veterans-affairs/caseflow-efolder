@@ -29,7 +29,7 @@ class Manifest < ApplicationRecord
     update!(fetched_files_status: :initialized) if stale?
 
     vbms_source.start!
-    vva_source.start!
+    vva_source.start! unless FeatureToggle.enabled?(:skip_vva)
   end
 
   def download_and_package_files!
