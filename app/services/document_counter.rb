@@ -6,7 +6,7 @@ class DocumentCounter
   def count
     document_ids = []
     file_numbers.each do |file_number|
-      [VBMSService, VVAService].each do |service|
+      services.each do |service|
         documents = service.v2_fetch_documents_for(file_number)
         document_ids << DocumentFilter.new(documents: documents).filter.map(&:document_id)
       end
@@ -15,6 +15,14 @@ class DocumentCounter
   end
 
   private
+
+  def services
+    if FeatureToggle.enabled?(:skip_vva)
+      [VBMSService]
+    else
+      [VBMSService, VVAService]
+    end
+  end
 
   def file_numbers
     vet_finder = VeteranFinder.new
