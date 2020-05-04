@@ -7,8 +7,33 @@ class ExternalApi::BGSService
 
   attr_reader :client
 
-  def initialize(client: init_client)
-    @client = client
+  class << self
+    def current_user
+      RequestStore[:current_user]
+    end
+
+    def init_client(username: current_user.css_id, station_id: current_user.station_id)
+      forward_proxy_url = FeatureToggle.enabled?(:bgs_forward_proxy) ? ENV["RUBY_BGS_PROXY_BASE_URL"] : nil
+
+      # We hardcode the ip since all clients show up as a single IP anyway.
+      BGS::Services.new(
+        env: Rails.application.config.bgs_environment,
+        application: "CASEFLOW",
+        client_ip: "10.236.66.133",
+        client_station_id: station_id,
+        client_username: username,
+        ssl_cert_key_file: ENV["BGS_KEY_LOCATION"],
+        ssl_cert_file: ENV["BGS_CERT_LOCATION"],
+        ssl_ca_cert: ENV["BGS_CA_CERT_LOCATION"],
+        forward_proxy_url: forward_proxy_url,
+        jumpbox_url: ENV["RUBY_BGS_JUMPBOX_URL"],
+        log: true
+      )
+    end
+  end
+
+  def initialize(client: nil)
+    @client = client || self.class.init_client
   end
 
   def parse_veteran_info(veteran_data)
@@ -172,30 +197,5 @@ class ExternalApi::BGSService
     fail BGS::InvalidApplication if error.message =~ /Application Does Not Exist/
     fail BGS::NoCaseflowAccess if error.message =~ /TODO unknown error string/
     {}
-  end
-
-  private
-
-  def current_user
-    RequestStore[:current_user]
-  end
-
-  def init_client(username: current_user.css_id, station_id: current_user.station_id)
-    forward_proxy_url = FeatureToggle.enabled?(:bgs_forward_proxy) ? ENV["RUBY_BGS_PROXY_BASE_URL"] : nil
-
-    # We hardcode the ip since all clients show up as a single IP anyway.
-    BGS::Services.new(
-      env: Rails.application.config.bgs_environment,
-      application: "CASEFLOW",
-      client_ip: "10.236.66.133",
-      client_station_id: station_id,
-      client_username: username,
-      ssl_cert_key_file: ENV["BGS_KEY_LOCATION"],
-      ssl_cert_file: ENV["BGS_CERT_LOCATION"],
-      ssl_ca_cert: ENV["BGS_CA_CERT_LOCATION"],
-      forward_proxy_url: forward_proxy_url,
-      jumpbox_url: ENV["RUBY_BGS_JUMPBOX_URL"],
-      log: true
-    )
   end
 end
