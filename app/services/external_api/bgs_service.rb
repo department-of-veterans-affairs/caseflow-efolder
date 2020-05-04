@@ -93,6 +93,22 @@ class ExternalApi::BGSService
 
     return {} unless bgs_info
 
+    parse_person_info(bgs_info)
+  end
+
+  def fetch_person_by_ssn(ssn)
+    bgs_info = MetricsService.record("BGS: fetch person by ssn: #{ssn}",
+                                     service: :bgs,
+                                     name: "people.find_by_ssn") do
+      client.people.find_by_ssn(ssn)
+    end
+
+    return {} unless bgs_info
+
+    parse_person_info(bgs_info)
+  end
+
+  def parse_person_info(bgs_info)
     {
       first_name: bgs_info[:first_nm],
       last_name: bgs_info[:last_nm],
@@ -102,14 +118,6 @@ class ExternalApi::BGSService
       email_address: bgs_info[:email_addr],
       file_number: bgs_info[:file_nbr]
     }
-  end
-
-  def fetch_person_by_ssn(ssn)
-    MetricsService.record("BGS: fetch person by ssn: #{ssn}",
-                          service: :bgs,
-                          name: "people.find_by_ssn") do
-        client.people.find_by_ssn(ssn)
-    end
   end
 
   def check_sensitivity(file_number)
