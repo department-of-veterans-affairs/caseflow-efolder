@@ -20,6 +20,7 @@ class ExternalApi::BGSService
       "veteran_first_name" => veteran_data[:first_name],
       "veteran_last_name" => veteran_data[:last_name],
       "veteran_last_four_ssn" => last_four_ssn,
+      "participant_id" => veteran_data[:ptcpnt_id],
       "return_message" => veteran_data[:return_message]
     }
   end
@@ -56,6 +57,34 @@ class ExternalApi::BGSService
 
     # Avoid passing nil
     get_hash_of_poa_from_bgs_poas(bgs_poas || [])
+  end
+
+  def fetch_person_info(participant_id)
+    bgs_info = MetricsService.record("BGS: fetch person info by participant id: #{participant_id}",
+                                     service: :bgs,
+                                     name: "people.find_person_by_ptcpnt_id") do
+      client.people.find_person_by_ptcpnt_id(participant_id)
+    end
+
+    return {} unless bgs_info
+
+    {
+      first_name: bgs_info[:first_nm],
+      last_name: bgs_info[:last_nm],
+      middle_name: bgs_info[:middle_nm],
+      name_suffix: bgs_info[:suffix_nm],
+      birth_date: bgs_info[:brthdy_dt],
+      email_address: bgs_info[:email_addr],
+      file_number: bgs_info[:file_nbr]
+    }
+  end
+
+  def fetch_person_by_ssn(ssn)
+    MetricsService.record("BGS: fetch person by ssn: #{ssn}",
+                          service: :bgs,
+                          name: "people.find_by_ssn") do
+        client.people.find_by_ssn(ssn)
+    end
   end
 
   def check_sensitivity(file_number)
