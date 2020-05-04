@@ -55,7 +55,7 @@ class User < ApplicationRecord
       # There could be other values in the session that CssAuthenticationSession doesn't accept
       # as attributes so delete them
       sesh = CssAuthenticationSession.new(
-        session["user"].symbolize_keys.slice(:id, :name, :roles, :station_id, :css_id, :email)
+        session["user"].symbolize_keys.slice(:id, :name, :roles, :station_id, :css_id, :email, :participant_id)
       )
       return nil unless sesh.css_id && sesh.station_id
 
@@ -64,6 +64,7 @@ class User < ApplicationRecord
         u.email = sesh.email
         u.roles = sesh.roles
         u.ip_address = request.remote_ip
+        u.participant_id = sesh.participant_id
         u.save
       end
     end

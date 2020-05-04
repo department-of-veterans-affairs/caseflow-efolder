@@ -2,7 +2,7 @@ class CssAuthenticationSession
   include ActiveModel::Model
   include ActiveModel::Serializers::JSON
 
-  attr_accessor :id, :name, :roles, :station_id, :first_name, :last_name
+  attr_accessor :id, :name, :roles, :station_id, :first_name, :last_name, :participant_id
   attr_reader :css_id, :email
 
   class BadCssAuthorization < StandardError; end
@@ -44,6 +44,7 @@ class CssAuthenticationSession
         id: username,
         css_id: user_info[:css_id],
         email: user_info[:email],
+        participant_id: user_info[:participant_id],
         first_name: user_info[:first_name],
         last_name: user_info[:last_name],
         roles: user_info[:roles],
