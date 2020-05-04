@@ -154,7 +154,7 @@ ActiveRecord::Schema.define(version: 2020_05_04_163452) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "vva_coachmarks_view_count", default: 0
-    t.string "participant_id"
+    t.string "participant_id", comment: "the user BGS participant_id"
     t.index ["css_id", "station_id"], name: "index_users_on_css_id_and_station_id"
   end
 
