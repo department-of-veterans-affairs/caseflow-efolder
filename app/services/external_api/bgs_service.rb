@@ -3,6 +3,8 @@ require "bgs_errors"
 
 # Thin interface to all things BGS
 class ExternalApi::BGSService
+  include POAMapper
+
   attr_reader :client
 
   def initialize(client: init_client)
@@ -31,6 +33,29 @@ class ExternalApi::BGSService
       end
     return veteran_data unless parsed
     parse_veteran_info(veteran_data) if veteran_data
+  end
+
+  # For Claimant POA
+  def fetch_poa_by_file_number(file_number)
+    bgs_poa = MetricsService.record("BGS: fetch poa for file number: #{file_number}",
+                                    service: :bgs,
+                                    name: "org.find_poas_by_file_number") do
+      client.org.find_poas_by_file_number(file_number)
+    end
+    get_claimant_poa_from_bgs_poa(bgs_poa)
+  end
+
+  # The participant IDs here are for Claimants.
+  # I.e. returns the list of POAs that represent the Claimants.
+  def fetch_poas_by_participant_ids(participant_ids)
+    bgs_poas = MetricsService.record("BGS: fetch poas for participant ids: #{participant_ids}",
+                                     service: :bgs,
+                                     name: "org.find_poas_by_participant_ids") do
+      client.org.find_poas_by_ptcpnt_ids(participant_ids)
+    end
+
+    # Avoid passing nil
+    get_hash_of_poa_from_bgs_poas(bgs_poas || [])
   end
 
   def check_sensitivity(file_number)
