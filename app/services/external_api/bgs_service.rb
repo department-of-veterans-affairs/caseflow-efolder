@@ -20,7 +20,7 @@ class ExternalApi::BGSService
       "veteran_first_name" => veteran_data[:first_name],
       "veteran_last_name" => veteran_data[:last_name],
       "veteran_last_four_ssn" => last_four_ssn,
-      "participant_id" => veteran_data[:ptcpnt_id],
+      participant_id: veteran_data[:ptcpnt_id], # key is symbol not string
       "return_message" => veteran_data[:return_message]
     }
   end

@@ -114,4 +114,12 @@ class Fakes::BGSService
   def veteran_info; end
 
   def sensitive_files; end
+
+  def fetch_person_info; end
+
+  def fetch_person_by_ssn; end
+
+  def fetch_poa_by_file_number; end
+
+  def fetch_poas_by_participant_ids; end
 end
