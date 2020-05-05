@@ -1,14 +1,56 @@
 describe ExternalApi::BGSService do
+  include POAMapper
+
   before do
     RequestStore[:current_user] = User.new(css_id: "RADIOHEAD", station_id: "203")
   end
 
-  let(:bgs_service) { ExternalApi::BGSService.new }
+  let(:bgs_service) { ExternalApi::BGSService.new(client: bgs_client) }
+  let(:bgs_veteran_service) { double("veteran") }
+  let(:bgs_people_service) { double("people") }
+  let(:bgs_security_service) { double("security") }
+  let(:bgs_org_service) { double("org") }
+  let(:bgs_client) { double("BGS::Services") }
+  let(:file_number) { "666001234" }
+  let(:participant_id) { "123" }
+  let(:pids) { [participant_id] }
+  let(:bgs_poa_response) do
+    {
+      file_number: "071-claimant-appeal-file-number",
+      ptcpnt_id: participant_id,
+      power_of_attorney: {
+        legacy_poa_cd: "071",
+        nm: "PARALYZED VETERANS OF AMERICA, INC.",
+        org_type_nm: "POA National Organization",
+        ptcpnt_id: "123456"
+      }
+    }
+  end
+  let(:bgs_person_response) do
+    {
+      first_nm: "Foo",
+      last_nm: "Bar",
+      brthdy_dt: "1972-03-29",
+      file_nbr: "00001234"
+    }
+  end
+  let(:ssn) { "123-43-1111" }
+
+  before do
+    allow(bgs_client).to receive(:org) { bgs_org_service }
+    allow(bgs_client).to receive(:people) { bgs_people_service }
+    allow(bgs_client).to receive(:veteran) { bgs_veteran_service }
+    allow(bgs_org_service).to receive(:find_poas_by_file_number).with(file_number) { bgs_poa_response }
+    allow(bgs_org_service).to receive(:find_poas_by_ptcpnt_ids).with(pids) { bgs_poa_response }
+    allow(bgs_veteran_service).to receive(:find_by_file_number).with(file_number) { bgs_veteran_response }
+    allow(bgs_people_service).to receive(:find_person_by_ptcpnt_id).with(participant_id) { bgs_person_response }
+    allow(bgs_people_service).to receive(:find_by_ssn).with(ssn) { bgs_person_response }
+  end
 
   context "#parse_veteran_info" do
     before do
       @veteran_data = {
-        ssn: "123-43-1111",
+        ssn: ssn,
         first_name: "FirstName",
         last_name: "LastName"
       }
@@ -84,6 +126,38 @@ describe ExternalApi::BGSService do
     context "when not found" do
       let(:veteran_info) { { "return_message" => "No BIRLS record found" } }
       it { is_expected.to eq false }
+    end
+  end
+
+  context "#fetch_person_by_ssn" do
+    subject { bgs_service.fetch_person_by_ssn(ssn) }
+
+    it "returns Person info" do
+      expect(subject[:first_name]).to eq "Foo"
+    end
+  end
+
+  context "#fetch_person_info" do
+    subject { bgs_service.fetch_person_info(participant_id) }
+
+    it "returns Person info" do
+      expect(subject[:first_name]).to eq "Foo"
+    end
+  end
+
+  context "#fetch_poas_by_participant_ids" do
+    subject { bgs_service.fetch_poas_by_participant_ids(pids) }
+
+    it "returns POA info" do
+      expect(subject[participant_id][:representative_name]).to eq "PARALYZED VETERANS OF AMERICA, INC."
+    end
+  end
+
+  context "#fetch_poa_by_file_number" do
+    subject { bgs_service.fetch_poa_by_file_number(file_number) }
+
+    it "returns POA info" do
+      expect(subject[:representative_name]).to eq "PARALYZED VETERANS OF AMERICA, INC."
     end
   end
 end

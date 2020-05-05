@@ -3,10 +3,37 @@ require "bgs_errors"
 
 # Thin interface to all things BGS
 class ExternalApi::BGSService
+  include POAMapper
+
   attr_reader :client
 
-  def initialize(client: init_client)
-    @client = client
+  class << self
+    def current_user
+      RequestStore[:current_user]
+    end
+
+    def init_client(username: current_user.css_id, station_id: current_user.station_id)
+      forward_proxy_url = FeatureToggle.enabled?(:bgs_forward_proxy) ? ENV["RUBY_BGS_PROXY_BASE_URL"] : nil
+
+      # We hardcode the ip since all clients show up as a single IP anyway.
+      BGS::Services.new(
+        env: Rails.application.config.bgs_environment,
+        application: "CASEFLOW",
+        client_ip: "10.236.66.133",
+        client_station_id: station_id,
+        client_username: username,
+        ssl_cert_key_file: ENV["BGS_KEY_LOCATION"],
+        ssl_cert_file: ENV["BGS_CERT_LOCATION"],
+        ssl_ca_cert: ENV["BGS_CA_CERT_LOCATION"],
+        forward_proxy_url: forward_proxy_url,
+        jumpbox_url: ENV["RUBY_BGS_JUMPBOX_URL"],
+        log: true
+      )
+    end
+  end
+
+  def initialize(client: nil)
+    @client = client || self.class.init_client
   end
 
   def parse_veteran_info(veteran_data)
@@ -18,6 +45,7 @@ class ExternalApi::BGSService
       "veteran_first_name" => veteran_data[:first_name],
       "veteran_last_name" => veteran_data[:last_name],
       "veteran_last_four_ssn" => last_four_ssn,
+      participant_id: veteran_data[:ptcpnt_id], # key is symbol not string
       "return_message" => veteran_data[:return_message]
     }
   end
@@ -31,6 +59,65 @@ class ExternalApi::BGSService
       end
     return veteran_data unless parsed
     parse_veteran_info(veteran_data) if veteran_data
+  end
+
+  # For Claimant POA
+  def fetch_poa_by_file_number(file_number)
+    bgs_poa = MetricsService.record("BGS: fetch poa for file number: #{file_number}",
+                                    service: :bgs,
+                                    name: "org.find_poas_by_file_number") do
+      client.org.find_poas_by_file_number(file_number)
+    end
+    get_claimant_poa_from_bgs_poa(bgs_poa)
+  end
+
+  # The participant IDs here are for Claimants.
+  # I.e. returns the list of POAs that represent the Claimants.
+  def fetch_poas_by_participant_ids(participant_ids)
+    bgs_poas = MetricsService.record("BGS: fetch poas for participant ids: #{participant_ids}",
+                                     service: :bgs,
+                                     name: "org.find_poas_by_participant_ids") do
+      client.org.find_poas_by_ptcpnt_ids(participant_ids)
+    end
+
+    # Avoid passing nil
+    get_hash_of_poa_from_bgs_poas(bgs_poas || [])
+  end
+
+  def fetch_person_info(participant_id)
+    bgs_info = MetricsService.record("BGS: fetch person info by participant id: #{participant_id}",
+                                     service: :bgs,
+                                     name: "people.find_person_by_ptcpnt_id") do
+      client.people.find_person_by_ptcpnt_id(participant_id)
+    end
+
+    return {} unless bgs_info
+
+    parse_person_info(bgs_info)
+  end
+
+  def fetch_person_by_ssn(ssn)
+    bgs_info = MetricsService.record("BGS: fetch person by ssn: #{ssn}",
+                                     service: :bgs,
+                                     name: "people.find_by_ssn") do
+      client.people.find_by_ssn(ssn)
+    end
+
+    return {} unless bgs_info
+
+    parse_person_info(bgs_info)
+  end
+
+  def parse_person_info(bgs_info)
+    {
+      first_name: bgs_info[:first_nm],
+      last_name: bgs_info[:last_nm],
+      middle_name: bgs_info[:middle_nm],
+      name_suffix: bgs_info[:suffix_nm],
+      birth_date: bgs_info[:brthdy_dt],
+      email_address: bgs_info[:email_addr],
+      file_number: bgs_info[:file_nbr]
+    }
   end
 
   def check_sensitivity(file_number)
@@ -118,30 +205,5 @@ class ExternalApi::BGSService
     fail BGS::InvalidApplication if error.message =~ /Application Does Not Exist/
     fail BGS::NoCaseflowAccess if error.message =~ /TODO unknown error string/
     {}
-  end
-
-  private
-
-  def current_user
-    RequestStore[:current_user]
-  end
-
-  def init_client(username: current_user.css_id, station_id: current_user.station_id)
-    forward_proxy_url = FeatureToggle.enabled?(:bgs_forward_proxy) ? ENV["RUBY_BGS_PROXY_BASE_URL"] : nil
-
-    # We hardcode the ip since all clients show up as a single IP anyway.
-    BGS::Services.new(
-      env: Rails.application.config.bgs_environment,
-      application: "CASEFLOW",
-      client_ip: "10.236.66.133",
-      client_station_id: station_id,
-      client_username: username,
-      ssl_cert_key_file: ENV["BGS_KEY_LOCATION"],
-      ssl_cert_file: ENV["BGS_CERT_LOCATION"],
-      ssl_ca_cert: ENV["BGS_CA_CERT_LOCATION"],
-      forward_proxy_url: forward_proxy_url,
-      jumpbox_url: ENV["RUBY_BGS_JUMPBOX_URL"],
-      log: true
-    )
   end
 end

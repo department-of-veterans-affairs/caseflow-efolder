@@ -5,6 +5,11 @@ class Fakes::BGSService
 
   attr_accessor :client
 
+  class << self
+    def init_client(username: true, station_id: true)
+    end
+  end
+
   def fetch_user_info(username, station_id = nil)
     fail "Must define current_user" unless RequestStore[:current_user] # mock what real service requires
 
@@ -114,4 +119,12 @@ class Fakes::BGSService
   def veteran_info; end
 
   def sensitive_files; end
+
+  def fetch_person_info; end
+
+  def fetch_person_by_ssn; end
+
+  def fetch_poa_by_file_number; end
+
+  def fetch_poas_by_participant_ids; end
 end
