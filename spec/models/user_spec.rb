@@ -82,4 +82,33 @@ describe User do
       end
     end
   end
+
+  context "#css_record" do
+    subject { described_class.new(css_id: "foobar", station_id: "101") }
+
+    let(:bgs_service) { double("bgs") }
+    let(:bgs_client) { double("client") }
+    let(:bgs_security) { double("security") }
+    let(:bgs_user_record) do
+      {
+        email_address: "foo@example.com",
+        last_name: "Bar",
+        participant_id: "123"
+      }
+    end
+
+    before do
+      allow(bgs_service).to receive(:client) { bgs_client }
+      allow(bgs_client).to receive(:common_security) { bgs_security }
+      allow(bgs_security).to receive(:get_security_profile).with(
+        username: subject.css_id, station_id: subject.station_id, application: "Caseflow"
+      ) { bgs_user_record }
+      allow(subject).to receive(:bgs) { bgs_service }
+    end
+
+    it "returns CSS security profile" do
+      expect(subject.css_record[:email_address]).to eq "foo@example.com"
+      expect(subject.participant_id).to eq "123"
+    end
+  end
 end
