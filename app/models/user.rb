@@ -40,6 +40,22 @@ class User < ApplicationRecord
     Functions.denied?(thing, css_id)
   end
 
+  def css_record
+    @css_record ||= bgs.client.common_security.get_security_profile(
+      username: css_id,
+      station_id: station_id,
+      application: "Caseflow"
+    )
+  end
+
+  def participant_id
+    super || css_record[:participant_id]
+  end
+
+  def bgs
+    @bgs ||= BGSService.new
+  end
+
   # v2 method
   def recent_downloads
     files_downloads.where(requested_zip_at: Manifest::UI_HOURS_UNTIL_EXPIRY.hours.ago..Time.zone.now)
