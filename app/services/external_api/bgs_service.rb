@@ -46,6 +46,7 @@ class ExternalApi::BGSService
       "veteran_last_name" => veteran_data[:last_name],
       "veteran_last_four_ssn" => last_four_ssn,
       participant_id: veteran_data[:ptcpnt_id], # key is symbol not string
+      deceased: veteran_data[:date_of_death].present?,
       "return_message" => veteran_data[:return_message]
     }
   end
@@ -65,8 +66,8 @@ class ExternalApi::BGSService
   def fetch_poa_by_file_number(file_number)
     bgs_poa = MetricsService.record("BGS: fetch poa for file number: #{file_number}",
                                     service: :bgs,
-                                    name: "org.find_poas_by_file_number") do
-      client.org.find_poas_by_file_number(file_number)
+                                    name: "claimants.find_poas_by_file_number") do
+      client.claimants.find_poa_by_file_number(file_number)
     end
     get_claimant_poa_from_bgs_poa(bgs_poa)
   end
