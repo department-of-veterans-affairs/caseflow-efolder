@@ -164,7 +164,7 @@ class ExternalApi::BGSService
     return iam_fake_authz(username, station_id) if !Rails.deploy_env?(:prod) && FeatureToggle.enabled?(:use_ssoi_iam_fake_authz)
 
     # always use system user for initial request
-    station_client = init_client(username: User.system_user.css_id, station_id: User.system_user.station_id)
+    station_client = self.class.init_client(username: User.system_user.css_id, station_id: User.system_user.station_id)
     resp = station_client.common_security.get_css_user_stations(username)
     # example
     # {:network_login_name=>"CF_Q_283", :user_application=>"CASEFLOW", :user_stations=>{:enabled=>true, :id=>"283", :name=>"Hines SDC", :role=>"User"}}
