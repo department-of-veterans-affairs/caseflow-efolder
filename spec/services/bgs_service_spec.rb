@@ -100,9 +100,12 @@ describe ExternalApi::BGSService do
     allow(bgs_client).to receive(:claimants) { bgs_claimants_service }
     allow(bgs_client).to receive(:common_security) { bgs_security_service }
     allow(bgs_client).to receive(:benefit_claims) { bgs_benefit_claims_service }
-    allow(bgs_org_service).to receive(:find_poas_by_file_number).with(file_number) { bgs_org_poa_response }
-    allow(bgs_claimants_service).to receive(:find_poa_by_file_number).with(file_number) { bgs_claimants_poa_response }
-    allow(bgs_claimants_service).to receive(:find_poa_by_participant_id).with(participant_id) { bgs_claimants_poa_response }
+    allow(bgs_org_service).to receive(:find_poas_by_file_number)
+      .with(file_number) { bgs_org_poa_response }
+    allow(bgs_claimants_service).to receive(:find_poa_by_file_number)
+      .with(file_number) { bgs_claimants_poa_response }
+    allow(bgs_claimants_service).to receive(:find_poa_by_participant_id)
+      .with(participant_id) { bgs_claimants_poa_response }
     allow(bgs_org_service).to receive(:find_poas_by_ptcpnt_ids).with(pids) { bgs_org_poa_response }
     allow(bgs_veteran_service).to receive(:find_by_file_number).with(file_number) { bgs_veteran_response }
     allow(bgs_people_service).to receive(:find_person_by_ptcpnt_id).with(participant_id) { bgs_person_response }
@@ -110,7 +113,8 @@ describe ExternalApi::BGSService do
     allow(bgs_security_service).to receive(:get_css_user_stations).with(css_id) { bgs_css_user_stations_response }
     allow(bgs_security_service).to receive(:get_security_profile)
       .with(username: css_id, station_id: station_id, application: "CASEFLOW") { bgs_css_user_profile_response }
-    allow(bgs_benefit_claims_service).to receive(:find_claim_by_file_number).with(file_number) { bgs_benefit_claims_response }
+    allow(bgs_benefit_claims_service).to receive(:find_claim_by_file_number)
+      .with(file_number) { bgs_benefit_claims_response }
   end
 
   context "#parse_veteran_info" do
