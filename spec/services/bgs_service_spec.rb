@@ -79,6 +79,18 @@ describe ExternalApi::BGSService do
       }
     ]
   end
+  let(:bgs_veteran_response) do
+    {
+      first_name: "Bob",
+      last_name: "Marley",
+      ssn: "666001234",
+      return_message: "hello world",
+      date_of_death: veteran_date_of_death,
+      file_number: file_number,
+      ptcpnt_id: participant_id
+    }
+  end
+  let(:veteran_date_of_death) { "2020/03/29" }
 
   before do
     allow(ExternalApi::BGSService).to receive(:init_client) { bgs_client }

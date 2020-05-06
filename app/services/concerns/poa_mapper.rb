@@ -3,6 +3,7 @@ module POAMapper
 
   # used by fetch_poas_by_participant_ids (for Claimants)
   def get_claimant_poa_from_bgs_poa(bgs_record = {})
+    bgs_record ||= {}
     return {} unless bgs_record.dig(:power_of_attorney)
 
     bgs_rep = bgs_record[:power_of_attorney]
@@ -22,6 +23,7 @@ module POAMapper
 
   # used by fetch_poa_by_file_number
   def get_claimant_poa_from_bgs_claimants_poa(bgs_record = {})
+    bgs_record ||= {}
     return {} unless bgs_record.dig(:relationship_name)
 
     {

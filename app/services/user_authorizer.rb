@@ -1,4 +1,4 @@
-#
+# frozen_string_literal: true
 
 # determine authorization rules for whether a User can view
 # an efolder for file number.
@@ -13,10 +13,21 @@
 
 class UserAuthorizer
   attr_reader :file_number, :user
+  attr_reader :sensitive_file, :poa_denied
 
   def initialize(file_number:, user:)
     @file_number = file_number
     @user = user
+  end
+
+  def can_read_efolder?
+    return true if veteran_record.present?
+
+    return false if sensitive_file
+
+    return true if poa_denied && (veteran_poa? || claimant_poa?)
+
+    false
   end
 
   def veteran_poa?
@@ -34,10 +45,21 @@ class UserAuthorizer
   end
 
   def veteran_deceased?
-    veteran_record[:deceased]
+    system_veteran_record.dig(:deceased)
+  end
+
+  def veteran_record
+    @veteran_record ||= fetch_veteran_record
   end
 
   private
+
+  attr_writer :sensitive_file, :poa_denied
+
+  def system_veteran_record
+    # if there is a veteran_record, save ourselves a trip to BGS.
+    @system_veteran_record ||= veteran_record.present? ? veteran_record : fetch_veteran_record_as_system_user
+  end
 
   def veteran_claimants
     @veteran_claimants ||= build_veteran_claimants
@@ -59,8 +81,16 @@ class UserAuthorizer
     @poas_for_claimant[participant_id] ||= bgs.fetch_poa_by_participant_id(participant_id)
   end
 
-  def veteran_record
-    @veteran_record ||= bgs.fetch_veteran_info(file_number)
+  def fetch_veteran_record
+    bgs.fetch_veteran_info(file_number)
+  rescue StandardError => e
+    self.sensitive_file = true if e.message.include?("Sensitive File - Access Violation")
+    self.poa_denied = true if e.message.include?("Power of Attorney of Folder is")
+    {}
+  end
+
+  def fetch_veteran_record_as_system_user
+    system_bgs.fetch_veteran_info(file_number)
   end
 
   def poa_participant_id
@@ -73,5 +103,14 @@ class UserAuthorizer
 
   def bgs
     @bgs ||= BGSService.new
+  end
+
+  def system_bgs
+    @system_bgs ||= BGSService.new(
+      client: BGSService.init_client(
+        username: User.system_user.css_id,
+        station_id: User.system_user.station_id
+      )
+    )
   end
 end
