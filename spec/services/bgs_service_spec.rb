@@ -11,9 +11,11 @@ describe ExternalApi::BGSService do
   let(:bgs_security_service) { double("security") }
   let(:bgs_org_service) { double("org") }
   let(:bgs_claimants_service) { double("claimants") }
+  let(:bgs_benefit_claims_service) { double("benefit_claims") }
   let(:bgs_client) { double("BGS::Services") }
   let(:file_number) { "666001234" }
   let(:participant_id) { "123" }
+  let(:spouse_participant_id) { "456" }
   let(:pids) { [participant_id] }
   let(:bgs_org_poa_response) do
     {
@@ -64,6 +66,19 @@ describe ExternalApi::BGSService do
       :user_stations=>{:enabled=>true, :id=>"283", :name=>"Hines SDC", :role=>"User"}
     }
   end
+  let(:bgs_benefit_claims_response) do
+    [
+      {
+        :payee_type_cd=>"10",
+        :payee_type_nm=>"Spouse",
+        :pgm_type_cd=>"CPD",
+        :pgm_type_nm=>"Compensation-Pension Death",
+        :ptcpnt_clmant_id=> spouse_participant_id,
+        :ptcpnt_vet_id=> participant_id,
+        :status_type_nm=>"Cleared"
+      }
+    ]
+  end
 
   before do
     allow(ExternalApi::BGSService).to receive(:init_client) { bgs_client }
@@ -72,8 +87,10 @@ describe ExternalApi::BGSService do
     allow(bgs_client).to receive(:veteran) { bgs_veteran_service }
     allow(bgs_client).to receive(:claimants) { bgs_claimants_service }
     allow(bgs_client).to receive(:common_security) { bgs_security_service }
+    allow(bgs_client).to receive(:benefit_claims) { bgs_benefit_claims_service }
     allow(bgs_org_service).to receive(:find_poas_by_file_number).with(file_number) { bgs_org_poa_response }
     allow(bgs_claimants_service).to receive(:find_poa_by_file_number).with(file_number) { bgs_claimants_poa_response }
+    allow(bgs_claimants_service).to receive(:find_poa_by_participant_id).with(participant_id) { bgs_claimants_poa_response }
     allow(bgs_org_service).to receive(:find_poas_by_ptcpnt_ids).with(pids) { bgs_org_poa_response }
     allow(bgs_veteran_service).to receive(:find_by_file_number).with(file_number) { bgs_veteran_response }
     allow(bgs_people_service).to receive(:find_person_by_ptcpnt_id).with(participant_id) { bgs_person_response }
@@ -81,6 +98,7 @@ describe ExternalApi::BGSService do
     allow(bgs_security_service).to receive(:get_css_user_stations).with(css_id) { bgs_css_user_stations_response }
     allow(bgs_security_service).to receive(:get_security_profile)
       .with(username: css_id, station_id: station_id, application: "CASEFLOW") { bgs_css_user_profile_response }
+    allow(bgs_benefit_claims_service).to receive(:find_claim_by_file_number).with(file_number) { bgs_benefit_claims_response }
   end
 
   context "#parse_veteran_info" do
@@ -197,6 +215,14 @@ describe ExternalApi::BGSService do
     end
   end
 
+  context "#fetch_poa_by_participant_id" do
+    subject { bgs_service.fetch_poa_by_participant_id(participant_id) }
+
+    it "returns POA info" do
+      expect(subject[:representative_name]).to eq "PARALYZED VETERANS OF AMERICA, INC."
+    end
+  end
+
   context "#fetch_user_info" do
     subject { bgs_service.fetch_user_info(css_id, station_id) }
 
@@ -205,6 +231,15 @@ describe ExternalApi::BGSService do
       expect(user[:css_id]).to eq css_id
       expect(user[:station_id]).to eq station_id
       expect(user[:email]).to eq "caseflow@example.com"
+    end
+  end
+
+  context "#fetch_claims_for_file_number" do
+    subject { bgs_service.fetch_claims_for_file_number(file_number) }
+
+    it "returns array of claims" do
+      expect(subject).to be_a Array
+      expect(subject.first[:ptcpnt_clmant_id]).to eq spouse_participant_id
     end
   end
 end

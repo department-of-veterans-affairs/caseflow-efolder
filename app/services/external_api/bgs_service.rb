@@ -62,12 +62,22 @@ class ExternalApi::BGSService
     parse_veteran_info(veteran_data) if veteran_data
   end
 
-  # For Claimant POA
+  # For Claimant POA by file number
   def fetch_poa_by_file_number(file_number)
     bgs_poa = MetricsService.record("BGS: fetch poa for file number: #{file_number}",
                                     service: :bgs,
-                                    name: "claimants.find_poas_by_file_number") do
+                                    name: "claimants.find_poa_by_file_number") do
       client.claimants.find_poa_by_file_number(file_number)
+    end
+    get_claimant_poa_from_bgs_claimants_poa(bgs_poa)
+  end
+
+  # For Claimant POA by PID
+  def fetch_poa_by_participant_id(participant_id)
+    bgs_poa = MetricsService.record("BGS: fetch poa for participant id: #{participant_id}",
+                                    service: :bgs,
+                                    name: "claimants.find_poa_by_participant_id") do
+      client.claimants.find_poa_by_participant_id(participant_id)
     end
     get_claimant_poa_from_bgs_claimants_poa(bgs_poa)
   end
@@ -83,6 +93,16 @@ class ExternalApi::BGSService
 
     # Avoid passing nil
     get_hash_of_poa_from_bgs_poas(bgs_poas || [])
+  end
+
+  def fetch_claims_for_file_number(file_number)
+    bgs_info = MetricsService.record("BGS: fetch claims by file number: #{file_number}",
+                                     service: :bgs,
+                                     name: "benefit_claims.find_claim_by_file_number") do
+      client.benefit_claims.find_claim_by_file_number(file_number)
+    end
+
+    bgs_info
   end
 
   def fetch_person_info(participant_id)
