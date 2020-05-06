@@ -17,7 +17,7 @@ class RecordFetcher
     Rails.logger.error("Caught #{error}")
     nil
   ensure
-    s.unlock
+    s&.unlock
   end
 
   private
