@@ -69,7 +69,7 @@ class ExternalApi::BGSService
                                     name: "claimants.find_poas_by_file_number") do
       client.claimants.find_poa_by_file_number(file_number)
     end
-    get_claimant_poa_from_bgs_poa(bgs_poa)
+    get_claimant_poa_from_bgs_claimants_poa(bgs_poa)
   end
 
   # The participant IDs here are for Claimants.

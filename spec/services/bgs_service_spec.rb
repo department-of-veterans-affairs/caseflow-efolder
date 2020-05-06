@@ -10,11 +10,12 @@ describe ExternalApi::BGSService do
   let(:bgs_people_service) { double("people") }
   let(:bgs_security_service) { double("security") }
   let(:bgs_org_service) { double("org") }
+  let(:bgs_claimants_service) { double("claimants") }
   let(:bgs_client) { double("BGS::Services") }
   let(:file_number) { "666001234" }
   let(:participant_id) { "123" }
   let(:pids) { [participant_id] }
-  let(:bgs_poa_response) do
+  let(:bgs_org_poa_response) do
     {
       file_number: "071-claimant-appeal-file-number",
       ptcpnt_id: participant_id,
@@ -24,6 +25,15 @@ describe ExternalApi::BGSService do
         org_type_nm: "POA National Organization",
         ptcpnt_id: "123456"
       }
+    }
+  end
+  let(:bgs_claimants_poa_response) do
+    {
+      person_org_name: "PARALYZED VETERANS OF AMERICA, INC.",
+      person_org_ptcpnt_id: "123456",
+      person_organization_name: "POA Attorney",
+      relationship_name: "Power of Attorney For",
+      veteran_ptcpnt_id: participant_id
     }
   end
   let(:bgs_person_response) do
@@ -40,8 +50,10 @@ describe ExternalApi::BGSService do
     allow(bgs_client).to receive(:org) { bgs_org_service }
     allow(bgs_client).to receive(:people) { bgs_people_service }
     allow(bgs_client).to receive(:veteran) { bgs_veteran_service }
-    allow(bgs_org_service).to receive(:find_poas_by_file_number).with(file_number) { bgs_poa_response }
-    allow(bgs_org_service).to receive(:find_poas_by_ptcpnt_ids).with(pids) { bgs_poa_response }
+    allow(bgs_client).to receive(:claimants) { bgs_claimants_service }
+    allow(bgs_org_service).to receive(:find_poas_by_file_number).with(file_number) { bgs_org_poa_response }
+    allow(bgs_claimants_service).to receive(:find_poa_by_file_number).with(file_number) { bgs_claimants_poa_response }
+    allow(bgs_org_service).to receive(:find_poas_by_ptcpnt_ids).with(pids) { bgs_org_poa_response }
     allow(bgs_veteran_service).to receive(:find_by_file_number).with(file_number) { bgs_veteran_response }
     allow(bgs_people_service).to receive(:find_person_by_ptcpnt_id).with(participant_id) { bgs_person_response }
     allow(bgs_people_service).to receive(:find_by_ssn).with(ssn) { bgs_person_response }
