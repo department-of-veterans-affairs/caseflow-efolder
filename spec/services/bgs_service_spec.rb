@@ -45,18 +45,42 @@ describe ExternalApi::BGSService do
     }
   end
   let(:ssn) { "123-43-1111" }
+  let(:css_id) { "AUSER" }
+  let(:station_id) { "283" }
+  let(:bgs_css_user_profile_response) do
+    {
+      :appl_role=>"User", :bdn_num=>"1002", :email_address=>"caseflow@example.com",
+      :file_num=>nil, :first_name=>"TEST", :functions=>[
+        {:assigned_value=>"NO", :disable_ind=>"N", :name=>"Download eFolder"},
+        {:assigned_value=>"NO", :disable_ind=>"N", :name=>"System Admin"}
+      ],
+      :job_title=>"Example Review Officer", :last_name=>"ONE", :message=>"Success", :middle_name=>nil, :participant_id=>"123"
+    }
+  end
+  let(:bgs_css_user_stations_response) do
+    {
+      :network_login_name=>"AUSER",
+      :user_application=>"CASEFLOW",
+      :user_stations=>{:enabled=>true, :id=>"283", :name=>"Hines SDC", :role=>"User"}
+    }
+  end
 
   before do
+    allow(ExternalApi::BGSService).to receive(:init_client) { bgs_client }
     allow(bgs_client).to receive(:org) { bgs_org_service }
     allow(bgs_client).to receive(:people) { bgs_people_service }
     allow(bgs_client).to receive(:veteran) { bgs_veteran_service }
     allow(bgs_client).to receive(:claimants) { bgs_claimants_service }
+    allow(bgs_client).to receive(:common_security) { bgs_security_service }
     allow(bgs_org_service).to receive(:find_poas_by_file_number).with(file_number) { bgs_org_poa_response }
     allow(bgs_claimants_service).to receive(:find_poa_by_file_number).with(file_number) { bgs_claimants_poa_response }
     allow(bgs_org_service).to receive(:find_poas_by_ptcpnt_ids).with(pids) { bgs_org_poa_response }
     allow(bgs_veteran_service).to receive(:find_by_file_number).with(file_number) { bgs_veteran_response }
     allow(bgs_people_service).to receive(:find_person_by_ptcpnt_id).with(participant_id) { bgs_person_response }
     allow(bgs_people_service).to receive(:find_by_ssn).with(ssn) { bgs_person_response }
+    allow(bgs_security_service).to receive(:get_css_user_stations).with(css_id) { bgs_css_user_stations_response }
+    allow(bgs_security_service).to receive(:get_security_profile)
+      .with(username: css_id, station_id: station_id, application: "CASEFLOW") { bgs_css_user_profile_response }
   end
 
   context "#parse_veteran_info" do
@@ -170,6 +194,17 @@ describe ExternalApi::BGSService do
 
     it "returns POA info" do
       expect(subject[:representative_name]).to eq "PARALYZED VETERANS OF AMERICA, INC."
+    end
+  end
+
+  context "#fetch_user_info" do
+    subject { bgs_service.fetch_user_info(css_id, station_id) }
+
+    it "returns User hash summary" do
+      user = subject
+      expect(user[:css_id]).to eq css_id
+      expect(user[:station_id]).to eq station_id
+      expect(user[:email]).to eq "caseflow@example.com"
     end
   end
 end
