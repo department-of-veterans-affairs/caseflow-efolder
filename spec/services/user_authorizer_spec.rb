@@ -93,19 +93,23 @@ describe UserAuthorizer do
   before do
     allow(authorizer).to receive(:bgs) { bgs_service }
     allow(authorizer).to receive(:system_bgs) { system_bgs_service }
-    #allow(ExternalApi::BGSService).to receive(:init_client) { bgs_client }
     allow(bgs_client).to receive(:veteran) { bgs_veteran_service }
     allow(system_bgs_client).to receive(:veteran) { system_bgs_veteran_service }
     allow(bgs_client).to receive(:claimants) { bgs_claimants_service }
     allow(bgs_client).to receive(:common_security) { bgs_security_service }
     allow(bgs_client).to receive(:benefit_claims) { bgs_benefit_claims_service }
-    allow(bgs_claimants_service).to receive(:find_poa_by_file_number).with(file_number) { bgs_claimants_poa_fn_response }
-    allow(bgs_claimants_service).to receive(:find_poa_by_participant_id).with(claimant_participant_id) { bgs_claimants_poa_pid_response }
-    allow(bgs_veteran_service).to receive(:find_by_file_number).with(file_number) { bgs_veteran_response }
-    allow(system_bgs_veteran_service).to receive(:find_by_file_number).with(file_number) { bgs_veteran_response }
+    allow(bgs_claimants_service).to receive(:find_poa_by_file_number)
+      .with(file_number) { bgs_claimants_poa_fn_response }
+    allow(bgs_claimants_service).to receive(:find_poa_by_participant_id)
+      .with(claimant_participant_id) { bgs_claimants_poa_pid_response }
+    allow(bgs_veteran_service).to receive(:find_by_file_number)
+      .with(file_number) { bgs_veteran_response }
+    allow(system_bgs_veteran_service).to receive(:find_by_file_number)
+      .with(file_number) { bgs_veteran_response }
     allow(bgs_security_service).to receive(:get_security_profile)
       .with(username: css_id, station_id: station_id, application: "CASEFLOW") { bgs_css_user_profile_response }
-    allow(bgs_benefit_claims_service).to receive(:find_claim_by_file_number).with(file_number) { bgs_benefit_claims_response }
+    allow(bgs_benefit_claims_service).to receive(:find_claim_by_file_number)
+      .with(file_number) { bgs_benefit_claims_response }
   end
 
   describe "#new" do
