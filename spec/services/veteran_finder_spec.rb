@@ -36,6 +36,7 @@ describe VeteranFinder do
           claim: veteran_claim_number,
           file: veteran_ssn,
           participant_id: "456",
+          deceased: false,
           "file_number" => veteran_ssn,
           "veteran_first_name" => veteran_record[:first_name],
           "veteran_last_name"  => veteran_record[:last_name],
@@ -47,6 +48,7 @@ describe VeteranFinder do
           claim: veteran_claim_number,
           file: veteran_claim_number,
           participant_id: "123",
+          deceased: false,
           "file_number" => veteran_claim_number,
           "veteran_first_name" => veteran_record[:first_name],
           "veteran_last_name"  => veteran_record[:last_name],
@@ -90,6 +92,28 @@ describe VeteranFinder do
             claim: veteran_claim_number,
             file: "",
             participant_id: "123",
+            deceased: false,
+            "file_number" => veteran_claim_number,
+            "veteran_first_name" => veteran_record[:first_name],
+            "veteran_last_name"  => veteran_record[:last_name],
+            "veteran_last_four_ssn" => veteran_ssn[-4..-1],
+            "return_message" => veteran_record[:return_message]
+          }
+        ])
+      end
+    end
+
+    context "date of death defined" do
+      let(:veteran_info) { { veteran_ssn => veteran_record.merge(ptcpnt_id: "123", date_of_death: "2020/03/29") } }
+
+      it "sets deceased flag to true" do
+        expect(subject).to eq([
+          {
+            ssn: veteran_ssn,
+            claim: veteran_claim_number,
+            file: nil,
+            participant_id: "123",
+            deceased: true,
             "file_number" => veteran_claim_number,
             "veteran_first_name" => veteran_record[:first_name],
             "veteran_last_name"  => veteran_record[:last_name],
@@ -111,6 +135,7 @@ describe VeteranFinder do
             claim: veteran_claim_number,
             file: veteran_ssn,
             participant_id: "123",
+            deceased: false,
             "file_number" => veteran_ssn,
             "veteran_first_name" => veteran_record[:first_name],
             "veteran_last_name"  => veteran_record[:last_name],

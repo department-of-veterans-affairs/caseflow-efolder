@@ -2,7 +2,6 @@ module POAMapper
   extend ActiveSupport::Concern
 
   # used by fetch_poas_by_participant_ids (for Claimants)
-  # and fetch_poa_by_file_number
   def get_claimant_poa_from_bgs_poa(bgs_record = {})
     return {} unless bgs_record.dig(:power_of_attorney)
 
@@ -18,6 +17,20 @@ module POAMapper
       legacy_poa_cd: bgs_rep[:legacy_poa_cd],
       file_number: bgs_record[:file_number],
       claimant_participant_id: bgs_record[:ptcpnt_id]
+    }
+  end
+
+  # used by fetch_poa_by_file_number
+  def get_claimant_poa_from_bgs_claimants_poa(bgs_record = {})
+    return {} unless bgs_record.dig(:relationship_name)
+
+    {
+      participant_id: bgs_record[:person_org_ptcpnt_id],
+      representative_name: bgs_record[:person_org_name],
+      representative_type: bgs_record[:person_organization_name],
+      authzn_change_clmant_addrs_ind: bgs_record[:authzn_change_clmant_addrs_ind],
+      authzn_poa_access_ind: bgs_record[:authzn_poa_access_ind],
+      veteran_participant_id: bgs_record[:veteran_ptcpnt_id]
     }
   end
 
