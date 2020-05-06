@@ -60,12 +60,6 @@ describe UserAuthorizer do
   end
   let(:bgs_css_user_profile_response) do
     {
-      :appl_role=>"User", :bdn_num=>"1002", :email_address=>"caseflow@example.com",
-      :file_num=>nil, :first_name=>"TEST", :functions=>[
-        {:assigned_value=>"NO", :disable_ind=>"N", :name=>"Download eFolder"},
-        {:assigned_value=>"NO", :disable_ind=>"N", :name=>"System Admin"}
-      ],
-      :job_title=>"Example Review Officer", :last_name=>"ONE", :message=>"Success", :middle_name=>nil,
       participant_id: user.participant_id
     }
   end
