@@ -44,7 +44,7 @@ class User < ApplicationRecord
     @css_record ||= bgs.client.common_security.get_security_profile(
       username: css_id,
       station_id: station_id,
-      application: "Caseflow"
+      application: "CASEFLOW"
     )
   end
 

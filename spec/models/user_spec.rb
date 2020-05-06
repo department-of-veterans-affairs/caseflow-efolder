@@ -101,7 +101,7 @@ describe User do
       allow(bgs_service).to receive(:client) { bgs_client }
       allow(bgs_client).to receive(:common_security) { bgs_security }
       allow(bgs_security).to receive(:get_security_profile).with(
-        username: subject.css_id, station_id: subject.station_id, application: "Caseflow"
+        username: subject.css_id, station_id: subject.station_id, application: "CASEFLOW"
       ) { bgs_user_record }
       allow(subject).to receive(:bgs) { bgs_service }
     end
