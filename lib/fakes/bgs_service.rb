@@ -134,4 +134,6 @@ class Fakes::BGSService
   def fetch_poas_by_participant_ids(pids); end
 
   def fetch_poa_by_participant_id(pid); end
+
+  def fetch_claims_for_file_number(fn); end
 end

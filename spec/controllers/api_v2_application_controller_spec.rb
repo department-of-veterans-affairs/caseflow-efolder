@@ -34,13 +34,26 @@ describe Api::V2::ApplicationController do
   let(:veteran_participant_id) { "123" }
   let(:poa_participant_id) { "345" }
   let(:claimant_participant_id) { "456" }
-  let(:claimants_poa_fn_response) do
+  let(:claimants_poa_response) do
     {
       representative_name: "A Lawyer",
       participant_id: poa_participant_id,
       representative_type: "POA Attorney",
       veteran_participant_id: veteran_participant_id
     }
+  end
+  let(:benefit_claims_response) do
+    [
+      {
+        payee_type_cd: "10",
+        payee_type_nm: "Spouse",
+        pgm_type_cd: "CPD",
+        pgm_type_nm: "Compensation-Pension Death",
+        ptcpnt_clmant_id: claimant_participant_id,
+        ptcpnt_vet_id: veteran_participant_id,
+        status_type_nm: "Cleared"
+      }
+    ]
   end
 
   let(:body) { JSON.parse(response.body, symbolize_names: true) }
@@ -71,11 +84,11 @@ describe Api::V2::ApplicationController do
         RequestStore.store[:current_user] = user
       end
 
-      context "user does not have POA" do
+      context "user does not have POA for Veteran" do
         before do
           allow_any_instance_of(BGSService).to receive(:fetch_veteran_info).with(veteran_id) do |bgs|
             if bgs.client.css_id == User.system_user.css_id
-              veteran_info
+              bgs.parse_veteran_info(veteran_info)
             else
               raise BGS::ShareError.new("Power of Attorney of Folder is none")
             end
@@ -92,10 +105,36 @@ describe Api::V2::ApplicationController do
         end
 
         context "Veteran is deceased" do
-          context "Claimant has POA" do
+          let(:veteran_date_of_death) { "2020/03/29" }
+
+          context "user has POA for Claimant" do
+            before do
+              allow_any_instance_of(BGSService).to receive(:fetch_poa_by_participant_id)
+                .with(claimant_participant_id) { claimants_poa_response }
+              allow_any_instance_of(BGSService).to receive(:fetch_claims_for_file_number)
+                .with(veteran_id) { benefit_claims_response }
+            end
+
+            it "responds with success" do
+              get :index
+
+              expect(response).to be_successful
+              expect(body).to eq(status: veteran_id)
+            end
           end
 
-          context "Claimant does not have POA" do
+          context "user does not have POA for Claimant" do
+            before do
+              allow_any_instance_of(BGSService).to receive(:fetch_poa_by_participant_id)
+                .with(claimant_participant_id) { nil }
+            end
+
+            it "responds with error" do
+              get :index
+
+              expect(response).to_not be_successful
+              expect(body[:status]).to include("This efolder belongs to a Veteran you do not represent")
+            end
           end
         end
       end
@@ -110,7 +149,7 @@ describe Api::V2::ApplicationController do
             end
           end
           allow_any_instance_of(BGSService).to receive(:fetch_poa_by_file_number)
-            .with(veteran_id) { claimants_poa_fn_response }
+            .with(veteran_id) { claimants_poa_response }
         end
 
         it "responds with success" do

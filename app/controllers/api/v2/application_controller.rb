@@ -36,7 +36,6 @@ class Api::V2::ApplicationController < Api::V1::ApplicationController
 
   def fetch_veteran_with_user_authorizer(file_number)
     authorizer = UserAuthorizer.new(user: current_user, file_number: file_number)
-    #binding.pry
     if authorizer.can_read_efolder? && authorizer.veteran_record_found?
       authorizer.veteran_record["file_number"] || file_number
     elsif authorizer.sensitive_file?
