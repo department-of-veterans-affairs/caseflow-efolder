@@ -127,6 +127,81 @@ RSpec.feature "User Error Flows" do
     end
   end
 
+  context "user_authorizer feature toggle on" do
+    before { FeatureToggle.enable!(:user_authorizer) }
+    after { FeatureToggle.disable!(:user_authorizer) }
+
+    let(:veteran_participant_id) { "123" }
+    let(:poa_participant_id) { "345" }
+
+    let(:bgs_claimants_poa_fn_response) do
+      {
+        person_org_name: "A Lawyer",
+        person_org_ptcpnt_id: poa_participant_id,
+        person_organization_name: "POA Attorney",
+        relationship_name: "Power of Attorney For",
+        veteran_ptcpnt_id: veteran_participant_id
+      }
+    end
+
+    before do
+      allow_any_instance_of(BGSService).to receive(:fetch_poa_by_file_number)
+        .with(veteran_id) { bgs_claimants_poa_fn_response }
+    end
+
+    context "When veteran_id has no veteran info" do
+      let(:veteran_info) do
+        {
+          "file_number" => nil,
+          "veteran_first_name" => nil,
+          "veteran_last_name" => nil,
+          "veteran_last_four_ssn" => nil,
+          "return_message" => "No BIRLS record found"
+        }
+      end
+      before do
+        allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info).and_return(veteran_info)
+      end
+
+      scenario "Requesting veteran_id returns cannot find eFolder" do
+        visit "/"
+        fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
+
+        click_button "Search"
+        expect(page).to have_content("could not find an eFolder with the Veteran ID")
+      end
+    end
+
+    context "When veteran id has high sensitivity" do
+      scenario "Cannot access it" do
+        allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info)
+          .and_raise(StandardError.new("Sensitive File - Access Violation"))
+        visit "/"
+        fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
+        click_button "Search"
+
+        expect(page).to have_content("This efolder contains sensitive information")
+      end
+
+      let(:bgs_claimants_poa_fn_response) { nil }
+
+      scenario "VSO cannot access it" do
+        allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info) do |bgs|
+         if bgs.client.css_id == User.system_user.css_id
+            veteran_info
+          else
+            raise BGS::ShareError.new("Power of Attorney of Folder is '071'. Access to this record is denied.")
+          end
+        end
+        visit "/"
+        fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
+        click_button "Search"
+
+        expect(page).to have_content("This efolder belongs to a Veteran you do not represent")
+      end
+    end
+  end
+
   context "When veteran case folder has no documents" do
     before do
       allow(Fakes::VBMSService).to receive(:v2_fetch_documents_for).and_return([])

@@ -140,7 +140,7 @@ describe UserAuthorizer do
 
         it "returns false" do
           expect(subject).to eq false
-          expect(authorizer.sensitive_file).to eq true
+          expect(authorizer.sensitive_file?).to eq true
         end
       end
     end
@@ -177,11 +177,11 @@ describe UserAuthorizer do
 
             it "returns false" do
               expect(subject).to eq false
-              expect(authorizer.poa_denied).to eq true
+              expect(authorizer.veteran_record_poa_denied?).to eq true
               expect(authorizer.veteran_poa?).to eq false
               expect(authorizer.claimant_poa?).to eq false
               expect(authorizer.veteran_deceased?).to eq true
-              expect(authorizer.sensitive_file).to be_falsey
+              expect(authorizer.sensitive_file?).to be_falsey
             end
           end
 
@@ -190,16 +190,13 @@ describe UserAuthorizer do
               expect(subject).to eq true
               expect(authorizer.veteran_poa?).to eq false
               expect(authorizer.claimant_poa?).to eq true
-              expect(authorizer.poa_denied).to eq true
+              expect(authorizer.veteran_record_poa_denied?).to eq true
               expect(authorizer.veteran_deceased?).to eq true
-              expect(authorizer.sensitive_file).to be_falsey
+              expect(authorizer.sensitive_file?).to be_falsey
             end
           end
         end
       end
     end
-  end
-
-  describe "veteran_poa?" do
   end
 end

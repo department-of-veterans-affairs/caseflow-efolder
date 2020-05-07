@@ -13,7 +13,6 @@
 
 class UserAuthorizer
   attr_reader :file_number, :user
-  attr_reader :sensitive_file, :poa_denied
 
   def initialize(file_number:, user:)
     @file_number = file_number
@@ -28,6 +27,14 @@ class UserAuthorizer
     return true if poa_denied && (veteran_poa? || claimant_poa?)
 
     false
+  end
+
+  def sensitive_file?
+    sensitive_file
+  end
+
+  def veteran_record_poa_denied?
+    poa_denied
   end
 
   def veteran_poa?
@@ -52,9 +59,15 @@ class UserAuthorizer
     @veteran_record ||= fetch_veteran_record
   end
 
+  def veteran_record_found?
+    return false if system_veteran_record.blank?
+
+    bgs.record_found?(system_veteran_record)
+  end
+
   private
 
-  attr_writer :sensitive_file, :poa_denied
+  attr_accessor :sensitive_file, :poa_denied
 
   def system_veteran_record
     # if there is a veteran_record, save ourselves a trip to BGS.
@@ -83,18 +96,21 @@ class UserAuthorizer
 
   def fetch_veteran_record
     bgs.fetch_veteran_info(file_number)
-  rescue StandardError => e
-    self.sensitive_file = true if e.message.include?("Sensitive File - Access Violation")
-    self.poa_denied = true if e.message.include?("Power of Attorney of Folder is")
+  rescue StandardError => err
+    self.sensitive_file = true if err.message.include?("Sensitive File - Access Violation")
+    self.poa_denied = true if err.message.include?("Power of Attorney of Folder is")
     {}
   end
 
   def fetch_veteran_record_as_system_user
     system_bgs.fetch_veteran_info(file_number)
+  rescue StandardError => err
+    # to do: log?
+    raise err
   end
 
   def poa_participant_id
-    file_number_poa.dig(:participant_id)
+    file_number_poa&.dig(:participant_id)
   end
 
   def file_number_poa

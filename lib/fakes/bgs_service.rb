@@ -7,7 +7,12 @@ class Fakes::BGSService
 
   class << self
     def init_client(username: true, station_id: true)
+      OpenStruct.new(css_id: username, station_id: station_id)
     end
+  end
+
+  def initialize(client: nil)
+    @client = client || self.class.init_client
   end
 
   def fetch_user_info(username, station_id = nil)
@@ -120,11 +125,13 @@ class Fakes::BGSService
 
   def sensitive_files; end
 
-  def fetch_person_info; end
+  def fetch_person_info(pid); end
 
-  def fetch_person_by_ssn; end
+  def fetch_person_by_ssn(ssn); end
 
-  def fetch_poa_by_file_number; end
+  def fetch_poa_by_file_number(fn); end
 
-  def fetch_poas_by_participant_ids; end
+  def fetch_poas_by_participant_ids(pids); end
+
+  def fetch_poa_by_participant_id(pid); end
 end
