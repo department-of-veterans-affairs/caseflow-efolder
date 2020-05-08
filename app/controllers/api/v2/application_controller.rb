@@ -27,6 +27,29 @@ class Api::V2::ApplicationController < Api::V1::ApplicationController
   end
 
   def fetch_veteran_by_file_number(file_number)
+    if FeatureToggle.enabled?(:user_authorizer, user: current_user)
+      fetch_veteran_with_user_authorizer(file_number)
+    else
+      fetch_veteran_with_bgs_service(file_number)
+    end
+  end
+
+  def fetch_veteran_with_user_authorizer(file_number)
+    authorizer = UserAuthorizer.new(user: current_user, file_number: file_number)
+    if authorizer.can_read_efolder? && authorizer.veteran_record_found?
+      authorizer.veteran_record["file_number"] || file_number
+    elsif authorizer.sensitive_file?
+      sensitive_record
+    elsif authorizer.veteran_record_poa_denied?
+      vso_denied_record
+    elsif !authorizer.veteran_record_found?
+      veteran_not_found(file_number)
+    else
+      raise BGS::ShareError, "Cannot access Veteran record"
+    end
+  end
+
+  def fetch_veteran_with_bgs_service(file_number)
     begin
       veteran_info = bgs_service.fetch_veteran_info(file_number)
     rescue StandardError => e
