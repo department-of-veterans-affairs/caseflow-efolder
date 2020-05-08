@@ -27,7 +27,7 @@ class Api::V2::ApplicationController < Api::V1::ApplicationController
   end
 
   def fetch_veteran_by_file_number(file_number)
-    if FeatureToggle.enabled?(:user_authorizer)
+    if FeatureToggle.enabled?(:user_authorizer, user: current_user)
       fetch_veteran_with_user_authorizer(file_number)
     else
       fetch_veteran_with_bgs_service(file_number)
