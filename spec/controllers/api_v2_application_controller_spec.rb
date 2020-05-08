@@ -139,7 +139,7 @@ describe Api::V2::ApplicationController do
         end
       end
 
-      context "user has POA" do
+      context "user does not have POA for Veteran record but does have POA via BGS claimants" do
         before do
           allow_any_instance_of(BGSService).to receive(:fetch_veteran_info).with(veteran_id) do |bgs|
             if bgs.client.css_id == User.system_user.css_id
