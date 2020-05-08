@@ -20,12 +20,17 @@ class UserAuthorizer
   end
 
   def can_read_efolder?
+    # if the User can read the veteran record, we have no problem.
     return true if veteran_record.present?
 
+    # if the User can not read the veteran record due to sensitivity, abort.
     return false if sensitive_file
 
+    # if the User can not read the veteran record directly,
+    # check for POA rules like VBMS does.
     return true if poa_denied && (veteran_poa? || claimant_poa?)
 
+    # default is no entry.
     false
   end
 
@@ -105,7 +110,6 @@ class UserAuthorizer
   def fetch_veteran_record_as_system_user
     system_bgs.fetch_veteran_info(file_number)
   rescue StandardError => err
-    # to do: log?
     raise err
   end
 
