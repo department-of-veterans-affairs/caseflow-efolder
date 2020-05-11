@@ -2,7 +2,6 @@ class SessionsController < ApplicationController
   skip_before_action :check_out_of_service
   skip_before_action :verify_authenticity_token, only: [:create, :failure, :login, :login_creds]
   skip_before_action :authenticate, only: [:create, :failure, :login, :login_creds]
-  skip_before_action :check_v2_app_access
 
   class MissingSAMLRequest < StandardError; end
 
