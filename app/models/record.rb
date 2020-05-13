@@ -63,7 +63,7 @@ class Record < ApplicationRecord
   end
 
   def accessible_by?(user)
-    user && manifest.downloaded_by?(user)
+    user && manifest.users.include?(user)
   end
 
   def self.create_from_external_document(manifest_source, document)

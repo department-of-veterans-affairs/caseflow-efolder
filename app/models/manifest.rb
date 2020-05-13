@@ -123,10 +123,6 @@ class Manifest < ApplicationRecord
     end
   end
 
-  def downloaded_by?(user)
-    users.include?(user)
-  end
-
   def veteran
     @veteran ||= fetch_veteran
   end
