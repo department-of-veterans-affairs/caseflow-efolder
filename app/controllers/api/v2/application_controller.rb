@@ -35,6 +35,7 @@ class Api::V2::ApplicationController < Api::V1::ApplicationController
   end
 
   def fetch_veteran_with_user_authorizer(file_number)
+    Rails.logger.debug("UserAuthorizer for #{file_number} and current_user #{current_user.css_id}")
     authorizer = UserAuthorizer.new(user: current_user, file_number: file_number)
     if authorizer.can_read_efolder? && authorizer.veteran_record_found?
       authorizer.veteran_record["file_number"] || file_number
