@@ -387,7 +387,6 @@ describe "Manifests API v2", type: :request do
                 .with(claimant_participant_id) { claimants_poa_response }
               allow_any_instance_of(BGSService).to receive(:fetch_claims_for_file_number)
                 .with(veteran_id) { benefit_claims_response }
-              allow_any_instance_of(BGSService).to receive(:fetch_poa_org_record)
                 .with(poa_participant_id) { org_poa_response }
             end
 

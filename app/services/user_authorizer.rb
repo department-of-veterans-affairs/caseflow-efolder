@@ -93,6 +93,10 @@ class UserAuthorizer
     @org_poa_records.map { |poa| poa.dig(:participant_id) }
   end
 
+  private
+
+  attr_accessor :sensitive_file, :poa_denied
+
   def veteran_claimants
     @veteran_claimants ||= build_veteran_claimants
   end
