@@ -89,8 +89,8 @@ class UserAuthorizer
   # the PID on the user record can be used to look up the POA record for the User's org,
   # which has the PID used to reference POA relationships
   def org_poa_participant_id
-    @user_poa_record ||= bgs.fetch_poa_user_record(user.participant_id)
-    @user_poa_record.dig(:participant_id)
+    @org_poa_record ||= bgs.fetch_poa_org_record(user.participant_id)
+    @org_poa_record.dig(:participant_id)
   end
 
   def veteran_claimants

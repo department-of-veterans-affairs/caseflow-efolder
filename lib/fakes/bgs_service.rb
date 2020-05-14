@@ -137,5 +137,5 @@ class Fakes::BGSService
 
   def fetch_claims_for_file_number(fn); end
 
-  def fetch_poa_user_record(pid); end
+  def fetch_poa_org_record(pid); end
 end

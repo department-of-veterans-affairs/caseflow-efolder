@@ -40,8 +40,8 @@ module POAMapper
     end
   end
 
-  # used by fetch_poa_user_record (bgs.client.org)
-  def get_poa_from_bgs_poa(bgs_rep = {})
+  # used by fetch_poa_org_record (bgs.client.org)
+  def get_poa_from_bgs_org_poa(bgs_rep = {})
     return {} unless bgs_rep&.dig(:org_type_nm)
 
     {
