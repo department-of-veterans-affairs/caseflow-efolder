@@ -42,8 +42,7 @@ RSpec.feature "React Downloads" do
     S3Service.files = {}
 
     allow(S3Service).to receive(:stream_content) do |key|
-      return unless key
-
+      binding.pry
       Enumerator.new { |y| y << S3Service.files[key] }
     end
 
