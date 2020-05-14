@@ -3,6 +3,13 @@
 # determine authorization rules for whether a User can view
 # an efolder for file number.
 #
+# The POA lookup dance with BGS API follows this pattern:
+#
+# 1. Find the participant id of the current user (user.participant_id)
+# 2. Find the POA org participant ids with the user's participant id (org_poa_participant_ids).
+# 3. Compare each POA org participant id to the POA record
+#    returned for the file number (participant_id_for_poa_by_file_number)
+#
 # The rules for POA for deceased veteran that VBMS uses:
 #
 # 1. Find if the vet is represented by the POA
@@ -43,16 +50,16 @@ class UserAuthorizer
   end
 
   def veteran_poa?
-    return false if poa_participant_id.blank?
+    return false if participant_id_for_poa_by_file_number.blank?
 
-    poa_participant_id.to_s == user.participant_id.to_s
+    org_poa_participant_ids.map(&:to_s).include? participant_id_for_poa_by_file_number.to_s
   end
 
   def claimant_poa?
     return false unless veteran_deceased?
 
     veteran_claimants.any? do |claim|
-      claim[:poa].dig(:participant_id).to_s == user.participant_id.to_s
+      org_poa_participant_ids.map(&:to_s).include? claim[:poa].dig(:participant_id).to_s
     end
   end
 
@@ -78,6 +85,13 @@ class UserAuthorizer
   private
 
   attr_accessor :sensitive_file, :poa_denied
+
+  # the PID on the user record can be used to look up the POA record for the User's org,
+  # which has the PID used to reference POA relationships
+  def org_poa_participant_ids
+    @org_poa_records ||= bgs.fetch_poa_org_record(user.participant_id)
+    @org_poa_records.map { |poa| poa.dig(:participant_id) }
+  end
 
   def veteran_claimants
     @veteran_claimants ||= build_veteran_claimants
@@ -113,12 +127,12 @@ class UserAuthorizer
     raise err
   end
 
-  def poa_participant_id
-    file_number_poa&.dig(:participant_id)
+  def participant_id_for_poa_by_file_number
+    poa_by_file_number&.dig(:participant_id)
   end
 
-  def file_number_poa
-    @file_number_poa ||= bgs.fetch_poa_by_file_number(file_number)
+  def poa_by_file_number
+    @poa_by_file_number ||= bgs.fetch_poa_by_file_number(file_number)
   end
 
   def bgs

@@ -14,7 +14,7 @@ class PdfService
 
     # pdftk will crash on corrupt PDFs with the "Error: Unable to find file";
     # if this happens, write the file without attributes
-    unless stderr.empty?
+    unless stderr.blank?
       # contents might come back as nil
       Rails.logger.warn("cannot write pdf of size #{contents.try(:size).to_i} via #{command}: #{stderr}")
       File.open(filename, "wb") do |f|

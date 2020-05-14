@@ -7,6 +7,7 @@ describe UserAuthorizer do
   let(:claimant_participant_id) { "5678" }
   let(:bva_participant_id) { "123" }
   let(:poa_participant_id) { "456" }
+  let(:poa_org_participant_id) { "999" }
   let(:bva_user) do
     User.new(
       participant_id: bva_participant_id,
@@ -43,7 +44,7 @@ describe UserAuthorizer do
   let(:bgs_claimants_poa_fn_response) do
     {
       person_org_name: "A Lawyer",
-      person_org_ptcpnt_id: poa_participant_id,
+      person_org_ptcpnt_id: poa_org_participant_id,
       person_organization_name: "POA Attorney",
       relationship_name: "Power of Attorney For",
       veteran_ptcpnt_id: veteran_participant_id
@@ -52,7 +53,7 @@ describe UserAuthorizer do
   let(:bgs_claimants_poa_pid_response) do
     {
       person_org_name: "A Lawyer",
-      person_org_ptcpnt_id: poa_participant_id,
+      person_org_ptcpnt_id: poa_org_participant_id,
       person_organization_name: "POA Attorney",
       relationship_name: "Power of Attorney For",
       veteran_ptcpnt_id: veteran_participant_id
@@ -87,6 +88,13 @@ describe UserAuthorizer do
       ptcpnt_id: veteran_participant_id
     }
   end
+  let(:bgs_poa_user_response) do
+    {
+      nm: "A Lawyer",
+      org_type_nm: "POA Attorney",
+      ptcpnt_id: poa_org_participant_id
+    }
+  end
   let(:veteran_date_of_death) { "" }
   let(:authorizer) { described_class.new(user: user, file_number: file_number) }
 
@@ -98,6 +106,9 @@ describe UserAuthorizer do
     allow(bgs_client).to receive(:claimants) { bgs_claimants_service }
     allow(bgs_client).to receive(:common_security) { bgs_security_service }
     allow(bgs_client).to receive(:benefit_claims) { bgs_benefit_claims_service }
+    allow(bgs_client).to receive(:org) { bgs_org_service }
+    allow(bgs_org_service).to receive(:find_poas_by_ptcpnt_id)
+      .with(poa_participant_id) { bgs_poa_user_response }
     allow(bgs_claimants_service).to receive(:find_poa_by_file_number)
       .with(file_number) { bgs_claimants_poa_fn_response }
     allow(bgs_claimants_service).to receive(:find_poa_by_participant_id)
@@ -170,7 +181,8 @@ describe UserAuthorizer do
               .with(file_number).and_raise(BGS::ShareError.new("Power of Attorney of Folder is none"))
           end
 
-          let(:bgs_claimants_poa_fn_response) { nil } # what BGS returns if no POA is found
+          # what BGS returns if no POA is found
+          let(:bgs_claimants_poa_fn_response) { nil }
 
           context "does not have POA for claimant" do
             let(:bgs_claimants_poa_pid_response) { nil }

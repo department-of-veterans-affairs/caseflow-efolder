@@ -318,10 +318,11 @@ describe "Manifests API v2", type: :request do
     let(:veteran_participant_id) { "123" }
     let(:poa_participant_id) { "345" }
     let(:claimant_participant_id) { "456" }
+    let(:org_poa_participant_id) { "999" }
     let(:claimants_poa_response) do
       {
         representative_name: "A Lawyer",
-        participant_id: poa_participant_id,
+        participant_id: org_poa_participant_id,
         representative_type: "POA Attorney",
         veteran_participant_id: veteran_participant_id
       }
@@ -336,6 +337,15 @@ describe "Manifests API v2", type: :request do
           ptcpnt_clmant_id: claimant_participant_id,
           ptcpnt_vet_id: veteran_participant_id,
           status_type_nm: "Cleared"
+        }
+      ]
+    end
+    let(:org_poa_response) do
+      [
+        {
+          representative_name: "A Lawyer",
+          participant_id: org_poa_participant_id,
+          representative_type: "POA Attorney"
         }
       ]
     end
@@ -377,6 +387,8 @@ describe "Manifests API v2", type: :request do
                 .with(claimant_participant_id) { claimants_poa_response }
               allow_any_instance_of(BGSService).to receive(:fetch_claims_for_file_number)
                 .with(veteran_id) { benefit_claims_response }
+              allow_any_instance_of(BGSService).to receive(:fetch_poa_org_record)
+                .with(poa_participant_id) { org_poa_response }
             end
 
             it "responds with success" do
@@ -415,6 +427,8 @@ describe "Manifests API v2", type: :request do
           end
           allow_any_instance_of(BGSService).to receive(:fetch_poa_by_file_number)
             .with(veteran_id) { claimants_poa_response }
+          allow_any_instance_of(BGSService).to receive(:fetch_poa_org_record)
+            .with(poa_participant_id) { org_poa_response }
         end
 
         it "responds with success" do
