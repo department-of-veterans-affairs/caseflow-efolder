@@ -121,7 +121,7 @@ describe Api::V2::ApplicationController do
                 .with(claimant_participant_id) { claimants_poa_response }
               allow_any_instance_of(BGSService).to receive(:fetch_claims_for_file_number)
                 .with(veteran_id) { benefit_claims_response }
-              allow_any_instance_of(BGSService).to receive(:fetch_poa_user_record)
+              allow_any_instance_of(BGSService).to receive(:fetch_poa_org_record)
                 .with(poa_participant_id) { org_poa_response }
             end
 
@@ -160,7 +160,7 @@ describe Api::V2::ApplicationController do
           end
           allow_any_instance_of(BGSService).to receive(:fetch_poa_by_file_number)
             .with(veteran_id) { claimants_poa_response }
-          allow_any_instance_of(BGSService).to receive(:fetch_poa_user_record)
+          allow_any_instance_of(BGSService).to receive(:fetch_poa_org_record)
             .with(poa_participant_id) { org_poa_response }
         end
 
