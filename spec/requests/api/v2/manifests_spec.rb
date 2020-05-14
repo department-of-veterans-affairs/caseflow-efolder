@@ -341,11 +341,13 @@ describe "Manifests API v2", type: :request do
       ]
     end
     let(:org_poa_response) do
-      {
-        representative_name: "A Lawyer",
-        participant_id: org_poa_participant_id,
-        representative_type: "POA Attorney"
-      }
+      [
+        {
+          representative_name: "A Lawyer",
+          participant_id: org_poa_participant_id,
+          representative_type: "POA Attorney"
+        }
+      ]
     end
 
     let(:body) { JSON.parse(response.body, symbolize_names: true) }

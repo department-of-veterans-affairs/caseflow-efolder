@@ -44,11 +44,13 @@ describe Api::V2::ApplicationController do
     }
   end
   let(:org_poa_response) do
-    {
-      representative_name: "A Lawyer",
-      participant_id: org_poa_participant_id,
-      representative_type: "POA Attorney"
-    }
+    [
+      {
+        representative_name: "A Lawyer",
+        participant_id: org_poa_participant_id,
+        representative_type: "POA Attorney"
+      }
+    ]
   end
   let(:benefit_claims_response) do
     [
