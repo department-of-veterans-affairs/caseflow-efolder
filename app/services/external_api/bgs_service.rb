@@ -84,6 +84,16 @@ class ExternalApi::BGSService
     get_claimant_poa_from_bgs_claimants_poa(bgs_poa)
   end
 
+  # Fetch the POA User's org record
+  def fetch_poa_user_record(poa_participant_id)
+    bgs_poa = MetricsService.record("BGS: fetch record for POA participant id: #{poa_participant_id}",
+                                    service: :bgs,
+                                    name: "org.find_poa_by_participant_id") do
+      client.org.find_poas_by_ptcpnt_id(poa_participant_id)
+    end
+    get_poa_from_bgs_poa(bgs_poa)
+  end
+
   # The participant IDs here are for Claimants.
   # I.e. returns the list of POAs that represent the Claimants.
   def fetch_poas_by_participant_ids(participant_ids)

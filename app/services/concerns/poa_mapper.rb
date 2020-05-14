@@ -1,7 +1,7 @@
 module POAMapper
   extend ActiveSupport::Concern
 
-  # used by fetch_poas_by_participant_ids (for Claimants)
+  # used by bgs.client.org
   def get_claimant_poa_from_bgs_poa(bgs_record = {})
     bgs_record ||= {}
     return {} unless bgs_record.dig(:power_of_attorney)
@@ -10,9 +10,7 @@ module POAMapper
     {
       representative_type: bgs_rep[:org_type_nm],
       representative_name: bgs_rep[:nm],
-      # Used to find the POA address
       participant_id: bgs_rep[:ptcpnt_id],
-      # pass through other attrs
       authzn_change_clmant_addrs_ind: bgs_rep[:authzn_change_clmant_addrs_ind],
       authzn_poa_access_ind: bgs_rep[:authzn_poa_access_ind],
       legacy_poa_cd: bgs_rep[:legacy_poa_cd],
@@ -21,7 +19,7 @@ module POAMapper
     }
   end
 
-  # used by fetch_poa_by_file_number
+  # used by fetch_poa_by_file_number (bgs.client.claimants)
   def get_claimant_poa_from_bgs_claimants_poa(bgs_record = {})
     bgs_record ||= {}
     return {} unless bgs_record.dig(:relationship_name)
@@ -40,5 +38,16 @@ module POAMapper
     [bgs_resp].flatten.each_with_object({}) do |poa, hsh|
       hsh[poa[:ptcpnt_id]] = get_claimant_poa_from_bgs_poa(poa)
     end
+  end
+
+  # used by fetch_poa_user_record (bgs.client.org)
+  def get_poa_from_bgs_poa(bgs_rep = {})
+    return {} unless bgs_rep&.dig(:org_type_nm)
+
+    {
+      representative_type: bgs_rep[:org_type_nm],
+      representative_name: bgs_rep[:nm],
+      participant_id: bgs_rep[:ptcpnt_id]
+    }
   end
 end
