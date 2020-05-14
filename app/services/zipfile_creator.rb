@@ -7,7 +7,7 @@ class ZipfileCreator
 
   def process
     records = manifest.records
-    return if records.empty?
+    return if records.blank?
 
     t = Tempfile.new
     write_to_tempfile(t, records)
