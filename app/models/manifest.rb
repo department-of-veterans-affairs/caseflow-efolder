@@ -24,6 +24,9 @@ class Manifest < ApplicationRecord
 
   SECONDS_TO_AUTO_UNLOCK = 5
 
+  # single user for authorization on an instance - not persisted
+  attr_accessor :user
+
   def start!
     # Reset stale manifests.
     update!(fetched_files_status: :initialized) if stale?
@@ -120,12 +123,8 @@ class Manifest < ApplicationRecord
     end
   end
 
-  def downloaded_by?(user)
-    users.include?(user)
-  end
-
   def veteran
-    @veteran ||= Veteran.new(file_number: file_number).load_bgs_record!
+    @veteran ||= fetch_veteran
   end
 
   def self.find_or_create_by_user(user:, file_number:)
@@ -145,10 +144,15 @@ class Manifest < ApplicationRecord
     rescue ActiveRecord::RecordNotUnique
       retry
     end
+    manifest.user = user
     manifest
   end
 
   private
+
+  def fetch_veteran
+    Veteran.new(user: user, file_number: file_number).load_bgs_record!
+  end
 
   def file_download
     files_downloads.find_by(user: RequestStore[:current_user])

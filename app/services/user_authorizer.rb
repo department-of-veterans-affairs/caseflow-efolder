@@ -70,14 +70,14 @@ class UserAuthorizer
     bgs.record_found?(system_veteran_record)
   end
 
-  private
-
-  attr_accessor :sensitive_file, :poa_denied
-
   def system_veteran_record
     # if there is a veteran_record, save ourselves a trip to BGS.
     @system_veteran_record ||= veteran_record.present? ? veteran_record : fetch_veteran_record_as_system_user
   end
+
+  private
+
+  attr_accessor :sensitive_file, :poa_denied
 
   def veteran_claimants
     @veteran_claimants ||= build_veteran_claimants
