@@ -34,12 +34,20 @@ describe Api::V2::ApplicationController do
   let(:veteran_participant_id) { "123" }
   let(:poa_participant_id) { "345" }
   let(:claimant_participant_id) { "456" }
+  let(:org_poa_participant_id) { "999" }
   let(:claimants_poa_response) do
     {
       representative_name: "A Lawyer",
-      participant_id: poa_participant_id,
+      participant_id: org_poa_participant_id,
       representative_type: "POA Attorney",
       veteran_participant_id: veteran_participant_id
+    }
+  end
+  let(:org_poa_response) do
+    {
+      representative_name: "A Lawyer",
+      participant_id: org_poa_participant_id,
+      representative_type: "POA Attorney"
     }
   end
   let(:benefit_claims_response) do
@@ -113,6 +121,8 @@ describe Api::V2::ApplicationController do
                 .with(claimant_participant_id) { claimants_poa_response }
               allow_any_instance_of(BGSService).to receive(:fetch_claims_for_file_number)
                 .with(veteran_id) { benefit_claims_response }
+              allow_any_instance_of(BGSService).to receive(:fetch_poa_user_record)
+                .with(poa_participant_id) { org_poa_response }
             end
 
             it "responds with success" do
@@ -150,6 +160,8 @@ describe Api::V2::ApplicationController do
           end
           allow_any_instance_of(BGSService).to receive(:fetch_poa_by_file_number)
             .with(veteran_id) { claimants_poa_response }
+          allow_any_instance_of(BGSService).to receive(:fetch_poa_user_record)
+            .with(poa_participant_id) { org_poa_response }
         end
 
         it "responds with success" do
