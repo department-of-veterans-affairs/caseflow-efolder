@@ -6,8 +6,8 @@
 # The POA lookup dance with BGS API follows this pattern:
 #
 # 1. Find the participant id of the current user (user.participant_id)
-# 2. Find the POA org participant id with the user's participant id (org_poa_participant_id).
-# 3. Compare the POA org participant id to the POA record
+# 2. Find the POA org participant ids with the user's participant id (org_poa_participant_ids).
+# 3. Compare each POA org participant id to the POA record
 #    returned for the file number (participant_id_for_poa_by_file_number)
 #
 # The rules for POA for deceased veteran that VBMS uses:
@@ -52,14 +52,14 @@ class UserAuthorizer
   def veteran_poa?
     return false if participant_id_for_poa_by_file_number.blank?
 
-    participant_id_for_poa_by_file_number.to_s == org_poa_participant_id.to_s
+    org_poa_participant_ids.map(&:to_s).include? participant_id_for_poa_by_file_number.to_s
   end
 
   def claimant_poa?
     return false unless veteran_deceased?
 
     veteran_claimants.any? do |claim|
-      claim[:poa].dig(:participant_id).to_s == org_poa_participant_id.to_s
+      org_poa_participant_ids.map(&:to_s).include? claim[:poa].dig(:participant_id).to_s
     end
   end
 
@@ -88,9 +88,9 @@ class UserAuthorizer
 
   # the PID on the user record can be used to look up the POA record for the User's org,
   # which has the PID used to reference POA relationships
-  def org_poa_participant_id
-    @org_poa_record ||= bgs.fetch_poa_org_record(user.participant_id)
-    @org_poa_record.dig(:participant_id)
+  def org_poa_participant_ids
+    @org_poa_records ||= bgs.fetch_poa_org_record(user.participant_id)
+    @org_poa_records.map { |poa| poa.dig(:participant_id) }
   end
 
   def veteran_claimants
