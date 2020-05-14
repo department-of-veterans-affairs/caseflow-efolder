@@ -8,7 +8,7 @@
 # 1. Find the participant id of the current user (user.participant_id)
 # 2. Find the POA org participant id with the user's participant id (org_poa_participant_id).
 # 3. Compare the POA org participant id to the POA record
-#    returned for the file number (file_number_poa_participant_id).
+#    returned for the file number (participant_id_for_poa_by_file_number)
 #
 # The rules for POA for deceased veteran that VBMS uses:
 #
@@ -50,9 +50,9 @@ class UserAuthorizer
   end
 
   def veteran_poa?
-    return false if file_number_poa_participant_id.blank?
+    return false if participant_id_for_poa_by_file_number.blank?
 
-    file_number_poa_participant_id.to_s == org_poa_participant_id.to_s
+    participant_id_for_poa_by_file_number.to_s == org_poa_participant_id.to_s
   end
 
   def claimant_poa?
@@ -127,12 +127,12 @@ class UserAuthorizer
     raise err
   end
 
-  def file_number_poa_participant_id
-    file_number_poa&.dig(:participant_id)
+  def participant_id_for_poa_by_file_number
+    poa_by_file_number&.dig(:participant_id)
   end
 
-  def file_number_poa
-    @file_number_poa ||= bgs.fetch_poa_by_file_number(file_number)
+  def poa_by_file_number
+    @poa_by_file_number ||= bgs.fetch_poa_by_file_number(file_number)
   end
 
   def bgs
