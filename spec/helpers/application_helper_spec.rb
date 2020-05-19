@@ -2,9 +2,27 @@ require "rails_helper"
 
 RSpec.describe ApplicationHelper, type: :helper do
   describe "#current_ga_path" do
+    let(:full_path) { "/downloads/5/download" }
+
+    before do
+      helper.request.env["PATH_INFO"] = full_path
+    end
+
     it "returns route's path without resource ids" do
-      helper.request.env["PATH_INFO"] = "/downloads/5/download"
       expect(helper.current_ga_path).to eq "/application/serve_single_page_app"
+    end
+
+    context "routing error" do
+      before do
+        routes = double("routes")
+        allow(routes).to receive(:recognize_path).with(full_path)
+          .and_raise(ActionController::RoutingError.new("oops"))
+        allow(Rails.application).to receive(:routes) { routes }
+      end
+
+      it "returns full path" do
+        expect(helper.current_ga_path).to eq full_path
+      end
     end
   end
 
