@@ -40,11 +40,10 @@ Rails.application.routes.draw do
     end
   end
 
-  get '/stats(/:interval)', to: 'stats#show', as: 'stats'
-
   %w( 500 ).each do |code|
     get code, :to => "errors#show", :status_code => code
   end
 
+  # all other routes sent to SPA
   match '(*path)' => 'application#serve_single_page_app', via: [:get]
 end
