@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 # rubocop:disable Metrics/ModuleLength
-# :nocov:
 module ApplicationHelper
   def ui_user?
     return false unless RequestStore[:current_user]
@@ -22,5 +21,4 @@ module ApplicationHelper
     end
   end
 end
-# :nocov:
 # rubocop:enable Metrics/ModuleLength
