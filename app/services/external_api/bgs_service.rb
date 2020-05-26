@@ -159,7 +159,7 @@ class ExternalApi::BGSService
     MetricsService.record("BGS: can_access? (find_by_file_number): #{file_number}",
                           service: :bgs,
                           name: "can_access?") do
-      client.can_access?(file_number, FeatureToggle.enabled?(:can_access_v2, user: current_user))
+      client.can_access?(file_number, true)
     end
   end
 
