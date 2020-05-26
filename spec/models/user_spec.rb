@@ -2,7 +2,7 @@ describe User do
   let(:name) { "Billy Bob Thorton" }
   let(:roles) { ["Download eFolder"] }
   let(:user) do
-    User.new(css_id: "123", email: "email@va.gov", name: name,
+    User.new(css_id: "auser", email: "email@va.gov", name: name,
              roles: roles, station_id: "213", ip_address: "12.12.12.12")
   end
 
@@ -56,6 +56,7 @@ describe User do
       expect(subject.name).to eq("Billy Bob Thorton")
       expect(subject.ip_address).to eq("123.123.222.222")
       expect(subject.email).to eq user.email
+      expect(subject.css_id).to eq user.css_id.upcase
     end
 
     context "when session user is nil" do
