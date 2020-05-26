@@ -5,13 +5,16 @@ class ApplicationController < BaseController
   before_action :check_out_of_service, except: :authenticate
   before_action :authenticate
   before_action :set_raven_user
-  before_action :check_v2_app_access
 
   def serve_single_page_app
-    can_access_react_app? ? render("gui/single_page_app", layout: false) : redirect_to("/unauthorized")
+     redirect_to("/unauthorized") unless user_is_authorized?
+
+     render("gui/single_page_app", layout: false)
   end
 
   def authenticate
+    return true if out_of_service?
+
     return true unless current_user.nil?
 
     Rails.logger.info("original_url #{request.original_url} saved as return_to prior to SAML auth. Referer #{request.referer}")
@@ -41,10 +44,6 @@ class ApplicationController < BaseController
     redirect_to "/unauthorized" unless user_is_authorized?
   end
 
-  def check_v2_app_access
-    serve_single_page_app if can_access_react_app?
-  end
-
   def initial_react_data
     {
       csrfToken: form_authenticity_token,
@@ -53,7 +52,7 @@ class ApplicationController < BaseController
       feedbackUrl: feedback_url,
       referenceGuidePath: ActionController::Base.helpers.asset_path("reference_guide.pdf"),
       trainingGuidePath: ActionController::Base.helpers.asset_path("training_guide.pdf"),
-      userDisplayName: current_user.try(:display_name),
+      userDisplayName: current_user.try(:display_name) || 'Help',
       userIsAuthorized: user_is_authorized?
     }.to_json
   end
@@ -80,28 +79,19 @@ class ApplicationController < BaseController
   private
 
   def user_is_authorized?
+    return true if out_of_service?
+
     current_user.try(:can?, "Download eFolder") || Rails.env.development?
   end
 
-  def can_access_react_app?
-    FeatureToggle.enabled?(:efolder_react_app, user: current_user) || Rails.env.development?
-  end
-
-  def downloads
-    Download.active.where(user: current_user)
-  end
-
-  # TODO: This will need to be replaced by a similar function for UserManifests
-  # efolder issue 813 addresses this requirement.
-  def recent_downloads
-    @recent_downloads ||= downloads.where(status: [3, 4, 5, 6])
+  def out_of_service?
+    Rails.cache.read("out_of_service")
   end
 
   def check_out_of_service
     out_of_service_path = "/out-of-service"
-    if Rails.cache.read("out_of_service") && request.path != out_of_service_path
-      redirect_to(out_of_service_path) && return if can_access_react_app?
-      render "out_of_service", layout: "application"
+    if out_of_service? && request.path != out_of_service_path
+      redirect_to(out_of_service_path)
     end
   end
 

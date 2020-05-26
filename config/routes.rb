@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  root 'downloads#new'
+  root 'application#serve_single_page_app'
 
   post 'auth/saml_callback', to: 'sessions#create'
   get 'auth/failure', to: 'sessions#failure'
@@ -15,18 +15,6 @@ Rails.application.routes.draw do
 
   post 'increment_vva_coachmarks_status', to: 'downloads#increment_vva_coachmarks_status'
 
-  resources :downloads, only: [:new, :create, :show] do
-    post :start, on: :member
-    post :retry, on: :member
-    get :download, on: :member
-    get :progress, on: :member
-
-    # test user download delete route
-    if ENV['TEST_USER_ID']
-      post :delete, on: :member
-    end
-  end
-
   if Rails.env.test?
     get 'test', to: 'test#index'
     post 'test/touch_file', to: 'test#touch_file'
@@ -34,11 +22,6 @@ Rails.application.routes.draw do
   end
 
   namespace :api do
-    namespace :v1 do
-      resources :documents, only: :show
-      resources :files, only: :index
-    end
-
     namespace :v2 do
       namespace :manifests, only: [] do
         post "/", action: :start
@@ -57,11 +40,10 @@ Rails.application.routes.draw do
     end
   end
 
-  get '/stats(/:interval)', to: 'stats#show', as: 'stats'
-
   %w( 500 ).each do |code|
     get code, :to => "errors#show", :status_code => code
   end
 
+  # all other routes sent to SPA
   match '(*path)' => 'application#serve_single_page_app', via: [:get]
 end
