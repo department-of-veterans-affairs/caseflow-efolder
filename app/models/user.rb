@@ -88,7 +88,7 @@ class User < ApplicationRecord
         participant_id: sesh.participant_id
       }
 
-      user ||= create!(attrs.merge(sesh.css_id.upcase))
+      user ||= create!(attrs.merge(css_id: sesh.css_id.upcase))
       user.update!(attrs.merge(last_login_at: Time.zone.now))
       session["user"]["ee_psql_user_id"] = user.id
       user
