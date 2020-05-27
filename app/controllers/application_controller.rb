@@ -76,6 +76,10 @@ class ApplicationController < BaseController
 
   private
 
+  def can_access_react_app?
+    FeatureToggle.enabled?(:efolder_react_app, user: current_user) || Rails.env.development?
+  end
+
   def user_is_authorized?
     return true if out_of_service?
 
