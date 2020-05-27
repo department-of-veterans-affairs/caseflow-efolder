@@ -69,25 +69,42 @@ class User < ApplicationRecord
       return nil unless session["user"]
 
       # There could be other values in the session that CssAuthenticationSession doesn't accept
-      # as attributes so delete them
+      # as attributes so ignore them
       sesh = CssAuthenticationSession.new(
         session["user"].symbolize_keys.slice(:id, :name, :roles, :station_id, :css_id, :email, :participant_id)
       )
       return nil unless sesh.css_id && sesh.station_id
 
-      find_or_create_by(css_id: sesh.css_id, station_id: sesh.station_id).tap do |u|
-        u.name = sesh.name
-        u.email = sesh.email
-        u.roles = sesh.roles
-        u.ip_address = request.remote_ip
-        u.participant_id = sesh.participant_id
-        u.save
-      end
+      ee_psql_user_id = session["user"]["ee_psql_user_id"]
+      user_by_id = find_by_pg_user_id!(ee_psql_user_id, session)
+      user = user_by_id || find_by_css_id(sesh.css_id)
+
+      attrs = {
+        station_id: sesh.station_id,
+        name: sesh.name,
+        email: sesh.email,
+        roles: sesh.roles,
+        ip_address: request.remote_ip,
+        participant_id: sesh.participant_id
+      }
+
+      user ||= create!(attrs.merge(css_id: sesh.css_id.upcase))
+      user.update!(attrs.merge(last_login_at: Time.zone.now))
+      session["user"]["ee_psql_user_id"] = user.id
+      user
+    end
+
+    # case-insensitive search
+    def find_by_css_id(css_id)
+      find_by("UPPER(css_id)=UPPER(?)", css_id)
     end
 
     def from_api_authenticated_values(css_id:, station_id:)
       sesh = CssAuthenticationSession.new(css_id: css_id, station_id: station_id)
-      find_or_create_by(css_id: sesh.css_id, station_id: sesh.station_id)
+      user = find_by_css_id(sesh.css_id)
+      return user if user
+
+      create!(css_id: sesh.css_id.upcase, station_id: sesh.station_id)
     end
 
     def system_user
@@ -98,6 +115,14 @@ class User < ApplicationRecord
     end
 
     private
+
+    def find_by_pg_user_id!(pg_user_id, session)
+      user_by_id = find_by(id: pg_user_id)
+      if !user_by_id && pg_user_id
+        session["user"]["ee_pg_user_id"] = nil
+      end
+      user_by_id
+    end
 
     def prod_system_user
       find_or_initialize_by(station_id: "283", css_id: "CSFLOW")
