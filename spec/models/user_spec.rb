@@ -57,6 +57,7 @@ describe User do
       expect(subject.ip_address).to eq("123.123.222.222")
       expect(subject.email).to eq user.email
       expect(subject.css_id).to eq user.css_id.upcase
+      expect(subject.roles).to eq user.roles
     end
 
     context "when session user is nil" do
