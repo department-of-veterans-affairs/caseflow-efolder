@@ -78,10 +78,24 @@ describe 'SSO' do
   context "user starts on /login page" do
     it "ends up on / page" do
       get "/login"
-      session["redirect_to"] = "/login"
+      session["return_to"] = "/login"
       post "/login"
       saml_idp_handshake
       expect(response).to redirect_to("/")
+    end
+  end
+
+  context "user is redirected from elsewhere (e.g. Caseflow)" do
+    before do
+      allow_any_instance_of(SessionsController).to
+        receive(:will_redirect_to_url) { "http://caseflow.example.com/search" }
+    end
+
+    it "redirects back after successful login" do
+      get "/login"
+      post "/login"
+      saml_idp_handshake
+      expect(response).to redirect_to("http://caseflow.example.com/search")
     end
   end
 
