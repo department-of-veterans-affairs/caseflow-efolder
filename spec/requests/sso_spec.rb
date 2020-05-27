@@ -78,7 +78,6 @@ describe 'SSO' do
   context "user starts on /login page" do
     it "ends up on / page" do
       get "/login"
-      session["return_to"] = "/login"
       post "/login"
       saml_idp_handshake
       expect(response).to redirect_to("/")
