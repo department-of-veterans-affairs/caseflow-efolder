@@ -13,11 +13,8 @@ RSpec.feature "Authentication" do
 
   context "when user has access to efolder react app" do
     before do
-      FeatureToggle.enable!(:efolder_react_app, users: [user.css_id])
       User.authenticate!
     end
-
-    after { FeatureToggle.disable!(:efolder_react_app, users: [user.css_id]) }
 
     let(:user) { User.create(css_id: "123123", station_id: "116") }
 
