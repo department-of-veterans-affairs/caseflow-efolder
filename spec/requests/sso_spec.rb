@@ -86,8 +86,9 @@ describe 'SSO' do
 
   context "user is redirected from elsewhere (e.g. Caseflow)" do
     before do
-      allow_any_instance_of(SessionsController).to
-        receive(:will_redirect_to_url) { "http://caseflow.example.com/search" }
+      allow_any_instance_of(SessionsController).to receive(:will_redirect_to_url) do
+        "http://caseflow.example.com/search"
+      end
     end
 
     it "redirects back after successful login" do
