@@ -81,6 +81,9 @@ describe 'SSO' do
       post "/login"
       saml_idp_handshake
       expect(response).to redirect_to("/")
+      expect(User.count).to eq(0)
+      get "/"
+      expect(User.count).to eq(1)
     end
   end
 
@@ -96,6 +99,7 @@ describe 'SSO' do
       post "/login"
       saml_idp_handshake
       expect(response).to redirect_to("http://caseflow.example.com/search")
+      expect(User.count).to eq(0)
     end
   end
 
