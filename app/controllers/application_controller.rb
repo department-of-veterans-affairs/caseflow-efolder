@@ -7,8 +7,6 @@ class ApplicationController < BaseController
   before_action :set_raven_user
 
   def serve_single_page_app
-     redirect_to("/unauthorized") unless user_is_authorized?
-
      render("gui/single_page_app", layout: false)
   end
 
