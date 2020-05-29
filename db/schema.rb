@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_26_161628) do
+ActiveRecord::Schema.define(version: 2020_05_26_162945) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -79,7 +79,9 @@ ActiveRecord::Schema.define(version: 2020_05_26_161628) do
     t.integer "vva_coachmarks_view_count", default: 0
     t.string "participant_id", comment: "the user BGS participant_id"
     t.datetime "last_login_at"
+    t.index "upper((css_id)::text)", name: "index_users_unique_css_id", unique: true
     t.index ["css_id", "station_id"], name: "index_users_on_css_id_and_station_id"
+    t.index ["last_login_at"], name: "index_users_on_last_login_at"
   end
 
 end
