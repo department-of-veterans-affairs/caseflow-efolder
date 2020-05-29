@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
-  has_many :searches
-  has_many :downloads
-  # v2 relationship
   has_many :files_downloads
   has_many :manifests, through: :files_downloads
 
