@@ -15,6 +15,26 @@ describe SessionsController do
         expect(response).to redirect_to "/"
       end
     end
+
+    context "request asks for JSON response" do
+      #render_views
+
+      it "returns 200 response with error message" do
+        get :login, as: :json
+
+        expect(response).to be_successful
+        expect(JSON.parse(response.body)).to eq({ "error" => "JSON not supported" })
+      end
+    end
+
+    context "requests asks for text response" do
+      it "returns 200 response with error message" do
+        get :login, as: :text
+
+        expect(response).to be_successful
+        expect(response.body).to eq "Text not supported"
+      end
+    end
   end
 
   describe "#login_creds" do
