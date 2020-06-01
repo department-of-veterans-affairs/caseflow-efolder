@@ -82,16 +82,16 @@ class UserAuthorizer
     @system_veteran_record ||= veteran_record.present? ? veteran_record : fetch_veteran_record_as_system_user
   end
 
+  private
+
+  attr_accessor :sensitive_file, :poa_denied
+
   # the PID on the user record can be used to look up the POA record for the User's org,
   # which has the PID used to reference POA relationships
   def org_poa_participant_ids
     @org_poa_records ||= bgs.fetch_poa_org_record(user.participant_id)
     @org_poa_records.map { |poa| poa.dig(:participant_id) }
   end
-
-  private
-
-  attr_accessor :sensitive_file, :poa_denied
 
   def veteran_claimants
     @veteran_claimants ||= build_veteran_claimants
