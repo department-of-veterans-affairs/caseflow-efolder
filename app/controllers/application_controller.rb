@@ -7,7 +7,11 @@ class ApplicationController < BaseController
   before_action :set_raven_user
 
   def serve_single_page_app
-     render("gui/single_page_app", layout: false)
+    respond_to do |format|
+      format.html { render("gui/single_page_app", layout: false) }
+      format.text { render plain: "Text not supported" }
+      format.json { render json: { error: "JSON not supported" } }
+    end
   end
 
   def authenticate
