@@ -27,10 +27,12 @@ class ManifestFetcher
     errors = []
     documents = file_numbers.map do |file_number|
       begin
-        manifest_source.service.v2_fetch_documents_for(file_number)
+        docs = manifest_source.service.v2_fetch_documents_for(file_number)
         file_numbers_found[file_number] = true
+        docs
       rescue VBMS::FilenumberDoesNotExist => error
         errors << error
+        []
       end
     end.flatten
     if file_numbers_found.empty?
