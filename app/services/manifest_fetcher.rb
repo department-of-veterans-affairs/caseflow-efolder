@@ -21,14 +21,39 @@ class ManifestFetcher
 
   def fetch_documents
     # fetch documents for all the "file numbers" known for this veteran
-    file_numbers.map do |file_number|
-      manifest_source.service.v2_fetch_documents_for(file_number)
-    end.flatten
+    # it's possible that BGS reports a FN that VBMS does not know about.
+    # so do not report the error if at least one FN works.
+    file_numbers_found = {}
+    errors = []
+    documents = file_numbers.map do |file_number|
+      begin
+        docs = manifest_source.service.v2_fetch_documents_for(file_number)
+        file_numbers_found[file_number] = true
+        docs
+      rescue VBMS::FilenumberDoesNotExist => error
+        errors << error
+        []
+      end
+    end.flatten.uniq
+    if file_numbers_found.empty?
+      fail errors.first # don't care if there is more than one.
+    end
+    documents
   end
 
   def file_numbers
-    vet_finder = VeteranFinder.new(bgs: BGSService.new(client: bgs_client))
-    [manifest_source.file_number, vet_finder.find_uniq_file_numbers(manifest_source.file_number)].flatten.uniq
+    @file_numbers ||= [
+      manifest_source.file_number,
+      vet_finder.find_uniq_file_numbers(manifest_source.file_number)
+    ].flatten.uniq
+  end
+
+  def vet_finder
+    @vet_finder ||= VeteranFinder.new(bgs: bgs)
+  end
+
+  def bgs
+    @bgs ||= BGSService.new(client: bgs_client)
   end
 
   def bgs_client
