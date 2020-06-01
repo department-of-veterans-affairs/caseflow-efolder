@@ -121,10 +121,7 @@ RSpec.feature "User Error Flows" do
     end
   end
 
-  context "user_authorizer feature toggle on" do
-    before { FeatureToggle.enable!(:user_authorizer) }
-    after { FeatureToggle.disable!(:user_authorizer) }
-
+  context "UserAuthorizer" do
     let(:veteran_participant_id) { "123" }
     let(:poa_participant_id) { "345" }
 
