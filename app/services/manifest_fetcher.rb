@@ -26,7 +26,6 @@ class ManifestFetcher
     file_numbers_found = {}
     errors = []
     documents = file_numbers.map do |file_number|
-      break if file_numbers_found.keys.any? # abort loop if first succeeded
       begin
         docs = manifest_source.service.v2_fetch_documents_for(file_number)
         file_numbers_found[file_number] = true
