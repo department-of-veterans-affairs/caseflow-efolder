@@ -17,8 +17,6 @@ describe SessionsController do
     end
 
     context "request asks for JSON response" do
-      #render_views
-
       it "returns 200 response with error message" do
         get :login, as: :json
 
