@@ -107,6 +107,8 @@ describe UserAuthorizer do
     allow(bgs_client).to receive(:common_security) { bgs_security_service }
     allow(bgs_client).to receive(:benefit_claims) { bgs_benefit_claims_service }
     allow(bgs_client).to receive(:org) { bgs_org_service }
+    allow(bgs_service).to receive(:current_user) { user }
+    allow(system_bgs_service).to receive(:current_user) { User.system_user }
     allow(bgs_org_service).to receive(:find_poas_by_ptcpnt_id)
       .with(poa_participant_id) { bgs_poa_user_response }
     allow(bgs_claimants_service).to receive(:find_poa_by_file_number)

@@ -2,9 +2,15 @@ describe ExternalApi::BGSService do
   include POAMapper
 
   before do
-    RequestStore[:current_user] = User.new(css_id: "RADIOHEAD", station_id: "203")
+    RequestStore[:current_user] = user
   end
 
+  after do
+    bgs_service.bust_fetch_veteran_info_cache(file_number)
+  end
+
+  let(:user) { User.new(css_id: "RADIOHEAD", station_id: "203") }
+  let(:cache_key) { "bgs_veteran_info_#{user.css_id}_#{user.station_id}_#{file_number}" }
   let(:bgs_service) { ExternalApi::BGSService.new(client: bgs_client) }
   let(:bgs_veteran_service) { double("veteran") }
   let(:bgs_people_service) { double("people") }
@@ -256,6 +262,15 @@ describe ExternalApi::BGSService do
     it "returns array of claims" do
       expect(subject).to be_a Array
       expect(subject.first[:ptcpnt_clmant_id]).to eq spouse_participant_id
+    end
+  end
+
+  context "#fetch_veteran_info" do
+    subject { bgs_service.fetch_veteran_info(file_number) }
+
+    it "returns info" do
+      expect(subject.dig("veteran_first_name")).to eq(bgs_veteran_response[:first_name])
+      expect(Rails.cache.exist?(cache_key)).to be_truthy
     end
   end
 end
