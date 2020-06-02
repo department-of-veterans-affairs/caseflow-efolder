@@ -54,13 +54,15 @@ class ExternalApi::BGSService
   end
 
   def fetch_veteran_info(file_number, parsed: true)
-    veteran_data =
+    veteran_data = Rails.cache.fetch(fetch_veteran_info_cache_key(file_number), expires_in: 10.minutes) do
       MetricsService.record("BGS: fetch veteran info for vbms id: #{file_number}",
                             service: :bgs,
                             name: "veteran.find_by_file_number") do
         client.veteran.find_by_file_number(file_number)
       end
+    end
     return veteran_data unless parsed
+
     parse_veteran_info(veteran_data) if veteran_data
   end
 
@@ -154,12 +156,10 @@ class ExternalApi::BGSService
   end
 
   def check_sensitivity(file_number)
-    current_user = RequestStore[:current_user]
-
     MetricsService.record("BGS: can_access? (find_by_file_number): #{file_number}",
                           service: :bgs,
                           name: "can_access?") do
-      client.can_access?(file_number, FeatureToggle.enabled?(:can_access_v2, user: current_user))
+      client.can_access?(file_number, true)
     end
   end
 
@@ -238,5 +238,19 @@ class ExternalApi::BGSService
     fail BGS::InvalidApplication if error.message =~ /Application Does Not Exist/
     fail BGS::NoCaseflowAccess if error.message =~ /TODO unknown error string/
     {}
+  end
+
+  def bust_fetch_veteran_info_cache(file_number)
+    Rails.cache.delete(fetch_veteran_info_cache_key(file_number))
+  end
+
+  private
+
+  def current_user
+    RequestStore[:current_user]
+  end
+
+  def fetch_veteran_info_cache_key(file_number)
+    "bgs_veteran_info_#{current_user.css_id}_#{current_user.station_id}_#{file_number}"
   end
 end

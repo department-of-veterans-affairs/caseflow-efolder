@@ -40,8 +40,6 @@ RSpec.feature "User Error Flows" do
   before do
     @user = User.create(css_id: "123123", station_id: "116")
 
-    FeatureToggle.enable!(:efolder_react_app)
-
     User.authenticate!
 
     allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info).and_return(veteran_info)
@@ -57,10 +55,6 @@ RSpec.feature "User Error Flows" do
     allow(S3Service).to receive(:stream_content).and_return("streamed content")
 
     DownloadHelpers.clear_downloads
-  end
-
-  after do
-    FeatureToggle.disable!(:efolder_react_app)
   end
 
   scenario "Extraneous spaces in search input" do

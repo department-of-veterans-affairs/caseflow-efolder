@@ -1,7 +1,7 @@
 class SessionsController < ApplicationController
   skip_before_action :check_out_of_service
   skip_before_action :verify_authenticity_token, only: [:create, :failure, :login, :login_creds]
-  skip_before_action :authenticate, only: [:create, :failure, :login, :login_creds]
+  skip_before_action :authenticate, only: [:create, :failure, :login, :login_creds, :me]
 
   class MissingSAMLRequest < StandardError; end
 
@@ -16,7 +16,13 @@ class SessionsController < ApplicationController
 
   # GET form to allow user to assert a username/station_id
   def login
-    redirect_to "/" if current_user.present?
+    return redirect_to "/" if current_user.present?
+
+    respond_to do |format|
+      format.html { render("login") }
+      format.text { render plain: "Text not supported" }
+      format.json { render json: { error: "JSON not supported" } }
+    end
   end
 
   # POST to set username/station_id and redirect to SAML login
@@ -32,7 +38,7 @@ class SessionsController < ApplicationController
 
     session["user"] = build_user
 
-    will_redirect_to = session.delete("return_to") || url_for_sso_host("/")
+    will_redirect_to = will_redirect_to_url
 
     # avoid UX pitfall if user starts at /login
     will_redirect_to = url_for_sso_host("/") if will_redirect_to == url_for_sso_host("/login")
@@ -62,6 +68,10 @@ class SessionsController < ApplicationController
   end
 
   protected
+
+  def will_redirect_to_url
+    session.delete("return_to") || url_for_sso_host("/")
+  end
 
   def url_for_sso_host(path)
     (ENV["SSO_HOST"] || "") + path
