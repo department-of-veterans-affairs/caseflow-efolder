@@ -12,7 +12,7 @@ class RecordFetcher
                              stale_client_timeout: 5,
                              expiration: SECONDS_TO_AUTO_UNLOCK)
     s.lock(SECONDS_TO_AUTO_UNLOCK)
-    content_from_s3 || content_from_vbms
+    content_from_s3 || content_from_va_service
   rescue *EXCEPTIONS => error
     Rails.logger.error("Caught #{error}")
     nil
@@ -22,7 +22,7 @@ class RecordFetcher
 
   private
 
-  def content_from_vbms
+  def content_from_va_service
     content = MetricsService.record("#{record.manifest_source.name} v2_fetch_document_file",
                                     service: record.manifest_source.name.downcase.to_sym,
                                     name: "v2_fetch_document_file") do
@@ -35,7 +35,7 @@ class RecordFetcher
     end
     MetricsService.record("S3: RecordFetcher store content for #{record.s3_filename}",
                           service: :s3,
-                          name: "content_from_vbms") do
+                          name: "content_from_va_service") do
       S3Service.store_file(record.s3_filename, content)
     end
     content
