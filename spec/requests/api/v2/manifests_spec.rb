@@ -298,9 +298,6 @@ describe "Manifests API v2", type: :request do
   end
 
   context "POA" do
-    before { FeatureToggle.enable!(:user_authorizer) }
-    after { FeatureToggle.disable!(:user_authorizer) }
-
     subject { post "/api/v2/manifests/", params: nil, headers: headers }
 
     let(:veteran_info) do

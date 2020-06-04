@@ -27,14 +27,6 @@ class Api::V2::ApplicationController < Api::V1::ApplicationController
   end
 
   def fetch_veteran_by_file_number(file_number)
-    if FeatureToggle.enabled?(:user_authorizer, user: current_user)
-      fetch_veteran_with_user_authorizer(file_number)
-    else
-      fetch_veteran_with_bgs_service(file_number)
-    end
-  end
-
-  def fetch_veteran_with_user_authorizer(file_number)
     Rails.logger.debug("UserAuthorizer for #{file_number} and current_user #{current_user.css_id}")
     authorizer = UserAuthorizer.new(user: current_user, file_number: file_number)
     if authorizer.can_read_efolder? && authorizer.veteran_record_found?
@@ -48,19 +40,5 @@ class Api::V2::ApplicationController < Api::V1::ApplicationController
     else
       raise BGS::ShareError, "Cannot access Veteran record"
     end
-  end
-
-  def fetch_veteran_with_bgs_service(file_number)
-    begin
-      veteran_info = bgs_service.fetch_veteran_info(file_number)
-    rescue StandardError => e
-      return sensitive_record if e.message.include?("Sensitive File - Access Violation")
-      return vso_denied_record if e.message.include?("Power of Attorney of Folder is")
-      raise e
-    end
-
-    return veteran_not_found(file_number) unless bgs_service.record_found?(veteran_info)
-
-    veteran_info["file_number"] || file_number
   end
 end
