@@ -44,6 +44,14 @@ describe ApplicationJob do
         end
       end
 
+      after do
+        # "reset" the dsn value so other tests do not attempt to send to sentry
+        Raven.configure do |config|
+          config.server = nil
+          config.host = nil
+        end
+      end
+
       let(:string_log) { StringIO.new }
 
       context "when error is on exclude list" do
