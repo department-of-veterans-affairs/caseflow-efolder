@@ -12,7 +12,6 @@ class V2::DownloadManifestJob < ApplicationJob
     V2::SaveFilesInS3Job.perform_later(manifest_source) if documents.present? && !ApplicationController.helpers.ui_user?
   rescue StandardError => error
     manifest_source.update!(status: :failed)
-    capture_exception(error)
     raise error
   end
 

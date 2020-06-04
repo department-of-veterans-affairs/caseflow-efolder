@@ -10,7 +10,6 @@ class V2::PackageFilesJob < ApplicationJob
   # Catch StandardError in case there is an error to avoid files downloads being stuck in pending state
   rescue StandardError => error
     manifest.update!(fetched_files_status: :failed)
-    capture_exception(error)
     raise error
   end
 
