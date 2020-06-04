@@ -8,9 +8,10 @@ class V2::PackageFilesJob < ApplicationJob
 
     ZipfileCreator.new(manifest: manifest).process
   # Catch StandardError in case there is an error to avoid files downloads being stuck in pending state
-  rescue StandardError => e
+  rescue StandardError => error
     manifest.update!(fetched_files_status: :failed)
-    raise e
+    capture_exception(error)
+    raise error
   end
 
   def max_attempts

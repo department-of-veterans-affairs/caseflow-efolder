@@ -51,5 +51,24 @@ describe V2::PackageFilesJob do
         expect(manifest.fetched_files_status).to eq "failed"
       end
     end
+
+    context "transient VBMS error" do
+      before do
+        allow(Raven).to receive(:capture_exception) do |exception, args|
+          @raven_error = exception
+          @raven_args = args
+        end
+        allow(VBMSService).to receive(:v2_fetch_document_file).and_raise(http_error)
+      end
+
+      let(:http_error) { HTTPClient::ReceiveTimeoutError.new "execution expired" }
+
+      it "re-tries and does not log to Raven/Sentry" do
+        expect { subject }.to raise_error(http_error)
+        expect(@raven_error).to be_a(HTTPClient::ReceiveTimeoutError)
+        binding.pry
+        expect(@raven_args).to eq(foo: :bar)
+      end
+    end
   end
 end
