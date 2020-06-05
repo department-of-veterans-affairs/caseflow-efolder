@@ -100,31 +100,7 @@ RSpec.feature "User Error Flows" do
     end
   end
 
-  context "When veteran id has high sensitivity" do
-    scenario "Cannot access it" do
-      allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info).and_raise("Sensitive File - Access Violation")
-      visit "/"
-      fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
-      click_button "Search"
-
-      expect(page).to have_content("This efolder contains sensitive information")
-    end
-
-    scenario "VSO cannot access it" do
-      allow_any_instance_of(Fakes::BGSService).to receive(:fetch_veteran_info)
-        .and_raise("Power of Attorney of Folder is '071'. Access to this record is denied.")
-      visit "/"
-      fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
-      click_button "Search"
-
-      expect(page).to have_content("This efolder belongs to a Veteran you do not represent")
-    end
-  end
-
-  context "user_authorizer feature toggle on" do
-    before { FeatureToggle.enable!(:user_authorizer) }
-    after { FeatureToggle.disable!(:user_authorizer) }
-
+  context "UserAuthorizer" do
     let(:veteran_participant_id) { "123" }
     let(:poa_participant_id) { "345" }
 

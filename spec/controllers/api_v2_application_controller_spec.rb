@@ -68,14 +68,6 @@ describe Api::V2::ApplicationController do
 
   let(:body) { JSON.parse(response.body, symbolize_names: true) }
 
-  before do
-    FeatureToggle.enable!(:user_authorizer)
-  end
-
-  after do
-    FeatureToggle.disable!(:user_authorizer)
-  end
- 
   describe "veteran file number access" do
     before do
       request.headers.merge!(headers)
