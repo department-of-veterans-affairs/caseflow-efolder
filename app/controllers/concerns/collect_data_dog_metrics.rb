@@ -28,7 +28,7 @@ module CollectDataDogMetrics
       metric_group: "database",
       metric_name: "#{type}_connections",
       metric_value: count,
-      app_name: "eFolder",
+      app_name: "efolder",
       attrs: {
         database: db_name
       }
