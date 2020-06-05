@@ -54,7 +54,7 @@ module PumaThreadLogger
       metric_group: "puma",
       metric_name: "#{type}_threads",
       metric_value: count,
-      app_name: "efolder"
+      app_name: "eFolder"
     )
   end
 end
