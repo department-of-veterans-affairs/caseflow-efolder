@@ -16,7 +16,13 @@ class SessionsController < ApplicationController
 
   # GET form to allow user to assert a username/station_id
   def login
-    redirect_to "/" if current_user.present?
+    return redirect_to "/" if current_user.present?
+
+    respond_to do |format|
+      format.html { render("login") }
+      format.text { render plain: "Text not supported" }
+      format.json { render json: { error: "JSON not supported" } }
+    end
   end
 
   # POST to set username/station_id and redirect to SAML login

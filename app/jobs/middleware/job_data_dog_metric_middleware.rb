@@ -11,7 +11,7 @@ class JobDataDogMetricMiddleware
         metric_group: "job",
         metric_name: "elapsed_time",
         metric_value: stopwatch.real,
-        app_name: "eFolder",
+        app_name: "efolder",
         attrs: {
           job: job_class
         }

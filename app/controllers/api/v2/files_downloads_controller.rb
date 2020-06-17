@@ -30,6 +30,12 @@ class Api::V2::FilesDownloadsController < Api::V2::ApplicationController
     # see https://piotrmurach.com/articles/streaming-large-zip-files-in-rails/
     headers["X-Accel-Buffering"] = "no"
     headers["Cache-Control"] ||= "no-cache"
+
+    # Set this to prevent the Rack::ETag middleware from buffering the response.
+    # Note: Affects rack 2.2.2
+    #
+    # See: https://github.com/rack/rack/issues/1619#issuecomment-606315714
+    headers['Last-Modified'] = '0'
   end
 
   def json_files_downloads

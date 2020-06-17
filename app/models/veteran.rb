@@ -41,15 +41,11 @@ class Veteran
   def fetch_bgs_record
     return bgs.fetch_veteran_info(file_number) unless user
 
-    if FeatureToggle.enabled?(:user_authorizer, user: user)
-      if authorizer.can_read_efolder? && authorizer.veteran_record_found?
-        # use .system_veteran_record in case we are POA and .veteran_record is nil
-        authorizer.system_veteran_record
-      else
-        raise BGS::ShareError, "Cannot access Veteran record"
-      end
+    if authorizer.can_read_efolder? && authorizer.veteran_record_found?
+      # use .system_veteran_record in case we are POA and .veteran_record is nil
+      authorizer.system_veteran_record
     else
-      bgs.fetch_veteran_info(file_number)
+      raise BGS::ShareError, "Cannot access Veteran record"
     end
   end
 end
