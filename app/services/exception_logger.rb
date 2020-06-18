@@ -11,6 +11,10 @@ class ExceptionLogger
 
   # Do not send Sentry alerts when external systems are in maintenance mode
   def self.ignore_exception?(error)
-    error.ignorable? || DEPENDENCY_MAINTENANCE.select { |m| m =~ error.to_s }.present?
+    error.ignorable? || DEPENDENCY_MAINTENANCE.select { |m| m =~ error_message(error) }.present?
+  end
+
+  def self.error_message(error)
+    error.to_s.encode("UTF-8", invalid: :replace, replace: "")
   end
 end
