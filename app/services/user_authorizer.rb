@@ -98,7 +98,7 @@ class UserAuthorizer
   end
 
   def build_veteran_claimants
-    Array(bgs.fetch_claims_for_file_number(file_number)).flatten.map do |claim|
+    [bgs.fetch_claims_for_file_number(file_number)].flatten.map do |claim|
       {
         claimant_participant_id: claim[:ptcpnt_clmant_id],
         veteran_participant_id: claim[:ptcpnt_vet_id],
