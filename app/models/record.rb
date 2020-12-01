@@ -25,8 +25,6 @@ class Record < ApplicationRecord
   # then PDFkit will check if PDF is valid
   before_create :adjust_mime_type
 
-  after_save :save_to_temp_columns
-
   delegate :manifest, :service, to: :manifest_source
   delegate :file_number, to: :manifest
 
@@ -111,9 +109,5 @@ class Record < ApplicationRecord
 
   def adjust_mime_type
     self.mime_type = "application/pdf" if mime_type == "application/octet-stream"
-  end
-
-  def save_to_temp_columns
-    self.temp_id = id
   end
 end
