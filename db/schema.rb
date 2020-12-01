@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_26_162945) do
+ActiveRecord::Schema.define(version: 2020_12_01_174552) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -49,7 +49,7 @@ ActiveRecord::Schema.define(version: 2020_05_26_162945) do
     t.index ["file_number"], name: "index_manifests_on_file_number", unique: true
   end
 
-  create_table "records", force: :cascade do |t|
+  create_table "records", id: :serial, force: :cascade do |t|
     t.integer "manifest_source_id"
     t.integer "status", default: 0
     t.string "version_id"
@@ -66,6 +66,7 @@ ActiveRecord::Schema.define(version: 2020_05_26_162945) do
     t.string "series_id"
     t.integer "version"
     t.datetime "upload_date"
+    t.bigint "temp_id"
     t.index ["manifest_source_id", "series_id"], name: "index_records_on_manifest_source_id_and_series_id"
     t.index ["version_id", "manifest_source_id"], name: "index_records_on_version_id_and_manifest_source_id", unique: true
   end
