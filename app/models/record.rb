@@ -5,6 +5,8 @@ class Record < ApplicationRecord
 
   validates :manifest_source, :version_id, :series_id, presence: true
 
+  before_save :save_to_temp_columns
+
   enum status: {
     initialized: 0,
     success: 1,
@@ -109,5 +111,9 @@ class Record < ApplicationRecord
 
   def adjust_mime_type
     self.mime_type = "application/pdf" if mime_type == "application/octet-stream"
+  end
+
+  def save_to_temp_columns
+    self.temp_id = id
   end
 end
