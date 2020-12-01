@@ -32,6 +32,8 @@ class Record < ApplicationRecord
 
   MAXIMUM_FILENAME_LENGTH = 100
 
+  self.primary_key = "temp_id"
+
   def fetch!
     fetcher.process
   end

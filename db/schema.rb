@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_01_195325) do
+ActiveRecord::Schema.define(version: 2020_12_01_205105) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -50,7 +50,7 @@ ActiveRecord::Schema.define(version: 2020_12_01_195325) do
   end
 
   create_table "records", primary_key: "temp_id", force: :cascade do |t|
-    t.serial "id", null: false
+    t.integer "id"
     t.integer "manifest_source_id"
     t.integer "status", default: 0
     t.string "version_id"

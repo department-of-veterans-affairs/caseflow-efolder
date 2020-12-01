@@ -8,7 +8,7 @@ class ChangeTempIdToPrimaryKey < ActiveRecord::Migration[5.2]
       # Ensure we auto increment our primary key
       execute "CREATE SEQUENCE records_temp_id_seq;"
       execute "ALTER TABLE records ALTER temp_id SET DEFAULT NEXTVAL('records_temp_id_seq');"
-      execute "SELECT SETVAL('records_temp_id_seq', (SELECT MAX(temp_id) FROM records) + 1);"
+      execute "SELECT SETVAL('records_temp_id_seq', (SELECT MAX(temp_id) FROM records));"
     end
   end
 
