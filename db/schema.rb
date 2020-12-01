@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_01_181531) do
+ActiveRecord::Schema.define(version: 2020_12_01_195149) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -66,7 +66,7 @@ ActiveRecord::Schema.define(version: 2020_12_01_181531) do
     t.string "series_id"
     t.integer "version"
     t.datetime "upload_date"
-    t.bigint "temp_id"
+    t.bigint "temp_id", null: false
     t.index ["manifest_source_id", "series_id"], name: "index_records_on_manifest_source_id_and_series_id"
     t.index ["temp_id"], name: "index_records_on_temp_id", unique: true
     t.index ["version_id", "manifest_source_id"], name: "index_records_on_version_id_and_manifest_source_id", unique: true
