@@ -5,8 +5,6 @@ class Record < ApplicationRecord
 
   validates :manifest_source, :version_id, :series_id, presence: true
 
-  before_save :save_to_temp_columns
-
   enum status: {
     initialized: 0,
     success: 1,
@@ -26,6 +24,8 @@ class Record < ApplicationRecord
   # Convert mime type to "application/pdf" if it is a binary file
   # then PDFkit will check if PDF is valid
   before_create :adjust_mime_type
+
+  after_save :save_to_temp_columns
 
   delegate :manifest, :service, to: :manifest_source
   delegate :file_number, to: :manifest

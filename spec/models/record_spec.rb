@@ -89,21 +89,21 @@ describe Record do
   end
 
   context ".create" do
+    let(:mime_type) { "application/octet-stream" }
+    let(:record) { Record.create(mime_type: mime_type, version_id: "1234", series_id: "5678", manifest_source: source) }
+
     context "mime_type" do
-      subject do
-        Record.create(
-          mime_type: mime_type,
-          version_id: "1234",
-          series_id: "5678",
-          manifest_source: source
-        ).mime_type
-      end
+      subject { record.mime_type }
 
       context "if application/octet-stream" do
-        let(:mime_type) { "application/octet-stream" }
-
         it { is_expected.to eq("application/pdf") }
       end
+    end
+
+    context "temp_id" do
+      subject { record.temp_id }
+
+      it { is_expected.to eq(record.id) }
     end
   end
 
