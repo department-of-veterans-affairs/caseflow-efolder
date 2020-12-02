@@ -99,12 +99,6 @@ describe Record do
         it { is_expected.to eq("application/pdf") }
       end
     end
-
-    context "temp_id" do
-      subject { record.temp_id }
-
-      it { is_expected.to eq(record.id) }
-    end
   end
 
   context "#preferred_extension" do
