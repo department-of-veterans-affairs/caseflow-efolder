@@ -1,4 +1,6 @@
 class Record < ApplicationRecord
+  self.table_name = "record2020s"
+
   include Caseflow::DocumentTypes
 
   belongs_to :manifest_source
