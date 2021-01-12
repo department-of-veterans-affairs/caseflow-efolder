@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_02_032322) do
+ActiveRecord::Schema.define(version: 2020_12_29_171616) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -68,29 +68,6 @@ ActiveRecord::Schema.define(version: 2020_12_02_032322) do
     t.datetime "upload_date"
     t.index ["manifest_source_id", "series_id"], name: "index_record2020s_on_manifest_source_id_and_series_id"
     t.index ["version_id", "manifest_source_id"], name: "index_record2020s_on_version_id_and_manifest_source_id", unique: true
-  end
-
-  create_table "records", force: :cascade do |t|
-    t.integer "manifest_source_id"
-    t.integer "status", default: 0
-    t.string "version_id"
-    t.string "mime_type"
-    t.datetime "received_at"
-    t.string "type_description"
-    t.string "type_id"
-    t.integer "size"
-    t.string "jro"
-    t.string "source"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "conversion_status", default: 0
-    t.string "series_id"
-    t.integer "version"
-    t.datetime "upload_date"
-    t.bigint "temp_id"
-    t.index ["manifest_source_id", "series_id"], name: "index_records_on_manifest_source_id_and_series_id"
-    t.index ["temp_id"], name: "index_records_on_temp_id", unique: true
-    t.index ["version_id", "manifest_source_id"], name: "index_records_on_version_id_and_manifest_source_id", unique: true
   end
 
   create_table "users", force: :cascade do |t|
