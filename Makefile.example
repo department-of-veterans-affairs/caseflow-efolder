@@ -61,6 +61,9 @@ migrate:	## Run pending migrations
 rollback:	## Rollback last migration
 	bundle exec rake db:rollback
 
+fresh:  ## https://github.com/imsky/git-fresh - updates local master to match origin, stashes changes, prunes remote branches
+	git fresh
+
 reset:	## Reset the db
 	bundle exec rake db:reset
 
