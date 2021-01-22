@@ -15,7 +15,7 @@ services:
      - POSTGRES_PASSWORD=postgres
 
   appeals-localstack-aws:
-    image: localstack/localstack
+    image: localstack/localstack:0.12.5
     ports:
       - "4566:4566"
     volumes:
