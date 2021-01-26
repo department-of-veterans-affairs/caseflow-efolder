@@ -246,11 +246,17 @@ class ExternalApi::BGSService
 
   private
 
-  def current_user
-    RequestStore[:current_user]
-  end
-
+  # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  # >> >> >> READ BEFORE MODIFYING << << <<
+  # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  # The veteran info cache key **must** be **unique per user**. DO NOT use the
+  # `RequestStore[:current_user]` as a part of the cache key because it is
+  # not guaranteed that the `RequestStore[:current_user]` is making the request
+  # to BGS. Make sure you understand the nuance of this because it can lead to
+  # permission issues that can cause data leakages.
+  #
+  # See: https://github.com/department-of-veterans-affairs/caseflow/issues/15829
   def fetch_veteran_info_cache_key(file_number)
-    "bgs_veteran_info_#{current_user.css_id}_#{current_user.station_id}_#{file_number}"
+    "bgs_veteran_info_#{client.client_username}_#{client.client_station_id}_#{file_number}"
   end
 end
