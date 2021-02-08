@@ -12,6 +12,8 @@ jobs:
           - DBUS_SESSION_BUS_ADDRESS: /dev/null
           - RAILS_ENV: test
           - BUNDLE_PATH: vendor/bundle
+          - POSTGRES_HOST: localhost
+          - POSTGRES_USER: root
 
       # This is the circleci provided Postgres container. We can
       # configure it via environment variables.
