@@ -1,10 +1,6 @@
 describe ExternalApi::BGSService do
   include POAMapper
 
-  before do
-    RequestStore[:current_user] = user
-  end
-
   after do
     bgs_service.bust_fetch_veteran_info_cache(file_number)
   end
@@ -100,6 +96,8 @@ describe ExternalApi::BGSService do
 
   before do
     allow(ExternalApi::BGSService).to receive(:init_client) { bgs_client }
+    allow(bgs_client).to receive(:client_username) { user.css_id }
+    allow(bgs_client).to receive(:client_station_id) { user.station_id }
     allow(bgs_client).to receive(:org) { bgs_org_service }
     allow(bgs_client).to receive(:people) { bgs_people_service }
     allow(bgs_client).to receive(:veteran) { bgs_veteran_service }
