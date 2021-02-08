@@ -74,7 +74,7 @@ jobs:
             ~/project/ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:schema:load"
 
       - browser-tools/install-chrome:
-          replace_existing: true
+          replace-existing: true
       - browser-tools/install-chromedriver
 
       - run:
