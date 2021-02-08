@@ -20,14 +20,11 @@ jobs:
             POSTGRES_PASSWORD: password
             POSTGRES_DB: caseflow_efolder_test
 
-
       # This is the circleci provided Redis container.
       - image: circleci/redis:4.0.10
 
       # localstack image
       - image: localstack/localstack:0.12.5
-        environment:
-          - SERVICES=sqs
 
     parallelism: 1
     resource_class: large
