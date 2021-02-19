@@ -15,13 +15,9 @@ services:
      - POSTGRES_PASSWORD=postgres
 
   appeals-localstack-aws:
-    image: localstack/localstack
+    image: localstack/localstack:0.12.5
     ports:
-      - "14567-14583:4567-4583"
-      - "${PORT_WEB_UI-8080}:${PORT_WEB_UI-8080}"
-    environment:
-      - SERVICES=sqs
-      - SQS_PORT_EXTERNAL=14576
+      - "4566:4566"
     volumes:
       - ./local/sqs/conf:/conf
 
