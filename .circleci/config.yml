@@ -1,4 +1,6 @@
 version: 2.1
+orbs:
+  browser-tools: circleci/browser-tools@1.1.1
 jobs:
   rake:
     docker:
@@ -12,6 +14,7 @@ jobs:
           - BUNDLE_PATH: vendor/bundle
           - POSTGRES_HOST: localhost
           - POSTGRES_USER: root
+
       # This is the circleci provided Postgres container. We can
       # configure it via environment variables.
       - image: circleci/postgres:11.7
@@ -20,14 +23,11 @@ jobs:
             POSTGRES_PASSWORD: password
             POSTGRES_DB: caseflow_efolder_test
 
-
       # This is the circleci provided Redis container.
       - image: circleci/redis:4.0.10
 
       # localstack image
-      - image: localstack/localstack:latest
-        environment:
-          - SERVICES=sqs
+      - image: localstack/localstack:0.12.5
 
     parallelism: 1
     resource_class: large
@@ -75,15 +75,9 @@ jobs:
             ~/project/ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:create"
             ~/project/ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:schema:load"
 
-      - run:
-          name: Update Chrome/ChromeDriver
-          command: |
-            wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-            sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
-            sudo apt-get update
-            sudo apt-get install google-chrome-stable
-            bundle exec rake webdrivers:chromedriver:remove
-            bundle exec rake webdrivers:chromedriver:update
+      - browser-tools/install-chrome:
+          replace-existing: true
+      - browser-tools/install-chromedriver
 
       - run:
           name: RSpec

@@ -101,14 +101,15 @@ describe UserAuthorizer do
   before do
     allow(authorizer).to receive(:bgs) { bgs_service }
     allow(authorizer).to receive(:system_bgs) { system_bgs_service }
+
+    allow(bgs_client).to receive(:client_username) { css_id }
+    allow(bgs_client).to receive(:client_station_id) { station_id }
     allow(bgs_client).to receive(:veteran) { bgs_veteran_service }
-    allow(system_bgs_client).to receive(:veteran) { system_bgs_veteran_service }
     allow(bgs_client).to receive(:claimants) { bgs_claimants_service }
     allow(bgs_client).to receive(:common_security) { bgs_security_service }
     allow(bgs_client).to receive(:benefit_claims) { bgs_benefit_claims_service }
     allow(bgs_client).to receive(:org) { bgs_org_service }
-    allow(bgs_service).to receive(:current_user) { user }
-    allow(system_bgs_service).to receive(:current_user) { User.system_user }
+
     allow(bgs_org_service).to receive(:find_poas_by_ptcpnt_id)
       .with(poa_participant_id) { bgs_poa_user_response }
     allow(bgs_claimants_service).to receive(:find_poa_by_file_number)
@@ -123,6 +124,10 @@ describe UserAuthorizer do
       .with(username: css_id, station_id: station_id, application: "CASEFLOW") { bgs_css_user_profile_response }
     allow(bgs_benefit_claims_service).to receive(:find_claim_by_file_number)
       .with(file_number) { bgs_benefit_claims_response }
+
+    allow(system_bgs_client).to receive(:client_username) { User.system_user.css_id }
+    allow(system_bgs_client).to receive(:client_station_id) { User.system_user.station_id }
+    allow(system_bgs_client).to receive(:veteran) { system_bgs_veteran_service }
   end
 
   describe "#new" do
@@ -164,6 +169,89 @@ describe UserAuthorizer do
       context "veteran is alive" do
         context "has POA for veteran" do
           it "returns true" do
+            expect(subject).to eq true
+          end
+        end
+
+        context "not POA for veteran" do
+          let(:user) do
+            User.new(
+              participant_id: 00000000,
+              css_id: "NOTPOA",
+              email: "notpoa@example.com",
+              name: "NOT POA", 
+              roles: roles,
+              station_id: "213"
+            )
+          end
+
+          # Tests the issue described here:
+          #
+          #   https://github.com/department-of-veterans-affairs/caseflow/issues/15829
+          it "returns false twice after veteran fetch with system BGS" do
+            expect(bgs_veteran_service).to(
+              receive(:find_by_file_number)
+                .with(file_number)
+                .and_raise(
+                  BGS::ShareError.new("Power of Attorney of Folder is none. Access to this record is denied.")
+                )
+                .twice
+            )
+            # Fake that calling BGS as the system user will return the veteran's data
+            # and not a permission error.
+            expect(system_bgs_veteran_service).to(
+              receive(:find_by_file_number)
+                .with(file_number)
+                .and_return({
+                  file_number: "123456789",
+                  veteran_first_name: "First",
+                  veteran_last_name: "Last",
+                  veteran_last_four_ssn: "6789",
+                  participant_id: "123456",
+                  deceased: false,
+                  return_message: "Message"
+                })
+                .once
+            )
+            # Fake that the veteran does not have a POA, so the active user (NOTPOA)
+            # should not have permission to the veteran's data.
+            expect(bgs_org_service).to(
+              receive(:find_poas_by_ptcpnt_id)
+                .with(user.participant_id)
+                .and_return([])
+                .twice
+            )
+            # Ensure that we are only getting the veteran info cache key twice. This
+            # setup ensures that we aren't making unexpected calls to fetch veteran
+            # info.
+            expect(bgs_service).to(
+              receive(:fetch_veteran_info_cache_key)
+                .and_call_original
+                .twice
+            )
+
+            expect(subject).to eq false
+
+            # This check makes a query to BGS using the system user to see if the
+            # veteran record actually exists. The system user has permissions to
+            # all data in Caseflow, so this request to BGS will always return real
+            # veteran data (never a permission error).
+            expect(authorizer.veteran_record_found?).to eq true
+
+            # Ensure that the previous call to BGS as the system user doesn't cache
+            # data under the active user. This behavior would allow the active user to
+            # bypass BGS permissions if they make a 2nd request before the cache expires.
+            expect(Rails.cache.fetch("bgs_veteran_info_NOTPOA_213_#{file_number}")).to be_nil
+            expect(Rails.cache.fetch("bgs_veteran_info_CASEFLOW1_317_#{file_number}")).not_to be_nil
+
+            # Ensure that a second permission check returns the same exact result.
+            # This is to ensure that the caching layer does bypass checks in BGS.
+            authorizer2 = described_class.new(user: user, file_number: file_number)
+
+            allow(authorizer2).to receive(:bgs) { bgs_service }
+            allow(authorizer2).to receive(:system_bgs) { system_bgs_service }
+
+            expect(authorizer2.can_read_efolder?).to eq false
           end
         end
       end
