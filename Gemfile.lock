@@ -238,6 +238,9 @@ GEM
     listen (3.4.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
+    logstasher (2.1.5)
+      activesupport (>= 5.2)
+      request_store
     loofah (2.9.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -526,6 +529,7 @@ DEPENDENCIES
   jquery-rails (>= 4.3.4)
   launchy
   listen
+  logstasher
   mime-types
   mini_magick
   moment_timezone-rails
