@@ -17,10 +17,10 @@ class HealthChecksController < ApplicationController
     migrations = []
     pending_migrations = false
     ActiveRecord::Base.connection.migration_context.migrations_status.each do |status, version, name|
-        migrations << {status: status, version: version, name: name}
-        if status != "up" then pending_migrations = true end
+        migrations << { status: status, version: version, name: name }
+        pending_migrations = true if status != "up"
     end
-    return {migrations: migrations, pending_migrations: pending_migrations}
+    { migrations: migrations, pending_migrations: pending_migrations }
   end
 
 end
