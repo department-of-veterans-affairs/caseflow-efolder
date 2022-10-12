@@ -27,6 +27,11 @@ Shoryuken.configure_server do |config|
   Rails.logger = Shoryuken::Logging.logger
   Rails.logger.level = Logger::INFO
 
+  # set up heap dump code
+  require 'objspace'
+  ObjectSpace.trace_object_allocations_start
+
+
   # register all shoryuken middleware
   config.server_middleware do |chain|
     chain.add JobDataDogMetricMiddleware
