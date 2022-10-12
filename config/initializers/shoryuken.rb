@@ -1,11 +1,5 @@
 require "#{Rails.root}/app/jobs/middleware/job_data_dog_metric_middleware"
 
-# set up heap dump code
-on_worker_boot do
-    require 'objspace'
-    ObjectSpace.trace_object_allocations_start
-end
-
 # set up default exponential backoff parameters
 ActiveJob::QueueAdapters::ShoryukenAdapter::JobWrapper
   .shoryuken_options(auto_visibility_timeout: true,
