@@ -28,6 +28,7 @@ gem "pg", "~> 0.18", platforms: :ruby
 gem "puma"
 gem "rack-cors", ">= 1.0.4"
 gem "rails", "5.2.4.6"
+gem "rbtrace"
 gem "redis-namespace"
 gem "redis-rails", "~> 5.0.2"
 gem "redis-semaphore"
