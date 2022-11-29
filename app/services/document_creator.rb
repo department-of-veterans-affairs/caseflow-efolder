@@ -11,7 +11,7 @@ class DocumentCreator
       # manifest_source.records.delete_all
       # Remove any duplicates before adding them.
       external_documents.uniq(&:document_id).map do |document|
-        manifest_source.records.find_by(version_id: document.document_id).delete
+        manifest_source.records.where(version_id: document.document_id).destroy_all
         Record.create_from_external_document(manifest_source, document)
       end
     end

@@ -49,7 +49,7 @@ class ManifestFetcher
     errors = []
     documents = file_numbers.map do |file_number|
       begin
-        docs = manifest_source.service.fetch_delta_documents_for(file_number, manifest_source.fetched_at:, Time.zone.now)
+        docs = manifest_source.service.fetch_delta_documents_for(file_number, manifest_source.fetched_at, Time.zone.now)
         file_numbers_found[file_number] = true
         docs
       rescue VBMS::FilenumberDoesNotExist => error
