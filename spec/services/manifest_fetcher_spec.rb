@@ -40,6 +40,7 @@ describe ManifestFetcher do
       
       context "when manifest source is current returns manifest with delta docs" do
         before do
+          FeatureToggle.enable!(:cache_delta_documents)
           source.records.create(version_id: "3", series_id: "1")
           source.records.create(version_id: "4", series_id: "2")
           source.records.create(version_id: "7", series_id: "3")
@@ -47,6 +48,7 @@ describe ManifestFetcher do
           source.status = "success"
           allow(VBMSService).to receive(:fetch_delta_documents_for).and_return(delta_documents)
         end
+        after { FeatureToggle.disable!(:cache_delta_documents) }
         
         it "saves manifest status as success, updated fetched at, replaced old documents with new versions" do
           expect(subject.size).to eq 2
@@ -102,6 +104,8 @@ describe ManifestFetcher do
   end
   
   context "#documents" do
+    before {FeatureToggle.enable!(:cache_delta_documents)}
+    after { FeatureToggle.disable!(:cache_delta_documents) }
     subject { ManifestFetcher.new(manifest_source: source).documents }
       context "from VBMS" do
         let(:name) { "VBMS" }
