@@ -109,6 +109,8 @@ describe DocumentCreator do
     end
 
     context "when manifest source is current" do
+      before {FeatureToggle.enable!(:cache_delta_documents)}
+      after { FeatureToggle.disable!(:cache_delta_documents) }
       let(:documents) do
         [
           OpenStruct.new(document_id: "3", series_id: "3"),

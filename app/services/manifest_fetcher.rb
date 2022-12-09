@@ -16,7 +16,14 @@ class ManifestFetcher
   end
 
   def documents
-    @documents ||= fetch_documents
+    ft_delta_documents = FeatureToggle.enabled?(:cache_delta_documents, user: current_user)
+    Rails.logger.info("Feature Toggle Cache Delta Documents Enabled? #{ft_delta_documents} for CSS ID: #{current_user&.css_id}")
+
+    if ft_delta_documents
+      @documents ||= manifest_source.current? ? fetch_delta_documents : fetch_documents
+    else
+      @documents ||= fetch_documents
+    end
   end
 
   def fetch_documents
@@ -60,5 +67,11 @@ class ManifestFetcher
     # always use system user so authz is not a question.
     # the authz checks are performed before this class is invoked.
     BGSService.init_client(username: User.system_user.css_id, station_id: User.system_user.station_id)
+  end
+
+  private
+
+  def current_user
+    RequestStore[:current_user]
   end
 end
