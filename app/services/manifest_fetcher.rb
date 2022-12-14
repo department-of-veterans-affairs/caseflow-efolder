@@ -16,7 +16,7 @@ class ManifestFetcher
   end
 
   def documents
-    @documents ||= manifest_source.current? ? fetch_delta_documents : fetch_documents
+    @documents ||= fetch_documents
   end
 
   def fetch_documents
@@ -27,29 +27,7 @@ class ManifestFetcher
     errors = []
     documents = file_numbers.map do |file_number|
       begin
-        docs = manifest_source.service.v2_fetch_documents_for(file_number)
-        file_numbers_found[file_number] = true
-        docs
-      rescue VBMS::FilenumberDoesNotExist => error
-        errors << error
-        []
-      end
-    end.flatten.uniq
-    if file_numbers_found.empty?
-      fail errors.first # don't care if there is more than one.
-    end
-    documents
-  end
-
-  def fetch_delta_documents
-    # fetch documents for all the "file numbers" known for this veteran
-    # it's possible that BGS reports a FN that VBMS does not know about.
-    # so do not report the error if at least one FN works.
-    file_numbers_found = {}
-    errors = []
-    documents = file_numbers.map do |file_number|
-      begin
-        docs = manifest_source.service.fetch_delta_documents_for(file_number, manifest_source.fetched_at)
+        docs = manifest_source.current? ? manifest_source.service.fetch_delta_documents_for(file_number, manifest_source.fetched_at) : manifest_source.service.v2_fetch_documents_for(file_number)
         file_numbers_found[file_number] = true
         docs
       rescue VBMS::FilenumberDoesNotExist => error
