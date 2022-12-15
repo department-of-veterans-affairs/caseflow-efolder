@@ -27,7 +27,19 @@ class ManifestFetcher
     errors = []
     documents = file_numbers.map do |file_number|
       begin
-        docs = chose_and_fetch_docs(file_number) 
+        ft_delta_documents = FeatureToggle.enabled?(:cache_delta_documents, user: current_user)
+        Rails.logger.info("Feature Toggle Cache Delta Documents Enabled? #{ft_delta_documents} for CSS ID: #{current_user&.css_id}")
+        docs = manifest_source.current? && ft_delta_documents ? manifest_source.service.    fetch_delta_documents_for(file_number, manifest_source.fetched_at) : manifest_source.service. v2_fetch_documents_for(file_number)
+        if ft_delta_documents
+          Rails.logger.info("Feature Toggle enabled
+            Document IDs: #{manifest_source.service.fetch_delta_documents_for(file_number, manifest_source.fetched_at).map(&:document_id)}
+            ")
+
+        else
+          Rails.logger.info("Feature Toggle disabled
+            Document IDs: #{manifest_source.service.fetch_delta_documents_for(file_number, manifest_source.fetched_at).map(&:document_id)}
+            ")
+        end
         file_numbers_found[file_number] = true
         #p docs
         docs
@@ -42,16 +54,8 @@ class ManifestFetcher
     documents
   end
 
-  def chose_and_fetch_docs(file_number)
-    ft_delta_documents = FeatureToggle.enabled?(:cache_delta_documents, user: current_user)
-    Rails.logger.info("Feature Toggle Cache Delta Documents Enabled? #{ft_delta_documents} for CSS ID: #{current_user&.css_id}")
-    if ft_delta_documents
-      docs = manifest_source.current? ? manifest_source.service.fetch_delta_documents_for(file_number, manifest_source.fetched_at) : manifest_source.service.v2_fetch_documents_for(file_number)
-    else
-      docs = manifest_source.service.v2_fetch_documents_for(file_number)
-    end
-    docs
-  end
+  
+  
 
   def file_numbers
     @file_numbers ||= [
