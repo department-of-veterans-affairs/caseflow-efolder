@@ -40,6 +40,7 @@ describe ManifestFetcher do
       
       context "when manifest source is current returns manifest with delta docs" do
         before do
+          FeatureToggle.enable!(:cache_delta_documents)
           source.records.create(version_id: "3", series_id: "1")
           source.records.create(version_id: "4", series_id: "2")
           source.records.create(version_id: "7", series_id: "3")
@@ -47,6 +48,7 @@ describe ManifestFetcher do
           source.status = "success"
           allow(VBMSService).to receive(:fetch_delta_documents_for).and_return(delta_documents)
         end
+        after { FeatureToggle.disable!(:cache_delta_documents) }
         
         it "saves manifest status as success, updated fetched at, replaced old documents with new versions" do
           expect(subject.size).to eq 2
@@ -101,33 +103,66 @@ describe ManifestFetcher do
     end
   end
   
-  context "#documents" do
-    subject { ManifestFetcher.new(manifest_source: source).documents }
-      context "from VBMS" do
-        let(:name) { "VBMS" }
-
-        context "when manifest source is current" do
-          before do
-            source.fetched_at = Time.zone.now
-            source.status = "success"
-            allow(VBMSService).to receive(:fetch_delta_documents_for).and_return(delta_documents)
+  context "#fetch_documents" do
+    subject { ManifestFetcher.new(manifest_source: source).fetch_documents }
+    context "from VBMS" do
+      let(:name) { "VBMS" }
+      
+      context "with Feature Flag turned on" do
+        before {FeatureToggle.enable!(:cache_delta_documents)}
+        after { FeatureToggle.disable!(:cache_delta_documents) }
+           context "when manifest source is current" do
+            before do
+              source.fetched_at = Time.zone.now
+              source.status = "success"
+              allow(VBMSService).to receive(:fetch_delta_documents_for).and_return(delta_documents)
+            end
+  
+            it "returns the delta documents" do
+              expect(subject.size).to eq 2
+              expect(subject.first.document_id).to eq "5"
+            end
           end
-
-          it "returns the delta documents" do
-            expect(subject.size).to eq 2
-            expect(subject.first.document_id).to eq "5"
+          context "when manifest source is not current" do
+            before do
+              allow(VBMSService).to receive(:v2_fetch_documents_for).and_return(documents)
+            end
+            
+            it "returns all documents" do
+              expect(subject.size).to eq 2
+              expect(subject.first.document_id).to eq "1"
+            end
           end
-        end
-        context "when manifest source is not current" do
-          before do
-            allow(VBMSService).to receive(:v2_fetch_documents_for).and_return(documents)
-          end
-          
-          it "returns all documents" do
-            expect(subject.size).to eq 2
-            expect(subject.first.document_id).to eq "1"
-          end
-        end
       end
+        
+      context "with Feature Flag turned off" do
+          before {FeatureToggle.disable!(:cache_delta_documents)}
+          context "when manifest source is current" do
+            before do
+              source.fetched_at = Time.zone.now
+              source.status = "success"
+              allow(VBMSService).to receive(:v2_fetch_documents_for).and_return(documents)
+            end
+            
+            it "returns all documents" do
+              expect(subject.size).to eq 2
+              expect(subject.first.document_id).not_to eq "5"
+            end
+          end
+          context "when manifest source is not current" do
+            before do
+              allow(VBMSService).to receive(:v2_fetch_documents_for).and_return(documents)
+            end
+            
+            it "returns all documents" do
+              expect(subject.size).to eq 2
+              expect(subject.first.document_id).to eq "1"
+            end
+          end
+      end
+        
+    end
   end
 end
+  
+  

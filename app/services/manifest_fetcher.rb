@@ -27,8 +27,9 @@ class ManifestFetcher
     errors = []
     documents = file_numbers.map do |file_number|
       begin
-        docs = manifest_source.current? ? manifest_source.service.fetch_delta_documents_for(file_number, manifest_source.fetched_at) : manifest_source.service.v2_fetch_documents_for(file_number)
+        docs = chose_and_fetch_docs(file_number) 
         file_numbers_found[file_number] = true
+        #p docs
         docs
       rescue VBMS::FilenumberDoesNotExist => error
         errors << error
@@ -39,6 +40,17 @@ class ManifestFetcher
       fail errors.first # don't care if there is more than one.
     end
     documents
+  end
+
+  def chose_and_fetch_docs(file_number)
+    ft_delta_documents = FeatureToggle.enabled?(:cache_delta_documents, user: current_user)
+    Rails.logger.info("Feature Toggle Cache Delta Documents Enabled? #{ft_delta_documents} for CSS ID: #{current_user&.css_id}")
+    if ft_delta_documents
+      docs = manifest_source.current? ? manifest_source.service.fetch_delta_documents_for(file_number, manifest_source.fetched_at) : manifest_source.service.v2_fetch_documents_for(file_number)
+    else
+      docs = manifest_source.service.v2_fetch_documents_for(file_number)
+    end
+    docs
   end
 
   def file_numbers
@@ -60,5 +72,11 @@ class ManifestFetcher
     # always use system user so authz is not a question.
     # the authz checks are performed before this class is invoked.
     BGSService.init_client(username: User.system_user.css_id, station_id: User.system_user.station_id)
+  end
+
+  private
+
+  def current_user
+    RequestStore[:current_user]
   end
 end
