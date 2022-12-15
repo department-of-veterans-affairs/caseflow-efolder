@@ -1,6 +1,10 @@
 describe ManifestFetcher do
   let(:manifest) { Manifest.create(file_number: "1234") }
   let(:source) { ManifestSource.create(name: name, manifest: manifest) }
+  let!(:user) do
+    user = User.create(css_id: "VSO", station_id: "283")
+    RequestStore[:current_user] = user
+  end 
 
   let(:documents) do
     [
