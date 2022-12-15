@@ -44,6 +44,14 @@ class ExternalApi::VBMSService
     documents
   end
 
+  def self.fetch_delta_documents_for(veteran_file_number, begin_date_range, end_date_range = Time.zone.now)
+    @vbms_client || init_client
+    
+    request = VBMS::Requests::FindDocumentVersionReferenceByDateRange.new(veteran_file_number, begin_date_range, end_date_range)
+    documents = send_and_log_request(veteran_file_number, request)
+    documents
+  end
+
   def self.fetch_document_file(document)
     @vbms_client ||= init_client
 

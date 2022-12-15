@@ -107,5 +107,29 @@ describe DocumentCreator do
         expect(source.reload.records.second.series_id).to eq "4"
       end
     end
+
+    context "when manifest source is current" do
+      before {FeatureToggle.enable!(:cache_delta_documents)}
+      after { FeatureToggle.disable!(:cache_delta_documents) }
+      let(:documents) do
+        [
+          OpenStruct.new(document_id: "3", series_id: "3"),
+          OpenStruct.new(document_id: "4", series_id: "4")
+        ]
+      end
+      
+      it "gets the delta documents and replace older versions but leave current versions" do
+        source.records.create(version_id: "1", series_id: "3")
+        source.records.create(version_id: "2", series_id: "4")
+        source.records.create(version_id: "5", series_id: "2")
+        source.fetched_at = Time.zone.now
+        source.status = "success"
+        subject
+        expect(source.reload.records.size).to eq 3
+        expect(source.reload.records.find_by(series_id: "3").version_id).to eq "3"
+        expect(source.reload.records.find_by(series_id: "4").version_id).to eq "4"
+        expect(source.reload.records.find_by(series_id: "2").version_id).to eq "5"
+      end
+    end
   end
 end
