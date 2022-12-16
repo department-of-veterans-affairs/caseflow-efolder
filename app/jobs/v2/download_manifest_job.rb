@@ -8,8 +8,7 @@ class V2::DownloadManifestJob < ApplicationJob
     Raven.extra_context(manifest_source: manifest_source.id)
 
     documents = ManifestFetcher.new(manifest_source: manifest_source).process
-    
-    log_info(manifest_source.manifest.file_number, documents, manifest_source.manifest.zipfile_size)
+    CaseflowLogger.log("DownloadManifestJob", user: current_user.inspect, file_number: manifest_source.manifest.file_number, documents_fetched_count: documents.count, documents_fetched_ids: documents.map(&:id), manifest_zipfile_size: manifest_source.manifest.zipfile_size)
 
     V2::SaveFilesInS3Job.perform_later(manifest_source) if documents.present? && !ApplicationController.helpers.ui_user?
   rescue StandardError => error
@@ -26,18 +25,5 @@ class V2::DownloadManifestJob < ApplicationJob
 
   def current_user
     RequestStore[:current_user]
-  end
-
-  def log_info(file_number, docs, zipfile_size)
-    Rails.logger.info log_message(file_number, docs, zipfile_size)
-  end
-
-  def log_message(file_number, docs, zipfile_size)
-    "DownloadManifestJob - " \
-    "User Inspect: (#{current_user.inspect})" \
-    "File Number: (#{file_number}) - " \
-    "Documents Fetched Count: #{docs.count} - " \
-    "Documents Fetched IDs: #{docs.map(&:id)}" \
-    "Manifest Zipfile Size: #{zipfile_size} - "
   end
 end
