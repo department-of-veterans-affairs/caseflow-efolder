@@ -62,7 +62,7 @@ class ManifestFetcher
     BGSService.init_client(username: User.system_user.css_id, station_id: User.system_user.station_id)
   end
 
-private
+  private
 
   # If manifest not current fetch all documents from VBMS
   # If manifest current, fetch delta documents from VBMS 
@@ -76,19 +76,35 @@ private
       docs = manifest_source.service.v2_fetch_documents_for(file_number)
     end
     
-    CaseflowLogger.log( "ManifestFetcher", feature_flag_enabled: ft_delta_documents, user: current_user.inspect, vet_file_number: file_number, documents_fetched_count: docs.count, documents_fetched_ids: docs.map(&:id), manifest_zipfile_size: manifest_source.manifest.zipfile_size )
+    log_info(file_number, docs, ft_delta_documents, manifest_source.manifest.zipfile_size)
+
     docs
   end
+  
 
   def documents_from_service_for(file_number)
     documents = MetricsService.record("ManifestFetcher documents or delta documents for file_number: #{file_number}",
                                                service: manifest_source.name.downcase.to_sym,
                                                name: "fetch_documents_or_delta_from_service") do
       fetch_documents_or_delta_documents_for(file_number)
-                                               end
   end
+
 
   def current_user
     RequestStore[:current_user]
+  end
+
+  def log_info(file_number, docs, ft_delta_documents, zipfile_size)
+    Rails.logger.info log_message(file_number, docs, ft_delta_documents, zipfile_size)
+  end
+
+  def log_message(file_number, docs, ft_delta_documents, zipfile_size)
+    "ManifestFetcher - " \
+    "Feature Flag Delta Docs: #{ft_delta_documents} - " \
+    "User Inspect: (#{current_user.inspect})" \
+    "File Number: (#{file_number}) - " \
+    "Documents Fetched Count: #{docs.count} - " \
+    "Documents Fetched IDs: #{docs.map(&:id)}" \
+    "Manifest Zipfile Size: #{zipfile_size} - "
   end
 end
