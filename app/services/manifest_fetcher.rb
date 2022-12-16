@@ -27,9 +27,8 @@ class ManifestFetcher
     errors = []
     documents = file_numbers.map do |file_number|
       begin
-       docs = chose_and_fetch_docs(file_number)
+        docs = documents_from_service_for(file_number)
         file_numbers_found[file_number] = true
-        #p docs
         docs
       rescue VBMS::FilenumberDoesNotExist => error
         errors << error
@@ -41,27 +40,6 @@ class ManifestFetcher
     end
     documents
   end
-
-  def chose_and_fetch_docs(file_number)
-    ft_delta_documents = FeatureToggle.enabled?(:cache_delta_documents, user: current_user)
-
-    if ft_delta_documents
-
-      docs = manifest_source.current? ? manifest_source.service.fetch_delta_documents_for(file_number, manifest_source.fetched_at) : manifest_source.service.v2_fetch_documents_for(file_number)
-    else
-      docs = manifest_source.service.v2_fetch_documents_for(file_number)
-    end
-    
-    Rails.logger.info(
-      "Feature Toggle Cache Delta Documents Enabled? #{ft_delta_documents}" \
-      "User: (#{current_user.css_id})" \
-      "Documents Count: #{docs.length}" \
-      "Documents IDs: #{docs.map(&:id)}" \
-    )
-
-    docs
-  end
-  
 
   def file_numbers
     @file_numbers ||= [
@@ -86,7 +64,47 @@ class ManifestFetcher
 
   private
 
+  # If manifest not current fetch all documents from VBMS
+  # If manifest current, fetch delta documents from VBMS 
+  # without feature flag, always fetch all documents from VBMS
+  def fetch_documents_or_delta_documents_for(file_number)
+    ft_delta_documents = FeatureToggle.enabled?(:cache_delta_documents, user: current_user)
+
+    if ft_delta_documents
+      docs = manifest_source.current? ? manifest_source.service.fetch_delta_documents_for(file_number, manifest_source.fetched_at) : manifest_source.service.v2_fetch_documents_for(file_number)
+    else
+      docs = manifest_source.service.v2_fetch_documents_for(file_number)
+    end
+    
+    log_info(file_number, docs, ft_delta_documents, manifest_source.manifest.zipfile_size)
+
+    docs
+  end
+  
+
+  def documents_from_service_for(file_number)
+    documents = MetricsService.record("ManifestFetcher documents or delta documents for file_number: #{file_number}",
+                                               service: manifest_source.name.downcase.to_sym,
+                                               name: "fetch_documents_or_delta_from_service") do
+      fetch_documents_or_delta_documents_for(file_number)
+  end
+
+
   def current_user
     RequestStore[:current_user]
+  end
+
+  def log_info(file_number, docs, ft_delta_documents, zipfile_size)
+    Rails.logger.info log_message(file_number, docs, ft_delta_documents, zipfile_size)
+  end
+
+  def log_message(file_number, docs, ft_delta_documents, zipfile_size)
+    "ManifestFetcher - " \
+    "Feature Flag Delta Docs: #{ft_delta_documents} - " \
+    "User Inspect: (#{current_user.inspect})" \
+    "File Number: (#{file_number}) - " \
+    "Documents Fetched Count: #{docs.count} - " \
+    "Documents Fetched IDs: #{docs.map(&:id)}" \
+    "Manifest Zipfile Size: #{zipfile_size} - "
   end
 end
