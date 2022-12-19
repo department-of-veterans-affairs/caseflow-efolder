@@ -574,5 +574,8 @@ DEPENDENCIES
   zaru
   zero_downtime_migrations
 
+RUBY VERSION
+   ruby 2.7.3p183
+
 BUNDLED WITH
-   1.17.3
+   2.3.26

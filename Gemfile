@@ -2,6 +2,8 @@
 
 source ENV["GEM_SERVER_URL"] || "https://rubygems.org"
 
+ruby '2.7.3'
+
 gem "active_model_serializers"
 gem "activejob_dj_overrides"
 gem "aws-sdk", "~> 2"
