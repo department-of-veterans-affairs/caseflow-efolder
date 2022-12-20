@@ -115,56 +115,54 @@ describe ManifestFetcher do
       context "with Feature Flag turned on" do
         before {FeatureToggle.enable!(:cache_delta_documents)}
         after { FeatureToggle.disable!(:cache_delta_documents) }
-           context "when manifest source is current" do
-            before do
-              source.fetched_at = Time.zone.now
-              source.status = "success"
-              allow(VBMSService).to receive(:fetch_delta_documents_for).and_return(delta_documents)
-            end
-  
-            it "returns the delta documents" do
-              expect(subject.size).to eq 2
-              expect(subject.first.document_id).to eq "5"
-            end
+        context "when manifest source is current" do
+          before do
+            source.fetched_at = Time.zone.now
+            source.status = "success"
+            allow(VBMSService).to receive(:fetch_delta_documents_for).and_return(delta_documents)
           end
-          context "when manifest source is not current" do
-            before do
-              allow(VBMSService).to receive(:v2_fetch_documents_for).and_return(documents)
-            end
-            
-            it "returns all documents" do
-              expect(subject.size).to eq 2
-              expect(subject.first.document_id).to eq "1"
-            end
+
+          it "returns the delta documents" do
+            expect(subject.size).to eq 2
+            expect(subject.first.document_id).to eq "5"
           end
+        end
+        context "when manifest source is not current" do
+          before do
+            allow(VBMSService).to receive(:v2_fetch_documents_for).and_return(documents)
+          end
+          
+          it "returns all documents" do
+            expect(subject.size).to eq 2
+            expect(subject.first.document_id).to eq "1"
+          end
+        end
       end
-        
       context "with Feature Flag turned off" do
-          before {FeatureToggle.disable!(:cache_delta_documents)}
-          context "when manifest source is current" do
-            before do
-              source.fetched_at = Time.zone.now
-              source.status = "success"
-              allow(VBMSService).to receive(:v2_fetch_documents_for).and_return(documents)
-            end
-            
-            it "returns all documents" do
-              expect(subject.size).to eq 2
-              expect(subject.first.document_id).not_to eq "5"
-            end
+        before {FeatureToggle.disable!(:cache_delta_documents)}
+        context "when manifest source is current" do
+          before do
+            source.fetched_at = Time.zone.now
+            source.status = "success"
+            allow(VBMSService).to receive(:v2_fetch_documents_for).and_return(documents)
           end
-          context "when manifest source is not current" do
-            before do
-              allow(VBMSService).to receive(:v2_fetch_documents_for).and_return(documents)
-            end
-            
-            it "returns all documents" do
-              expect(subject.size).to eq 2
-              expect(subject.first.document_id).to eq "1"
-            end
+          
+          it "returns all documents" do
+            expect(subject.size).to eq 2
+            expect(subject.first.document_id).not_to eq "5"
           end
+        end
+        context "when manifest source is not current" do
+          before do
+            allow(VBMSService).to receive(:v2_fetch_documents_for).and_return(documents)
+          end
+          
+          it "returns all documents" do
+            expect(subject.size).to eq 2
+            expect(subject.first.document_id).to eq "1"
+          end
+        end
       end
-        
     end
   end
 end

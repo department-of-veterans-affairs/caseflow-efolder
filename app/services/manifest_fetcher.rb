@@ -6,13 +6,15 @@ class ManifestFetcher
   EXCEPTIONS = [VBMS::ClientError, VVA::ClientError].freeze
 
   def process
-    DocumentCreator.new(manifest_source: manifest_source, external_documents: documents).create
-    manifest_source.update!(status: :success, fetched_at: Time.zone.now)
-    documents
-  rescue *EXCEPTIONS => e
-    manifest_source.update!(status: :failed)
-    ExceptionLogger.capture(e)
-    []
+    begin
+      DocumentCreator.new(manifest_source: manifest_source, external_documents: documents).create
+      manifest_source.update!(status: :success, fetched_at: Time.zone.now)
+      documents
+    rescue *EXCEPTIONS => e
+      manifest_source.update!(status: :failed)
+      ExceptionLogger.capture(e)
+      []
+    end
   end
 
   def documents
@@ -87,6 +89,7 @@ class ManifestFetcher
                                                service: manifest_source.name.downcase.to_sym,
                                                name: "fetch_documents_or_delta_from_service") do
       fetch_documents_or_delta_documents_for(file_number)
+    end
   end
 
 
