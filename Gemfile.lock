@@ -36,8 +36,8 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/connect_vbms.git
-  revision: 6e5d45fc5f69cdfce1ee8a9edb9b4ff7dd9c80c5
-  ref: 6e5d45fc5f69cdfce1ee8a9edb9b4ff7dd9c80c5
+  revision: ac1ae63ffb04a2ab4d2d5469262981acab162e94
+  ref: ac1ae63ffb04a2ab4d2d5469262981acab162e94
   specs:
     connect_vbms (1.2.0)
       httpclient (~> 2.8.0)
@@ -66,8 +66,8 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/ruby-bgs.git
-  revision: 98547485d863f2f0d3bb9a1b9ec92a8fe21ba306
-  ref: 98547485d863f2f0d3bb9a1b9ec92a8fe21ba306
+  revision: b03f77187feec753d879bc65641fd92f7b18263e
+  ref: b03f77187feec753d879bc65641fd92f7b18263e
   specs:
     bgs (0.3)
       httpclient
@@ -490,13 +490,13 @@ GEM
     websocket-extensions (0.1.5)
     xmldsig (0.3.2)
       nokogiri
-    xmlenc (0.7.1)
+    xmlenc (0.8.0)
       activemodel (>= 3.0.0)
       activesupport (>= 3.0.0)
       nokogiri (>= 1.6.0, < 2.0.0)
       xmlmapper (>= 0.7.3)
-    xmlmapper (0.7.3)
-      nokogiri (~> 1.5)
+    xmlmapper (0.8.1)
+      nokogiri (~> 1.11)
     xpath (3.2.0)
       nokogiri (~> 1.8)
     zaru (0.3.0)
