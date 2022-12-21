@@ -4,11 +4,6 @@ describe V2::DownloadManifestJob do
     let(:manifest) { Manifest.create(file_number: file_number) }
     let(:source) { ManifestSource.create(name: %w[VBMS VVA].sample, manifest: manifest) }
     let(:ui_user) { false }
-    let!(:user) do
-      user = User.create(css_id: "VSO", station_id: "283")
-      RequestStore[:current_user] = user
-    end 
-  
 
     let(:documents) do
       [
