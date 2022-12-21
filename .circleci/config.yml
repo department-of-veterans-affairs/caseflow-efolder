@@ -1,6 +1,11 @@
 version: 2.1
+
+browser_tools_versions: &browser_versions
+  chrome-version: 106.0.5249.119
+  firefox-version: 106.0.1
+
 orbs:
-  browser-tools: circleci/browser-tools@1.1.1
+  browser-tools: circleci/browser-tools@1.4.0
 jobs:
   rake:
     docker:
@@ -75,9 +80,8 @@ jobs:
             ~/project/ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:create"
             ~/project/ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:schema:load"
 
-      - browser-tools/install-chrome:
-          replace-existing: true
-      - browser-tools/install-chromedriver
+      - browser-tools/install-browser-tools:
+          <<: *browser_versions
 
       - run:
           name: RSpec
