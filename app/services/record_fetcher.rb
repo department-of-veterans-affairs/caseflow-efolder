@@ -23,7 +23,7 @@ class RecordFetcher
   private
 
   def content_from_va_service
-    content = MetricsService.record("RecordFetcher fetch content from VA manifest source name: #{record.manifest_source.name} for file_number #{record.file_number}",
+    content = MetricsService.record("#{record.manifest_source.name} v2_fetch_document_file",
                                     service: record.manifest_source.name.downcase.to_sym,
                                     name: "v2_fetch_document_file") do
       record.service.v2_fetch_document_file(record)
@@ -33,7 +33,7 @@ class RecordFetcher
                                     name: "image_converter_service") do
       ImageConverterService.new(image: content, record: record).process
     end
-    MetricsService.record("RecordFetcher S3 store content for #{record.s3_filename}",
+    MetricsService.record("S3: RecordFetcher store content for #{record.s3_filename}",
                           service: :s3,
                           name: "content_from_va_service") do
       S3Service.store_file(record.s3_filename, content)
@@ -42,7 +42,7 @@ class RecordFetcher
   end
 
   def content_from_s3
-    @content_from_s3 ||= MetricsService.record("RecordFetcher fetch content from S3 filename: #{record.s3_filename} for file_number #{record.file_number}",
+    @content_from_s3 ||= MetricsService.record("S3: RecordFetcher fetch content for: #{record.s3_filename}",
                                                service: :s3,
                                                name: "content_from_s3") do
       S3Service.fetch_content(record.s3_filename)

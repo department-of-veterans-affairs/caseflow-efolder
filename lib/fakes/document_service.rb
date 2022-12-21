@@ -66,17 +66,6 @@ class Fakes::DocumentService
     end
   end
 
-  def self.fetch_delta_documents_for(file_number, begin_date)
-    demo = DEMOS[file_number] || DEMOS["DEMODEFAULT"]
-    return [] if !demo || demo[:num_docs] <= 0
-
-    sleep_and_check_for_error(demo, file_number)
-
-    (1..(demo[:num_docs] || 0)).to_a.map do |i|
-      create_document(i)
-    end
-  end
-
   def self.sleep_and_check_for_error(demo, source_name)
     sleep(demo[:manifest_load] || 0)
 
