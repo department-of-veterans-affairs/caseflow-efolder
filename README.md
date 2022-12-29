@@ -173,4 +173,3 @@ Now when you go to [localhost:3001](localhost:3001) you'll be prompted with a fa
 See [internal wiki page](https://github.com/department-of-veterans-affairs/appeals-deployment/wiki/CSS-SAML-Workflow) for background.
 
 This application acts as a Service Provider to the VA IAM SAML SSO IdP (Identity Provider). The cookie set here is shared by Caseflow.
-
