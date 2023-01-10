@@ -174,3 +174,4 @@ See [internal wiki page](https://github.com/department-of-veterans-affairs/appea
 
 This application acts as a Service Provider to the VA IAM SAML SSO IdP (Identity Provider). The cookie set here is shared by Caseflow.
 
+TEST
