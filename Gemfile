@@ -66,7 +66,7 @@ group :test do
   gem "rspec"
   gem "rspec-rails"
   gem "rspec-retry"
-  gem "saml_idp", git: "https://github.com/18F/saml_idp.git", branch: "master"
+  gem "saml_idp", git: "https://github.com/18F/saml_idp.git", branch: "main"
   gem "simplecov", require: false
   gem "sinatra"
   gem "single_cov", require: false
