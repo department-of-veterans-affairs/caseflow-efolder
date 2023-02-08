@@ -23,11 +23,11 @@ gem "moment_timezone-rails"
 gem "newrelic_rpm"
 gem "nokogiri", ">=1.10.5"
 gem "omniauth-saml-va", git: "https://github.com/department-of-veterans-affairs/omniauth-saml-va", branch: "pek-iam-ssoi"
-#gem "omniauth-saml-va", git: "https://github.com/department-of-veterans-affairs/omniauth-saml-va", ref: "fbe2b878c250b14ee996ef6699c42df2c42e41a1"
+# gem "omniauth-saml-va", git: "https://github.com/department-of-veterans-affairs/omniauth-saml-va", ref: "fbe2b878c250b14ee996ef6699c42df2c42e41a1"
 gem "pg", "~> 0.18", platforms: :ruby
 gem "puma"
 gem "rack-cors", ">= 1.0.4"
-gem "rails", "5.2.4.6"
+gem "rails", "~> 5.2.8"
 gem "redis-namespace"
 gem "redis-rails", "~> 5.0.2"
 gem "redis-semaphore"
@@ -54,6 +54,7 @@ group :development, :test do
   gem "dotenv-rails"
   gem "pry"
   gem "pry-byebug"
+  gem 'psych', '~> 3.1'
   gem "rubocop", "~> 0.67.2", require: false
   gem "scss_lint", require: false
 end
@@ -66,7 +67,7 @@ group :test do
   gem "rspec"
   gem "rspec-rails"
   gem "rspec-retry"
-  gem "saml_idp", git: "https://github.com/18F/saml_idp.git", branch: "master"
+  gem "saml_idp"
   gem "simplecov", require: false
   gem "sinatra"
   gem "single_cov", require: false
