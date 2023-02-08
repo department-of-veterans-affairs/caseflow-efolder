@@ -49,7 +49,9 @@ jobs:
 
       - run:
           name: Bundle install
-          command: bundle install --path vendor/bundle
+          command: |
+            gem update --system
+            bundle install --path vendor/bundle
 
       - save_cache:
           key: vendor-bundle-v2-{{ arch }}-{{ checksum ".ruby-version" }}-{{ checksum "Gemfile.lock" }}
@@ -121,3 +123,5 @@ workflows:
   build:
     jobs:
       - rake
+
+# VS Code Extension Version: 1.5.1
