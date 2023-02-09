@@ -54,7 +54,7 @@ group :development, :test do
   gem "dotenv-rails"
   gem "pry"
   gem "pry-byebug"
-  gem 'psych', '~> 3.1'
+  gem "psych", "~> 3.1"
   gem "rubocop", "~> 0.67.2", require: false
   gem "scss_lint", require: false
 end
@@ -67,7 +67,7 @@ group :test do
   gem "rspec"
   gem "rspec-rails"
   gem "rspec-retry"
-  gem "saml_idp"
+  gem "saml_idp", git: "https://github.com/18F/saml_idp.git", branch: "main"
   gem "simplecov", require: false
   gem "sinatra"
   gem "single_cov", require: false

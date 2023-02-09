@@ -1,4 +1,16 @@
 GIT
+  remote: https://github.com/18F/saml_idp.git
+  revision: 5eed3ccf3d4585963fea48d52a4f974e68f1df80
+  branch: main
+  specs:
+    saml_idp (0.18.0.pre.18f)
+      activesupport
+      builder
+      faraday
+      nokogiri (>= 1.10.2)
+      pkcs11
+
+GIT
   remote: https://github.com/18F/uswds-rails-gem.git
   revision: aa12ddd314209ef9e75bb2f2bfcf1454336df049
   specs:
@@ -283,6 +295,7 @@ GEM
     parser (3.2.0.0)
       ast (~> 2.4.1)
     pg (0.21.0)
+    pkcs11 (0.3.4)
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -395,12 +408,6 @@ GEM
       rexml
     ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
-    saml_idp (0.14.0)
-      activesupport (>= 5.2)
-      builder (>= 3.0)
-      nokogiri (>= 1.6.2)
-      rexml
-      xmlenc (>= 0.7.1)
     sass (3.7.4)
       sass-listen (~> 4.0.0)
     sass-listen (4.0.0)
@@ -554,7 +561,7 @@ DEPENDENCIES
   rspec-retry
   rubocop (~> 0.67.2)
   rubyzip (>= 1.3.0)
-  saml_idp
+  saml_idp!
   sass-rails (~> 5.0)
   scss_lint
   sentry-raven
