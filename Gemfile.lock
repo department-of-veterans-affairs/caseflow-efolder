@@ -1,15 +1,14 @@
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: f9805ad43c1d0bb7ef9c482ea17d735bc784ea55
-  branch: master
+  revision: 5eed3ccf3d4585963fea48d52a4f974e68f1df80
+  branch: main
   specs:
-    saml_idp (0.11.0.pre.18f)
+    saml_idp (0.18.0.pre.18f)
       activesupport
       builder
-      httparty
+      faraday
       nokogiri (>= 1.10.2)
       pkcs11
-      uuid
 
 GIT
   remote: https://github.com/18F/uswds-rails-gem.git
@@ -58,11 +57,11 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/omniauth-saml-va
-  revision: f95f8d2f9b8a9a1a3df15a63595f49b203ffe31e
-  branch: pek-iam-ssoi
+  revision: ff34663176f1fe364e4897d34cd36e5980b00cb1
+  branch: caseflow-efolder
   specs:
     omniauth-saml-va (0.1)
-      omniauth-saml (~> 1.10)
+      omniauth-saml (~> 2.0.0)
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/ruby-bgs.git
@@ -213,10 +212,7 @@ GEM
     gyoku (1.3.1)
       builder (>= 2.1.2)
     hashdiff (1.0.1)
-    hashie (4.1.0)
-    httparty (0.18.1)
-      mime-types (~> 3.0)
-      multi_xml (>= 0.5.2)
+    hashie (5.0.0)
     httpclient (2.8.3)
     httpi (2.4.5)
       rack
@@ -244,8 +240,6 @@ GEM
     loofah (2.9.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
-    macaddr (1.7.2)
-      systemu (~> 2.6.5)
     mail (2.7.1)
       mini_mime (>= 0.1.1)
     makara (0.4.1)
@@ -267,7 +261,6 @@ GEM
       momentjs-rails (~> 2.15.1)
     momentjs-rails (2.15.1)
       railties (>= 3.1)
-    multi_xml (0.6.0)
     multipart-post (2.1.1)
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
@@ -279,18 +272,18 @@ GEM
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
     nori (2.6.0)
-    omniauth (2.0.0)
+    omniauth (2.0.4)
       hashie (>= 3.4.6)
       rack (>= 1.6.2, < 3)
       rack-protection
-    omniauth-saml (1.10.3)
-      omniauth (~> 1.3, >= 1.3.2)
+    omniauth-saml (2.0.0)
+      omniauth (~> 2.0)
       ruby-saml (~> 1.9)
     parallel (1.20.1)
     parser (3.0.0.0)
       ast (~> 2.4.1)
     pg (0.21.0)
-    pkcs11 (0.3.3)
+    pkcs11 (0.3.4)
     pry (0.13.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -398,7 +391,7 @@ GEM
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 1.6)
     ruby-progressbar (1.11.0)
-    ruby-saml (1.12.2)
+    ruby-saml (1.14.0)
       nokogiri (>= 1.10.5)
       rexml
     ruby2_keywords (0.0.2)
@@ -453,7 +446,6 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
-    systemu (2.6.5)
     therubyracer (0.12.3)
       libv8 (~> 3.16.14.15)
       ref
@@ -471,8 +463,6 @@ GEM
     uglifier (4.2.0)
       execjs (>= 0.3.0, < 3)
     unicode-display_width (1.5.0)
-    uuid (2.3.9)
-      macaddr (~> 1.0)
     wannabe_bool (0.7.1)
     wasabi (3.6.1)
       addressable
@@ -536,6 +526,7 @@ DEPENDENCIES
   moment_timezone-rails
   newrelic_rpm
   nokogiri (>= 1.10.5)
+  omniauth (~> 2.0.0)
   omniauth-saml-va!
   pg (~> 0.18)
   pry
@@ -576,4 +567,4 @@ DEPENDENCIES
   zero_downtime_migrations
 
 BUNDLED WITH
-   1.17.3
+   2.4.6
