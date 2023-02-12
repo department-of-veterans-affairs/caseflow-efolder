@@ -269,7 +269,7 @@ GEM
       railties (>= 3.1)
     multi_xml (0.6.0)
     multipart-post (2.1.1)
-    mustermann (1.1.1)
+    mustermann (1.1.2)
       ruby2_keywords (~> 0.0.1)
     neat (4.0.0)
       thor (~> 0.19)
@@ -301,10 +301,10 @@ GEM
     puma (5.3.1)
       nio4r (~> 2.0)
     racc (1.5.2)
-    rack (2.2.3)
+    rack (2.2.6.2)
     rack-cors (1.1.1)
       rack (>= 2.0.0)
-    rack-protection (2.1.0)
+    rack-protection (2.2.0)
       rack
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
@@ -400,7 +400,7 @@ GEM
     ruby-saml (1.12.2)
       nokogiri (>= 1.10.5)
       rexml
-    ruby2_keywords (0.0.2)
+    ruby2_keywords (0.0.5)
     rubyzip (2.3.0)
     sass (3.7.4)
       sass-listen (~> 4.0.0)
@@ -458,7 +458,7 @@ GEM
       ref
     thor (0.20.3)
     thread_safe (0.3.6)
-    tilt (2.0.10)
+    tilt (2.0.11)
     timecop (0.9.2)
     turbolinks (5.2.1)
       turbolinks-source (~> 5.2)
@@ -559,7 +559,7 @@ DEPENDENCIES
   sentry-raven
   shoryuken (= 3.1.11)
   simplecov
-  sinatra
+  sinatra (= 2.2.0)
   single_cov
   sniffybara!
   therubyracer
