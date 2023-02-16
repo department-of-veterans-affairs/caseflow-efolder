@@ -1,5 +1,6 @@
 require "tempfile"
 require "open3"
+require "hexapdf"
 
 class PdfService
   def self.write(filename, contents, pdf_attributes)
@@ -36,5 +37,22 @@ class PdfService
       # open returns the value of the block
       file
     end
+  end
+
+  def self.linearize_pdf(file_path)
+    pdf = `qpdf #{file_path} --linearize --replace-input`  
+
+    pdf
+  end
+
+  def self.optimize(file_path)
+  
+    new_file_path = "#{file_path}-optimized.pdf"
+    HexaPDF::Document.open(file_path) do |doc|
+      doc.task(:optimize, compact: true, object_streams: :generate,
+               compress_pages: false)
+      doc.write(new_file_path)
+      end
+      system("rm #{file_path}")
   end
 end
