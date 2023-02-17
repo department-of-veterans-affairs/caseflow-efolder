@@ -39,6 +39,24 @@ class PdfService
     end
   end
 
+  def self.optimize_and_linearize(content)
+    optimized_content=""
+    if content.empty?
+      optimized_content = content
+    else 
+      Tempfile.create(["TESTPDF"], binmode: true) do |temp_file|
+        temp_file.write(temp_file.path, content)
+        optimize(temp_file.path)
+        linearize_pdf(temp_file.path)
+        optimized_content = File.binread(temp_file.path) 
+      end
+    end
+    optimized_content
+  end
+
+
+  private
+
   def self.linearize_pdf(file_path)
     pdf = `qpdf #{file_path} --linearize --replace-input`  
 
@@ -46,13 +64,9 @@ class PdfService
   end
 
   def self.optimize(file_path)
-  
-    new_file_path = "#{file_path}-optimized.pdf"
-    HexaPDF::Document.open(file_path) do |doc|
+      doc = HexaPDF::Document.open(file_path)
       doc.task(:optimize, compact: true, object_streams: :generate,
-               compress_pages: false)
-      doc.write(new_file_path)
-      end
-      system("rm #{file_path}")
+                 compress_pages: false)
+      doc.write(file_path)
   end
 end
