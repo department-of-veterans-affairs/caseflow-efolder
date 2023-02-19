@@ -68,7 +68,7 @@ group :test do
   gem "rspec-retry"
   gem "saml_idp", git: "https://github.com/18F/saml_idp.git", branch: "master"
   gem "simplecov", require: false
-  gem "sinatra"
+  gem "sinatra", "2.2.0"
   gem "single_cov", require: false
   gem "sniffybara", git: "https://github.com/department-of-veterans-affairs/sniffybara.git"
   gem "timecop"
