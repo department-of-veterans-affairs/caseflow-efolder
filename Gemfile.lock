@@ -282,7 +282,7 @@ GEM
       net-protocol
     newrelic_rpm (8.16.0)
     nio4r (2.5.8)
-    nokogiri (1.14.1-x86_64-darwin)
+    nokogiri (1.14.2-x86_64-darwin)
       racc (~> 1.4)
     nori (2.6.0)
     omniauth (1.9.2)
@@ -467,7 +467,7 @@ GEM
     thread_safe (0.3.6)
     tilt (2.0.11)
     timecop (0.9.6)
-    timeout (0.3.1)
+    timeout (0.3.2)
     turbolinks (5.2.1)
       turbolinks-source (~> 5.2)
     turbolinks-source (5.2.0)
@@ -546,7 +546,6 @@ DEPENDENCIES
   pg (~> 0.18)
   pry
   pry-byebug
-  psych (~> 3.1)
   puma
   rack-cors (>= 1.0.4)
   rails (~> 5.2.8)

@@ -54,7 +54,6 @@ group :development, :test do
   gem "dotenv-rails"
   gem "pry"
   gem "pry-byebug"
-  gem "psych", "~> 3.1"
   gem "rubocop", "~> 0.67.2", require: false
   gem "scss_lint", require: false
 end
