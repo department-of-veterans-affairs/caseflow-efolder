@@ -13,7 +13,6 @@ gem "connect_vva", git: "https://github.com/department-of-veterans-affairs/conne
 gem "distribute_reads"
 gem "dogstatsd-ruby"
 gem "httpclient"
-gem "hexapdf" , "0.30.0"
 gem "jbuilder", "~> 2.0"
 gem "jquery-rails", ">= 4.3.4"
 gem "listen"
@@ -67,7 +66,7 @@ group :test do
   gem "rspec"
   gem "rspec-rails"
   gem "rspec-retry"
-  gem "saml_idp", git: "https://github.com/18F/saml_idp.git", branch: "main"
+  gem "saml_idp", git: "https://github.com/18F/saml_idp.git", branch: "master"
   gem "simplecov", require: false
   gem "sinatra", "2.2.0"
   gem "single_cov", require: false

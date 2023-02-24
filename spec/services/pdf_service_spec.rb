@@ -27,24 +27,4 @@ describe PdfService do
       expect(IO.read(filename)).to eq("plain text")
     end
   end
-
-  
-
-   context "#optimize_pdf" do
-    
-      IO.binwrite("lib/pdfs/test2.pdf", IO.binread("lib/pdfs/0.pdf"))
-      testpdf2 = "lib/pdfs/test2.pdf"
-      testpdf2_size_before = File.size("lib/pdfs/test2.pdf")
-
-     it "optimizes the pdf" do
-      expect(File.exists?(testpdf2)).to be true
-      PdfService.optimize(testpdf2)
-      expect(File.size("lib/pdfs/test2.pdf")).to be < testpdf2_size_before
-     end
-
-     after(:context) do
-      system("rm #{testpdf2}")
-    end
-   end
-  
 end

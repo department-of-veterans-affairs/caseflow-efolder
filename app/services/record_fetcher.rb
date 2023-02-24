@@ -33,7 +33,6 @@ class RecordFetcher
                                     name: "image_converter_service") do
       ImageConverterService.new(image: content, record: record).process
     end
-    content = PdfService.optimize(content)
     MetricsService.record("RecordFetcher S3 store content for #{record.s3_filename}",
                           service: :s3,
                           name: "content_from_va_service") do

@@ -1,6 +1,5 @@
 require "tempfile"
 require "open3"
-require "hexapdf"
 
 class PdfService
   def self.write(filename, contents, pdf_attributes)
@@ -37,23 +36,5 @@ class PdfService
       # open returns the value of the block
       file
     end
-  end
-
-  def self.optimize(content)
-      Tempfile.create(["TESTPDF","pdf"], binmode: true) do |temp_file|
-        temp_file.write(temp_file.path, content)
-        optimize(temp_file.path)
-        File.binread(temp_file.path) 
-      end
-  end
-
-
-  private
-
-  def self.optimize(file_path)
-      doc = HexaPDF::Document.open(file_path)
-      doc.task(:optimize, compact: true, object_streams: :generate,
-                 compress_pages: false)
-      doc.write(file_path)
   end
 end
