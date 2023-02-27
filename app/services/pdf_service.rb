@@ -40,25 +40,19 @@ class PdfService
   end
 
   def self.optimize_and_linearize(content)
-    optimized_content=""
-    if content.empty?
-      optimized_content = content
-    else 
       Tempfile.create(["TESTPDF"], binmode: true) do |temp_file|
         temp_file.write(temp_file.path, content)
         optimize(temp_file.path)
         linearize_pdf(temp_file.path)
         optimized_content = File.binread(temp_file.path) 
       end
-    end
-    optimized_content
   end
 
 
   private
 
   def self.linearize_pdf(file_path)
-    pdf = `qpdf #{file_path} --linearize --replace-input`  
+    pdf = Open3.capture3("qpdf #{file_path} --linearize --replace-input")
 
     pdf
   end
