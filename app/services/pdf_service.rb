@@ -40,12 +40,13 @@ class PdfService
   end
 
   def self.optimize_and_linearize(content)
-      Tempfile.create(["TESTPDF"], binmode: true) do |temp_file|
-        temp_file.write(temp_file.path, content)
-        optimize(temp_file.path)
-        File.binread(temp_file.path) 
-      end
-  end
+    Tempfile.create(["TESTPDF", "pdf"], binmode: true) do |temp_file|
+      temp_file.write(temp_file.path, content)
+      optimize(temp_file.path)
+      linearize_pdf(temp_file.path)
+      File.binread(temp_file.path) 
+    end
+end
 
 
   private
