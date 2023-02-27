@@ -39,8 +39,8 @@ class PdfService
     end
   end
 
-  def self.optimize(content)
-      Tempfile.create(["TESTPDF","pdf"], binmode: true) do |temp_file|
+  def self.optimize_and_linearize(content)
+      Tempfile.create(["TESTPDF"], binmode: true) do |temp_file|
         temp_file.write(temp_file.path, content)
         optimize(temp_file.path)
         File.binread(temp_file.path) 
@@ -49,6 +49,12 @@ class PdfService
 
 
   private
+
+  def self.linearize_pdf(file_path)
+    pdf = Open3.capture3("qpdf #{file_path} --linearize --replace-input")
+
+    pdf
+  end
 
   def self.optimize(file_path)
       doc = HexaPDF::Document.open(file_path)
