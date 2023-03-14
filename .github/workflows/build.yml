@@ -1,0 +1,83 @@
+name: department-of-veterans-affairs/caseflow-efolder/build
+
+on:
+  push:
+    branches:
+    - gh-actions-test
+
+jobs:
+  rake:
+    runs-on: ubuntu-latest
+    container:
+      image: '008577686731.dkr.ecr.us-gov-west-1.amazonaws.com/cimg-ruby:2.7.3-browsers'
+      credentials:
+          username: AWS
+          password: ${{ secrets.ECR_PASSWORD }}
+      env:
+        DBUS_SESSION_BUS_ADDRESS: "/dev/null"
+        RAILS_ENV: test
+        BUNDLE_PATH: vendor/bundle
+        POSTGRES_HOST: localhost
+        POSTGRES_USER: root
+    services:
+      postgres:
+        image: postgres:11.7
+        env:
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: caseflow_efolder_test
+      redis:
+        image: redis:4.0.10
+      localstack:
+        image: localstack/localstack:0.12.5
+    steps:
+    - uses: actions/checkout@v3
+    - name: Ruby version
+      run: ruby -v
+    - name: Configure Bundler
+      run: |-
+        echo 'export BUNDLER_VERSION=$(cat Gemfile.lock | tail -1 | tr -d " ")' >> $BASH_ENV
+        source $BASH_ENV
+        gem install bundler
+    - name: restore_cache
+      uses: actions/cache@v3
+      with:
+        key: vendor-bundle-v2-{{ arch }}-{{ checksum ".ruby-version" }}-{{ checksum "Gemfile.lock" }}
+        restore-keys: vendor-bundle-v2-{{ arch }}-{{ checksum ".ruby-version" }}-{{ checksum "Gemfile.lock" }}
+        path: "~/project/vendor/bundle"
+    - name: Bundle install
+      run: bundle install --path vendor/bundle
+    - name: restore_cache
+      uses: actions/cache@v3
+      with:
+        key: dot-cache-yarn-v2-{{ arch }}-{{ checksum "client/yarn.lock" }}
+        path: "~/.cache/yarn"
+    - name: yarn install
+      run: ~/project/ci-bin/capture-log "cd client && yarn install --frozen-lockfile"
+    - name: Yarn build
+      run: yarn run build
+      working-directory: "~/project/client"
+    - name: Database setup
+      run: |-
+        ~/project/ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:create"
+        ~/project/ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:schema:load"
+    - name: RSpec
+      run: |-
+        mkdir -p ~/test-results/rspec
+        ~/project/ci-bin/capture-log "make -f Makefile.example test | tee ~/test-results/rspec/rspec.out"
+    - uses: actions/upload-artifact@v3
+      with:
+        path: "~/test-results"
+    - uses: actions/upload-artifact@v3
+      with:
+        path: "~/test-results"
+    - uses: actions/upload-artifact@v3
+      with:
+        path: "~/project/tmp/capybara"
+    - uses: actions/upload-artifact@v3
+      with:
+        path: "~/project/log/test.log"
+    - name: Lint
+      run: ~/project/ci-bin/capture-log "make -f Makefile.example lint"
+    - name: Security
+      run: ~/project/ci-bin/capture-log "make -f Makefile.example security"
