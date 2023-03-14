@@ -1,4 +1,4 @@
-name: department-of-veterans-affairs/caseflow-efolder/build
+name: efolderauto
 
 on:
   push:
