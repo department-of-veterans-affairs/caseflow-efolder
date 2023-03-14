@@ -9,12 +9,12 @@ jobs:
   rake:
     runs-on: ubuntu-latest
     container:
-      image: '008577686731.dkr.ecr.us-gov-west-1.amazonaws.com/cimg-ruby:2.7.3-browsers'
+      image: 008577686731.dkr.ecr.us-gov-west-1.amazonaws.com/gaimg-ruby:2.7.3-ga-browsers
       credentials:
           username: AWS
           password: ${{ secrets.ECR_PASSWORD }}
       env:
-        DBUS_SESSION_BUS_ADDRESS: "/dev/null"
+        DBUS_SESSION_BUS_ADDRESS: /dev/null
         RAILS_ENV: test
         BUNDLE_PATH: vendor/bundle
         POSTGRES_HOST: localhost
