@@ -1,4 +1,4 @@
-name: efolderauto
+name: caseflow_efolder_testing
 
 on:
   push:
