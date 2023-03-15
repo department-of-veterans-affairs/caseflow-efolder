@@ -36,11 +36,9 @@ jobs:
     - name: Ruby version
       run: ruby -v
     - name: Configure Bundler
-      run: |-
-        gem install bundler
+      run: gem install bundler
     - name: Bundle install
       run: bundle install --path vendor/bundle
-    - name: restore_cache
     - name: yarn install
       run: ~/project/ci-bin/capture-log "cd client && yarn install --frozen-lockfile"
     - name: Yarn build
