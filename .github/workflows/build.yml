@@ -40,14 +40,18 @@ jobs:
     - name: Bundle install
       run: bundle install --path vendor/bundle
     - name: yarn install
-      run: ~/project/ci-bin/capture-log "cd client && yarn install --frozen-lockfile"
+      # run: ~/project/ci-bin/capture-log "cd client && yarn install --frozen-lockfile"
+      run: yarn install
     - name: Yarn build
       run: yarn run build
       working-directory: "~/project/client"
     - name: Database setup
+      # run: |-
+      #   ~/project/ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:create"
+      #   ~/project/ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:schema:load"
       run: |-
-        ~/project/ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:create"
-        ~/project/ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:schema:load"
+        AILS_ENV=test bundle exec rake db:create
+        RAILS_ENV=test bundle exec rake db:schema:load
     - name: RSpec
       run: |-
         mkdir -p ~/test-results/rspec
