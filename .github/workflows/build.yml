@@ -37,22 +37,10 @@ jobs:
       run: ruby -v
     - name: Configure Bundler
       run: |-
-        echo 'export BUNDLER_VERSION=$(cat Gemfile.lock | tail -1 | tr -d " ")' >> $BASH_ENV
-        source $BASH_ENV
         gem install bundler
-    - name: restore_cache
-      uses: actions/cache@v3
-      with:
-        key: vendor-bundle-v2-{{ arch }}-{{ checksum ".ruby-version" }}-{{ checksum "Gemfile.lock" }}
-        restore-keys: vendor-bundle-v2-{{ arch }}-{{ checksum ".ruby-version" }}-{{ checksum "Gemfile.lock" }}
-        path: "~/project/vendor/bundle"
     - name: Bundle install
       run: bundle install --path vendor/bundle
     - name: restore_cache
-      uses: actions/cache@v3
-      with:
-        key: dot-cache-yarn-v2-{{ arch }}-{{ checksum "client/yarn.lock" }}
-        path: "~/.cache/yarn"
     - name: yarn install
       run: ~/project/ci-bin/capture-log "cd client && yarn install --frozen-lockfile"
     - name: Yarn build
