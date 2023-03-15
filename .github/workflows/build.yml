@@ -44,7 +44,7 @@ jobs:
       run: yarn install
     - name: Yarn build
       run: yarn run build
-      working-directory: "~/project/client"
+      # working-directory: "~/project/client"
     - name: Database setup
       # run: |-
       #   ~/project/ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:create"
@@ -53,9 +53,12 @@ jobs:
         AILS_ENV=test bundle exec rake db:create
         RAILS_ENV=test bundle exec rake db:schema:load
     - name: RSpec
+      # run: |-
+      #   mkdir -p ~/test-results/rspec
+      #   ~/project/ci-bin/capture-log "make -f Makefile.example test | tee ~/test-results/rspec/rspec.out"
       run: |-
         mkdir -p ~/test-results/rspec
-        ~/project/ci-bin/capture-log "make -f Makefile.example test | tee ~/test-results/rspec/rspec.out"
+        make -f Makefile.example test | tee ~/test-results/rspec/rspec.out
     - uses: actions/upload-artifact@v3
       with:
         path: "~/test-results"
