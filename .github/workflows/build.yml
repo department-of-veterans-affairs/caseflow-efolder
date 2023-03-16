@@ -40,7 +40,9 @@ jobs:
     - name: Bundle install
       run: bundle install --path vendor/bundle
     - name: webpack install
-      run: npm install --save-dev webpack
+      run: |-
+        cd client
+        npm install --save-dev webpack
     - name: yarn install
       # run: ~/project/ci-bin/capture-log "cd client && yarn install --frozen-lockfile"
       run: yarn install
