@@ -7,7 +7,7 @@ on:
 
 jobs:
   rake:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-8-cores-latest
     container:
       image: 008577686731.dkr.ecr.us-gov-west-1.amazonaws.com/gaimg-ruby:2.7.3-ga-browsers
       # image: 008577686731.dkr.ecr.us-gov-west-1.amazonaws.com/cimg-ruby:2.7.3-browsers
