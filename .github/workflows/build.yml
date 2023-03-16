@@ -27,8 +27,17 @@ jobs:
           POSTGRES_USER: root
           POSTGRES_PASSWORD: password
           POSTGRES_DB: caseflow_efolder_test
+        ports:
+        - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
       redis:
         image: redis:4.0.10
+        ports:
+        - 6379:6379
       localstack:
         image: localstack/localstack:0.12.5
     steps:
