@@ -99,7 +99,9 @@ jobs:
         path: "~/project/log/test.log"
     - name: Lint
       # run: ~/project/ci-bin/capture-log "make -f Makefile.example lint"
-      run: make -f Makefile.example lint
+      run: |-
+      npm init @eslint/config
+      make -f Makefile.example lint
     - name: Security
       # run: ~/project/ci-bin/capture-log "make -f Makefile.example security"
       run: make -f Makefile.example security
