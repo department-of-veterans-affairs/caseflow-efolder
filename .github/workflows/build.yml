@@ -44,7 +44,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Install chromium
-      run: |-
+      run: |
         CHROME_VERSION="106.0.5249.119-1"
         apt-get update
         wget --no-verbose -O /tmp/chrome.deb https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_${CHROME_VERSION}_amd64.deb \
@@ -100,8 +100,8 @@ jobs:
     - name: Lint
       # run: ~/project/ci-bin/capture-log "make -f Makefile.example lint"
       run: |-
-      npm init @eslint/config
-      make -f Makefile.example lint
+        npm init @eslint/config
+        make -f Makefile.example lint
     - name: Security
       # run: ~/project/ci-bin/capture-log "make -f Makefile.example security"
       run: make -f Makefile.example security
