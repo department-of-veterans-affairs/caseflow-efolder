@@ -18,7 +18,7 @@ jobs:
         DBUS_SESSION_BUS_ADDRESS: /dev/null
         RAILS_ENV: test
         BUNDLE_PATH: vendor/bundle
-        POSTGRES_HOST: localhost
+        POSTGRES_HOST: postgres
         POSTGRES_USER: root
     services:
       postgres:
@@ -76,7 +76,7 @@ jobs:
         make -f Makefile.example test | tee ~/test-results/rspec/rspec.out
       env:
         # The hostname used to communicate with the PostgreSQL service container
-        POSTGRES_HOST: postgres
+        POSTGRES_HOST: localhost
     - uses: actions/upload-artifact@v3
       with:
         path: "~/test-results"
