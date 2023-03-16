@@ -51,13 +51,13 @@ jobs:
         && apt install -y /tmp/chrome.deb \
         && rm /tmp/chrome.deb
     - name: Install firefox
-        run: |
-          FIREFOX_VERSION="106.0.1"
-          apt-get -y install libgtk2.0-0
-          wget https://ftp.mozilla.org/pub/firefox/releases/${FIREFOX_VERSION}/linux-x86_64/en-GB/firefox-${FIREFOX_VERSION}.tar.bz2
-          tar xvf firefox-${FIREFOX_VERSION}.tar.bz2
-          mv firefox/ /usr/lib/firefox
-          ln -s /usr/lib/firefox /usr/bin/firefox
+      run: |
+        FIREFOX_VERSION="106.0.1"
+        apt-get -y install libgtk2.0-0
+        wget https://ftp.mozilla.org/pub/firefox/releases/${FIREFOX_VERSION}/linux-x86_64/en-GB/firefox-${FIREFOX_VERSION}.tar.bz2
+        tar xvf firefox-${FIREFOX_VERSION}.tar.bz2
+        mv firefox/ /usr/lib/firefox
+        ln -s /usr/lib/firefox /usr/bin/firefox
     - name: Ruby version
       run: ruby -v
     - name: Configure Bundler
@@ -107,8 +107,7 @@ jobs:
         path: "~/project/log/test.log"
     - name: Lint
       # run: ~/project/ci-bin/capture-log "make -f Makefile.example lint"
-      run: |-
-        make -f Makefile.example lint
+      run: make -f Makefile.example lint
     - name: Security
       # run: ~/project/ci-bin/capture-log "make -f Makefile.example security"
       run: make -f Makefile.example security
