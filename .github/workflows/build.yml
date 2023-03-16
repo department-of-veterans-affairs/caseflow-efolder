@@ -108,7 +108,6 @@ jobs:
     - name: Lint
       # run: ~/project/ci-bin/capture-log "make -f Makefile.example lint"
       run: |-
-        npm init @eslint/config
         make -f Makefile.example lint
     - name: Security
       # run: ~/project/ci-bin/capture-log "make -f Makefile.example security"
