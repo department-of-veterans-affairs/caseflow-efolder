@@ -72,7 +72,7 @@ jobs:
       run: ~/ci-bin/capture-log "cd client && yarn install --frozen-lockfile"
     - name: Yarn build
       run:  yarn run build
-        working-directory: "~/client"
+      working-directory: "~/client"
     - name: Database setup
       run: |-
         ~/ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:create"
