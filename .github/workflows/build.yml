@@ -1,4 +1,4 @@
-name: caseflow_efolder_testing
+name: efolder_rake
 
 on:
   push:
@@ -69,27 +69,20 @@ jobs:
         cd client
         npm install --save-dev webpack
     - name: yarn install
-      # run: ~/project/ci-bin/capture-log "cd client && yarn install --frozen-lockfile"
-      run: yarn install
+      run: ~/ci-bin/capture-log "cd client && yarn install --frozen-lockfile"
     - name: Yarn build
       run: |-
         cd client
         yarn run build
     #  working-directory: "~/project/client"
     - name: Database setup
-      # run: |-
-      #   ~/project/ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:create"
-      #   ~/project/ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:schema:load"
       run: |-
-        RAILS_ENV=test bundle exec rake db:create --trace
-        RAILS_ENV=test bundle exec rake db:schema:load --trace
+        ~/project/ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:create"
+        ~/ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:schema:load"
     - name: RSpec
-      # run: |-
-      #   mkdir -p ~/test-results/rspec
-      #   ~/project/ci-bin/capture-log "make -f Makefile.example test | tee ~/test-results/rspec/rspec.out"
       run: |-
         mkdir -p ~/test-results/rspec
-        make -f Makefile.example test | tee ~/test-results/rspec/rspec.out
+        ~/ci-bin/capture-log "make -f Makefile.example test | tee ~/test-results/rspec/rspec.out"
       env:
         # The hostname used to communicate with the PostgreSQL service container
         POSTGRES_HOST: postgres
@@ -101,13 +94,12 @@ jobs:
         path: "~/test-results"
     - uses: actions/upload-artifact@v3
       with:
-        path: "~/project/tmp/capybara"
+        path: "~/tmp/capybara"
     - uses: actions/upload-artifact@v3
       with:
-        path: "~/project/log/test.log"
+        path: "~/log/test.log"
     - name: Lint
-      # run: ~/project/ci-bin/capture-log "make -f Makefile.example lint"
-      run: make -f Makefile.example lint
+      run: ~/ci-bin/capture-log "make -f Makefile.example lint"
     - name: Security
       # run: ~/project/ci-bin/capture-log "make -f Makefile.example security"
-      run: make -f Makefile.example security
+      run:  ~/ci-bin/capture-log "make -f Makefile.example security"
