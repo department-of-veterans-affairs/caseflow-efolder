@@ -69,35 +69,34 @@ jobs:
         cd client
         npm install --save-dev webpack
     - name: yarn install
-      run: ~/ci-bin/capture-log "cd client && yarn install --frozen-lockfile"
+      run: ./ci-bin/capture-log "cd client && yarn install --frozen-lockfile"
     - name: Yarn build
       run:  yarn run build
-      working-directory: "~/client"
+      working-directory: "./client"
     - name: Database setup
       run: |-
-        ~/ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:create"
-        ~/ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:schema:load"
+        ./ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:create"
+        ./ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:schema:load"
     - name: RSpec
       run: |-
-        mkdir -p ~/test-results/rspec
-        ~/ci-bin/capture-log "make -f Makefile.example test | tee ~/test-results/rspec/rspec.out"
+        mkdir -p ./test-results/rspec
+        ./ci-bin/capture-log "make -f Makefile.example test | tee ./test-results/rspec/rspec.out"
       env:
         # The hostname used to communicate with the PostgreSQL service container
         POSTGRES_HOST: postgres
     - uses: actions/upload-artifact@v3
       with:
-        path: "~/test-results"
+        path: "./test-results"
     - uses: actions/upload-artifact@v3
       with:
-        path: "~/test-results"
+        path: "./test-results"
     - uses: actions/upload-artifact@v3
       with:
-        path: "~/tmp/capybara"
+        path: "./tmp/capybara"
     - uses: actions/upload-artifact@v3
       with:
-        path: "~/log/test.log"
+        path: "./log/test.log"
     - name: Lint
-      run: ~/ci-bin/capture-log "make -f Makefile.example lint"
+      run: ./ci-bin/capture-log "make -f Makefile.example lint"
     - name: Security
-      # run: ~/project/ci-bin/capture-log "make -f Makefile.example security"
-      run:  ~/ci-bin/capture-log "make -f Makefile.example security"
+      run:  ./ci-bin/capture-log "make -f Makefile.example security"
