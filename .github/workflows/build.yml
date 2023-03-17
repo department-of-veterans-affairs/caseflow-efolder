@@ -101,3 +101,4 @@ jobs:
         ./ci-bin/capture-log "make -f Makefile.example lint"
     - name: Security
       run:  ./ci-bin/capture-log "make -f Makefile.example security"
+      if: ${{ always() }}
