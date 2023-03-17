@@ -80,9 +80,8 @@ jobs:
     - name: RSpec
       run: |-
         mkdir -p ./test-results/rspec
-        ./ci-bin/capture-log "make -f Makefile.example test | tee ./test-results/rspec/rspec.out"
+        make -f Makefile.example test | tee ./test-results/rspec/rspec.out
       env:
-        # The hostname used to communicate with the PostgreSQL service container
         POSTGRES_HOST: postgres
     - uses: actions/upload-artifact@v3
       with:
