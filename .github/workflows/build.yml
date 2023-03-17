@@ -95,10 +95,12 @@ jobs:
     - uses: actions/upload-artifact@v3
       with:
         path: "./log/test.log"
+      # Run both Lint and Security since it's not reliant on build process
     - name: Lint
       run: |-
         npm install -g eslint
         ./ci-bin/capture-log "make -f Makefile.example lint"
+      if: ${{ always() }}  
     - name: Security
       run:  ./ci-bin/capture-log "make -f Makefile.example security"
       if: ${{ always() }}
