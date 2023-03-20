@@ -8,8 +8,6 @@ on:
 jobs:
   rake:
     runs-on: ubuntu-8-cores-latest
-    env:
-      BUNDLER_VERSION: 1.17.3
     container:
       image: 008577686731.dkr.ecr.us-gov-west-1.amazonaws.com/gaimg-ruby:2.7.3-ga-browsers
       # image: 008577686731.dkr.ecr.us-gov-west-1.amazonaws.com/cimg-ruby:2.7.3-browsers
@@ -68,9 +66,9 @@ jobs:
 
     - name: Configure Bundler
       run: |-
-        echo 'BUNDLER_VERSION=$(< Gemfile.lock | tail -1 | tr -d " ")' >> $GITHUB_ENV
-        echo "${{ env.BUNDLER_VERSION }}""
-        gem install bundler:"${{ env.BUNDLER_VERSION }}""
+        echo 'bundler_version=$(< Gemfile.lock | tail -1 | tr -d " ")' >> $GITHUB_ENV
+        echo "${{ env.bundler_version }}"
+        gem install bundler:"${{ env.bundler_version }}"
 
     - name: Bundle install
       run: bundle install --path vendor/bundle
