@@ -69,7 +69,8 @@ jobs:
     - name: Configure Bundler
       run: |-
         export BUNDLER_VERSION=$(< Gemfile.lock | tail -1 | tr -d " ")
-        gem install bundler
+        echo $BUNDLER_VERSION
+        gem install bundler:$BUNDLER_VERSION
 
     - name: Bundle install
       run: bundle install --path vendor/bundle
