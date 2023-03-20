@@ -8,6 +8,8 @@ on:
 jobs:
   rake:
     runs-on: ubuntu-8-cores-latest
+    env:
+      BUNDLER_VERSION: 1.17.3
     container:
       image: 008577686731.dkr.ecr.us-gov-west-1.amazonaws.com/gaimg-ruby:2.7.3-ga-browsers
       # image: 008577686731.dkr.ecr.us-gov-west-1.amazonaws.com/cimg-ruby:2.7.3-browsers
@@ -63,10 +65,6 @@ jobs:
         
     - name: Ruby version
       run: ruby -v
-
-    - name: Bundler Version Grabber
-      env:
-        BUNDLER_VERSION: 1.17.3
 
     - name: Configure Bundler
       run: |-
