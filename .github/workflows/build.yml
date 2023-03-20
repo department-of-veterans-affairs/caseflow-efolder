@@ -66,7 +66,8 @@ jobs:
 
     - name: Configure Bundler
       run: |-
-        echo 'bundler_version=$(< Gemfile.lock | tail -1 | tr -d " ")' >> $GITHUB_ENV
+        BUNDLER_V=$(< Gemfile.lock | tail -1 | tr -d " ")
+        echo "bundler_version=$BUNDLER_V" >> $GITHUB_ENV
         echo "${{ env.bundler_version }}"
         gem install bundler:"${{ env.bundler_version }}"
 
