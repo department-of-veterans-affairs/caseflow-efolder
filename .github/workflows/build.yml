@@ -68,9 +68,7 @@ jobs:
       run: |-
         BUNDLER_V=$(cat ./Gemfile.lock | tail -1 | tr -d " ")
         echo $BUNDLER_V
-        echo "bundler_version=$BUNDLER_V" >> $GITHUB_ENV
-        echo "${{ env.bundler_version }}"
-        gem install bundler:"${{ env.bundler_version }}"
+        gem install bundler:$BUNDLER_V
 
     - name: Bundle install
       run: bundle install --path vendor/bundle
