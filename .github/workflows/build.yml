@@ -10,7 +10,6 @@ jobs:
     runs-on: ubuntu-8-cores-latest
     container:
       image: 008577686731.dkr.ecr.us-gov-west-1.amazonaws.com/gaimg-ruby:2.7.3-ga-browsers
-      # image: 008577686731.dkr.ecr.us-gov-west-1.amazonaws.com/cimg-ruby:2.7.3-browsers
       credentials:
           username: AWS
           password: ${{ secrets.ECR_PASSWORD }}
@@ -41,6 +40,7 @@ jobs:
         - 6379:6379
       localstack:
         image: localstack/localstack:0.12.5
+
     steps:
     - uses: actions/checkout@v3
 
@@ -97,6 +97,7 @@ jobs:
       env:
         POSTGRES_HOST: postgres
         
+    # Artifact Uploads    
     - uses: actions/upload-artifact@v3
       with:
         path: "./test-results"
