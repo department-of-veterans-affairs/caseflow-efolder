@@ -1,9 +1,5 @@
 name: ecr-login
 on:
-  workflow_dispatch:
-  # Every 6 hours, the password validity is 12 hours
-  push:
-    branches: gh-actions-test
   schedule:
     - cron:  '0 */6 * * *'
 jobs:
