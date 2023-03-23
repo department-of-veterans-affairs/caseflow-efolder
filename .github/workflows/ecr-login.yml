@@ -1,4 +1,4 @@
-name: ecr-login
+name: ECR Token Cron Job
 on:
   schedule:
     - cron:  '0 */6 * * *'
@@ -20,6 +20,7 @@ jobs:
   # This 'test' job is usefull for fast debugging
   test:
     needs: login
+    timeout-minutes: 1
     runs-on: ubuntu-latest
     container:
       image: 008577686731.dkr.ecr.us-gov-west-1.amazonaws.com/cimg-ruby:2.7.3-browsers
