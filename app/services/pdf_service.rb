@@ -37,4 +37,22 @@ class PdfService
       file
     end
   end
+
+  def self.linearize(content)
+      Tempfile.create(["TESTPDF","pdf"], binmode: true) do |temp_file|
+        temp_file.write(temp_file.path, content)
+        linearize_pdf(temp_file.path)
+        File.binread(temp_file.path) 
+      end
+  end
+
+
+  private
+
+  def self.linearize_pdf(file_path)
+    pdf = `qpdf #{file_path} --linearize --replace-input`  
+
+    pdf
+  end
+
 end

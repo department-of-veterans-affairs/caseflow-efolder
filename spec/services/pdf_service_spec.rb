@@ -27,4 +27,18 @@ describe PdfService do
       expect(IO.read(filename)).to eq("plain text")
     end
   end
+
+  context "#linearize" do
+    IO.binwrite("lib/pdfs/test1.pdf", IO.binread("lib/pdfs/0.pdf"))
+    testPdf1 = "lib/pdfs/test1.pdf"
+    it "Linearizes pdf using qpdf" do
+      expect(IO.binread(testPdf1).include? "Linearized").to be false
+      PdfService.linearize_pdf(testPdf1)
+      expect(IO.binread(testPdf1).include? "Linearized").to be true
+    end
+       after(:context) do
+         system("rm #{testPdf1}")
+       end
+  end
+  
 end
