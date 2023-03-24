@@ -1,0 +1,123 @@
+name: efolder_rake
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+      
+
+jobs:
+  rake:
+    runs-on: ubuntu-8-cores-latest
+    container:
+      image: 008577686731.dkr.ecr.us-gov-west-1.amazonaws.com/gaimg-ruby:2.7.3-ga-browsers
+      credentials:
+          username: AWS
+          password: ${{ secrets.ECR_PASSWORD }}
+      env:
+        DBUS_SESSION_BUS_ADDRESS: /dev/null
+        RAILS_ENV: test
+        BUNDLE_PATH: vendor/bundle
+        POSTGRES_HOST: postgres
+        POSTGRES_USER: root
+        POSTGRES_PASSWORD: password
+    services:
+      postgres:
+        image: postgres:11.7
+        env:
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: caseflow_efolder_test
+        ports:
+        - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:4.0.10
+        ports:
+        - 6379:6379
+      localstack:
+        image: localstack/localstack:0.12.5
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install chromium
+      run: |
+        CHROME_VERSION="106.0.5249.119-1"
+        apt-get update
+        wget --no-verbose -O /tmp/chrome.deb https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_${CHROME_VERSION}_amd64.deb \
+        && apt install -y /tmp/chrome.deb \
+        && rm /tmp/chrome.deb
+
+    - name: Install firefox
+      run: |
+        FIREFOX_VERSION="106.0.1"
+        apt-get -y install libgtk2.0-0
+        wget https://ftp.mozilla.org/pub/firefox/releases/${FIREFOX_VERSION}/linux-x86_64/en-GB/firefox-${FIREFOX_VERSION}.tar.bz2
+        tar xvf firefox-${FIREFOX_VERSION}.tar.bz2
+        mv firefox/ /usr/lib/firefox
+        ln -s /usr/lib/firefox /usr/bin/firefox
+        
+    - name: Ruby version
+      run: ruby -v
+
+    - name: Configure Bundler
+      run: |-
+        BUNDLER_V=$(cat ./Gemfile.lock | tail -1 | tr -d " ")
+        echo $BUNDLER_V
+        gem install bundler:$BUNDLER_V
+
+    - name: Bundle install
+      run: bundle install --path vendor/bundle
+
+    - name: webpack install
+      run: |-
+        cd client
+        npm install --save-dev webpack
+
+    - name: yarn install
+      run: ./ci-bin/capture-log "yarn install --frozen-lockfile"
+
+    - name: Yarn build
+      run:  yarn run build
+      working-directory: "./client"
+
+    - name: Database setup
+      run: |-
+        ./ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:create"
+        ./ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:schema:load"
+
+    - name: RSpec
+      run: |-
+        mkdir -p ./test-results/rspec
+        make -f Makefile.example test | tee ./test-results/rspec/rspec.out
+      env:
+        POSTGRES_HOST: postgres
+        
+    # Artifact Uploads    
+    - uses: actions/upload-artifact@v3
+      with:
+        path: "./test-results"
+    - uses: actions/upload-artifact@v3
+      with:
+        path: "./test-results"
+    - uses: actions/upload-artifact@v3
+      with:
+        path: "./tmp/capybara"
+    - uses: actions/upload-artifact@v3
+      with:
+        path: "./log/test.log"
+
+    # Run both Lint and Security since it's not reliant on build process
+    - name: Lint
+      run: |-
+        npm install -g eslint
+        ./ci-bin/capture-log "make -f Makefile.example lint"
+      if: ${{ always() }}  
+
+    - name: Security
+      run:  ./ci-bin/capture-log "make -f Makefile.example security"
+      if: ${{ always() }}
