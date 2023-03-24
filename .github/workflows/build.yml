@@ -1,9 +1,9 @@
 name: efolder_rake
 
 on:
-  push:
-    branches:
-    - gh-actions-test
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+      
 
 jobs:
   rake:
