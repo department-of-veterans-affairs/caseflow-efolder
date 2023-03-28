@@ -36,20 +36,23 @@ class Api::V2::RecordsController < Api::V2::ApplicationController
         response.headers['Content-Type'] = record.mime_type
         response.headers['Content-Length'] ||= result.bytesize.to_s
         # Prevent Rack::ETag from calculating a digest over body
-        response.headers['Last-Modified'] = asset.modified_date.utc.strftime("%a, %d %b %Y %T GMT")
+        response.headers['Last-Modified'] = Time.now.utc.strftime("%a, %d %b %Y %T GMT")
         # set response content type to match record
         self.content_type = record.mime_type
         # set the response body to be 
-        self.response_body = result.stream(request.headers['HTTP_RANGE'])
+        stream = response.stream
+        result.each do |chunk|
+          stream.write chunk
+        end
     else
       self.status = 200
       send_file_headers!(disposition: 'attachment', type: record.mime_type, filename: record.filename)
         response.headers['Content-Type'] = record.mime_type
         response.headers['Content-Length'] ||= result.bytesize.to_s
         # Prevent Rack::ETag from calculating a digest over body
-        response.headers['Last-Modified'] = asset.modified_date.utc.strftime("%a, %d %b %Y %T GMT")
+        response.headers['Last-Modified'] = Time.now.utc.strftime("%a, %d %b %Y %T GMT")
         self.content_type = record.mime_type
-        self.response_body = result.stream
+        self.response_body = result
     end
 
     # send_data(
