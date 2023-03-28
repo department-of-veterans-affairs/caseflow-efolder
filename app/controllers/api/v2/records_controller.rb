@@ -31,7 +31,7 @@ class Api::V2::RecordsController < Api::V2::ApplicationController
         self.status = 206
         # https://apidock.com/rails/v5.2.3/ActionController/DataStreaming/send_file_headers%21
         # send headers
-        send_file_headers! { disposition: 'attachment', type: record.mime_type, filename: record.filename}
+        send_file_headers!(disposition: 'attachment', type: record.mime_type, filename: record.filename)
         # Set header back to full record length and mime type
         response.headers['Content-Type'] = record.mime_type
         response.headers['Content-Length'] ||= result.bytesize.to_s
@@ -43,7 +43,7 @@ class Api::V2::RecordsController < Api::V2::ApplicationController
         self.response_body = result.stream(request.headers['HTTP_RANGE'])
     else
       self.status = 200
-      send_file_headers! { disposition: 'attachment', type: record.mime_type, filename: record.filename}
+      send_file_headers!(disposition: 'attachment', type: record.mime_type, filename: record.filename)
         response.headers['Content-Type'] = record.mime_type
         response.headers['Content-Length'] ||= result.bytesize.to_s
         # Prevent Rack::ETag from calculating a digest over body
