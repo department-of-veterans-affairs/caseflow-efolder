@@ -34,14 +34,16 @@ class Api::V2::RecordsController < Api::V2::ApplicationController
         send_file_headers!(disposition: 'attachment', type: record.mime_type, filename: record.filename)
         # Set header back to full record length and mime type
         response.headers['Content-Type'] = record.mime_type
-        response.headers['Content-Length'] ||= result.bytesize.to_s
+        response.headers['Content-Length'] ||= result.bytesize
         # Prevent Rack::ETag from calculating a digest over body
         response.headers['Last-Modified'] = Time.now.utc.strftime("%a, %d %b %Y %T GMT")
+        response.headers["X-Accel-Buffering"] = "no"
         # set response content type to match record
         self.content_type = record.mime_type
         # set the response body to be 
         stream = response.stream
-        result.each do |chunk|
+        io = IO.new(result)
+        io.each do |chunk|
           stream.write chunk
         end
     else
