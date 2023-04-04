@@ -3,9 +3,9 @@ on:
   workflow_dispatch:
   pull_request:
     types: [opened, reopened, edited, synchronize]
- 
-  # schedul e:
-  #   - cron:  '0 */6 * * *'
+  schedule:
+    - cron:  '0 */6 * * *'
+
 jobs:
   login:
     runs-on: ubuntu-latest
