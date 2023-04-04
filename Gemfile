@@ -64,6 +64,7 @@ group :test do
   gem "database_cleaner"
   gem "launchy"
   gem "rspec"
+  gem 'rspec-github', require: false # Github Actions Annotations Formatter 
   gem "rspec-rails"
   gem "rspec-retry"
   gem "saml_idp", git: "https://github.com/18F/saml_idp.git", branch: "master"

@@ -17,7 +17,7 @@ run: up	## Start Rails
 	foreman start
 
 test: clean	## Run the rspec suite
-	TEST_DOWNLOADS=true CI=true bundle exec rspec --tty
+	TEST_DOWNLOADS=true CI=true bundle exec rspec --tty ## --tty forces Rspec to use color in Github actions
 
 clean:	## Remove old files
 	rm -f log/test.log

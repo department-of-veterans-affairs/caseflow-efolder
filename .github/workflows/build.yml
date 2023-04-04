@@ -7,6 +7,7 @@ on:
 
 #Forces color within GHA - Note RSPEC still won't use color see line 199 --tty for rspec color
 env:
+  rspec_active: true
   FORCE_COLOR: "1" 
 
 jobs:
@@ -62,14 +63,14 @@ jobs:
         && apt install -y /tmp/chrome.deb \
         && rm /tmp/chrome.deb
 
-    # - name: Install firefox
-    #   run: |
-    #     FIREFOX_VERSION="106.0.1"
-    #     apt-get -y install libgtk2.0-0
-    #     wget https://ftp.mozilla.org/pub/firefox/releases/${FIREFOX_VERSION}/linux-x86_64/en-GB/firefox-${FIREFOX_VERSION}.tar.bz2
-    #     tar xvf firefox-${FIREFOX_VERSION}.tar.bz2
-    #     mv firefox/ /usr/lib/firefox
-    #     ln -s /usr/lib/firefox /usr/bin/firefox
+    - name: Install firefox
+      run: |
+        FIREFOX_VERSION="106.0.1"
+        apt-get -y install libgtk2.0-0
+        wget https://ftp.mozilla.org/pub/firefox/releases/${FIREFOX_VERSION}/linux-x86_64/en-GB/firefox-${FIREFOX_VERSION}.tar.bz2
+        tar xvf firefox-${FIREFOX_VERSION}.tar.bz2
+        mv firefox/ /usr/lib/firefox
+        ln -s /usr/lib/firefox /usr/bin/firefox
         
     - name: Ruby version
       run: ruby -v
@@ -80,53 +81,16 @@ jobs:
         echo $BUNDLER_V
         gem install bundler:$BUNDLER_V
 
-    # - name: Restore Ruby Dependencies
-    #     id: cache-ruby-dependencies
-    #     uses: actions/cache/restore@v3
-    #     with:
-    #       key: bundler-gems
-    #       path: vendor/bundle
-    #       restore-keys: bundler-gems
-
     - name: Bundle install
       run: bundle install --path vendor/bundle
-
-    # - name: Cache Ruby Dependencies
-    #     if: steps.cache-ruby-dependencies.outputs.cache-hit != 'true'
-    #     uses: actions/cache/save@v3
-    #     with:
-    #       key: bundler-gems
-    #       path: vendor/bundle
 
     - name: webpack install
       run: |-
         cd client
         npm install --save-dev webpack
 
-    # - name: restore yarn cache
-    #     id: cache-yarn-cache
-    #     uses: actions/cache/restore@v3
-    #     with:
-    #       key: dot-cache-yarn-v2-{{ arch }}-{{ checksum "client/yarn.lock" }}
-    #       path: |
-    #         ~/.cache/yarn
-    #         public/assets
-    #         tmp/cache/assets/sprockets
-    #       restore-keys:
-    #         dot-cache-yarn-v2-{{ arch }}-{{ checksum "client/yarn.lock" }}
-
     - name: yarn install
       run: ./ci-bin/capture-log "yarn install --frozen-lockfile"
-
-    # - name: Save Yarn Cache
-    #     if: steps.cache-yarn-cache.outputs.cache-hit != 'true'
-    #     uses: actions/cache/save@v3
-    #     with:
-    #       key: dot-cache-yarn-v2-{{ arch }}-{{ checksum "client/yarn.lock" }}
-    #       path: |
-    #         ~/.cache/yarn
-    #         public/assets
-    #         tmp/cache/assets/sprockets
 
     - name: Yarn build
       run:  yarn run build
