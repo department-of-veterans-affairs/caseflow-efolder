@@ -1,7 +1,12 @@
 name: ECR Token Cron Job
+
 on:
+  workflow_dispatch:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
   schedule:
     - cron:  '0 */6 * * *'
+
 jobs:
   login:
     runs-on: ubuntu-latest
@@ -12,11 +17,13 @@ jobs:
         run: |
           pip3 install -r .github/workflows/requirements.txt
           python3 .github/workflows/ecr_password_updater.py
+
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-gov-west-1
           GH_API_ACCESS_TOKEN: ${{ secrets.GH_API_ACCESS_TOKEN }}
+
   # This 'test' job is usefull for fast debugging
   test:
     needs: login
@@ -28,5 +35,6 @@ jobs:
         username: AWS
         # Here is the password retrieved as a secret that is set by the `login` job
         password: ${{ secrets.ECR_PASSWORD }}
+
     steps:
       - run: echo "Inside a container pulled from ECR!!"
