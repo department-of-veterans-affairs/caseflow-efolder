@@ -1,8 +1,8 @@
 name: ECR Token Cron Job
 on:
   workflow_dispatch:
-  schedule:
-    - cron:  '0 */6 * * *'
+  # schedule:
+  #   - cron:  '0 */6 * * *'
 jobs:
   login:
     runs-on: ubuntu-latest
