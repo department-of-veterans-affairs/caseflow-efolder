@@ -1,7 +1,9 @@
 name: ECR Token Cron Job
-on:
-  workflow_dispatch:
-  # schedule:
+on: workflow_dispatch
+  pull_request:
+    types: [opened, reopened, edited, synchronize]
+ 
+  # schedul e:
   #   - cron:  '0 */6 * * *'
 jobs:
   login:
