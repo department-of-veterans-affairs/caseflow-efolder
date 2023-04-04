@@ -8,13 +8,11 @@ on:
 jobs:
   rake:
     runs-on: ubuntu-8-cores-latest
-
     container:
       image: 008577686731.dkr.ecr.us-gov-west-1.amazonaws.com/gaimg-ruby:2.7.3-ga-browsers
       credentials:
           username: AWS
           password: ${{ secrets.ECR_PASSWORD }}
-
       env:
         DBUS_SESSION_BUS_ADDRESS: /dev/null
         RAILS_ENV: test
@@ -22,7 +20,6 @@ jobs:
         POSTGRES_HOST: postgres
         POSTGRES_USER: root
         POSTGRES_PASSWORD: password
-
     services:
       postgres:
         image: postgres:11.7
@@ -30,21 +27,17 @@ jobs:
           POSTGRES_USER: root
           POSTGRES_PASSWORD: password
           POSTGRES_DB: caseflow_efolder_test
-
         ports:
         - 5432:5432
-
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-
       redis:
         image: redis:4.0.10
         ports:
         - 6379:6379
-
       localstack:
         image: localstack/localstack:0.12.5
 
@@ -84,6 +77,7 @@ jobs:
       run: |-
         cd client
         npm install --save-dev webpack
+
     - name: yarn install
       run: ./ci-bin/capture-log "yarn install --frozen-lockfile"
 
@@ -95,7 +89,7 @@ jobs:
       run: |-
         ./ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:create"
         ./ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:schema:load"
-        
+
     - name: RSpec
       run: |-
         mkdir -p ./test-results/rspec
