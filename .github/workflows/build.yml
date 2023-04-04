@@ -15,7 +15,6 @@ jobs:
     runs-on: ubuntu-8-cores-latest
     container:
       image: 008577686731.dkr.ecr.us-gov-west-1.amazonaws.com/gaimg-ruby:2.7.3-ga-browsers
-      options: --privileged # Necessary for Rspec to run with our configuration within GHA
       credentials:
           username: AWS
           password: ${{ secrets.ECR_PASSWORD }}
@@ -28,6 +27,7 @@ jobs:
         POSTGRES_USER: root
         POSTGRES_PASSWORD: password
         REDIS_URL_CACHE: redis://redis:6379/0/cache/
+        CI: true
 
     services:
       postgres:
@@ -99,7 +99,7 @@ jobs:
     - name: RSpec
       run: |-
         mkdir -p ./test-results/rspec
-        mkdir .webdrivers
+        chmod -R 777 ${GITHUB_WORKSPACE}
         make -f Makefile.example test | tee ./test-results/rspec/rspec.out
       env:
         POSTGRES_HOST: postgres
