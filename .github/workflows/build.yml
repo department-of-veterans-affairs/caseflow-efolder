@@ -28,7 +28,6 @@ jobs:
         POSTGRES_USER: root
         POSTGRES_PASSWORD: password
         REDIS_URL_CACHE: redis://redis:6379/0/cache/
-        CI: true
 
     services:
       postgres:
@@ -41,7 +40,7 @@ jobs:
         ports:
         - 5432:5432
 
-        options: >
+        options: >-
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
@@ -58,7 +57,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Install Chrome
+    - name: Install chromium
       run: |
         CHROME_VERSION="106.0.5249.119-1"
         apt-get update
@@ -72,7 +71,7 @@ jobs:
       run: ruby -v
 
     - name: Configure Bundler
-      run: |
+      run: |-
         BUNDLER_V=$(cat ./Gemfile.lock | tail -1 | tr -d " ")
         echo $BUNDLER_V
         gem install bundler:$BUNDLER_V
@@ -81,7 +80,7 @@ jobs:
       run: bundle install --path vendor/bundle
 
     - name: webpack install
-      run: |
+      run: |-
         cd client
         npm install --save-dev webpack
 
@@ -93,17 +92,15 @@ jobs:
       working-directory: "./client"
 
     - name: Database setup
-      run: |
+      run: |-
         ./ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:create"
         ./ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:schema:load"
 
     - name: RSpec
-      run: |
+      run: |-
         mkdir -p ./test-results/rspec
         mkdir .webdrivers
-        touch log/selenium-chrome.log
         make -f Makefile.example test | tee ./test-results/rspec/rspec.out
-
       env:
         POSTGRES_HOST: postgres
         
@@ -126,7 +123,7 @@ jobs:
 
     # Run both Lint and Security since it's not reliant on build process
     - name: Lint
-      run: |
+      run: |-
         npm install -g eslint
         ./ci-bin/capture-log "make -f Makefile.example lint"
       if: ${{ always() }}  
