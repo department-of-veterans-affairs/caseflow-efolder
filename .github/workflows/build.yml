@@ -14,7 +14,7 @@ jobs:
   rake:
     runs-on: ubuntu-8-cores-latest
     container:
-      image: http://008577686731.dkr.ecr.us-gov-west-1.amazonaws.com/gaimg-efolder:2.7.3-node-browsers
+      image: 008577686731.dkr.ecr.us-gov-west-1.amazonaws.com/gaimg-efolder:2.7.3-node-browsers
       options: --privileged # Necessary for Rspec to run with our configuration within GHA
       credentials:
           username: AWS
