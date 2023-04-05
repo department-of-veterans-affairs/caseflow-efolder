@@ -15,7 +15,6 @@ jobs:
     runs-on: ubuntu-8-cores-latest
     container:
       image: 008577686731.dkr.ecr.us-gov-west-1.amazonaws.com/gaimg-ruby:2.7.3-ga-browsers
-      # options: --privileged # Necessary for Rspec to run with our configuration within GHA
       credentials:
           username: AWS
           password: ${{ secrets.ECR_PASSWORD }}
@@ -96,13 +95,12 @@ jobs:
       run: |-
         ./ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:create"
         ./ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:schema:load"
-        
+
     - name: RSpec
       run: |-
         mkdir -p ./test-results/rspec
-      # chmod -R 777 ${GITHUB_WORKSPACE}
         make -f Makefile.example test | tee ./test-results/rspec/rspec.out
-      # runuser -u circleci -- 
+
       env:
         POSTGRES_HOST: postgres
         
