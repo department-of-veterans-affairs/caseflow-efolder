@@ -57,7 +57,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Install chromium
+    - name: Install Chrome
       run: |
         CHROME_VERSION="106.0.5249.119-1"
         apt-get update
@@ -66,6 +66,15 @@ jobs:
         && rm /tmp/chrome.deb
         echo "Chrome exe name: $(ls /usr/bin | chrome)"
         echo "Chrome version: $(google-chrome --version)"
+
+    - name: Install Chromedriver
+        run: |
+          apt-get install -y xvfb libxi6 libgconf-2-4
+          wget https://chromedriver.storage.googleapis.com/106.0.5249.61/chromedriver_linux64.zip
+          unzip chromedriver_linux64.zip
+          sudo mv chromedriver /usr/bin/chromedriver
+          sudo chown root:root /usr/bin/chromedriver
+          sudo chmod +x /usr/bin/chromedriver
         
     - name: Ruby version
       run: ruby -v
