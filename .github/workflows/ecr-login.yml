@@ -30,7 +30,7 @@ jobs:
     timeout-minutes: 1
     runs-on: ubuntu-latest
     container:
-      image: 008577686731.dkr.ecr.us-gov-west-1.amazonaws.com/gaimg-efolder:2.7.3-node-browsers
+      image: 008577686731.dkr.ecr.us-gov-west-1.amazonaws.com/gaimg-ruby:2.7.3-ga-browsers
       credentials:
         username: AWS
         # Here is the password retrieved as a secret that is set by the `login` job
