@@ -101,8 +101,7 @@ jobs:
       run: |-
         mkdir -p ./test-results/rspec
         chmod -R 777 ${GITHUB_WORKSPACE}
-        useradd ghauser -e `date -d "2 days" +"%Y-%m-%d"` modi
-        runuser -u ghauser -- make -f Makefile.example test | tee ./test-results/rspec/rspec.out
+        runuser -u circleci -- make -f Makefile.example test | tee ./test-results/rspec/rspec.out
       env:
         POSTGRES_HOST: postgres
         
