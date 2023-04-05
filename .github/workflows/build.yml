@@ -68,13 +68,13 @@ jobs:
         echo "Chrome version: $(google-chrome --version)"
 
     - name: Install Chromedriver
-        run: |
-          apt-get install -y xvfb libxi6 libgconf-2-4
-          wget https://chromedriver.storage.googleapis.com/106.0.5249.61/chromedriver_linux64.zip
-          unzip chromedriver_linux64.zip
-          sudo mv chromedriver /usr/bin/chromedriver
-          sudo chown root:root /usr/bin/chromedriver
-          sudo chmod +x /usr/bin/chromedriver
+      run: |
+        apt-get install -y xvfb libxi6 libgconf-2-4
+        wget https://chromedriver.storage.googleapis.com/106.0.5249.61/chromedriver_linux64.zip
+        unzip chromedriver_linux64.zip
+        sudo mv chromedriver /usr/bin/chromedriver
+        sudo chown root:root /usr/bin/chromedriver
+        sudo chmod +x /usr/bin/chromedriver
         
     - name: Ruby version
       run: ruby -v
