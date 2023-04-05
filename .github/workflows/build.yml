@@ -96,7 +96,7 @@ jobs:
       run: |-
         ./ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:create"
         ./ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:schema:load"
-
+        
     - name: RSpec
       run: |-
         mkdir -p ./test-results/rspec
