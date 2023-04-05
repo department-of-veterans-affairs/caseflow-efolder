@@ -8,7 +8,7 @@ require "webdrivers"
 # make sure we have latest (CircleCI may have cached older version)
 Webdrivers::Chromedriver.update
 
-Webdrivers.logger.level = :DEBUG if ENV["DEBUG"]
+Webdrivers.logger.level = :debug if ENV["DEBUG"]
 
 Sniffybara::Driver.run_configuration_file = File.expand_path("VA-axe-run-configuration.json", __dir__)
 
