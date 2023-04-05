@@ -41,7 +41,7 @@ jobs:
         ports:
         - 5432:5432
 
-        options: >-
+        options: >
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
@@ -59,7 +59,7 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Install Chrome
-      run: |-
+      run: |
         CHROME_VERSION="106.0.5249.119-1"
         apt-get update
         wget --no-verbose -O /tmp/chrome.deb https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_${CHROME_VERSION}_amd64.deb \
@@ -72,7 +72,7 @@ jobs:
       run: ruby -v
 
     - name: Configure Bundler
-      run: |-
+      run: |
         BUNDLER_V=$(cat ./Gemfile.lock | tail -1 | tr -d " ")
         echo $BUNDLER_V
         gem install bundler:$BUNDLER_V
@@ -81,7 +81,7 @@ jobs:
       run: bundle install --path vendor/bundle
 
     - name: webpack install
-      run: |-
+      run: |
         cd client
         npm install --save-dev webpack
 
@@ -93,12 +93,12 @@ jobs:
       working-directory: "./client"
 
     - name: Database setup
-      run: |-
+      run: |
         ./ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:create"
         ./ci-bin/capture-log "RAILS_ENV=test bundle exec rake db:schema:load"
 
     - name: RSpec
-      run: |-
+      run: |
         mkdir -p ./test-results/rspec
         mkdir .webdrivers
         touch log/selenium-chrome.log
@@ -126,7 +126,7 @@ jobs:
 
     # Run both Lint and Security since it's not reliant on build process
     - name: Lint
-      run: |-
+      run: |
         npm install -g eslint
         ./ci-bin/capture-log "make -f Makefile.example lint"
       if: ${{ always() }}  
