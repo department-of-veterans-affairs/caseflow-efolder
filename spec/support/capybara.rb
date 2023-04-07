@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "capybara/rspec"
-require 'capybara/poltergeist'
 require "capybara-screenshot/rspec"
 require "selenium-webdriver"
 require "webdrivers"
