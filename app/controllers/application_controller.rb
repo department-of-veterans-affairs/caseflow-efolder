@@ -8,7 +8,6 @@ class ApplicationController < BaseController
 
   def serve_single_page_app
     respond_to do |format|
-      puts format
       format.html { render("gui/single_page_app", layout: false) }
       format.text { render plain: "Text not supported" }
       format.json { render json: { error: "JSON not supported" } }
