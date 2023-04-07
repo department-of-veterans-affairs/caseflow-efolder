@@ -66,7 +66,8 @@ jobs:
         && rm /tmp/chrome.deb
         echo "Chrome exe name: $(ls /usr/bin | chrome)"
         echo "Chrome version: $(google-chrome --version)"
-        
+        echo "chromedriver version: $(chromedriver -v)"
+
     - name: Ruby version
       run: ruby -v
 
