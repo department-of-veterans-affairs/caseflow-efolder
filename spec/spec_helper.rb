@@ -1,5 +1,4 @@
 require "rubygems"
-require 'capybara/rspec'
 
 if ENV["SINGLE_COV"]
   # get coverage selectively in local dev

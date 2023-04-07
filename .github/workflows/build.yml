@@ -110,7 +110,7 @@ jobs:
         mkdir -p ./test-results/rspec
         mkdir .webdrivers
         chmod -R 777 ${GITHUB_WORKSPACE}
-        runuser -u circleci bundle exec rspec
+        runuser -u circleci TEST_DOWNLOADS=true CI=true bundle exec rspec
       env:
         POSTGRES_HOST: postgres
         
