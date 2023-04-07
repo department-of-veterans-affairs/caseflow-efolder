@@ -97,14 +97,15 @@ jobs:
     - name: yarn install
       run: ./ci-bin/capture-log "cd client && yarn install --frozen-lockfile"
 
-    - name: webpack install
-      run: |-
-        cd client
-        npm install --save-dev webpack
 
     - name: Yarn build
       run:  yarn run build
       working-directory: "./client"
+
+    - name: webpack install
+      run: |-
+        cd client
+        npm install --save-dev webpack
 
     - name: Database setup
       run: |-
@@ -120,6 +121,7 @@ jobs:
         mkdir -p ./test-results/rspec
         mkdir .webdrivers
         chmod -R 777 ${GITHUB_WORKSPACE}
+        echo "chromedriver version: $(chromedriver -v)"
         runuser -u circleci bundle exec rspec
       env:
         POSTGRES_HOST: postgres
