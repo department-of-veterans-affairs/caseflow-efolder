@@ -87,6 +87,10 @@ jobs:
     - name: yarn install
       run: ./ci-bin/capture-log "cd client && yarn install --frozen-lockfile"
 
+    - name: webpack install
+      run: |-
+        npm install --save-dev webpack
+
     - name: Yarn build
       run:  yarn run build
       working-directory: "./client"
