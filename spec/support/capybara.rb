@@ -64,7 +64,6 @@ Capybara.register_driver(:sniffybara_headless) do |app|
   chrome_options.args << "--headless"
   chrome_options.args << "--disable-gpu"
   chrome_options.args << "--window-size=1200,1200"
-  chrome_options.args << "--no-sandbox"
   chrome_options.args << "--enable-logging=stderr --v=1"
 
   options = {
