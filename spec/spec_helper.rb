@@ -24,7 +24,6 @@ end
 
 if ENV["CI"]
   require "rspec/retry"
-  
   # Repeat all failed feature tests in CI twice
   RSpec.configure do |config|
     # show retry status in spec process
@@ -38,7 +37,6 @@ if ENV["CI"]
   end
 end
 
-require "rspec/rails"
 def test_large_files?
   ENV.fetch("TEST_LARGE_FILES", false)
 end
