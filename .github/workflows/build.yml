@@ -62,7 +62,15 @@ jobs:
         && rm /tmp/chrome.deb
         echo "Chrome exe name: $(ls /usr/bin | chrome)"
         echo "Chrome version: $(google-chrome --version)"
-        rails webdrivers:chromedriver:version
+
+    - name: Install Chromedriver
+      run: |
+          apt-get install -y xvfb libxi6 libgconf-2-4
+          wget https://chromedriver.storage.googleapis.com/106.0.5249.61/chromedriver_linux64.zip
+          unzip chromedriver_linux64.zip
+          sudo mv chromedriver /usr/bin/chromedriver
+          sudo chown root:root /usr/bin/chromedriver
+          sudo chmod +x /usr/bin/chromedriver    
 
     # - name: Install firefox
     #   run: |
@@ -85,13 +93,14 @@ jobs:
     - name: Bundle install
       run: bundle install --path vendor/bundle
 
-    # - name: webpack install
-    #   run: |-
-    #     cd client
-    #     npm install --save-dev webpack
 
     - name: yarn install
       run: ./ci-bin/capture-log "cd client && yarn install --frozen-lockfile"
+
+    - name: webpack install
+      run: |-
+        cd client
+        npm install --save-dev webpack
 
     - name: Yarn build
       run:  yarn run build
