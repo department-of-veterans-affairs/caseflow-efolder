@@ -105,8 +105,6 @@ jobs:
         mkdir -p ./test-results/rspec
         mkdir .webdrivers
         make -f Makefile.example test | tee ./test-results/rspec/rspec.out
-      env:
-        POSTGRES_HOST: postgres
         
     # Artifact Uploads    
     - uses: actions/upload-artifact@v3
