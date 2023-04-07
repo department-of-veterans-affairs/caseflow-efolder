@@ -24,6 +24,7 @@ end
 
 if ENV["CI"]
   require "rspec/retry"
+  require "rspec/rails"
   # Repeat all failed feature tests in CI twice
   RSpec.configure do |config|
     # show retry status in spec process
