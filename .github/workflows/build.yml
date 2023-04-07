@@ -62,6 +62,7 @@ jobs:
         && rm /tmp/chrome.deb
         echo "Chrome exe name: $(ls /usr/bin | chrome)"
         echo "Chrome version: $(google-chrome --version)"
+        RAILS_ENV=test rails webdrivers:chromedriver:version
 
     # - name: Install firefox
     #   run: |
