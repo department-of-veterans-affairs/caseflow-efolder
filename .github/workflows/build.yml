@@ -97,7 +97,7 @@ jobs:
         mkdir .webdrivers
         chmod -R 777 ${GITHUB_WORKSPACE}
         echo "chromedriver version: $(chromedriver -v)"
-        runuser -u circleci bundle exec rspec
+        runuser -u circleci TEST_DOWNLOADS=true CI=true bundle exec rspec
       env:
         POSTGRES_HOST: postgres
         
