@@ -46,6 +46,7 @@ jobs:
         POSTGRES_HOST: postgres
         POSTGRES_USER: root
         POSTGRES_PASSWORD: password
+        TEST_DOWNLOADS: true
         WD_INSTALL_DIR: .webdrivers
         CI: true
         REDIS_URL_CACHE: redis://redis:6379/0/cache/
@@ -97,7 +98,7 @@ jobs:
         mkdir .webdrivers
         chmod -R 777 ${GITHUB_WORKSPACE}
         echo "chromedriver version: $(chromedriver -v)"
-        runuser -u circleci TEST_DOWNLOADS=true CI=true bundle exec rspec
+        runuser -u circleci bundle exec rspec
       env:
         POSTGRES_HOST: postgres
         
