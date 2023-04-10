@@ -1,5 +1,7 @@
 version: '3'
 services:
+  web:
+    shm_size: '256mb'
   appeals-redis:
     image: redis:2.8.23
     ports:
