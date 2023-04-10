@@ -115,7 +115,7 @@ jobs:
         mkdir .webdrivers
         chmod -R 777 ${GITHUB_WORKSPACE}
         echo "chromedriver version: $(chromedriver -v)"
-        runuser -u circleci bundle exec rspec --format RSpec::Github::Formatter --tty
+        runuser -u circleci -- make -f Makefile.example test | tee ./test-results/rspec/rspec.out
       env:
         POSTGRES_HOST: postgres
         
