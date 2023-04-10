@@ -28,6 +28,7 @@ jobs:
         POSTGRES_USER: root
         POSTGRES_PASSWORD: password
         REDIS_URL_CACHE: redis://redis:6379/0/cache/
+        CI: true
 
     services:
       postgres:
