@@ -65,6 +65,7 @@ Capybara.register_driver(:sniffybara_headless) do |app|
   chrome_options.args << "--disable-gpu"
   chrome_options.args << "--window-size=1200,1200"
   chrome_options.args << "--enable-logging=stderr --v=1"
+  # arguments below were needed to fix Github Actions Chromedriver issue 
   chrome_options.args << "--disable-dev-shm-usage"
   chrome_options.args << "--disable-impl-side-painting"
 

@@ -35,7 +35,7 @@ jobs:
 
     container:
       image: 008577686731.dkr.ecr.us-gov-west-1.amazonaws.com/gaimg-ruby:2.7.3-ga-browsers
-      options: --privileged # Necessary for Rspec to run with our configuration within GHA
+      options: --privileged # Necessary for Rspec to run with our configuration within GHA. Needed for rspec step to prevent chromedriver issue
       credentials:
           username: AWS
           password: ${{ secrets.ECR_PASSWORD }}
@@ -62,25 +62,7 @@ jobs:
         && rm /tmp/chrome.deb
         echo "Chrome exe name: $(ls /usr/bin | chrome)"
         echo "Chrome version: $(google-chrome --version)"
-
-    - name: Install Chromedriver
-      run: |
-          apt-get install -y xvfb libxi6 libgconf-2-4
-          wget https://chromedriver.storage.googleapis.com/106.0.5249.61/chromedriver_linux64.zip
-          unzip chromedriver_linux64.zip
-          sudo mv chromedriver /usr/bin/chromedriver
-          sudo chown root:root /usr/bin/chromedriver
-          sudo chmod +x /usr/bin/chromedriver    
-
-    # - name: Install firefox
-    #   run: |
-    #     FIREFOX_VERSION="106.0.1"
-    #     apt-get -y install libgtk2.0-0
-    #     wget https://ftp.mozilla.org/pub/firefox/releases/${FIREFOX_VERSION}/linux-x86_64/en-GB/firefox-${FIREFOX_VERSION}.tar.bz2
-    #     tar xvf firefox-${FIREFOX_VERSION}.tar.bz2
-    #     mv firefox/ /usr/lib/firefox
-    #     ln -s /usr/lib/firefox /usr/bin/firefox
-        
+       
     - name: Ruby version
       run: ruby -v
 
@@ -114,8 +96,7 @@ jobs:
         mkdir -p ./test-results/rspec
         mkdir .webdrivers
         chmod -R 777 ${GITHUB_WORKSPACE}
-        echo "chromedriver version: $(chromedriver -v)"
-        runuser -u circleci -- make -f Makefile.example test | tee ./test-results/rspec/rspec.out
+        runuser -u circleci -- make -f Makefile.example test | tee ./test-results/rspec/rspec.out # circleci refers to user
       env:
         POSTGRES_HOST: postgres
         
