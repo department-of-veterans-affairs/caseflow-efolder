@@ -29,6 +29,7 @@ jobs:
         POSTGRES_PASSWORD: password
         REDIS_URL_CACHE: redis://redis:6379/0/cache/
         CI: true
+        TEST_DOWNLOADS: true
 
     services:
       postgres:
@@ -113,7 +114,6 @@ jobs:
         touch log/selenium-chrome.log
         chmod -R 777 ${GITHUB_WORKSPACE}
         export GHA_NODE_INDEX=${{matrix.ci_node_index}}
-        echo "chromedriver version: $(chromedriver -v)"
         runuser -u circleci -- make -f Makefile.example test | tee ./test-results/rspec/rspec.out
         
     # Artifact Uploads    
