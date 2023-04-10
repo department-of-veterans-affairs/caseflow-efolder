@@ -17,7 +17,7 @@ run: up	## Start Rails
 	foreman start
 
 test: clean	## Run the rspec suite
-	TEST_DOWNLOADS=true CI=true bundle exec rspec
+	TEST_DOWNLOADS=true CI=true bundle exec rspec --format RSpec::Github::Formatter --tty
 
 clean:	## Remove old files
 	rm -f log/test.log
