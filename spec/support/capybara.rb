@@ -8,7 +8,7 @@ require "webdrivers"
 # make sure we have latest (CircleCI may have cached older version)
 Webdrivers::Chromedriver.update
 
-Webdrivers.logger.level = :DEBUG if ENV["DEBUG"]
+Webdrivers.logger.level = :debug if ENV["DEBUG"]
 
 Sniffybara::Driver.run_configuration_file = File.expand_path("VA-axe-run-configuration.json", __dir__)
 
@@ -65,6 +65,9 @@ Capybara.register_driver(:sniffybara_headless) do |app|
   chrome_options.args << "--disable-gpu"
   chrome_options.args << "--window-size=1200,1200"
   chrome_options.args << "--enable-logging=stderr --v=1"
+  # arguments below were needed to fix Github Actions Chromedriver issue 
+  chrome_options.args << "--disable-dev-shm-usage"
+  chrome_options.args << "--disable-impl-side-painting"
 
   options = {
     service: ::Selenium::WebDriver::Service.chrome(args: { port: 51_674 }),

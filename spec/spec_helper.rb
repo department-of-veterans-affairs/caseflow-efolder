@@ -2,7 +2,7 @@ require "rubygems"
 
 if ENV["SINGLE_COV"]
   # get coverage selectively in local dev
-  # add the line 'SingleCov.covered!' to the top of any *_spec.rb file to enable.
+  # add the line "SingleCov.covered!' to the top of any *_spec.rb file to enable.
   require "single_cov"
   SingleCov.setup :rspec
 else
@@ -26,8 +26,10 @@ if ENV["CI"]
   require "rspec/retry"
   # Repeat all failed feature tests in CI twice
   RSpec.configure do |config|
+    require "rspec/github" # Github actions annotations
     # show retry status in spec process
-   config.verbose_retry = true
+    config.add_formatter RSpec::Github::Formatter
+    config.verbose_retry = true
     # show exception that triggers a retry if verbose_retry is set to true
     config.display_try_failure_messages = true
     # run retry twice only on features
