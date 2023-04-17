@@ -27,7 +27,7 @@ gem "omniauth-saml-va", git: "https://github.com/department-of-veterans-affairs/
 gem "pg", "~> 0.18", platforms: :ruby
 gem "puma", "5.6.4"
 gem "rack-cors", ">= 1.0.4"
-gem "rails", "5.2.4.6"
+gem "rails", "6.0.0"
 gem "redis-namespace"
 gem "redis-rails", "~> 5.0.2"
 gem "redis-semaphore"
@@ -67,7 +67,7 @@ group :test do
   gem "rspec-github", require: false # Github Actions Annotations Formatter 
   gem "rspec-rails"
   gem "rspec-retry"
-  gem "saml_idp", git: "https://github.com/18F/saml_idp.git", branch: "master"
+  gem "saml_idp", git: "https://github.com/18F/saml_idp.git", branch: "main"
   gem "simplecov", require: false
   gem "sinatra", "2.2.0"
   gem "single_cov", require: false
