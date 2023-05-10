@@ -120,7 +120,7 @@ Run the test suite:
 make test
 ```
 
-## Running Caseflow and Caseflow eFolder as same time
+## Running Caseflow and Caseflow eFolder at same time
 
 This assumes neither was started initially and you are spinning up Caseflow then Caseflow eFolder
 
@@ -130,11 +130,11 @@ This assumes neither was started initially and you are spinning up Caseflow then
 2. [Start Caseflow in another terminal](https://github.com/department-of-veterans-affairs/caseflow)
 3. In the Caseflow terminal run `docker ps a`.
 4. Check to see if a redis and postgresql container is running.
-5. In another terminal in the Caseflow eFolder directory.
-6. Run the command `docker-compose -f docker-compose-local.yml appeals-localstack-aws up -d`
+5. In another terminal in the Caseflow eFolder directory run the command `docker-compose -f docker-compose-local.yml appeals-localstack-aws up -d`
     1. If postgresql or redis was not running in step 4 add after `appeals-localstack-aws` in the above command  the following values
         1. For postgresql add `appeals-postgres`
         2. For redis add `appeals-redis`
+        3. Example if all 3 need to be spun up `docker-compose -f docker-compose-local.yml appeals-redis appeals-postgres appeals-localstack-aws up -d`
 
 
 ### Test coverage
