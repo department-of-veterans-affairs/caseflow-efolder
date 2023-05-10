@@ -16,15 +16,6 @@ down:	## Stop Docker
 run: up	## Start Rails
 	foreman start
 
-up-with-caseflow:	## Start Docker
-	docker-compose up -d appeals-redis appeals-localstack-aws
-
-down-with-caseflow:	## Stop Docker
-	docker-compose down appeals-redis appeals-localstack-aws
-
-run-with-caseflow: up-with-caseflow	## Start Rails
-	foreman start  
-
 test: clean	## Run the rspec suite
 	TEST_DOWNLOADS=true CI=true bundle exec rspec --format documentation --format RSpec::Github::Formatter --tty
 
