@@ -41,7 +41,7 @@ docker-compose ps
 # this shows you the status of all of your dependencies
 ```
 
-Make sure to run `make down` in caseflow repo directory before running this or update ports in the docker-compose.yml to match.
+Make sure to run `make down` in caseflow repo directory before running this or update ports in the docker-compose.yml to match. This is because Caseflow eFolder and Caseflow expect postgresql to be running on different ports.
 
 5. Turning off dependencies
 ```
@@ -122,7 +122,7 @@ make test
 
 ## Running Caseflow and Caseflow eFolder at same time
 
-This assumes neither was started initially and you are spinning up Caseflow then Caseflow eFolder
+This assumes neither was started initially and you are spinning up Caseflow then Caseflow eFolder. The `docker-compose-local.yml` file sets the postgresql ports to be same as what Caseflow uses.
 
 1. Configure Caseflow to use Caseflow eFolder locally
     1. Set [config.use_efolder_locally](https://github.com/department-of-veterans-affairs/caseflow/blob/master/config/environments/development.rb#L70) to true
