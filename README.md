@@ -43,7 +43,7 @@ docker-compose ps
 
 Make sure to run `make down` in caseflow repo directory before running this or update ports in the docker-compose.yml to match.
 
-4. Turning off dependencies
+5. Turning off dependencies
 ```
 # this stops all containers
 make down
@@ -125,16 +125,16 @@ make test
 This assumes neither was started initially and you are spinning up Caseflow then Caseflow eFolder
 
 1. Configure Caseflow to use Caseflow eFolder locally
-  1. Set [config.use_efolder_locally](https://github.com/department-of-veterans-affairs/caseflow/blob/master/config/environments/development.rb#L70) to true
-  2. Set [config.efolder_url](https://github.com/department-of-veterans-affairs/caseflow/blob/master/config/environments/development.rb#L116) to `http://localhost:3001/`
+    1. Set [config.use_efolder_locally](https://github.com/department-of-veterans-affairs/caseflow/blob/master/config/environments/development.rb#L70) to true
+    2. Set [config.efolder_url](https://github.com/department-of-veterans-affairs/caseflow/blob/master/config/environments/development.rb#L116) to `http://localhost:3001/`
 2. [Start Caseflow in another terminal](https://github.com/department-of-veterans-affairs/caseflow)
 3. In the Caseflow terminal run `docker ps a`.
 4. Check to see if a redis and postgresql container is running.
 5. In another terminal in the Caseflow eFolder directory.
 6. Run the command `docker-compose -f docker-compose-local.yml appeals-localstack-aws up -d`
-  1. If postgresql or redis was not running in step 4 add after `appeals-localstack-aws` in the above command  the following values
-    1. For postgresql add `appeals-postgres`
-    2. For redis add `appeals-redis`
+    1. If postgresql or redis was not running in step 4 add after `appeals-localstack-aws` in the above command  the following values
+        1. For postgresql add `appeals-postgres`
+        2. For redis add `appeals-redis`
 
 
 ### Test coverage
