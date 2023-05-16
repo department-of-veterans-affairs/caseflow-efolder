@@ -57,31 +57,41 @@ docker-compose down -v
 ```
 rbenv install `cat .ruby-version`
 ```
-2. Install dependencies
+
+2. Make sure postgresql is installed
+```
+postgres -v
+```
+If nothing was return or it failed, run
+```
+brew install postgresql@14.8
+```
+
+3. Install dependencies
 ```
 make install
 ```
 
-3. The local DB requires a different port. This change will also allow you to run local tests.
+4. The local DB requires a different port. This change will also allow you to run local tests.
 Add this to a `.env` file in your application root directory:
 ```
 POSTGRES_PORT=15432
 REDIS_URL_CACHE=redis://localhost:16379/0/cache/
 REDIS_URL_SIDEKIQ=redis://localhost:16379
 ```
-4. Create the database
+5. Create the database
 ```
 bundle exec rake db:create
 ```
-5. Load the schema
+6. Load the schema
 ```
 bundle exec rake db:schema:load
 ```
-6. Run all the app components:
+7. Run all the app components:
 ```
 make run
 ```
-7. Or run each component separately.
+8. Or run each component separately.
 
 * the rails server
 ```
@@ -95,15 +105,42 @@ cd client && yarn run build --watch
 ```
 bundle exec shoryuken start -q efolder_development_high_priority efolder_development_low_priority efolder_development_med_priority -R
 ```
-8. If you want to convert TIFF files to PDFs then you also need to run the image converter service. You can
+9. If you want to convert TIFF files to PDFs then you also need to run the image converter service. You can
 do this by cloning the appeals-deployment repo, navigating to `ansible/utility-roles/imagemagick/files`
 and running `docker-compose up`. By default if this is not running, TIFFs will gracefully not convert.
 
 If you want to test out the DEMO flow (without VBMS connection),
 
-9. Visit [http://localhost:3001](http://localhost:3001),
+10. Visit [http://localhost:3001](http://localhost:3001),
 Test using one of the [fake files in this list](https://github.com/department-of-veterans-affairs/caseflow-efolder/blob/master/lib/fakes/document_service.rb#L7), all beginnning with "DEMO" (i.e. "DEMO1")
 Watch it download your fake file.
+
+### Issues In Setup
+When running `make install` if an error occurs see below for possible solutions:
+
+#### libv8
+
+```
+An error occurred while installing libv8 (3.16.14.19), and Bundler cannot continue.
+Make sure that `gem install libv8 -v '3.16.14.19' --source 'https://rubygems.org/'` succeeds
+```
+
+Run the commands to resolve the issue
+
+```
+brew install v8@3.15
+bundle config --local build.libv8 --with-system-v8
+bundle config --local build.therubyracer --with-v8-dir=/usr/local/opt/v8@3.15
+```
+
+#### mimemagic
+
+```
+An error occurred while installing mimemagic (0.3.7), and Bundler cannot continue.
+Make sure that `gem install mimemagic -v '0.3.7' --source 'https://rubygems.org/'` succeeds before bundling.
+```
+
+See [mimemageic](https://github.com/mimemagicrb/mimemagic/blob/master/README.md) to resolve the issue.
 
 ## Running Migrations
 
