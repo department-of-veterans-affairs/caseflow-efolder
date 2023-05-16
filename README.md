@@ -53,21 +53,23 @@ docker-compose down -v
 
 ## First Time Development Setup
 
-1. You'll need the proper version of Ruby
+1. [Make sure basic dependencies are setup](https://github.com/department-of-veterans-affairs/caseflow#basic-dependencies)
+
+2. You'll need the proper version of Ruby
 ```
 rbenv install `cat .ruby-version`
 ```
 
-2. Make sure postgresql is installed
+3. Make sure postgresql is installed
 ```
 postgres -v
 ```
-If nothing was return or it failed, run
+If nothing was returned or it failed, run
 ```
 brew install postgresql@14.8
 ```
 
-3. The local DB requires a different port. This change will also allow you to run local tests.
+4. The local DB requires a different port. This change will also allow you to run local tests.
 Add this to a `.env` file in your application root directory:
 ```
 POSTGRES_PORT=15432
@@ -75,24 +77,24 @@ REDIS_URL_CACHE=redis://localhost:16379/0/cache/
 REDIS_URL_SIDEKIQ=redis://localhost:16379
 ```
 
-4. Install dependencies
+5. Install dependencies
 ```
 make install
 ```
  
-5. Create the database
+6. Create the database
 ```
 bundle exec rake db:create
 ```
-6. Load the schema
+7. Load the schema
 ```
 bundle exec rake db:schema:load
 ```
-7. Run all the app components:
+8. Run all the app components:
 ```
 make run
 ```
-8. Or run each component separately.
+9. Or run each component separately.
 
 * the rails server
 ```
@@ -106,13 +108,13 @@ cd client && yarn run build --watch
 ```
 bundle exec shoryuken start -q efolder_development_high_priority efolder_development_low_priority efolder_development_med_priority -R
 ```
-9. If you want to convert TIFF files to PDFs then you also need to run the image converter service. You can
+10. If you want to convert TIFF files to PDFs then you also need to run the image converter service. You can
 do this by cloning the appeals-deployment repo, navigating to `ansible/utility-roles/imagemagick/files`
 and running `docker-compose up`. By default if this is not running, TIFFs will gracefully not convert.
 
 If you want to test out the DEMO flow (without VBMS connection),
 
-10. Visit [http://localhost:3001](http://localhost:3001),
+11. Visit [http://localhost:3001](http://localhost:3001),
 Test using one of the [fake files in this list](https://github.com/department-of-veterans-affairs/caseflow-efolder/blob/master/lib/fakes/document_service.rb#L7), all beginnning with "DEMO" (i.e. "DEMO1")
 Watch it download your fake file.
 
