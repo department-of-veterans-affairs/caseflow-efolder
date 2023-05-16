@@ -9,6 +9,8 @@ FOIA Requests that give veterans access to their own VA files take **way** too l
 
 ## Start up your docker based environment
 
+**This guide makes assumptions that you have possibly already setup [Caseflow](https://github.com/department-of-veterans-affairs/caseflow).**
+
 We use [docker](https://docs.docker.com/) and [docker-compose](https://docs.docker.com/compose/) to mock a production Renvironment locally.  Prior knowledge of docker is not required, but slowly learning how docker works is encouraged.
 Please ask a team member for an overview, and/or slowly review the docs linked.
 
@@ -52,6 +54,8 @@ docker-compose down -v
 ```
 
 ## First Time Development Setup
+
+**This guide makes assumptions that you have possibly already setup [Caseflow](https://github.com/department-of-veterans-affairs/caseflow).**
 
 1. [Make sure basic dependencies are setup](https://github.com/department-of-veterans-affairs/caseflow#basic-dependencies)
 
