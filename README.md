@@ -58,6 +58,11 @@ docker-compose down -v
 **This guide may make assumptions that you have possibly already setup [Caseflow](https://github.com/department-of-veterans-affairs/caseflow).**
 
 1. [Make sure basic dependencies are setup](https://github.com/department-of-veterans-affairs/caseflow#basic-dependencies)
+Checklist
+- rbenv
+- nodenv
+    - node version in .nvmrc through nodenv
+- yarn
 
 2. You'll need the proper version of Ruby
 ```
