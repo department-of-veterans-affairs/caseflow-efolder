@@ -41,6 +41,11 @@ docker-compose ps
 # this shows you the status of all of your dependencies
 ```
 
+If on M1 or M2 Mac:
+```
+make up-m1
+```
+
 Make sure to run `make down` in caseflow repo directory before running this or update ports in the docker-compose.yml to match. This is because Caseflow eFolder and Caseflow expect postgresql to be running on different ports.
 
 5. Turning off dependencies
@@ -113,12 +118,6 @@ If a pending migration exists, you will need to run them against both the develo
 make migrate
 RAILS_ENV=test bundle exec rake db:migrate
 ```
-## Running Tests
-
-Run the test suite:
-```
-make test
-```
 
 ## Running Caseflow and Caseflow eFolder at same time
 
@@ -136,7 +135,12 @@ This assumes neither was started initially and you are spinning up Caseflow then
         2. For redis add `appeals-redis`
         3. Example if all 3 need to be spun up `docker-compose -f docker-compose-local.yml appeals-redis appeals-postgres appeals-localstack-aws up -d`
 
+## Running Tests
 
+Run the test suite:
+```
+make test
+```
 
 ### Test coverage
 
