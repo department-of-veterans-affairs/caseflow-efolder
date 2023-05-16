@@ -22,18 +22,12 @@ export POSTGRES_USER=postgres
 export POSTGRES_PASSWORD=postgres
 ```
 
-2. **Note: If you previously have had redis and postgres installed via brew and would like to switch to docker, do the following:**
-```
-brew services stop postgresql
-brew services stop redis
-```
-
-3. Copy Makefile.example into your own Makefile so you have easy access to common commands
+2. Copy Makefile.example into your own Makefile so you have easy access to common commands
 ```
 cp Makefile.example Makefile
 ```
 
-4. Start all containers
+3. Start all containers
 ```
 make up
 
@@ -48,7 +42,7 @@ make up-m1
 
 Make sure to run `make down` in caseflow repo directory before running this or update ports in the docker-compose.yml to match. This is because Caseflow eFolder and Caseflow expect postgresql to be running on different ports.
 
-5. Turning off dependencies
+4. Turning off dependencies
 ```
 # this stops all containers
 make down
