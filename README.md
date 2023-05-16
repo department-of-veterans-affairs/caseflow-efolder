@@ -24,7 +24,7 @@ export POSTGRES_PASSWORD=postgres
 
 2. Copy Makefile.example into your own Makefile so you have easy access to common commands
 ```
-cp Makefile.example Makefile
+ln -s Makefile.example Makefile
 ```
 
 3. Start all containers
