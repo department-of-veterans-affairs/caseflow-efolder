@@ -67,18 +67,19 @@ If nothing was return or it failed, run
 brew install postgresql@14.8
 ```
 
-3. Install dependencies
-```
-make install
-```
-
-4. The local DB requires a different port. This change will also allow you to run local tests.
+3. The local DB requires a different port. This change will also allow you to run local tests.
 Add this to a `.env` file in your application root directory:
 ```
 POSTGRES_PORT=15432
 REDIS_URL_CACHE=redis://localhost:16379/0/cache/
 REDIS_URL_SIDEKIQ=redis://localhost:16379
 ```
+
+4. Install dependencies
+```
+make install
+```
+ 
 5. Create the database
 ```
 bundle exec rake db:create
