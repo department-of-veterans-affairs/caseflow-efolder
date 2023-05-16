@@ -58,6 +58,7 @@ docker-compose down -v
 **This guide may make assumptions that you have possibly already setup [Caseflow](https://github.com/department-of-veterans-affairs/caseflow).**
 
 1. [Make sure basic dependencies are setup](https://github.com/department-of-veterans-affairs/caseflow#basic-dependencies)
+
 Checklist
 - rbenv
 - nodenv
@@ -220,6 +221,8 @@ NEW_RELIC_LICENSE_KEY='<key as displayed on NewRelic.com>' NEW_RELIC_AGENT_ENABL
 You may wish to do this if you are debugging our NewRelic integration, for instance.
 
 ## Additional Setup
+
+Add this to your shell configuration `~/.zshrc`.
 
 ```
 #AWS Localstack 
