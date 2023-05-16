@@ -128,6 +128,10 @@ This assumes neither was started initially and you are spinning up Caseflow then
         1. For postgresql add `appeals-postgres`
         2. For redis add `appeals-redis`
         3. Example if all 3 need to be spun up `docker-compose -f docker-compose-local.yml appeals-redis appeals-postgres appeals-localstack-aws up -d`
+6. Update the `.env` file to have
+```
+POSTGRES_PORT=5432
+```
 
 ## Running Tests
 
