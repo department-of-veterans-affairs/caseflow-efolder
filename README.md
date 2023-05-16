@@ -137,6 +137,7 @@ This assumes neither was started initially and you are spinning up Caseflow then
         3. Example if all 3 need to be spun up `docker-compose -f docker-compose-local.yml appeals-redis appeals-postgres appeals-localstack-aws up -d`
 
 
+
 ### Test coverage
 
 We use the [simplecov](https://github.com/colszowka/simplecov) gem to evaluate test coverage as part of the CircleCI process.
@@ -201,4 +202,3 @@ Now when you go to [localhost:3001](localhost:3001) you'll be prompted with a fa
 See [internal wiki page](https://github.com/department-of-veterans-affairs/appeals-deployment/wiki/CSS-SAML-Workflow) for background.
 
 This application acts as a Service Provider to the VA IAM SAML SSO IdP (Identity Provider). The cookie set here is shared by Caseflow.
-
