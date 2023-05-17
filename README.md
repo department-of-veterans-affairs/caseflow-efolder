@@ -92,6 +92,8 @@ REDIS_URL_SIDEKIQ=redis://localhost:16379
 ```
 make install
 ```
+
+If there are issues see [Issues in Setup](#issues-in-setup)
  
 6. Create the database
 ```
