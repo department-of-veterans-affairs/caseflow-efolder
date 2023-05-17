@@ -18,8 +18,12 @@ down:	## Stop Docker
 
 down-m1:  ## Stop the docker containers on a M1 Mac
 	docker-compose -f docker-compose-m1.yml down
-	
+
 run: up	## Start Rails
+	foreman start
+
+## Start Rails on a M1 Mac
+run-m1: up-m1	
 	foreman start
 
 test: clean	## Run the rspec suite

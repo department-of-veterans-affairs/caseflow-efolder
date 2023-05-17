@@ -106,7 +106,12 @@ bundle exec rake db:schema:load
 8. Run all the app components:
 ```
 make run
+
+If on M1 or M2 Mac:
 ```
+make run-m1
+```
+
 9. Or run each component separately.
 
 * the rails server
