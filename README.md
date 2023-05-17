@@ -60,6 +60,7 @@ docker-compose down -v
 1. [Make sure basic dependencies are setup](https://github.com/department-of-veterans-affairs/caseflow#basic-dependencies)
 
 Checklist
+- pg 
 - rbenv
 - nodenv
     - node version in .nvmrc through nodenv
