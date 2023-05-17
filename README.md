@@ -57,7 +57,7 @@ docker-compose down -v
 
 **This guide may make assumptions that you have possibly already setup [Caseflow](https://github.com/department-of-veterans-affairs/caseflow).**
 
-1. [Make sure basic dependencies are setup](https://github.com/department-of-veterans-affairs/caseflow#basic-dependencies)
+5. [Make sure basic dependencies are setup](https://github.com/department-of-veterans-affairs/caseflow#basic-dependencies)
 
 Checklist
 - pg 
@@ -66,12 +66,12 @@ Checklist
     - node version in .nvmrc through nodenv
 - yarn
 
-2. You'll need the proper version of Ruby
+6. You'll need the proper version of Ruby
 ```
 rbenv install `cat .ruby-version`
 ```
 
-3. Make sure postgresql is installed
+7. Make sure postgresql is installed
 ```
 postgres -v
 ```
@@ -80,7 +80,7 @@ If nothing was returned or it failed, run
 brew install postgresql@14.8
 ```
 
-4. The local DB requires a different port. This change will also allow you to run local tests.
+8. The local DB requires a different port. This change will also allow you to run local tests.
 Add this to a `.env` file in your application root directory:
 ```
 POSTGRES_PORT=15432
@@ -88,22 +88,23 @@ REDIS_URL_CACHE=redis://localhost:16379/0/cache/
 REDIS_URL_SIDEKIQ=redis://localhost:16379
 ```
 
-5. Install dependencies
+9. Install dependencies
 ```
 make install
 ```
 
 If there are issues see [Issues in Setup](#issues-in-setup)
  
-6. Create the database
+10. Create the database
 ```
 bundle exec rake db:create
 ```
-7. Load the schema
+
+11. Load the schema
 ```
 bundle exec rake db:schema:load
 ```
-8. Run all the app components:
+12. Run all the app components:
 ```
 make run
 ```
@@ -113,7 +114,7 @@ If on M1 or M2 Mac:
 make run-m1
 ```
 
-9. Or run each component separately.
+13. Or run each component separately.
 
 * the rails server
 ```
@@ -127,13 +128,13 @@ cd client && yarn run build --watch
 ```
 bundle exec shoryuken start -q efolder_development_high_priority efolder_development_low_priority efolder_development_med_priority -R
 ```
-10. If you want to convert TIFF files to PDFs then you also need to run the image converter service. You can
+14. If you want to convert TIFF files to PDFs then you also need to run the image converter service. You can
 do this by cloning the appeals-deployment repo, navigating to `ansible/utility-roles/imagemagick/files`
 and running `docker-compose up`. By default if this is not running, TIFFs will gracefully not convert.
 
 If you want to test out the DEMO flow (without VBMS connection),
 
-11. Visit [http://localhost:3001](http://localhost:3001),
+15. Visit [http://localhost:3001](http://localhost:3001),
 Test using one of the [fake files in this list](https://github.com/department-of-veterans-affairs/caseflow-efolder/blob/master/lib/fakes/document_service.rb#L7), all beginnning with "DEMO" (i.e. "DEMO1")
 Watch it download your fake file.
 
