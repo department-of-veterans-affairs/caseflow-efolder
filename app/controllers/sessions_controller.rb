@@ -78,7 +78,7 @@ class SessionsController < ApplicationController
   end
 
   def allow_assert_username?
-    !Rails.deploy_env?(:prod)
+    !Rails.deploy_env?(:prod) || !Rails.deploy_env?(:prodtest)
   end
   helper_method :allow_assert_username?
 
