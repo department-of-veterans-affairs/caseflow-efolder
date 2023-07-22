@@ -1,4 +1,4 @@
-class CreateDownloads < ActiveRecord::Migration
+class CreateDownloads < ActiveRecord::Migration[4.2]
   def change
     create_table :downloads do |t|
       t.string :request_id
