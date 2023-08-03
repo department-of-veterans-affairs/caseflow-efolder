@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# [DUPE] This class is a port of the same-named service from Caseflow:
+#   https://github.com/department-of-veterans-affairs/caseflow/blob/c868523c45660d84d72122b35569a50337609c69/app/services/slack_service.rb
 class SlackService
   DEFAULT_CHANNEL = Rails.deploy_env?(:prod) ? "#appeals-job-alerts" : "#appeals-uat-alerts"
   COLORS = {
