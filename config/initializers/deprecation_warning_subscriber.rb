@@ -5,7 +5,7 @@
 #   (ActiveSupport::Notifications::Event) to method #deprecation.
 class DeprecationWarningSubscriber < ActiveSupport::Subscriber
   APP_NAME = "efolder"
-  SLACK_ALERT_CHANNEL = "#appeals-deprecation-alerts"
+  # SLACK_ALERT_CHANNEL = "#appeals-deprecation-alerts"
 
   attach_to :rails
 
@@ -36,8 +36,8 @@ class DeprecationWarningSubscriber < ActiveSupport::Subscriber
   def emit_warning_to_slack_alerts_channel(event)
     slack_alert_title = "Deprecation Warning - #{APP_NAME} (#{ENV['DEPLOY_ENV']})"
     
-    SlackService
-      .new(url: ENV["SLACK_DISPATCH_ALERT_URL"])
-      .send_notification(event.payload[:message], slack_alert_title, SLACK_ALERT_CHANNEL)
+    #SlackService
+    #  .new(url: ENV["SLACK_DISPATCH_ALERT_URL"])
+    #  .send_notification(event.payload[:message], slack_alert_title, SLACK_ALERT_CHANNEL)
   end
 end
