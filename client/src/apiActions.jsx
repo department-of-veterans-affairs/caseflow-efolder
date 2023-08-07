@@ -7,6 +7,7 @@ import {
   setDocumentsFetchCompletionEstimate,
   setDocumentsFetchStatus,
   setDocumentSources,
+  setDocumentsErrorMessage,
   setErrorMessage,
   setManifestId,
   setRecentDownloads,
@@ -105,12 +106,16 @@ export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken)
         // so we have more than enough time to fetch these large efolders.
         let maxRetryCount = 90;
         let retrySleepMilliseconds = 1 * 1000;
+        //console.log(response.body.data.attributes.sources);
         let donePollingFunction = (resp) => manifestFetchComplete(resp.body.data.attributes.sources);
         const sleepLengthSeconds = maxRetryCount * retrySleepMilliseconds / 1000;
-        let retriesExhaustedErrMsg = 'Continuing to fetch list of documents in the background. Stopped checking for ' +
-          `updates on the status because we reached the ${sleepLengthSeconds} second time limit. Refresh this pages ` +
-          `to check for updates again and start a new ${sleepLengthSeconds} second timer`;
+      
+        let retriesExhaustedErrTitle = 'Continuing to fetch documents in the background';
 
+        let retriesExhaustedErrMsg = 'Continuing to fetch list of documents in the background. ' +
+        `Stopped checking for updates on the status because we reached the ${sleepLengthSeconds} second time limit. ` +
+        'Refresh this page to check for updates again.'
+        
         if (documentDownloadStarted(response.body.data.attributes.fetched_files_status)) {
           // Poll every 2 seconds for 1 day
           const pollFrequencySeconds = 2;
@@ -118,8 +123,10 @@ export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken)
           maxRetryCount = 1 * 24 * 60 * 60 / pollFrequencySeconds;
           retrySleepMilliseconds = pollFrequencySeconds * 1000;
           donePollingFunction = (resp) => documentDownloadComplete(resp.body.data.attributes.fetched_files_status);
+          retriesExhaustedErrTitle = 'Could not fetch documents'
           retriesExhaustedErrMsg = 'Failed to complete documents download within 24 hours. ' +
-            'Please refresh page to see current download progress';
+            'Please refresh the page to try again.';
+          
         }
 
         if (donePollingFunction(response)) {
@@ -131,12 +138,17 @@ export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken)
             dispatch(pollManifestFetchEndpoint(retryCount + 1, manifestId, csrfToken));
           }, retrySleepMilliseconds);
         } else {
-          dispatch(setErrorMessage(retriesExhaustedErrMsg));
+          dispatch(setDocumentsErrorMessage ({title: retriesExhaustedErrTitle, message: retriesExhaustedErrMsg}));
         }
       },
-      (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
+      (err) => {
+        //dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
+        let manifestErrorTitle = 'Error occurred fetching document list';
+        let manifestErrorMsg = `Veteran ID is ${manifestId} ${err.veteranId}. `  + buildErrorMessageFromResponse(err.response);
+        dispatch(setDocumentsErrorMessage ({title: manifestErrorTitle, message: manifestErrorMsg}));
+      }
     );
-};
+};//manifest id ${manifestId} 
 
 export const startDocumentDownload = (manifestId, csrfToken) => (dispatch) => {
   postRequest(`/api/v2/manifests/${manifestId}/files_downloads`, csrfToken).

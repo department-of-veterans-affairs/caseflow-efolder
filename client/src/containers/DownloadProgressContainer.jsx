@@ -136,6 +136,7 @@ class DownloadProgressContainer extends React.PureComponent {
     const documentCountNote = this.props.documentSources.map((src) => (
       `${src.number_of_documents} from ${aliasForSource(src.source)}`)).join(' and ');
 
+    if (this.props.documentsFetchStatus === MANIFEST_DOWNLOAD_STATE.SUCCEEDED) {
     return <AlertBanner title="Success!" alertType="success">
       <p>
         All of the documents in the VBMS eFolder for #{this.props.veteranId} are ready to download.&nbsp;
@@ -144,8 +145,8 @@ class DownloadProgressContainer extends React.PureComponent {
       <p>This efolder contains {this.props.documents.length} documents: {documentCountNote}.</p>
       <button className="usa-button" onClick={this.startDownloadZip}>Download efolder</button>
     </AlertBanner>;
+    } 
   }
-  /* eslint-enable max-statements */
 
   getActiveTable() {
     const summary = 'Status of veteran eFolder file downloads';
@@ -235,7 +236,8 @@ class DownloadProgressContainer extends React.PureComponent {
   }
 
   manifestFailedBanner = () => {
-    return <AlertBanner
+
+  return <AlertBanner
       title="There was an error downloading this efolder"
       alertType="error">
       <p>You can try to download this efolder again using the ‘Retry Download' button below.
@@ -274,6 +276,8 @@ class DownloadProgressContainer extends React.PureComponent {
   }
 
   banner = () => {
+    console.log('this.props.documentsFetchStatus', this.props.documentsFetchStatus);
+    console.log('MANIFEST_DOWNLOAD_STATE', MANIFEST_DOWNLOAD_STATE);
     if (this.props.documentsFetchStatus === MANIFEST_DOWNLOAD_STATE.FAILED) {
       return this.manifestFailedBanner();
     } else if (this.props.documentsFetchStatus === MANIFEST_DOWNLOAD_STATE.SUCCEEDED) {
