@@ -4,7 +4,7 @@
 #   Whenever a “deprecation.rails” notification is published, it will dispatch the event
 #   (ActiveSupport::Notifications::Event) to method #deprecation.
 class DeprecationWarningSubscriber < ActiveSupport::Subscriber
-  SLACK_ALERT_TITLE = "Deprecation Warning"
+  APP_NAME = "efolder"
   SLACK_ALERT_CHANNEL = "#appeals-deprecation-alerts"
 
   attach_to :rails
