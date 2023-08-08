@@ -15,7 +15,14 @@ describe "DeprecationWarningSubscriber" do
   end
 
   context "when a 'deprecation.rails' event is instrumented" do
-    let(:payload) { { message: "test message", callstack: "test callstack" } }
+    let(:payload) do
+      {
+        message: "test message",
+        callstack: [location_1, location_2]
+      }
+    end
+    let(:location_1) { instance_double("Thread::Backtrace::Location", to_s: "location 1") }
+    let(:location_2) { instance_double("Thread::Backtrace::Location", to_s: "location 2") }
 
     before { ActiveSupport::Notifications.instrument("deprecation.rails", payload) }
 
@@ -29,7 +36,7 @@ describe "DeprecationWarningSubscriber" do
         level: "warning",
         extra: {
           message: payload[:message],
-          callstack: payload[:callstack],
+          callstack: ["location 1", "location 2"],
           environment: Rails.env
         }
       )
