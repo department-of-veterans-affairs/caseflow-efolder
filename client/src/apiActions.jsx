@@ -110,11 +110,10 @@ export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken)
         let donePollingFunction = (resp) => manifestFetchComplete(resp.body.data.attributes.sources);
         const sleepLengthSeconds = maxRetryCount * retrySleepMilliseconds / 1000;
       
-        let retriesExhaustedErrTitle = 'Continuing to fetch documents in the background';
+        let bannerTitle = 'Currently fetching the list of documents';
 
-        let retriesExhaustedErrMsg = 'Continuing to fetch list of documents in the background. ' +
-        `Stopped checking for updates on the status because we reached the ${sleepLengthSeconds} second time limit. ` +
-        'Refresh this page to check for updates again.'
+        let bannerMsg = `The list of documents is being fetched from ${respAttrs.veteran_first_name} ${respAttrs.veteran_last_name}'s eFolder in the background. ` +
+        'If the list of documents does not display after 2 minutes, please refresh the page to check again.'
         
         if (documentDownloadStarted(response.body.data.attributes.fetched_files_status)) {
           // Poll every 2 seconds for 1 day
@@ -123,8 +122,8 @@ export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken)
           maxRetryCount = 1 * 24 * 60 * 60 / pollFrequencySeconds;
           retrySleepMilliseconds = pollFrequencySeconds * 1000;
           donePollingFunction = (resp) => documentDownloadComplete(resp.body.data.attributes.fetched_files_status);
-          retriesExhaustedErrTitle = 'Could not fetch documents'
-          retriesExhaustedErrMsg = 'Failed to complete documents download within 24 hours. ' +
+          bannerTitle = 'Timed out trying to fetch the list of documents'
+          bannerMsg = 'Failed to fetch the list of documents after trying for 24 hours. ' +
             'Please refresh the page to try again.';
           
         }
@@ -138,14 +137,15 @@ export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken)
             dispatch(pollManifestFetchEndpoint(retryCount + 1, manifestId, csrfToken));
           }, retrySleepMilliseconds);
         } else {
-          dispatch(setDocumentsErrorMessage ({title: retriesExhaustedErrTitle, message: retriesExhaustedErrMsg}));
+          dispatch(setDocumentsErrorMessage ({title: bannerTitle, message: bannerrMsg}));
         }
       },
       (err) => {
-        //dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
-        let manifestErrorTitle = 'Error occurred fetching document list';
-        let manifestErrorMsg = `Veteran ID is ${manifestId} ${err.veteranId}. `  + buildErrorMessageFromResponse(err.response);
-        dispatch(setDocumentsErrorMessage ({title: manifestErrorTitle, message: manifestErrorMsg}));
+        
+        bannerTitle = 'An unexpected error occurred';
+        bannerMsg = `Error message: ${buildErrorMessageFromResponse(err.response)}. `  + 
+        'Please try again and if you continue to see an error, submit a support ticket.'
+        dispatch(setDocumentsErrorMessage ({title: bannerTitle, message: bannerMsg}));
       }
     );
 };//manifest id ${manifestId} 
