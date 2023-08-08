@@ -22,12 +22,19 @@ class DeprecationWarningSubscriber < ActiveSupport::Subscriber
   end
 
   def emit_warning_to_sentry(event)
+    # Need to convert callstack elements from `Thread::Backtrace::Location` objects to `Strings`
+    #   to avoid a `TypeError` on `options.deep_dup` in `Raven.capture_message`:
+    #   https://github.com/getsentry/sentry-ruby/blob/2e07e0295ba83df4c76c7bf3315d199c7050a7f9/lib/raven/instance.rb#L114
+    callstack_strings = event.payload[:callstack].map(&:to_s)
+
     Raven.capture_message(
       event.payload[:message],
       level: "warning",
       extra: {
         message: event.payload[:message],
-        callstack: event.payload[:callstack],
+        gem_name: event.payload[:gem_name],
+        deprecation_horizon: event.payload[:deprecation_horizon],
+        callstack: callstack_strings,
         environment: Rails.env
       }
     )
