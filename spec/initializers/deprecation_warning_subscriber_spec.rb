@@ -18,6 +18,8 @@ describe "DeprecationWarningSubscriber" do
     let(:payload) do
       {
         message: "test message",
+        gem_name: "Rails",
+        deprecation_horizon: "6.0",
         callstack: [location_1, location_2]
       }
     end
@@ -36,6 +38,8 @@ describe "DeprecationWarningSubscriber" do
         level: "warning",
         extra: {
           message: payload[:message],
+          gem_name: "Rails",
+          deprecation_horizon: "6.0",
           callstack: ["location 1", "location 2"],
           environment: Rails.env
         }
