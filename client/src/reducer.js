@@ -16,7 +16,7 @@ export const initState = {
   errorMessage: '',
   downloadContainerErrorMessage: {
     title: '',
-    message: '',
+    message: ''
   },
   recentDownloads: [],
   searchInputText: '',
@@ -32,8 +32,8 @@ export default function reducer(state = {}, action = {}) {
 
   case Actions.CLEAR_DOWNLOAD_CONTAINER_ERROR_MESSAGE:
     return { ...state,
-      downloadContainerErrorMessage: initState.downloadContainerErrorMessage};
-      
+      downloadContainerErrorMessage: initState.downloadContainerErrorMessage };
+
   case Actions.CLEAR_SEARCH_TEXT:
     return { ...state,
       searchInputText: initState.searchInputText };
@@ -62,7 +62,7 @@ export default function reducer(state = {}, action = {}) {
     return { ...state,
       downloadContainerErrorMessage: {
         title: action.payload.title,
-        message: action.payload.message}};
+        message: action.payload.message } };
 
   case Actions.SET_DOCUMENTS_FETCH_COMPLETION_ESTIMATE:
     return { ...state,
