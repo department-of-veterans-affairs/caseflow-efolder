@@ -14,6 +14,10 @@ const defaultManifestState = {
 
 export const initState = {
   errorMessage: '',
+  downloadContainerErrorMessage: {
+    title: '',
+    message: '',
+  },
   recentDownloads: [],
   searchInputText: '',
   ...defaultManifestState
@@ -26,6 +30,10 @@ export default function reducer(state = {}, action = {}) {
     return { ...state,
       errorMessage: initState.errorMessage };
 
+  case Actions.CLEAR_DOWNLOAD_CONTAINER_ERROR_MESSAGE:
+    return { ...state,
+      downloadContainerErrorMessage: initState.downloadContainerErrorMessage};
+      
   case Actions.CLEAR_SEARCH_TEXT:
     return { ...state,
       searchInputText: initState.searchInputText };

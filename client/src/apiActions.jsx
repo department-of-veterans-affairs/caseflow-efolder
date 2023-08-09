@@ -84,6 +84,11 @@ const buildErrorMessageFromResponse = (resp) => {
   return description;
 };
 
+const handleDownloadContainerError = (err) => dispatch(setDownloadContainerErrorMessage({
+  title: 'An unexpected error occurred', 
+  message: `Error message: ${buildErrorMessageFromResponse(err.response)}. Please try again and if you continue to see an error, submit a support ticket.`
+}));
+
 export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken) => (dispatch) => {
   // When a user attempts to download multiple case files, we end up in a state where we
   // have multiple case files polling at the same time. We then alternate updating the UI
@@ -110,17 +115,18 @@ export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken)
         let donePollingFunction = (resp) => manifestFetchComplete(resp.body.data.attributes.sources);
         const sleepLengthSeconds = maxRetryCount * retrySleepMilliseconds / 1000;
       
+        const respAttrs = response.body.data.attributes;
         let bannerTitle = 'Currently fetching the list of documents';
         let bannerMsg = `The list of documents is being fetched from ${respAttrs.veteran_first_name} ${respAttrs.veteran_last_name}'s eFolder in the background. ` +
         'If the list of documents does not display after 2 minutes, please refresh the page to check again.'
         
-        if (documentDownloadStarted(response.body.data.attributes.fetched_files_status)) {
+        if (documentDownloadStarted(respAttrs.fetched_files_status)) {
           // Poll every 2 seconds for 1 day
           const pollFrequencySeconds = 2;
 
           maxRetryCount = 1 * 24 * 60 * 60 / pollFrequencySeconds;
           retrySleepMilliseconds = pollFrequencySeconds * 1000;
-          donePollingFunction = (resp) => documentDownloadComplete(resp.body.data.attributes.fetched_files_status);
+          donePollingFunction = (resp) => documentDownloadComplete(respAttrs.fetched_files_status);
           bannerTitle = 'Timed out trying to download the eFolder'
           bannerMsg = `Failed to download ${respAttrs.veteran_first_name} ${respAttrs.veteran_last_name}'s eFolder after trying for 24 hours. ` +
             'Please refresh the page to try again.';
@@ -136,15 +142,10 @@ export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken)
             dispatch(pollManifestFetchEndpoint(retryCount + 1, manifestId, csrfToken));
           }, retrySleepMilliseconds);
         } else {
-          dispatch(setDownloadContainerErrorMessage ({title: bannerTitle, message: bannerrMsg}));
+          dispatch(setDownloadContainerErrorMessage ({title: bannerTitle, message: bannerMsg}));
         }
       },
-      (err) => {
-        bannerTitle = 'An unexpected error occurred';
-        bannerMsg = `Error message: ${buildErrorMessageFromResponse(err.response)}. `  + 
-        'Please try again and if you continue to see an error, submit a support ticket.'
-        dispatch(setDownloadContainerErrorMessage ({title: bannerTitle, message: bannerMsg}));
-      }
+      handleDownloadContainerError
     );
 }; 
 
@@ -155,7 +156,7 @@ export const startDocumentDownload = (manifestId, csrfToken) => (dispatch) => {
         setStateFromResponse(dispatch, resp);
         dispatch(pollManifestFetchEndpoint(0, manifestId, csrfToken));
       },
-      (err) => dispatch(setDownloadContainerErrorMessage(buildErrorMessageFromResponse(err.response)))
+      handleDownloadContainerError
     );
 };
 
@@ -163,7 +164,7 @@ export const restartManifestFetch = (manifestId, csrfToken) => (dispatch) => {
   postRequest(`/api/v2/manifests/${manifestId}`, csrfToken).
     then(
       (resp) => setStateFromResponse(dispatch, resp),
-      (err) => dispatch(setDownloadContainerErrorMessage(buildErrorMessageFromResponse(err.response)))
+      handleDownloadContainerError
     );
 };
 

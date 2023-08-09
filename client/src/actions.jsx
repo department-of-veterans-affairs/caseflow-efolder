@@ -1,5 +1,6 @@
 import {
   CLEAR_ERROR_MESSAGE,
+  CLEAR_DOWNLOAD_CONTAINER_ERROR_MESSAGE,
   CLEAR_SEARCH_TEXT,
   HIDE_CONFIRM_DOWNLOAD_MODAL,
   RESET_DEFAULT_MANIFEST_STATE,
@@ -20,6 +21,10 @@ import {
 
 export const clearErrorMessage = () => ({
   type: CLEAR_ERROR_MESSAGE
+});
+
+export const clearDownloadContainerErrorMessage = () => ({
+  type: CLEAR_DOWNLOAD_CONTAINER_ERROR_MESSAGE
 });
 
 export const clearSearchInputText = () => ({
