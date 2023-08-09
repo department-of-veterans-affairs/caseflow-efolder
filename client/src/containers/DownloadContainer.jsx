@@ -52,9 +52,9 @@ class DownloadContainer extends React.PureComponent {
       <DownloadPageFooter />
     </React.Fragment>;
 
-    if (this.props.documentsErrorMessage) {
+    if (this.props.downloadContainerErrorMessage) {
       pageBody = <React.Fragment>
-        <StatusMessage title={this.props.documentsErrorMessage.title}>{this.props.documentsErrorMessage.message}</StatusMessage>
+        <StatusMessage title={this.props.downloadContainerErrorMessage.title}>{this.props.downloadContainerErrorMessage.message}</StatusMessage>
         <DownloadPageFooter />
       </React.Fragment>;
     } else if (documentDownloadStarted(this.props.documentsFetchStatus)) {

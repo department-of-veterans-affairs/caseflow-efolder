@@ -50,9 +50,9 @@ export default function reducer(state = {}, action = {}) {
     return { ...state,
       documents: action.payload };
 
-  case Actions.SET_DOCUMENTS_ERROR_MESSAGE:
+  case Actions.SET_DOWNLOAD_CONTAINER_ERROR_MESSAGE:
     return { ...state,
-      documentsErrorMessage: {
+      downloadContainerErrorMessage: {
         title: action.payload.title,
         message: action.payload.message}};
 
