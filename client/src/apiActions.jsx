@@ -106,12 +106,11 @@ export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken)
         // so we have more than enough time to fetch these large efolders.
         let maxRetryCount = 90;
         let retrySleepMilliseconds = 1 * 1000;
-        //console.log(response.body.data.attributes.sources);
+  
         let donePollingFunction = (resp) => manifestFetchComplete(resp.body.data.attributes.sources);
         const sleepLengthSeconds = maxRetryCount * retrySleepMilliseconds / 1000;
       
         let bannerTitle = 'Currently fetching the list of documents';
-
         let bannerMsg = `The list of documents is being fetched from ${respAttrs.veteran_first_name} ${respAttrs.veteran_last_name}'s eFolder in the background. ` +
         'If the list of documents does not display after 2 minutes, please refresh the page to check again.'
         
