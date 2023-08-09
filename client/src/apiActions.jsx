@@ -146,7 +146,7 @@ export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken)
         dispatch(setDownloadContainerErrorMessage ({title: bannerTitle, message: bannerMsg}));
       }
     );
-};//manifest id ${manifestId} 
+}; 
 
 export const startDocumentDownload = (manifestId, csrfToken) => (dispatch) => {
   postRequest(`/api/v2/manifests/${manifestId}/files_downloads`, csrfToken).
