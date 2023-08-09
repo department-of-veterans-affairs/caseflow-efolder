@@ -92,7 +92,7 @@ const mapStateToProps = (state) => ({
   documentsFetchStatus: state.documentsFetchStatus,
   documentSources: state.documentSources,
   errorMessage: state.errorMessage,
-  documentsErrorMessage: state.documentsErrorMessage,
+  downloadContainerErrorMessage: state.downloadContainerErrorMessage,
   manifestId: state.manifestId,
   veteranId: state.veteranId,
   veteranName: state.veteranName

@@ -8,7 +8,7 @@ import {
   SET_DOCUMENTS,
   SET_DOCUMENTS_FETCH_COMPLETION_ESTIMATE,
   SET_DOCUMENTS_FETCH_STATUS,
-  SET_DOCUMENTS_ERROR_MESSAGE,
+  SET_DOWNLOAD_CONTAINER_ERROR_MESSAGE,
   SET_ERROR_MESSAGE,
   SET_MANIFEST_ID,
   SET_RECENT_DOWNLOADS,
@@ -62,8 +62,8 @@ export const setErrorMessage = (msg) => ({
   payload: msg
 });
 
-export const setDocumentsErrorMessage = (msg) => ({
-  type: SET_DOCUMENTS_ERROR_MESSAGE,
+export const setDownloadContainerErrorMessage = (msg) => ({
+  type: SET_DOWNLOAD_CONTAINER_ERROR_MESSAGE,
   payload: msg
 });
 

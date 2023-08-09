@@ -7,8 +7,8 @@ import {
   setDocumentsFetchCompletionEstimate,
   setDocumentsFetchStatus,
   setDocumentSources,
-  setDocumentsErrorMessage,
   setErrorMessage,
+  setDownloadContainerErrorMessage,
   setManifestId,
   setRecentDownloads,
   setVeteranId,
@@ -122,8 +122,8 @@ export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken)
           maxRetryCount = 1 * 24 * 60 * 60 / pollFrequencySeconds;
           retrySleepMilliseconds = pollFrequencySeconds * 1000;
           donePollingFunction = (resp) => documentDownloadComplete(resp.body.data.attributes.fetched_files_status);
-          bannerTitle = 'Timed out trying to fetch the list of documents'
-          bannerMsg = 'Failed to fetch the list of documents after trying for 24 hours. ' +
+          bannerTitle = 'Timed out trying to download the eFolder'
+          bannerMsg = `Failed to download $${respAttrs.veteran_first_name} ${respAttrs.veteran_last_name}'s eFolder after trying for 24 hours. ` +
             'Please refresh the page to try again.';
           
         }
@@ -137,7 +137,7 @@ export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken)
             dispatch(pollManifestFetchEndpoint(retryCount + 1, manifestId, csrfToken));
           }, retrySleepMilliseconds);
         } else {
-          dispatch(setDocumentsErrorMessage ({title: bannerTitle, message: bannerrMsg}));
+          dispatch(setDownloadContainerErrorMessage ({title: bannerTitle, message: bannerrMsg}));
         }
       },
       (err) => {
@@ -145,7 +145,7 @@ export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken)
         bannerTitle = 'An unexpected error occurred';
         bannerMsg = `Error message: ${buildErrorMessageFromResponse(err.response)}. `  + 
         'Please try again and if you continue to see an error, submit a support ticket.'
-        dispatch(setDocumentsErrorMessage ({title: bannerTitle, message: bannerMsg}));
+        dispatch(setDownloadContainerErrorMessage ({title: bannerTitle, message: bannerMsg}));
       }
     );
 };//manifest id ${manifestId} 
@@ -157,7 +157,7 @@ export const startDocumentDownload = (manifestId, csrfToken) => (dispatch) => {
         setStateFromResponse(dispatch, resp);
         dispatch(pollManifestFetchEndpoint(0, manifestId, csrfToken));
       },
-      (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
+      (err) => dispatch(setDownloadContainerErrorMessage(buildErrorMessageFromResponse(err.response)))
     );
 };
 
@@ -165,7 +165,7 @@ export const restartManifestFetch = (manifestId, csrfToken) => (dispatch) => {
   postRequest(`/api/v2/manifests/${manifestId}`, csrfToken).
     then(
       (resp) => setStateFromResponse(dispatch, resp),
-      (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
+      (err) => dispatch(setDownloadContainerErrorMessage(buildErrorMessageFromResponse(err.response)))
     );
 };
 
