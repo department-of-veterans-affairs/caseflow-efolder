@@ -140,7 +140,6 @@ export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken)
         }
       },
       (err) => {
-        
         bannerTitle = 'An unexpected error occurred';
         bannerMsg = `Error message: ${buildErrorMessageFromResponse(err.response)}. `  + 
         'Please try again and if you continue to see an error, submit a support ticket.'
