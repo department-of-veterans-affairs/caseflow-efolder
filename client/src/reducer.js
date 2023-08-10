@@ -13,8 +13,7 @@ const defaultManifestState = {
 };
 
 export const initState = {
-  errorMessage: '',
-  downloadContainerErrorMessage: {
+  errorMessage: {
     title: '',
     message: ''
   },
@@ -29,10 +28,6 @@ export default function reducer(state = {}, action = {}) {
   case Actions.CLEAR_ERROR_MESSAGE:
     return { ...state,
       errorMessage: initState.errorMessage };
-
-  case Actions.CLEAR_DOWNLOAD_CONTAINER_ERROR_MESSAGE:
-    return { ...state,
-      downloadContainerErrorMessage: initState.downloadContainerErrorMessage };
 
   case Actions.CLEAR_SEARCH_TEXT:
     return { ...state,
@@ -58,12 +53,6 @@ export default function reducer(state = {}, action = {}) {
     return { ...state,
       documents: action.payload };
 
-  case Actions.SET_DOWNLOAD_CONTAINER_ERROR_MESSAGE:
-    return { ...state,
-      downloadContainerErrorMessage: {
-        title: action.payload.title,
-        message: action.payload.message } };
-
   case Actions.SET_DOCUMENTS_FETCH_COMPLETION_ESTIMATE:
     return { ...state,
       documentsFetchCompletionEstimate: action.payload };
@@ -74,7 +63,9 @@ export default function reducer(state = {}, action = {}) {
 
   case Actions.SET_ERROR_MESSAGE:
     return { ...state,
-      errorMessage: action.payload };
+      errorMessage: {
+        title: action.payload.title,
+        message: action.payload.message } };
 
   case Actions.SET_MANIFEST_ID:
     return { ...state,

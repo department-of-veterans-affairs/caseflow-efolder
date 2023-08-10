@@ -8,7 +8,6 @@ import {
   setDocumentsFetchStatus,
   setDocumentSources,
   setErrorMessage,
-  setDownloadContainerErrorMessage,
   setManifestId,
   setRecentDownloads,
   setVeteranId,
@@ -148,9 +147,9 @@ export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken)
             dispatch(pollManifestFetchEndpoint(retryCount + 1, manifestId, csrfToken));
           }, retrySleepMilliseconds);
         } else {
-          dispatch(setDownloadContainerErrorMessage({ title: bannerTitle, message: bannerMsg }));
+          dispatch(setErrorMessage({ title: bannerTitle, message: bannerMsg }));
         }
-      }, (err) => dispatch(setDownloadContainerErrorMessage(buildContainerErrorObject(err)))
+      }, (err) => dispatch(setErrorMessage(buildContainerErrorObject(err)))
     );
 };
 
@@ -160,7 +159,7 @@ export const startDocumentDownload = (manifestId, csrfToken) => (dispatch) => {
       (resp) => {
         setStateFromResponse(dispatch, resp);
         dispatch(pollManifestFetchEndpoint(0, manifestId, csrfToken));
-      }, (err) => dispatch(setDownloadContainerErrorMessage(buildContainerErrorObject(err)))
+      }, (err) => dispatch(setErrorMessage(buildContainerErrorObject(err)))
     );
 };
 
@@ -168,7 +167,7 @@ export const restartManifestFetch = (manifestId, csrfToken) => (dispatch) => {
   postRequest(`/api/v2/manifests/${manifestId}`, csrfToken).
     then(
       (resp) => setStateFromResponse(dispatch, resp),
-      (err) => dispatch(setDownloadContainerErrorMessage(buildContainerErrorObject(err)))
+      (err) => dispatch(setErrorMessage(buildContainerErrorObject(err)))
     );
 };
 
