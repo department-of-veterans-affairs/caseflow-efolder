@@ -72,24 +72,17 @@ const getRequest = (endpoint, csrfToken, options) => baseRequest(endpoint, csrfT
 const postRequest = (endpoint, csrfToken, options) => baseRequest(endpoint, csrfToken, 'post', options);
 
 const buildErrorMessageFromResponse = (resp) => {
-  let description = `${resp.statusCode} (${resp.statusText})`;
+  let message = `${resp.statusCode} (${resp.statusText})`;
 
   if (resp.body.status) {
-    description = resp.body.status;
+    message = resp.body.status;
   } else if (resp.body.errors[0].detail) {
-    description = resp.body.errors[0].detail;
+    message = resp.body.errors[0].detail;
   }
-
-  return description;
-};
-
-const buildContainerErrorObject = (err) => {
-  const message = `Error message: ${buildErrorMessageFromResponse(err.response)}.` +
-  'Please try again and if you continue to see an error, submit a support ticket.';
 
   return {
     title: 'An unexpected error occurred',
-    message
+    message: `Error message: ${message}. Please try again and if you continue to see an error, submit a support ticket.`
   };
 };
 
@@ -149,7 +142,7 @@ export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken)
         } else {
           dispatch(setErrorMessage({ title: bannerTitle, message: bannerMsg }));
         }
-      }, (err) => dispatch(setErrorMessage(buildContainerErrorObject(err)))
+      }, (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
     );
 };
 
@@ -159,7 +152,7 @@ export const startDocumentDownload = (manifestId, csrfToken) => (dispatch) => {
       (resp) => {
         setStateFromResponse(dispatch, resp);
         dispatch(pollManifestFetchEndpoint(0, manifestId, csrfToken));
-      }, (err) => dispatch(setErrorMessage(buildContainerErrorObject(err)))
+      }, (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
     );
 };
 
@@ -167,7 +160,7 @@ export const restartManifestFetch = (manifestId, csrfToken) => (dispatch) => {
   postRequest(`/api/v2/manifests/${manifestId}`, csrfToken).
     then(
       (resp) => setStateFromResponse(dispatch, resp),
-      (err) => dispatch(setErrorMessage(buildContainerErrorObject(err)))
+      (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
     );
 };
 
