@@ -14,6 +14,8 @@ class DeprecationWarningSubscriber < ActiveSupport::Subscriber
     emit_warning_to_sentry(event)
     ## Skip until we have ENV["SSL_CERT_FILE"] set in eFolder environments, as needed by SlackService
     # emit_warning_to_slack_alerts_channel(event)
+  rescue StandardError => error
+    Raven.capture_exception(error)
   end
 
   private

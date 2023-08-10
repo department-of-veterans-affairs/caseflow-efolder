@@ -9,6 +9,7 @@ describe "DeprecationWarningSubscriber" do
     allow(rails_logger).to receive(:warn)
 
     allow(Raven).to receive(:capture_message)
+    allow(Raven).to receive(:capture_exception)
 
     allow(SlackService).to receive(:new).with(url: anything).and_return(slack_service)
     allow(slack_service).to receive(:send_notification)
@@ -26,13 +27,19 @@ describe "DeprecationWarningSubscriber" do
     let(:location_1) { instance_double("Thread::Backtrace::Location", to_s: "location 1") }
     let(:location_2) { instance_double("Thread::Backtrace::Location", to_s: "location 2") }
 
-    before { ActiveSupport::Notifications.instrument("deprecation.rails", payload) }
+    def instrument_deprecation_warning
+      ActiveSupport::Notifications.instrument("deprecation.rails", payload)
+    end
 
     it "emits a warning to the application logs" do
+      instrument_deprecation_warning
+
       expect(rails_logger).to have_received(:warn).with(payload[:message])
     end
 
     it "emits a warning to Sentry" do
+      instrument_deprecation_warning
+
       expect(Raven).to have_received(:capture_message).with(
         payload[:message],
         level: "warning",
@@ -54,6 +61,20 @@ describe "DeprecationWarningSubscriber" do
        "Deprecation Warning - efolder (test)",
        "#appeals-deprecation-alerts"
       )
+    end
+
+    xcontext "when an exception occurs" do
+      before { allow(slack_service).to receive(:send_notification).and_raise(StandardError) }
+
+      it "logs error to Sentry" do
+        instrument_deprecation_warning
+
+        expect(Raven).to have_received(:capture_exception).with(StandardError)
+      end
+
+      it "does not raise error" do
+        expect { instrument_deprecation_warning }.not_to raise_error
+      end
     end
   end
 end
