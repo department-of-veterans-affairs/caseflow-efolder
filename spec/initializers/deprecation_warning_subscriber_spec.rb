@@ -58,7 +58,7 @@ describe "DeprecationWarningSubscriber" do
 
       expect(slack_service).to have_received(:send_notification).with(
        payload[:message],
-       "Deprecation Warning - efolder (test)",
+       "Deprecation Warning - efolder (#{ENV['DEPLOY_ENV']})",
        "#appeals-deprecation-alerts"
       )
     end
