@@ -1,4 +1,5 @@
 require_relative 'boot'
+
 require 'rails/all'
 
 # Require the gems listed in Gemfile, including any gems
@@ -7,16 +8,33 @@ Bundler.require(*Rails.groups)
 
 module CaseflowEfolder
   class Application < Rails::Application
-
     # Initialize configuration defaults for originally generated Rails version.
-    # config.load_defaults 5.1
-    
+    # config.load_defaults 5.0
+
     # Settings in config/environments/* take precedence over those specified here.
-    # Application configuration should go into files in config/initializers
-    # -- all .rb files in that directory are automatically loaded.
+    # Application configuration can go into files in config/initializers
+    # -- all .rb files in that directory are automatically loaded after loading
+    # the framework and any gems in your application.
 
+    #=======================================================================================
+    # Rails 5.0 default overrides
+    #---------------------------------------------------------------------------------------
+
+
+    #=======================================================================================
+    # Rails 5.1 default overrides
+    #---------------------------------------------------------------------------------------
+
+
+    #=======================================================================================
+    # Rails 5.2 default overrides
+    #---------------------------------------------------------------------------------------
+
+
+    #=======================================================================================
+    # eFolder Specific configs
+    #---------------------------------------------------------------------------------------
     config.download_filepath = Rails.root + "tmp/files"
-
     config.autoload_paths += Dir[Rails.root + 'app/jobs']
     config.autoload_paths << Rails.root.join('lib')
 
