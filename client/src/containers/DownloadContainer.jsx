@@ -9,6 +9,7 @@ import StatusMessage from '@department-of-veterans-affairs/caseflow-frontend-too
 import {
   clearErrorMessage,
   resetDefaultManifestState,
+  clearDownloadContainerErrorMessage,
   setManifestId
 } from '../actions';
 import { pollManifestFetchEndpoint, restartManifestFetch } from '../apiActions';
@@ -24,6 +25,7 @@ class DownloadContainer extends React.PureComponent {
   componentDidMount() {
     // Clear all previous error messages. The only errors we care about will happen after this component has mounted.
     this.props.clearErrorMessage();
+    this.props.clearDownloadContainerErrorMessage();
 
     const manifestId = this.props.match.params.manifestId;
     let forceManifestRequest = false;
@@ -92,6 +94,7 @@ const mapStateToProps = (state) => ({
   documentsFetchStatus: state.documentsFetchStatus,
   documentSources: state.documentSources,
   errorMessage: state.errorMessage,
+  downloadContainerErrorMessage: state.downloadContainerErrorMessage,
   manifestId: state.manifestId,
   veteranId: state.veteranId,
   veteranName: state.veteranName
@@ -100,6 +103,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   pollManifestFetchEndpoint,
   clearErrorMessage,
+  clearDownloadContainerErrorMessage,
   resetDefaultManifestState,
   restartManifestFetch,
   setManifestId

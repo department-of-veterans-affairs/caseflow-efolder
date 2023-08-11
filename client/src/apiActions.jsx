@@ -8,6 +8,7 @@ import {
   setDocumentsFetchStatus,
   setDocumentSources,
   setErrorMessage,
+  setDownloadContainerErrorMessage,
   setManifestId,
   setRecentDownloads,
   setVeteranId,
@@ -86,6 +87,16 @@ const buildErrorMessageFromResponse = (resp) => {
   };
 };
 
+const buildContainerErrorObject = (err) => {
+  const message = `Error message: ${buildErrorMessageFromResponse(err.response)}.` +
+  'Please try again and if you continue to see an error, submit a support ticket.';
+
+  return {
+    title: 'An unexpected error occurred',
+    message
+  };
+};
+
 export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken) => (dispatch) => {
   // When a user attempts to download multiple case files, we end up in a state where we
   // have multiple case files polling at the same time. We then alternate updating the UI
@@ -160,7 +171,7 @@ export const restartManifestFetch = (manifestId, csrfToken) => (dispatch) => {
   postRequest(`/api/v2/manifests/${manifestId}`, csrfToken).
     then(
       (resp) => setStateFromResponse(dispatch, resp),
-      (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
+      (err) => dispatch(setDownloadContainerErrorMessage(buildContainerErrorObject(err)))
     );
 };
 

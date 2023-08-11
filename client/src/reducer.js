@@ -26,6 +26,10 @@ export default function reducer(state = {}, action = {}) {
     return { ...state,
       errorMessage: initState.errorMessage };
 
+  case Actions.CLEAR_DOWNLOAD_CONTAINER_ERROR_MESSAGE:
+    return { ...state,
+      downloadContainerErrorMessage: initState.downloadContainerErrorMessage };
+
   case Actions.CLEAR_SEARCH_TEXT:
     return { ...state,
       searchInputText: initState.searchInputText };
@@ -49,6 +53,12 @@ export default function reducer(state = {}, action = {}) {
   case Actions.SET_DOCUMENTS:
     return { ...state,
       documents: action.payload };
+
+  case Actions.SET_DOWNLOAD_CONTAINER_ERROR_MESSAGE:
+    return { ...state,
+      downloadContainerErrorMessage: {
+        title: action.payload.title,
+        message: action.payload.message } };
 
   case Actions.SET_DOCUMENTS_FETCH_COMPLETION_ESTIMATE:
     return { ...state,
