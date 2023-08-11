@@ -73,15 +73,18 @@ const getRequest = (endpoint, csrfToken, options) => baseRequest(endpoint, csrfT
 const postRequest = (endpoint, csrfToken, options) => baseRequest(endpoint, csrfToken, 'post', options);
 
 const buildErrorMessageFromResponse = (resp) => {
-  let description = `${resp.statusCode} (${resp.statusText})`;
+  let message = `${resp.statusCode} (${resp.statusText})`;
 
   if (resp.body.status) {
-    description = resp.body.status;
+    message = resp.body.status;
   } else if (resp.body.errors[0].detail) {
-    description = resp.body.errors[0].detail;
+    message = resp.body.errors[0].detail;
   }
 
-  return description;
+  return {
+    title: 'An unexpected error occurred',
+    message: `Error message: ${message}. Please try again and if you continue to see an error, submit a support ticket.`
+  };
 };
 
 const buildContainerErrorObject = (err) => {
@@ -148,9 +151,9 @@ export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken)
             dispatch(pollManifestFetchEndpoint(retryCount + 1, manifestId, csrfToken));
           }, retrySleepMilliseconds);
         } else {
-          dispatch(setDownloadContainerErrorMessage({ title: bannerTitle, message: bannerMsg }));
+          dispatch(setErrorMessage({ title: bannerTitle, message: bannerMsg }));
         }
-      }, (err) => dispatch(setDownloadContainerErrorMessage(buildContainerErrorObject(err)))
+      }, (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
     );
 };
 
@@ -160,7 +163,7 @@ export const startDocumentDownload = (manifestId, csrfToken) => (dispatch) => {
       (resp) => {
         setStateFromResponse(dispatch, resp);
         dispatch(pollManifestFetchEndpoint(0, manifestId, csrfToken));
-      }, (err) => dispatch(setDownloadContainerErrorMessage(buildContainerErrorObject(err)))
+      }, (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
     );
 };
 
