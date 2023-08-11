@@ -8,7 +8,6 @@ import {
   setDocumentsFetchStatus,
   setDocumentSources,
   setErrorMessage,
-  setDownloadContainerErrorMessage,
   setManifestId,
   setRecentDownloads,
   setVeteranId,
@@ -73,21 +72,19 @@ const getRequest = (endpoint, csrfToken, options) => baseRequest(endpoint, csrfT
 const postRequest = (endpoint, csrfToken, options) => baseRequest(endpoint, csrfToken, 'post', options);
 
 const buildErrorMessageFromResponse = (resp) => {
-  let description = `${resp.statusCode} (${resp.statusText})`;
+  let message = `${resp.statusCode} (${resp.statusText})`;
 
   if (resp.body.status) {
-    description = resp.body.status;
+    message = resp.body.status;
   } else if (resp.body.errors[0].detail) {
-    description = resp.body.errors[0].detail;
+    message = resp.body.errors[0].detail;
   }
 
-  return description;
+  return {
+    title: 'An unexpected error occurred',
+    message: `Error message: ${message}. Please try again and if you continue to see an error, submit a support ticket.`
+  };
 };
-
-const handleDownloadContainerError = (err) => dispatch(setDownloadContainerErrorMessage({
-  title: 'An unexpected error occurred', 
-  message: `Error message: ${buildErrorMessageFromResponse(err.response)}. Please try again and if you continue to see an error, submit a support ticket.`
-}));
 
 export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken) => (dispatch) => {
   // When a user attempts to download multiple case files, we end up in a state where we
@@ -111,26 +108,27 @@ export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken)
         // so we have more than enough time to fetch these large efolders.
         let maxRetryCount = 90;
         let retrySleepMilliseconds = 1 * 1000;
-  
+
         let donePollingFunction = (resp) => manifestFetchComplete(resp.body.data.attributes.sources);
-        const sleepLengthSeconds = maxRetryCount * retrySleepMilliseconds / 1000;
-      
+
         const respAttrs = response.body.data.attributes;
         let bannerTitle = 'Currently fetching the list of documents';
-        let bannerMsg = `The list of documents is being fetched from ${respAttrs.veteran_first_name} ${respAttrs.veteran_last_name}'s eFolder in the background. ` +
-        'If the list of documents does not display after 2 minutes, please refresh the page to check again.'
-        
+        let bannerMsg = 'The list of documents is being fetched from ' +
+          `${respAttrs.veteran_first_name} ${respAttrs.veteran_last_name}'s ` +
+          'eFolder in the background. If the list of documents does not display after 2 minutes, ' +
+          'please refresh the page to check again.';
+
         if (documentDownloadStarted(respAttrs.fetched_files_status)) {
           // Poll every 2 seconds for 1 day
           const pollFrequencySeconds = 2;
 
           maxRetryCount = 1 * 24 * 60 * 60 / pollFrequencySeconds;
           retrySleepMilliseconds = pollFrequencySeconds * 1000;
-          donePollingFunction = (resp) => documentDownloadComplete(respAttrs.fetched_files_status);
-          bannerTitle = 'Timed out trying to download the eFolder'
-          bannerMsg = `Failed to download ${respAttrs.veteran_first_name} ${respAttrs.veteran_last_name}'s eFolder after trying for 24 hours. ` +
+          donePollingFunction = (resp) => documentDownloadComplete(resp.body.data.attributesAttrs.fetched_files_status);
+          bannerTitle = 'Timed out trying to download the eFolder';
+          bannerMsg = `Failed to download ${respAttrs.veteran_first_name} ${respAttrs.veteran_last_name}'s` +
+            'eFolder after trying for 24 hours. ' +
             'Please refresh the page to try again.';
-          
         }
 
         if (donePollingFunction(response)) {
@@ -142,12 +140,11 @@ export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken)
             dispatch(pollManifestFetchEndpoint(retryCount + 1, manifestId, csrfToken));
           }, retrySleepMilliseconds);
         } else {
-          dispatch(setDownloadContainerErrorMessage ({title: bannerTitle, message: bannerMsg}));
+          dispatch(setErrorMessage({ title: bannerTitle, message: bannerMsg }));
         }
-      },
-      handleDownloadContainerError
+      }, (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
     );
-}; 
+};
 
 export const startDocumentDownload = (manifestId, csrfToken) => (dispatch) => {
   postRequest(`/api/v2/manifests/${manifestId}/files_downloads`, csrfToken).
@@ -155,8 +152,7 @@ export const startDocumentDownload = (manifestId, csrfToken) => (dispatch) => {
       (resp) => {
         setStateFromResponse(dispatch, resp);
         dispatch(pollManifestFetchEndpoint(0, manifestId, csrfToken));
-      },
-      handleDownloadContainerError
+      }, (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
     );
 };
 
@@ -164,7 +160,7 @@ export const restartManifestFetch = (manifestId, csrfToken) => (dispatch) => {
   postRequest(`/api/v2/manifests/${manifestId}`, csrfToken).
     then(
       (resp) => setStateFromResponse(dispatch, resp),
-      handleDownloadContainerError
+      (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
     );
 };
 
