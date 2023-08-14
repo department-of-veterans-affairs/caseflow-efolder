@@ -131,9 +131,9 @@ export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken)
             'Please refresh the page to try again.';
         }
 
-        // if (donePollingFunction(response)) {
-        //   return true;
-        // }
+        if (donePollingFunction(response)) {
+          return true;
+        }
 
         if (retryCount < maxRetryCount) {
           setTimeout(() => {
