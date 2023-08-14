@@ -142,7 +142,7 @@ export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken)
         } else {
           dispatch(setErrorMessage({ title: bannerTitle, message: bannerMsg }));
         }
-      }, (err) => dispatch(setErrorMessage(setErrorMessage({ title: bannerTitle, message: bannerMsg })))
+      }, (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
     );
 };
 
