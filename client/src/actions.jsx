@@ -23,10 +23,6 @@ export const clearErrorMessage = () => ({
   type: CLEAR_ERROR_MESSAGE
 });
 
-export const clearDownloadContainerErrorMessage = () => ({
-  type: CLEAR_DOWNLOAD_CONTAINER_ERROR_MESSAGE
-});
-
 export const clearSearchInputText = () => ({
   type: CLEAR_SEARCH_TEXT
 });
