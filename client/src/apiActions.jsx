@@ -126,14 +126,14 @@ export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken)
           retrySleepMilliseconds = pollFrequencySeconds * 1000;
           donePollingFunction = (resp) => documentDownloadComplete(resp.body.data.attributesAttrs.fetched_files_status);
           bannerTitle = 'Timed out trying to download the eFolder';
-          bannerMsg = `Failed to download ${respAttrs.veteran_first_name} ${respAttrs.veteran_last_name}'s` +
+          bannerMsg = `Failed to download ${respAttrs.veteran_first_name} ${respAttrs.veteran_last_name}'s ` +
             'eFolder after trying for 24 hours. ' +
             'Please refresh the page to try again.';
         }
 
-        if (donePollingFunction(response)) {
-          return true;
-        }
+        // if (donePollingFunction(response)) {
+        //   return true;
+        // }
 
         if (retryCount < maxRetryCount) {
           setTimeout(() => {
@@ -142,7 +142,7 @@ export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken)
         } else {
           dispatch(setErrorMessage({ title: bannerTitle, message: bannerMsg }));
         }
-      }, (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
+      }, (err) => dispatch(setErrorMessage(setErrorMessage({ title: bannerTitle, message: bannerMsg })))
     );
 };
 
