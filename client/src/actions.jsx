@@ -1,6 +1,5 @@
 import {
   CLEAR_ERROR_MESSAGE,
-  CLEAR_DOWNLOAD_CONTAINER_ERROR_MESSAGE,
   CLEAR_SEARCH_TEXT,
   HIDE_CONFIRM_DOWNLOAD_MODAL,
   RESET_DEFAULT_MANIFEST_STATE,
@@ -9,7 +8,6 @@ import {
   SET_DOCUMENTS,
   SET_DOCUMENTS_FETCH_COMPLETION_ESTIMATE,
   SET_DOCUMENTS_FETCH_STATUS,
-  SET_DOWNLOAD_CONTAINER_ERROR_MESSAGE,
   SET_ERROR_MESSAGE,
   SET_MANIFEST_ID,
   SET_RECENT_DOWNLOADS,
@@ -60,11 +58,6 @@ export const setDocumentSources = (sources) => ({
 
 export const setErrorMessage = (msg) => ({
   type: SET_ERROR_MESSAGE,
-  payload: msg
-});
-
-export const setDownloadContainerErrorMessage = (msg) => ({
-  type: SET_DOWNLOAD_CONTAINER_ERROR_MESSAGE,
   payload: msg
 });
 
