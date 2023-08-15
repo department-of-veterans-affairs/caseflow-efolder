@@ -106,7 +106,7 @@ export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken)
 
         // efolder #959: Large efolders can take more than 20 seconds to fetch manifests. Set timeout to 90 seconds
         // so we have more than enough time to fetch these large efolders.
-        let maxRetryCount = 0;
+        let maxRetryCount = 90;
         let retrySleepMilliseconds = 1 * 1000;
 
         let donePollingFunction = (resp) => manifestFetchComplete(resp.body.data.attributes.sources);
@@ -120,9 +120,9 @@ export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken)
 
         if (documentDownloadStarted(respAttrs.fetched_files_status)) {
           // Poll every 2 seconds for 1 day
-          const pollFrequencySeconds = 0;
+          const pollFrequencySeconds = 2;
 
-          maxRetryCount = 0 * 24 * 60 * 60 / pollFrequencySeconds;
+          maxRetryCount = 1 * 24 * 60 * 60 / pollFrequencySeconds;
           retrySleepMilliseconds = pollFrequencySeconds * 1000;
           donePollingFunction = (resp) => documentDownloadComplete(resp.body.data.attributesAttrs.fetched_files_status);
           bannerTitle = 'Timed out trying to download the eFolder';
