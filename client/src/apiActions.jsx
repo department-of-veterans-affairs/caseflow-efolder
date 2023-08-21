@@ -124,7 +124,7 @@ export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken)
 
           maxRetryCount = 1 * 24 * 60 * 60 / pollFrequencySeconds;
           retrySleepMilliseconds = pollFrequencySeconds * 1000;
-          donePollingFunction = (resp) => documentDownloadComplete(resp.body.data.attributesAttrs.fetched_files_status);
+          donePollingFunction = (resp) => documentDownloadComplete(resp.body.data.attributes.fetched_files_status);
           bannerTitle = 'Timed out trying to download the eFolder';
           bannerMsg = `Failed to download ${respAttrs.veteran_first_name} ${respAttrs.veteran_last_name}'s ` +
             'eFolder after trying for 24 hours. ' +
