@@ -13,7 +13,7 @@ const defaultManifestState = {
 };
 
 export const initState = {
-  errorMessage: { title: '', message: '' },
+  errorMessage: '',
   recentDownloads: [],
   searchInputText: '',
   ...defaultManifestState
@@ -59,13 +59,8 @@ export default function reducer(state = {}, action = {}) {
       documentsFetchStatus: action.payload };
 
   case Actions.SET_ERROR_MESSAGE:
-    return {
-      ...state,
-      errorMessage: {
-        title: action.payload.title,
-        message: action.payload.message
-      }
-    };
+    return { ...state,
+      errorMessage: action.payload };
 
   case Actions.SET_MANIFEST_ID:
     return { ...state,
