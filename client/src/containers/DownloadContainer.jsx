@@ -52,9 +52,9 @@ class DownloadContainer extends React.PureComponent {
       <DownloadPageFooter />
     </React.Fragment>;
 
-    if (this.props.errorMessage.title) {
+    if (this.props.errorMessage) {
       pageBody = <React.Fragment>
-        <StatusMessage title={this.props.errorMessage.title}>{this.props.errorMessage.message}</StatusMessage>
+        <StatusMessage title="Could not fetch manifest">{this.props.errorMessage}</StatusMessage>
         <DownloadPageFooter />
       </React.Fragment>;
     } else if (documentDownloadStarted(this.props.documentsFetchStatus)) {

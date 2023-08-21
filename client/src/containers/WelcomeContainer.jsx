@@ -40,9 +40,9 @@ class WelcomeContainer extends React.PureComponent {
 
   render() {
     return <AppSegment filledBackground>
-      { this.props.errorMessage.title &&
+      { this.props.errorMessage &&
         <AlertBanner title="We could not complete the search for this Veteran ID" alertType="error">
-          <p>{this.props.errorMessage.message}</p>
+          <p>{this.props.errorMessage}</p>
         </AlertBanner>
       }
 
