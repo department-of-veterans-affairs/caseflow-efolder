@@ -14,6 +14,8 @@ class MetricsService
     end
 
     if service && Rails.env.production?
+      #todo can we log this to metrics as this is a service
+
       latency = stopwatch.real
       DataDogService.emit_gauge(
         metric_group: "service",

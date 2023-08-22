@@ -6,7 +6,8 @@ require "selenium-webdriver"
 require "webdrivers"
 
 # make sure we have latest (CircleCI may have cached older version)
-Webdrivers::Chromedriver.update
+#Webdrivers::Chromedriver.update
+Webdrivers::Chromedriver.required_version = "114.0.5735.90"
 
 Webdrivers.logger.level = :debug if ENV["DEBUG"]
 
