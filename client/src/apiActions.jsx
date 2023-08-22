@@ -117,7 +117,7 @@ export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken)
 
           maxRetryCount = 1 * 24 * 60 * 60 / pollFrequencySeconds;
           retrySleepMilliseconds = pollFrequencySeconds * 1000;
-          donePollingFunction = (resp) => documentDownloadComplete(resp.body.data.attributes.fetched_files_status);
+          donePollingFunction = resp => documentDownloadComplete(resp.body.data.attributes.fetched_files_status);
           retriesExhaustedErrMsg = 'Failed to complete documents download within 24 hours. ' +
             'Please refresh page to see current download progress';
         }
