@@ -10,6 +10,8 @@ module CaseflowEfolder
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.2
+    config.autoloader = :classic
+    config.active_record.cache_versioning = false
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
@@ -75,6 +77,55 @@ module CaseflowEfolder
     # 'f' after migrating old data.
     # Default as of 5.2: true
     Rails.application.config.active_record.sqlite3.represent_boolean_as_integer = false
+
+    #=======================================================================================
+    # Rails 6.0 default overrides
+    #---------------------------------------------------------------------------------------
+    
+    # Don't force requests from old versions of IE to be UTF-8 encoded.
+    # Default changed as of 6.0 to false
+    # This can be changed to the defualt and removed if we no longer support IE5-8 (old browsers)
+    Rails.application.config.action_view.default_enforce_utf8 = true
+
+    # Embed purpose and expiry metadata inside signed and encrypted
+    # cookies for increased security.
+    #
+    # This option is not backwards compatible with earlier Rails versions.
+    # It's best enabled when your entire app is migrated and stable on 6.0.
+    # Default change to true as of 6.0
+    # Remove after stable 6.0
+    Rails.application.config.action_dispatch.use_cookies_with_metadata = false
+
+    # Use ActionMailer::MailDeliveryJob for sending parameterized and normal mail.
+    #
+    # The default delivery jobs (ActionMailer::Parameterized::DeliveryJob, ActionMailer::DeliveryJob),
+    # will be removed in Rails 6.1. This setting is not backwards compatible with earlier Rails versions.
+    # If you send mail in the background, job workers need to have a copy of
+    # MailDeliveryJob to ensure all delivery jobs are processed properly.
+    # Make sure your entire app is migrated and stable on 6.0 before using this setting.
+    # Rails.application.config.action_mailer.delivery_job = "ActionMailer::MailDeliveryJob"
+
+
+    # --------------------------------------------------
+    # REMINDERS to delete after ensuring funcationality 
+    # --------------------------------------------------
+
+    # These two allow the application to run correctly but need to ensure any further enqueued jobs
+    # are using the new :active_storage_analysis and :active_storage_purge
+
+    # New ActiveStorage::AnalysisJobs will be enqueued on the active_storage_analysis queue. 
+    # You’ll need to ensure your queuing backend is configured to process jobs on that queue.
+    # E.g., apps using Sidekiq need to addactive_storage_analysis queue to their config/sidekiq.yml. 
+    # The placement order will determine priority relative to the other queues.
+    # This won’t break existing jobs that were already enqueued. They’ll continue to be processed on the default queue.
+    # Rails.application.config.active_storage.queues.analysis = :active_storage_analysis
+
+    # Once this flag is uncommented, new ActiveStorage::PurgeJobs will be enqueued on the active_storage_purgequeue. 
+    # You’ll need to ensure your queuing backend is configured to process jobs on that queue.
+    # E.g., apps using Sidekiq need to add active_storage_purgequeue to their config/sidekiq.yml. 
+    # The placement order will determine priority relative to the other queues.
+    # This won’t break existing jobs that were already enqueued. They’ll continue to be processed on the default queue.
+    # Rails.application.config.active_storage.queues.purge = :active_storage_purge
 
 
     #=======================================================================================
