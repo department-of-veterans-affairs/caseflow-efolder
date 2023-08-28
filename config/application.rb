@@ -11,7 +11,6 @@ module CaseflowEfolder
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.0
     config.autoloader = :classic
-    config.active_record.cache_versioning = false
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
@@ -78,6 +77,11 @@ module CaseflowEfolder
     # Default as of 5.2: true
     Rails.application.config.active_record.sqlite3.represent_boolean_as_integer = false
 
+    # Make Active Record use stable #cache_key alongside new #cache_version method.
+    # This is needed for recyclable cache keys.
+    # Default as of 5.2: true
+    config.active_record.cache_versioning = false
+
 
     #=======================================================================================
     # Rails 6.0 default overrides
@@ -100,6 +104,7 @@ module CaseflowEfolder
     # Enable the same cache key to be reused when the object being cached of type
     # `ActiveRecord::Relation` changes by moving the volatile information (max updated at and count)
     # of the relation's cache key into the cache version to support recycling cache key.
+    # Default as of 6.0: true
     Rails.application.config.active_record.collection_cache_versioning = false
 
 
