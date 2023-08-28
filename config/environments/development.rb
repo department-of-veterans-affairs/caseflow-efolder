@@ -62,16 +62,16 @@ Rails.application.configure do
 # eFolder - Custom Config Settings
 # Keep all efolder specific config settings below for clean diff's when upgrading rails
 #=========================================================================================
-config.vva_wsdl = "https://vbaphid521ldb.vba.va.gov:7002/VABFI/services/vva?wsdl"
+  config.vva_wsdl = "https://vbaphid521ldb.vba.va.gov:7002/VABFI/services/vva?wsdl"
 
-config.s3_enabled = true
-config.s3_bucket_name = "dsva-appeals-efolder-demo"
+  config.s3_enabled = true
+  config.s3_bucket_name = "dsva-appeals-efolder-demo"
 
-config.api_key = "token"
+  config.api_key = "token"
 
-# Raises error for missing translations
-# config.action_view.raise_on_missing_translations = true
+  # Raises error for missing translations
+  # config.action_view.raise_on_missing_translations = true
 
-config.sqs_create_queues = true
-config.sqs_endpoint = 'http://localhost:4566'
+  config.sqs_create_queues = true
+  config.sqs_endpoint = 'http://localhost:4566'
 end
