@@ -51,7 +51,7 @@ Rails.application.configure do
 # eFolder - Custom Config Settings
 # Keep all efolder specific config settings below for clean diff's when upgrading rails
 #=========================================================================================
-config.s3_enabled = false
+  config.s3_enabled = false
 
-config.api_key = "token"
+  config.api_key = "token"
 end
