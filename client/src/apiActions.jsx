@@ -72,18 +72,15 @@ const getRequest = (endpoint, csrfToken, options) => baseRequest(endpoint, csrfT
 const postRequest = (endpoint, csrfToken, options) => baseRequest(endpoint, csrfToken, 'post', options);
 
 const buildErrorMessageFromResponse = (resp) => {
-  let message = `${resp.statusCode} (${resp.statusText})`;
+  let description = `${resp.statusCode} (${resp.statusText})`;
 
   if (resp.body.status) {
-    message = resp.body.status;
+    description = resp.body.status;
   } else if (resp.body.errors[0].detail) {
-    message = resp.body.errors[0].detail;
+    description = resp.body.errors[0].detail;
   }
 
-  return {
-    title: 'An unexpected error occurred',
-    message: `Error message: ${message} Please try again and if you continue to see an error, submit a support ticket.`
-  };
+  return description;
 };
 
 export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken) => (dispatch) => {
@@ -108,27 +105,21 @@ export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken)
         // so we have more than enough time to fetch these large efolders.
         let maxRetryCount = 90;
         let retrySleepMilliseconds = 1 * 1000;
-
         let donePollingFunction = (resp) => manifestFetchComplete(resp.body.data.attributes.sources);
+        const sleepLengthSeconds = maxRetryCount * retrySleepMilliseconds / 1000;
+        let retriesExhaustedErrMsg = 'Continuing to fetch list of documents in the background. Stopped checking for ' +
+          `updates on the status because we reached the ${sleepLengthSeconds} second time limit. Refresh this pages ` +
+          `to check for updates again and start a new ${sleepLengthSeconds} second timer`;
 
-        const respAttrs = response.body.data.attributes;
-        let bannerTitle = 'Currently fetching the list of documents';
-        let bannerMsg = 'The list of documents is being fetched from ' +
-          `${respAttrs.veteran_first_name} ${respAttrs.veteran_last_name}'s ` +
-          'eFolder in the background. If the list of documents does not display after 2 minutes, ' +
-          'please refresh the page to check again.';
-
-        if (documentDownloadStarted(respAttrs.fetched_files_status)) {
+        if (documentDownloadStarted(response.body.data.attributes.fetched_files_status)) {
           // Poll every 2 seconds for 1 day
           const pollFrequencySeconds = 2;
 
           maxRetryCount = 1 * 24 * 60 * 60 / pollFrequencySeconds;
           retrySleepMilliseconds = pollFrequencySeconds * 1000;
           donePollingFunction = (resp) => documentDownloadComplete(resp.body.data.attributes.fetched_files_status);
-          bannerTitle = 'Timed out trying to download the eFolder';
-          bannerMsg = `Failed to download ${respAttrs.veteran_first_name} ${respAttrs.veteran_last_name}'s ` +
-            'eFolder after trying for 24 hours. ' +
-            'Please refresh the page to try again.';
+          retriesExhaustedErrMsg = 'Failed to complete documents download within 24 hours. ' +
+            'Please refresh page to see current download progress';
         }
 
         if (donePollingFunction(response)) {
@@ -140,9 +131,10 @@ export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken)
             dispatch(pollManifestFetchEndpoint(retryCount + 1, manifestId, csrfToken));
           }, retrySleepMilliseconds);
         } else {
-          dispatch(setErrorMessage({ title: bannerTitle, message: bannerMsg }));
+          dispatch(setErrorMessage(retriesExhaustedErrMsg));
         }
-      }, (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
+      },
+      (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
     );
 };
 
@@ -152,7 +144,8 @@ export const startDocumentDownload = (manifestId, csrfToken) => (dispatch) => {
       (resp) => {
         setStateFromResponse(dispatch, resp);
         dispatch(pollManifestFetchEndpoint(0, manifestId, csrfToken));
-      }, (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
+      },
+      (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
     );
 };
 
