@@ -73,20 +73,18 @@ class User < ApplicationRecord
       return nil unless sesh.css_id && sesh.station_id
 
       ee_psql_user_id = session["user"]["ee_psql_user_id"]
-      user_by_id = find_by_pg_user_id!(ee_psql_user_id, session)
-      user = user_by_id || find_by_css_id(sesh.css_id)
-
-      attrs = {
+      user = where("id = ? or css_id = ?", ee_psql_user_id, sesh.css_id).first_or_initialize({
         station_id: sesh.station_id,
         name: sesh.name,
         email: sesh.email,
         roles: sesh.roles,
+        css_id: sesh.css_id,
         ip_address: request.remote_ip,
-        participant_id: sesh.participant_id
-      }
-
-      user ||= create!(attrs.merge(css_id: sesh.css_id.upcase))
-      user.update!(attrs.merge(last_login_at: Time.zone.now))
+        participant_id: sesh.participant_id,
+      })
+      user.last_login_at = Time.zone.now
+      user.save!
+      
       session["user"]["ee_psql_user_id"] = user.id
       user
     end
@@ -112,14 +110,6 @@ class User < ApplicationRecord
     end
 
     private
-
-    def find_by_pg_user_id!(pg_user_id, session)
-      user_by_id = find_by(id: pg_user_id)
-      if !user_by_id && pg_user_id
-        session["user"]["ee_pg_user_id"] = nil
-      end
-      user_by_id
-    end
 
     def prod_system_user
       find_or_initialize_by(station_id: "283", css_id: "CSFLOW")
