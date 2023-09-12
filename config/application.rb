@@ -19,6 +19,7 @@ module CaseflowEfolder
 
     config.autoload_paths += Dir[Rails.root + 'app/jobs']
     config.autoload_paths << Rails.root.join('lib')
+    config.autoload_paths << Rails.root.join('lib/scripts')
 
     # Currently the Caseflow client makes calls to get document content directly
     # from eFolder Express to reduce load on Caseflow. Since Caseflow and eFolder
