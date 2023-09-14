@@ -10,6 +10,7 @@ class User < ApplicationRecord
 
   def display_name
     return "Unknown" if name.nil?
+
     name
   end
 
@@ -22,6 +23,7 @@ class User < ApplicationRecord
     return false if denied?(function)
     # Ignore "System Admin" function from CSUM/CSEM users
     return false if function.include?("System Admin")
+
     roles ? roles.include?(function) : false
   end
 
@@ -73,18 +75,18 @@ class User < ApplicationRecord
       return nil unless sesh.css_id && sesh.station_id
 
       ee_psql_user_id = session["user"]["ee_psql_user_id"]
-      user = where("id = ? or css_id = ?", ee_psql_user_id, sesh.css_id).first_or_initialize({
+      user = where("id = ? or css_id = ?", ee_psql_user_id, sesh.css_id).first_or_initialize(
         station_id: sesh.station_id,
         name: sesh.name,
         email: sesh.email,
         roles: sesh.roles,
         css_id: sesh.css_id,
         ip_address: request.remote_ip,
-        participant_id: sesh.participant_id,
-      })
+        participant_id: sesh.participant_id
+      )
       user.last_login_at = Time.zone.now
       user.save!
-      
+
       session["user"]["ee_psql_user_id"] = user.id
       user
     end
