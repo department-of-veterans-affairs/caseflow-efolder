@@ -64,6 +64,7 @@ class User < ApplicationRecord
   end
 
   class << self
+    # rubocop:disable Metrics/MethodLength
     def from_session_and_request(session, request)
       return nil unless session["user"]
 
@@ -75,21 +76,32 @@ class User < ApplicationRecord
       return nil unless sesh.css_id && sesh.station_id
 
       ee_psql_user_id = session["user"]["ee_psql_user_id"]
-      user = where("id = ? or css_id = ?", ee_psql_user_id, sesh.css_id).first_or_initialize(
-        station_id: sesh.station_id,
-        name: sesh.name,
-        email: sesh.email,
-        roles: sesh.roles,
-        css_id: sesh.css_id,
-        ip_address: request.remote_ip,
-        participant_id: sesh.participant_id
-      )
-      user.last_login_at = Time.zone.now
-      user.save!
+
+      # grab our own connection from AR so we can clean up any connections when done
+      # this should allow us to avoid any race conditions or stuck update calls in transactions
+      # I considered some logging but feel it may cause latency and we want this to be performant
+      ActiveRecord::Base.connection_pool.with_connection do
+        # first_or_initialize - avoids multiple round trips to the users table
+        user = where("id = ? or css_id = ?", ee_psql_user_id, sesh.css_id).first_or_initialize(
+          station_id: sesh.station_id,
+          name: sesh.name,
+          email: sesh.email,
+          roles: sesh.roles,
+          css_id: sesh.css_id,
+          ip_address: request.remote_ip,
+          participant_id: sesh.participant_id
+        )
+        user.last_login_at = Time.zone.now
+        user.save!
+      end
 
       session["user"]["ee_psql_user_id"] = user.id
       user
+    rescue PG::ConnectionBad, PG::Error => e
+      Raven.capture_exception "PG::Error current_user #{e}"
+      nil
     end
+    # rubocop:enable Metrics/MethodLength
 
     # case-insensitive search
     def find_by_css_id(css_id)
