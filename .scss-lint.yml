@@ -137,7 +137,7 @@ linters:
     properties: []
   VendorPrefixes:
     enabled: true
-    identifier_list: bourbon
+    #identifier_list: bourbon
     include: []
     exclude: []
   ZeroUnit:
