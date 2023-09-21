@@ -275,6 +275,7 @@ GEM
       thor (~> 0.19)
     newrelic_rpm (6.14.0)
     nio4r (2.5.8)
+      racc (~> 1.4)
     nokogiri (1.14.2)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
@@ -578,4 +579,4 @@ DEPENDENCIES
   zero_downtime_migrations
 
 BUNDLED WITH
-   2.2.25
+   1.17.3
