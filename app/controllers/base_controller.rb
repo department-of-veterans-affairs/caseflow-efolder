@@ -14,7 +14,7 @@ class BaseController < ActionController::Base
   end
 
   def current_user
-    @current_user ||= User.from_session_and_request(session, request)
+    @current_user || self.current_user = User.from_session_and_request(session, request)
   end
   helper_method :current_user
 
