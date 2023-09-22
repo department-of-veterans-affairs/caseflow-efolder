@@ -2,7 +2,9 @@
 
 # This file is used by Rack-based servers to start the application.
 
-require ::File.expand_path("../config/environment", __FILE__)
+require_relative "config/environment"
+# Check this out to see if it was replaced or custom
+#require ::File.expand_path("../config/environment", __FILE__)
 require "rack"
 
 # rubocop:disable all
@@ -69,3 +71,4 @@ end
 # rubocop:enable all
 
 run Rails.application
+Rails.application.load_server
