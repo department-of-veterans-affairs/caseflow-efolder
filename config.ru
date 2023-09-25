@@ -3,8 +3,6 @@
 # This file is used by Rack-based servers to start the application.
 
 require_relative "config/environment"
-# Check this out to see if it was replaced or custom
-#require ::File.expand_path("../config/environment", __FILE__)
 require "rack"
 
 # rubocop:disable all
