@@ -9,7 +9,7 @@ Bundler.require(*Rails.groups)
 module CaseflowEfolder
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 6.0
+    config.load_defaults 6.1
     config.autoloader = :classic
 
     # Configuration for the application, engines, and railties goes here.
@@ -121,7 +121,10 @@ module CaseflowEfolder
     #=======================================================================================
     # Rails 6.1 default overrides
     #---------------------------------------------------------------------------------------
-
+    # New Migrations supoosed to be generated with 6.1 aren't here. Will leave false for the time being.
+    # Track Active Storage variants in the database.
+    # Default as of 6.1: true
+    Rails.application.config.active_storage.track_variants = false
 
     #=======================================================================================
     # eFolder Specific configs
