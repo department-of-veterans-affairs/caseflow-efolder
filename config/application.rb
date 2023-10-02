@@ -84,9 +84,6 @@ module CaseflowEfolder
     # 'f' after migrating old data.
     # Default as of 5.2: true
 
-    # This option was depreciated in 6.0 and removed in 6.1
-    #Rails.application.config.active_record.sqlite3.represent_boolean_as_integer = false
-
     # Make Active Record use stable #cache_key alongside new #cache_version method.
     # This is needed for recyclable cache keys.
     # Default as of 5.2: true
