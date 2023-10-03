@@ -65,6 +65,7 @@ class User < ApplicationRecord
 
   class << self
     # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Metrics/AbcSize
     def from_session_and_request(session, request)
       return nil unless session["user"]
 
@@ -77,21 +78,21 @@ class User < ApplicationRecord
 
       ee_psql_user_id = session["user"]["ee_psql_user_id"]
 
-      # first_or_initialize - avoids multiple round trips to the users table
-      user = where("id = ? or css_id = ?", ee_psql_user_id, sesh.css_id).first_or_initialize(
+      attrs = {
         station_id: sesh.station_id,
         name: sesh.name,
         email: sesh.email,
         roles: sesh.roles,
-        css_id: sesh.css_id,
         ip_address: request.remote_ip,
         participant_id: sesh.participant_id
-      )
-      user.last_login_at = Time.zone.now
+      }
 
-      # grab our own connection from AR so we can clean up any connections when done
-      # this should allow us to avoid any race conditions or stuck update calls in transactions
-      ActiveRecord::Base.connection_pool.with_connection { user.save! }
+      if (user = find_by("id = ? or UPPER(css_id)=UPPER(?)", ee_psql_user_id, sesh.css_id)).nil?
+        user = create!(attrs.merge(css_id: sesh.css_id.upcase))
+      end
+
+      # this update also handles loading the session for the user
+      user.update!(attrs.merge(last_login_at: Time.zone.now))
 
       session["user"]["ee_psql_user_id"] = user.id
 
@@ -101,6 +102,7 @@ class User < ApplicationRecord
       nil
     end
     # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/AbcSize
 
     # case-insensitive search
     def find_by_css_id(css_id)
