@@ -77,6 +77,8 @@ class User < ApplicationRecord
       return nil unless sesh.css_id && sesh.station_id
 
       ee_psql_user_id = session["user"]["ee_psql_user_id"]
+      user_by_id = find_by_pg_user_id!(ee_psql_user_id, session)
+      user = user_by_id || find_by_css_id(sesh.css_id)
 
       attrs = {
         station_id: sesh.station_id,
@@ -87,15 +89,14 @@ class User < ApplicationRecord
         participant_id: sesh.participant_id
       }
 
-      if (user = find_by("id = ? or UPPER(css_id)=UPPER(?)", ee_psql_user_id, sesh.css_id)).nil?
-        user = create!(attrs.merge(css_id: sesh.css_id.upcase))
+      # grab our own connection from AR so we can clean up any connections when done
+      # this should allow us to avoid any race conditions or stuck update calls in transactions
+      ActiveRecord::Base.connection_pool.with_connection do
+        user ||= create!(attrs.merge(css_id: sesh.css_id.upcase))
+        user.update!(attrs.merge(last_login_at: Time.zone.now))
       end
 
-      # this update also handles loading the session for the user
-      user.update!(attrs.merge(last_login_at: Time.zone.now))
-
       session["user"]["ee_psql_user_id"] = user.id
-
       user
     rescue PG::ConnectionBad, PG::Error => e
       Raven.capture_exception "PG::Error current_user #{e}"
@@ -125,6 +126,14 @@ class User < ApplicationRecord
     end
 
     private
+
+    def find_by_pg_user_id!(pg_user_id, session)
+      user_by_id = find_by(id: pg_user_id)
+      if !user_by_id && pg_user_id
+        session["user"]["ee_pg_user_id"] = nil
+      end
+      user_by_id
+    end
 
     def prod_system_user
       find_or_initialize_by(station_id: "283", css_id: "CSFLOW")
