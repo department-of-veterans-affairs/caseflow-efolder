@@ -17,9 +17,8 @@ Rails.application.configure do
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.
 
-  # When updating rails:
-  # For config.cache_store = :memory_store (currently line 25) and :null_store (currently line 32)
-  # See this commit for why we aren't including them. https://github.com/department-of-veterans-affairs/caseflow-efolder/pull/1030/commits/3d8e1061dc8b9e7dca8cb658f3af3a301a070df0
+  # Fall back to the `application.rb` setting for `config.cache_store`, which properly uses the Redis instance we have running in a Docker container.
+  # See this commit for historical context: https://github.com/department-of-veterans-affairs/caseflow-efolder/pull/1030/commits/3d8e1061dc8b9e7dca8cb658f3af3a301a070df0
   if Rails.root.join('tmp', 'caching-dev.txt').exist?
     config.action_controller.perform_caching = true
     config.action_controller.enable_fragment_cache_logging = true
