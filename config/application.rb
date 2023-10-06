@@ -118,10 +118,7 @@ module CaseflowEfolder
     #=======================================================================================
     # Rails 6.1 default overrides
     #---------------------------------------------------------------------------------------
-    # New Migrations with app:update for 6.1 were not generated.  
-    # Track Active Storage variants in the database.
-    # Default as of 6.1: true
-    # Rails.application.config.active_storage.track_variants = false
+    
 
     #=======================================================================================
     # eFolder Specific configs

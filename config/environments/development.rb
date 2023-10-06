@@ -78,6 +78,12 @@ Rails.application.configure do
   # Uncomment if you wish to allow Action Cable access from any origin.
   # config.action_cable.disable_request_forgery_protection = true
 
+  # It's common to set config.assets.debug = true in the development environment. 
+  # This will split concatenated assets into their constituent files and include them all separately. 
+  # This may result in an exceptionally long Link header that exceeds the (effective) maximum 8192 bytes for HTTP response headers.
+  # Default as of 6.1: true
+  config.action_view.preload_links_header = false
+
 
 #=========================================================================================
 # eFolder - Custom Config Settings
