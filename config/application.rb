@@ -1,6 +1,6 @@
-require_relative 'boot'
+require_relative "boot"
 
-require 'rails/all'
+require "rails/all"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -9,8 +9,16 @@ Bundler.require(*Rails.groups)
 module CaseflowEfolder
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 6.0
+    config.load_defaults 6.1
     config.autoloader = :classic
+
+    # Configuration for the application, engines, and railties goes here.
+    #
+    # These settings can be overridden in specific environments using the files
+    # in config/environments, which are processed later.
+    #
+    # config.time_zone = "Central Time (US & Canada)"
+    # config.eager_load_paths << Rails.root.join("extras")
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
@@ -75,7 +83,6 @@ module CaseflowEfolder
     # Store boolean values are in sqlite3 databases as 1 and 0 instead of 't' and
     # 'f' after migrating old data.
     # Default as of 5.2: true
-    Rails.application.config.active_record.sqlite3.represent_boolean_as_integer = false
 
     # Make Active Record use stable #cache_key alongside new #cache_version method.
     # This is needed for recyclable cache keys.
@@ -107,6 +114,11 @@ module CaseflowEfolder
     # Default as of 6.0: true
     Rails.application.config.active_record.collection_cache_versioning = false
 
+
+    #=======================================================================================
+    # Rails 6.1 default overrides
+    #---------------------------------------------------------------------------------------
+    
 
     #=======================================================================================
     # eFolder Specific configs
