@@ -20,8 +20,8 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/caseflow-commons
-  revision: edd91cc2d3bcbdb84f7637bdfe5bcfa20c583759
-  branch: AlecK/APPEALS-27013
+  revision: 450a72101352019845f54009b1dc23bb2a189843
+  branch: AlecK/APPEALS-26838
   specs:
     caseflow (1.0.0)
       aws-sdk (~> 2.10)
@@ -200,7 +200,7 @@ GEM
     crack (0.4.5)
       rexml
     crass (1.0.6)
-    d3-rails (5.9.2)
+    d3-rails (7.8.5)
       railties (>= 3.1)
     database_cleaner (1.8.5)
     date (3.3.3)
