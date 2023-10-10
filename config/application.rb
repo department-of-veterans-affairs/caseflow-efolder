@@ -123,9 +123,14 @@ module CaseflowEfolder
     #=======================================================================================
     # eFolder Specific configs
     #---------------------------------------------------------------------------------------
+    # "Compliance test runs only for eager loaded files. Therefore, in order to verify Zeitwerk 
+    # compliance, it is recommended to have all autoload paths in the eager load paths."
     config.download_filepath = Rails.root + "tmp/files"
     config.autoload_paths += Dir[Rails.root + 'app/jobs']
+    config.eager_load_paths += Dir[Rails.root + 'app/jobs']
+
     config.autoload_paths << Rails.root.join('lib')
+    config.eager_load_paths << Rails.root.join('lib')
 
     # Currently the Caseflow client makes calls to get document content directly
     # from eFolder Express to reduce load on Caseflow. Since Caseflow and eFolder

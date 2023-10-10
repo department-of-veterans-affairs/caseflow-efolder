@@ -5,12 +5,14 @@
 # as an acronym and camelcase accordingly. So adding "VVA" changes the expected result from 
 # "Vva" to "VVA" for all files
 
-# The second way can be seen below. This allows for a bit more control but you have to add each individual
-# file needed to the list below. Ex: POAExample will not be found as zeitwerk stil expects PoaExample
+# The second way can be seen below. This allows for more control but you have to add each individual
+# file needed to the list. Ex: POAExample will not be found as zeitwerk stil expects PoaExample
 
 # Next, Zeitwerk expects a constant, based off file name, to be defined within said file.
-# Ex: Within app/exceptions/bgs_errors.rb zeitwerk expects BGSErrors to exist.
-# This constant expects the level of the class to match the file path.
+# The constant and it's hierarchy is based off the autoloaded paths. So while Zeitwerk expects
+# "BGSErrors" to be defined at the top level of "bgs_errors.rb", some files might require
+# an additional layer. Ex: "EXNamespace::EXConstant"
+# Use the command below to ensure zeitwerk compliance.
 #
 # For example: A constant called BGSErrors needs to be defined AND it must be defined
 # at the top level of bgs_errors.rb as the path to there is:
