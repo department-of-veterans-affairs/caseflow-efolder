@@ -14,3 +14,11 @@
 # ActiveSupport::Inflector.inflections(:en) do |inflect|
 #   inflect.acronym 'RESTful'
 # end
+
+# For more info on zeitwerk and autoloading constants
+# https://guides.rubyonrails.org/v6.0.2.1/autoloading_and_reloading_constants.html
+ActiveSupport::Inflector.inflections(:en) do |inflect|
+  inflect.acronym "BGS"
+  inflect.acronym "VBMS"
+  inflect.acronym "VVA"
+end
