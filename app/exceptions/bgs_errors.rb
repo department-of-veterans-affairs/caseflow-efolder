@@ -6,8 +6,3 @@ module BGS
   class NoCaseflowAccess < StandardError; end
   class StationAssertionRequired < StandardError; end
 end
-
-# Needed for Zeitwerk Autoloading
-# See config/initializers/zeitwerk.rb for more details 
-class BGSErrors < StandardError; end
-
