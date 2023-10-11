@@ -10,7 +10,6 @@ class User < ApplicationRecord
 
   def display_name
     return "Unknown" if name.nil?
-
     name
   end
 
@@ -23,7 +22,6 @@ class User < ApplicationRecord
     return false if denied?(function)
     # Ignore "System Admin" function from CSUM/CSEM users
     return false if function.include?("System Admin")
-
     roles ? roles.include?(function) : false
   end
 
@@ -64,8 +62,6 @@ class User < ApplicationRecord
   end
 
   class << self
-    # rubocop:disable Metrics/MethodLength
-    # rubocop:disable Metrics/AbcSize
     def from_session_and_request(session, request)
       return nil unless session["user"]
 
@@ -89,21 +85,11 @@ class User < ApplicationRecord
         participant_id: sesh.participant_id
       }
 
-      # grab our own connection from AR so we can clean up any connections when done
-      # this should allow us to avoid any race conditions or stuck update calls in transactions
-      ActiveRecord::Base.connection_pool.with_connection do
-        user ||= create!(attrs.merge(css_id: sesh.css_id.upcase))
-        user.update!(attrs.merge(last_login_at: Time.zone.now))
-      end
-
+      user ||= create!(attrs.merge(css_id: sesh.css_id.upcase))
+      user.update!(attrs.merge(last_login_at: Time.zone.now))
       session["user"]["ee_psql_user_id"] = user.id
       user
-    rescue PG::ConnectionBad, PG::Error => e
-      Raven.capture_exception "PG::Error current_user #{e}"
-      nil
     end
-    # rubocop:enable Metrics/MethodLength
-    # rubocop:enable Metrics/AbcSize
 
     # case-insensitive search
     def find_by_css_id(css_id)
