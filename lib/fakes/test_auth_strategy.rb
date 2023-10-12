@@ -1,8 +1,8 @@
 require "omniauth/strategies/developer"
 require "omniauth/form"
 
-module Fakes
-  module TestAuthStrategy
+module Fakes # module needed for zeitwerk compliance
+  module TestAuthStrategy # module needed for zeitwerk compliance
     class EfolderAuthForm < OmniAuth::Form
       def hidden_field(name, value)
         @html << "\n<input type='hidden' name='#{name}' value='#{value}' />"
