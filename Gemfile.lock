@@ -594,4 +594,4 @@ DEPENDENCIES
   zero_downtime_migrations
 
 BUNDLED WITH
-   2.4.17
+   1.17.3
