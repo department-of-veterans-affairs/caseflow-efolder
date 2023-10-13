@@ -1,4 +1,3 @@
-require 'bgs_errors'
 
 class Fakes::BGSService
   include ActiveModel::Model

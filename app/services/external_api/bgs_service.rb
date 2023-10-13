@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "bgs"
-require "bgs_errors"
 
 # Thin interface to all things BGS
 class ExternalApi::BGSService

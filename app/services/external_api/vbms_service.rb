@@ -1,4 +1,3 @@
-require "vbms"
 
 class RailsVBMSLogger
   def log(event, data)
