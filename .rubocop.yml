@@ -6,7 +6,6 @@ AllCops:
     - '**/Rakefile'
     - '**/*.rake'
   Exclude:
-    - 'bin/**/*'
     - 'db/**/*'
     - 'config/**/*'
     - 'script/**/*'
