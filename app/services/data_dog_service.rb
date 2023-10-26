@@ -1,17 +1,5 @@
 require "datadog/statsd"
 # update
-# additional comments
-# require 'opentelemetry/sdk'
-# require 'opentelemetry/exporter/otlp'
-
-# The OTLP exporter is the default, so no configuration is needed.
-# However, it could be manually selected via an environment variable if required:
-#
-# ENV['OTEL_TRACES_EXPORTER'] = 'otlp'
-#
-# You may also configure various settings via environment variables:
-# ENV['OTEL_EXPORTER_OTLP_COMPRESSION'] = 'gzip'
-
 class DataDogService
   # update
   @statsd = Datadog::Statsd.new 
