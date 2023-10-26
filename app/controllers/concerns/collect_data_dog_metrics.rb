@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-
+# update
 module CollectDataDogMetrics
   extend ActiveSupport::Concern
 
@@ -17,12 +17,12 @@ module CollectDataDogMetrics
     active = conns.count { |c| c.in_use? && c.owner.alive? }
     dead = conns.count { |c| c.in_use? && !c.owner.alive? }
     idle = conns.count { |c| !c.in_use? }
-
+    # update
     emit_datadog_point("postgres", "active", active)
     emit_datadog_point("postgres", "dead", dead)
     emit_datadog_point("postgres", "idle", idle)
   end
-
+  # update
   def emit_datadog_point(db_name, type, count)
     DataDogService.emit_gauge(
       metric_group: "database",

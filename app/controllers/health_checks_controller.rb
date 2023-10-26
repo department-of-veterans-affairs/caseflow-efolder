@@ -1,4 +1,5 @@
 class HealthChecksController < ApplicationController
+  # update
   include CollectDataDogMetrics
   skip_before_action :authenticate
   skip_before_action :check_out_of_service

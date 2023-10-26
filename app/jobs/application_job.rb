@@ -7,7 +7,7 @@ class ApplicationJob < ActiveJob::Base
 
     job.start_time = Time.zone.now
   end
-
+  # update
   def datadog_report_runtime(metric_group_name:)
     DataDogService.record_runtime(
       app_name: "efolder_job",
@@ -15,7 +15,7 @@ class ApplicationJob < ActiveJob::Base
       start_time: start_time
     )
   end
-
+  # update
   def datadog_report_time_segment(segment:, start_time:)
     job_duration_seconds = Time.zone.now - start_time
 

@@ -13,6 +13,7 @@ gem "connect_vva", git: "https://github.com/department-of-veterans-affairs/conne
 gem "distribute_reads"
 # Sunset in progress
 gem "dogstatsd-ruby"
+# Added opentelemetry gems
 gem "opentelemetry-sdk"
 gem "opentelemetry-exporter-otlp"
 gem "httpclient"
