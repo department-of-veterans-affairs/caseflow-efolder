@@ -52,7 +52,7 @@ class ExternalApi::BGSService
       "return_message" => veteran_data[:return_message]
     }
   end
-
+  # update
   def fetch_veteran_info(file_number, parsed: true)
     veteran_data = Rails.cache.fetch(fetch_veteran_info_cache_key(file_number), expires_in: 10.minutes) do
       MetricsService.record("BGS: fetch veteran info for vbms id: #{file_number}",
@@ -67,6 +67,7 @@ class ExternalApi::BGSService
   end
 
   # For Claimant POA by file number
+  # update
   def fetch_poa_by_file_number(file_number)
     bgs_poa = MetricsService.record("BGS: fetch poa for file number: #{file_number}",
                                     service: :bgs,
@@ -77,6 +78,7 @@ class ExternalApi::BGSService
   end
 
   # For Claimant POA by PID
+  # update
   def fetch_poa_by_participant_id(participant_id)
     bgs_poa = MetricsService.record("BGS: fetch poa for participant id: #{participant_id}",
                                     service: :bgs,
@@ -87,6 +89,7 @@ class ExternalApi::BGSService
   end
 
   # Fetch the POA User's org record
+  # update
   def fetch_poa_org_record(participant_id)
     bgs_poas = MetricsService.record("BGS: fetch record for POA participant id: #{participant_id}",
                                      service: :bgs,
@@ -98,6 +101,7 @@ class ExternalApi::BGSService
 
   # The participant IDs here are for Claimants.
   # I.e. returns the list of POAs that represent the Claimants.
+  # update
   def fetch_poas_by_participant_ids(participant_ids)
     bgs_poas = MetricsService.record("BGS: fetch poas for participant ids: #{participant_ids}",
                                      service: :bgs,
@@ -108,7 +112,7 @@ class ExternalApi::BGSService
     # Avoid passing nil
     get_hash_of_poa_from_bgs_poas(bgs_poas || [])
   end
-
+  # update
   def fetch_claims_for_file_number(file_number)
     bgs_info = MetricsService.record("BGS: fetch claims by file number: #{file_number}",
                                      service: :bgs,
@@ -118,7 +122,7 @@ class ExternalApi::BGSService
 
     bgs_info
   end
-
+  # update
   def fetch_person_info(participant_id)
     bgs_info = MetricsService.record("BGS: fetch person info by participant id: #{participant_id}",
                                      service: :bgs,
@@ -130,7 +134,7 @@ class ExternalApi::BGSService
 
     parse_person_info(bgs_info)
   end
-
+  # update
   def fetch_person_by_ssn(ssn)
     bgs_info = MetricsService.record("BGS: fetch person by ssn: #{ssn}",
                                      service: :bgs,
@@ -154,7 +158,7 @@ class ExternalApi::BGSService
       file_number: bgs_info[:file_nbr]
     }
   end
-
+  # update
   def check_sensitivity(file_number)
     MetricsService.record("BGS: can_access? (find_by_file_number): #{file_number}",
                           service: :bgs,

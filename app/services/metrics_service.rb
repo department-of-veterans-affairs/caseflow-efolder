@@ -4,7 +4,8 @@ require "benchmark"
 # :nocov:
 class MetricsService
   # rubocop:disable Metrics/MethodLength
-  @app = "eFolder"
+  # update
+  @app = "eFolder" 
   def self.record(description, service: nil, name: "unknown")
     return_value = nil
 
@@ -12,7 +13,7 @@ class MetricsService
     stopwatch = Benchmark.measure do
       return_value = yield
     end
-
+    # update
     if service && Rails.env.production?
       latency = stopwatch.real
       DataDogService.emit_gauge(
@@ -41,7 +42,7 @@ class MetricsService
     increment_datadog_counter("request_attempt", service, name) if service
   end
   # rubocop:enable Metrics/MethodLength
-
+  # update
   private_class_method def self.increment_datadog_counter(metric_name, service, endpoint_name)
     DataDogService.increment_counter(
       metric_group: "service",

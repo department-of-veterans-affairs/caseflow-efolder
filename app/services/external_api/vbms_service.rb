@@ -73,7 +73,7 @@ class ExternalApi::VBMSService
                                env_name: ENV["CONNECT_VBMS_ENV"],
                                use_forward_proxy: FeatureToggle.enabled?(:vbms_forward_proxy))
   end
-
+  # update
   def self.send_and_log_request(id, request)
     name = request.class.name.split("::").last
     MetricsService.record("#{request.class} for #{id}",
@@ -82,7 +82,7 @@ class ExternalApi::VBMSService
       @vbms_client.send_request(request)
     end
   end
-
+  # update
   def self.call_and_log_service(service:, vbms_id:)
     name = service.class.name.split("::").last
     MetricsService.record("call #{service.class} for #{vbms_id}",
