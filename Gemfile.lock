@@ -1,17 +1,4 @@
 GIT
-  remote: https://github.com/18F/saml_idp.git
-  revision: f9805ad43c1d0bb7ef9c482ea17d735bc784ea55
-  branch: master
-  specs:
-    saml_idp (0.11.0.pre.18f)
-      activesupport
-      builder
-      httparty
-      nokogiri (>= 1.10.2)
-      pkcs11
-      uuid
-
-GIT
   remote: https://github.com/18F/uswds-rails-gem.git
   revision: aa12ddd314209ef9e75bb2f2bfcf1454336df049
   specs:
@@ -81,6 +68,18 @@ GIT
     sniffybara (1.1.0)
       rainbow
       selenium-webdriver
+
+GIT
+  remote: https://github.com/saml-idp/saml_idp.git
+  revision: 75ac2f1673e919d7c66a668c40f78e55b96195eb
+  branch: master
+  specs:
+    saml_idp (0.15.0)
+      activesupport (>= 5.2)
+      builder (>= 3.0)
+      nokogiri (>= 1.6.2)
+      rexml
+      xmlenc (>= 0.7.1)
 
 GEM
   remote: https://rubygems.org/
@@ -217,9 +216,6 @@ GEM
       builder (>= 2.1.2)
     hashdiff (1.0.1)
     hashie (4.1.0)
-    httparty (0.18.1)
-      mime-types (~> 3.0)
-      multi_xml (>= 0.5.2)
     httpclient (2.8.3)
     httpi (2.4.5)
       rack
@@ -247,8 +243,6 @@ GEM
     loofah (2.21.3)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
-    macaddr (1.7.2)
-      systemu (~> 2.6.5)
     mail (2.8.1)
       mini_mime (>= 0.1.1)
       net-imap
@@ -270,7 +264,6 @@ GEM
     momentjs-rails (2.15.1)
       railties (>= 3.1)
     msgpack (1.7.2)
-    multi_xml (0.6.0)
     multipart-post (2.3.0)
     mustermann (1.1.2)
       ruby2_keywords (~> 0.0.1)
@@ -301,7 +294,6 @@ GEM
     parser (3.0.0.0)
       ast (~> 2.4.1)
     pg (0.21.0)
-    pkcs11 (0.3.3)
     pry (0.13.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -468,7 +460,6 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
-    systemu (2.6.5)
     therubyracer (0.12.3)
       libv8 (~> 3.16.14.15)
       ref
@@ -487,8 +478,6 @@ GEM
     uglifier (4.2.0)
       execjs (>= 0.3.0, < 3)
     unicode-display_width (1.5.0)
-    uuid (2.3.9)
-      macaddr (~> 1.0)
     wannabe_bool (0.7.1)
     wasabi (3.6.1)
       addressable
