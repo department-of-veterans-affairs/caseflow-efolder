@@ -7,6 +7,7 @@ class DataDogService
 
   # update
   # create_instrument(kind, name, unit, description, callback)
+  # https://github.com/open-telemetry/opentelemetry-ruby/blob/main/metrics_sdk/lib/opentelemetry/sdk/metrics/meter.rb
   def self.increment_counter(metric_group:, metric_name:, app_name:, attrs: {})
     tags = get_tags(app_name, attrs)
     stat_name = get_stat_name(metric_group, metric_name)
