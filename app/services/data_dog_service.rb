@@ -6,6 +6,7 @@ class DataDogService
   @host = `curl http://instance-data/latest/meta-data/instance-id --silent || echo "not-ec2"`.strip
 
   # update
+  # create_instrument(kind, name, unit, description, callback)
   def self.increment_counter(metric_group:, metric_name:, app_name:, attrs: {})
     tags = get_tags(app_name, attrs)
     stat_name = get_stat_name(metric_group, metric_name)
