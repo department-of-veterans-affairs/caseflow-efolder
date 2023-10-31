@@ -12,6 +12,7 @@ end
 
 if Rails.application.config.sqs_create_queues
   # create the development queues
+  #Ensure SQS queues are tracked by OTEL
   Shoryuken::Client.sqs.create_queue(queue_name: ActiveJob::Base.queue_name_prefix + "_low_priority")
   Shoryuken::Client.sqs.create_queue(queue_name: ActiveJob::Base.queue_name_prefix + "_med_priority")
   Shoryuken::Client.sqs.create_queue(queue_name: ActiveJob::Base.queue_name_prefix + "_high_priority")
