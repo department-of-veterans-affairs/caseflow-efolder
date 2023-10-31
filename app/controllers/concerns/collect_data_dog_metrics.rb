@@ -2,6 +2,9 @@
 # update
 module CollectDataDogMetrics
   extend ActiveSupport::Concern
+  # do we need to implement ActiveRecord support for OTEL here or in opentelemetry.rb ?
+  # https://open-telemetry.github.io/opentelemetry-ruby/opentelemetry-instrumentation-active_record/v0.3.0/#label-How+do+I+get+started-3F
+  # for reference
 
   included do
     before_action :collect_data_dog_metrics
