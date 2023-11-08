@@ -9,7 +9,7 @@ gem "bgs", git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git"
 gem "bootsnap", require: false
 gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons", ref: "fb6fa9658825c143eb8d202b87128f34ca7e210b"
 gem "coffee-rails", "> 4.1.0"
-gem "connect_vbms", git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", branch: "master"
+gem "connect_vbms", git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "b6097dc88ca607bf3cf92236e6f2059336287c04"
 gem "connect_vva", git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "dfd1aeb2605c1f237f520bcdc41b059202e8944d"
 gem "distribute_reads"
 gem "dogstatsd-ruby"
@@ -68,7 +68,7 @@ group :test do
   gem "rspec-github", require: false # Github Actions Annotations Formatter
   gem "rspec-rails"
   gem "rspec-retry"
-  gem "saml_idp", git: "https://github.com/18F/saml_idp.git", branch: "master"
+  gem "saml_idp", git: "https://github.com/saml-idp/saml_idp.git", branch: "master"
   gem "simplecov", require: false
   gem "sinatra", "2.2.0"
   gem "single_cov", require: false
