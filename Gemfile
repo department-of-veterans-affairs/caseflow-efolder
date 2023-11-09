@@ -67,11 +67,7 @@ group :test do
   gem "rspec-github", require: false # Github Actions Annotations Formatter
   gem "rspec-rails"
   gem "rspec-retry"
-<<<<<<< Updated upstream
-  gem "saml_idp"
-=======
   gem "saml_idp", git: "https://github.com/saml-idp/saml_idp.git", branch: "master"
->>>>>>> Stashed changes
   gem "simplecov", require: false
   gem "sinatra", "2.2.0"
   gem "single_cov", require: false
