@@ -23,11 +23,7 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/connect_vbms.git
-<<<<<<< Updated upstream
-  revision: 9807d9c9f0f3e3494a60b6693dc4f455c1e3e922
-=======
   revision: b6097dc88ca607bf3cf92236e6f2059336287c04
->>>>>>> Stashed changes
   branch: master
   specs:
     connect_vbms (1.4.0)
