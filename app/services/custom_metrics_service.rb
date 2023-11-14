@@ -1,69 +1,48 @@
 # frozen_string_literal: true
 
-# ManagedDynatrace for Gvoernment https://{your-domain}/e/{your-environment-id}/api/v2/metrics/ingest
-BASE_URL = ENV [""]
-
-# https://docs.dynatrace.com//docs/extend-dynatrace/extend-metrics/reference/custom-metric-metadata#properties
-#
+require "datadog/statsd"
 
 class CustomMetricsService
-    def self.increment_counter(metric_group:, metric_name:, app_name:, attrs: {}, by: 1)
-        tags = get_tags(app_name, attrs)
-        stat_name = get_stat_name(metric_group, metric_name)
-        #build request
-        request = HTTPI::Request.new(BASE_URL)
-        request.open_timeout = 300
-        request.read_timeout = 300
-        request.auth.ssl.ca_cert_file = ENV["SSL_CERT_FILE"]
-    
-        #build body
-        request.body = render json: {
-          displayName: stat_name,
-          description: "",
-          unit: "Unspecified",
-          tags: tags,
-          }
-    
-        HTTPI.post(request)
-    end
+  @statsd = Datadog::Statsd.new
+  @DynatraceService ||= ExternalApi::DynatraceService.new
 
-    def self.emit_gauge(metric_group:, metric_name:, metric_value:, app_name:, attrs: {})
-        tags = get_tags(app_name, attrs)
-        stat_name = get_stat_name(metric_group, metric_name)
-    
-        #build request
-        request = HTTPI::Request.new(BASE_URL)
-        request.open_timeout = 300
-        request.read_timeout = 300
-        request.auth.ssl.ca_cert_file = ENV["SSL_CERT_FILE"]
-    
-        #build body
-        request.body = render json: {
-          displayName: stat_name,
-          description: "",
-          unit: "Unspecified",
-          tags: tags,
-          }
-    
-        HTTPI.post(request)
-    end
-    
-    # :nocov:
+  def self.increment_counter(metric_group:, metric_name:, app_name:, attrs: {}, by: 1)
+    tags  = get_tags(app_name, attrs)
+    stat_name = get_stat_name(metric_group, metric_name)
 
-    private_class_method def self.get_stat_name(metric_group, metric_name)
-        "dsva=appeals.#{metric_group}.#{metric_name}"
-    end
+    @statsd.increment(stat_name, tags: tags, by: by)
+    @DynatraceService.increment(stat_name, tags: tags, by: by)
+  end
+  
+  def self.emit_gauge(metric_group:, metric_name:, metric_value:, app_name:, attrs: {})
+    tags = get_tags(app_name, attrs)
+    stat_name = get_stat_name(metric_group, metric_name)
 
-    private_class_method def self.get_tags(app_name, attrs)
-        extra_tags = attrs.reduce([]) do |tags, (key, val)|
-            tags + ["#{key}:#{val}"]
-        end
-    [
-        "app:#{app_name}",
-        "env:#{Rails.current_env}"
-    ] + extra_tags
-    end 
+    @statsd.gauge(stat_name, metric_value, tags: tags)
+    @DynatraceService.gauge(stat_name, metric_value, tags: tags)
+  end
+
+  # nocov:
+  
+  private_class_method def self.get_stat_name(metric_group, metric_name)
+      "dsva=appeals.#{metric_group}.#{metric_name}"
+  end
+
+  private_class_method def self.get_tags(app_name, attrs)
+      extra_tags = attrs. reduce([]) do |tags, (key, val)|
+        tags + ["#{key}:#{val}"]
+      end
+  [
+    "app:#{app_name}",
+    "env:#{Rails.current_env}"
+  ] + extra_tags
+  end
 end
+
+
+
+
+
 
 
 # TODO  exception handleing
