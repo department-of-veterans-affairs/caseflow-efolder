@@ -40,11 +40,6 @@ class CustomMetricsService
 end
 
 
-
-
-
-
-
 # TODO  exception handleing
 # Response codes
 # Code	Type	Description
