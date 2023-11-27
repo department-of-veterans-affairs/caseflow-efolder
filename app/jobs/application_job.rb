@@ -9,7 +9,7 @@ class ApplicationJob < ActiveJob::Base
   end
 
   def datadog_report_runtime(metric_group_name:)
-    DataDogService.record_runtime(
+    CustomMetricsService.record_runtime(
       app_name: "efolder_job",
       metric_group: metric_group_name,
       start_time: start_time
@@ -19,7 +19,7 @@ class ApplicationJob < ActiveJob::Base
   def datadog_report_time_segment(segment:, start_time:)
     job_duration_seconds = Time.zone.now - start_time
 
-    DataDogService.emit_gauge(
+    CustomMetricsService.emit_gauge(
       app_name: "efolder_job_segment",
       metric_group: segment,
       metric_name: "runtime",

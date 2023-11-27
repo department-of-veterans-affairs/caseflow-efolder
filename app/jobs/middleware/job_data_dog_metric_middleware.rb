@@ -7,7 +7,7 @@ class JobDataDogMetricMiddleware
     end
 
     begin
-      DataDogService.emit_gauge(
+      CustomMetricsService.emit_gauge(
         metric_group: "job",
         metric_name: "elapsed_time",
         metric_value: stopwatch.real,
