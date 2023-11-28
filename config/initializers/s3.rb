@@ -1,2 +1,7 @@
+# Wrapper required for depreciation warning fix as of 6.1
+# See the link below for more details
+# https://bill.harding.blog/2021/07/22/rails-6-1-deprecation-warning-initialization-autoloaded-the-constants-what-to-do-about-it/
 
-S3Service = (Rails.application.config.s3_enabled ? Caseflow::S3Service : Caseflow::Fakes::S3Service)
+Rails.application.reloader.to_prepare do
+  S3Service = (Rails.application.config.s3_enabled ? Caseflow::S3Service : Caseflow::Fakes::S3Service)
+end
