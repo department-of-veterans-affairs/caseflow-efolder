@@ -7,14 +7,14 @@ on:
 
 env:
   FORCE_COLOR: "1" #Forces color within GHA - Note RSPEC still won't use color see line 199 --tty for rspec color
-      
+
 
 jobs:
   rake:
     runs-on: ubuntu-8-cores-latest
     services:
       postgres:
-        image: postgres:11.7
+        image: postgres:14.10
         env:
           POSTGRES_USER: root
           POSTGRES_PASSWORD: password
@@ -62,7 +62,7 @@ jobs:
         && rm /tmp/chrome.deb
         echo "Chrome exe name: $(ls /usr/bin | chrome)"
         echo "Chrome version: $(google-chrome --version)"
-       
+
     - name: Ruby version
       run: ruby -v
 
@@ -89,7 +89,7 @@ jobs:
 
     - name: Assets Precompile
       run: |
-          ./ci-bin/capture-log "bundle exec rake assets:precompile"    
+          ./ci-bin/capture-log "bundle exec rake assets:precompile"
 
     - name: RSpec
       run: |-
@@ -99,8 +99,8 @@ jobs:
         runuser -u circleci -- make -f Makefile.example test | tee ./test-results/rspec/rspec.out # circleci refers to user
       env:
         POSTGRES_HOST: postgres
-        
-    # Artifact Uploads    
+
+    # Artifact Uploads
     - uses: actions/upload-artifact@v3
       with:
         path: "./test-results"
@@ -119,7 +119,7 @@ jobs:
       run: |-
         npm install -g eslint
         ./ci-bin/capture-log "make -f Makefile.example lint"
-      if: ${{ always() }}  
+      if: ${{ always() }}
 
     - name: Security
       run:  ./ci-bin/capture-log "make -f Makefile.example security"
