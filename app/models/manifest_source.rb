@@ -17,8 +17,6 @@ class ManifestSource < ApplicationRecord
 
   delegate :file_number, to: :manifest
 
-  SECONDS_TO_AUTO_UNLOCK = 5
-
   def start!
     return if current? || processing?
     V2::DownloadManifestJob.perform_later(self, RequestStore[:current_user])
