@@ -15,7 +15,7 @@ class MetricsService
 
     if service && Rails.env.production?
       latency = stopwatch.real
-      DataDogService.emit_gauge(
+      MetricsService.emit_gauge(
         metric_group: "service",
         metric_name: "request_latency",
         metric_value: latency,
@@ -30,7 +30,7 @@ class MetricsService
     Rails.logger.info("FINISHED #{description}: #{stopwatch}")
     return_value
   rescue StandardError
-    increment_datadog_counter("request_error", service, name) if service
+    increment_metrics_service_counter("request_error", service, name) if service
 
     Rails.logger.info("RESCUED #{description}")
 
@@ -38,12 +38,12 @@ class MetricsService
     # This is just to capture the metric.
     raise
   ensure
-    increment_datadog_counter("request_attempt", service, name) if service
+    increment_metrics_service_counter("request_attempt", service, name) if service
   end
   # rubocop:enable Metrics/MethodLength
 
-  private_class_method def self.increment_datadog_counter(metric_name, service, endpoint_name)
-    DataDogService.increment_counter(
+  private_class_method def self.increment_metrics_service_counter(metric_name, service, endpoint_name)
+    MetricsService.increment_counter(
       metric_group: "service",
       metric_name: metric_name,
       app_name: @app,

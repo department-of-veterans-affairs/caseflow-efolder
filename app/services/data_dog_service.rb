@@ -1,6 +1,6 @@
 require "datadog/statsd"
 
-class DataDogService
+class MetricsService
   @statsd = Datadog::Statsd.new
   @host = `curl http://instance-data/latest/meta-data/instance-id --silent || echo "not-ec2"`.strip
 
