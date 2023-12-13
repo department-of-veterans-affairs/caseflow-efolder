@@ -82,14 +82,25 @@ describe ManifestSource do
       end
     end
 
-    context "when manifest is pending" do
+    context "when manifest is pending less than 24 hours" do
       before do
-        source.update_attributes!(fetched_at: Time.zone.now - 7.hours, status: :pending)
+        source.update_attributes!(fetched_at: Time.zone.now - 3.hours, status: :pending)
       end
 
       it "does not start the manifest job" do
         subject
         expect(V2::DownloadManifestJob).to_not have_received(:perform_later)
+      end
+    end
+
+    context "when manifest is pending more than 24 hours" do
+      before do
+        source.update_attributes!(fetched_at: Time.zone.now - 25.hours, status: :pending)
+      end
+
+      it "starts the manifest job" do
+        subject
+        expect(V2::DownloadManifestJob).to have_received(:perform_later)
       end
     end
 
