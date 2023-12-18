@@ -6,7 +6,7 @@ services:
       - "16379:6379"
 
   appeals-postgres:
-    image: postgres:11.7
+    image: postgres:14.8
     ports:
       - "15432:5432"
     volumes:
