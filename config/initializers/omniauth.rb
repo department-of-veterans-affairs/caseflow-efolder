@@ -19,7 +19,7 @@ end
 if ssoi_authentication_enabled?
   Rails.application.config.middleware.use OmniAuth::Builder do
     provider :samlva,
-      ENV[ENV_SAML_ID],
+      Rails.deploy_env?(:prodtest) ? ENV[ENV_SAML_ID] : "https://efolder.cf.ds.va.gov",
       ENV[ENV_SAML_KEY],
       ENV[ENV_SAML_CRT],
       ENV[ENV_IAM_XML],
