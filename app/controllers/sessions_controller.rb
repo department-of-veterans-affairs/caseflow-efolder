@@ -17,6 +17,7 @@ class SessionsController < ApplicationController
   # GET form to allow user to assert a username/station_id
   def login
     return redirect_to "/" if current_user.present?
+
     respond_to do |format|
       format.html { render("login") }
       format.text { render plain: "Text not supported" }
@@ -77,7 +78,7 @@ class SessionsController < ApplicationController
   end
 
   def allow_assert_username?
-    !(Rails.deploy_env?(:prod) || Rails.deploy_env?(:prodtest))
+    !Rails.deploy_env?(:prod)
   end
   helper_method :allow_assert_username?
 

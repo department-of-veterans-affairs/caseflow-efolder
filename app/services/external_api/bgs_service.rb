@@ -194,7 +194,7 @@ class ExternalApi::BGSService
   end
 
   def fetch_user_info(username, station_id = nil, application = "CASEFLOW")
-    return iam_fake_authz(username, station_id) if !(Rails.deploy_env?(:prod) || Rails.deploy_env?(:prodtest)) && FeatureToggle.enabled?(:use_ssoi_iam_fake_authz)
+    return iam_fake_authz(username, station_id) if !Rails.deploy_env?(:prod) && FeatureToggle.enabled?(:use_ssoi_iam_fake_authz)
 
     # always use system user for initial request
     station_client = self.class.init_client(username: User.system_user.css_id, station_id: User.system_user.station_id)

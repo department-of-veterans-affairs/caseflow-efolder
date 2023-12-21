@@ -12,14 +12,14 @@ def ssoi_authentication_enabled?
   return true if Rails.env.production?
 
   # detect SAML files
-  return ENV.has_key?(ENV_IAM_XML) && ENV.has_key?(ENV_SAML_KEY) && ENV.has_key?(ENV_SAML_CRT) && ENV.has_key?(ENV_SAML_ID)
+  return ENV.has_key?(ENV_IAM_XML) && ENV.has_key?(ENV_SAML_KEY) && ENV.has_key?(ENV_SAML_CRT)
 end
 
 # :nocov:
 if ssoi_authentication_enabled?
   Rails.application.config.middleware.use OmniAuth::Builder do
     provider :samlva,
-      Rails.deploy_env?(:prodtest) ? ENV[ENV_SAML_ID] : "https://efolder.cf.ds.va.gov",
+      "https://efolder.cf.ds.va.gov", # same in all envs # ENV[ENV_SAML_ID],
       ENV[ENV_SAML_KEY],
       ENV[ENV_SAML_CRT],
       ENV[ENV_IAM_XML],
