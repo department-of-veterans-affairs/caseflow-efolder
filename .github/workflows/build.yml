@@ -95,21 +95,25 @@ jobs:
         mkdir -p ./test-results/rspec
         mkdir .webdrivers
         chmod -R 777 ${GITHUB_WORKSPACE}
+        set -o pipefail
         runuser -u circleci -- make -f Makefile.example test | tee ./test-results/rspec/rspec.out # circleci refers to user
       env:
         POSTGRES_HOST: postgres
+      shell: bash
 
     # Artifact Uploads
     - uses: actions/upload-artifact@v3
+      if: sucess() || failure()
       with:
         path: "./test-results"
+
     - uses: actions/upload-artifact@v3
-      with:
-        path: "./test-results"
-    - uses: actions/upload-artifact@v3
+      if: failure()
       with:
         path: "./tmp/capybara"
+
     - uses: actions/upload-artifact@v3
+      if: sucess() || failure()
       with:
         path: "./log/test.log"
 
