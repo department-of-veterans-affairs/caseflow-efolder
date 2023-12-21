@@ -6,9 +6,10 @@ gem "active_model_serializers"
 gem "activejob_dj_overrides"
 gem "aws-sdk", "~> 2"
 gem "bgs", git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", ref: "98547485d863f2f0d3bb9a1b9ec92a8fe21ba306"
+gem "bootsnap", require: false
 gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons", ref: "fb6fa9658825c143eb8d202b87128f34ca7e210b"
 gem "coffee-rails", "> 4.1.0"
-gem "connect_vbms", git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", ref: "ac1ae63ffb04a2ab4d2d5469262981acab162e94"
+gem "connect_vbms", git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", branch: "master"
 gem "connect_vva", git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "dfd1aeb2605c1f237f520bcdc41b059202e8944d"
 gem "distribute_reads"
 gem "dogstatsd-ruby"
@@ -27,7 +28,7 @@ gem "omniauth-saml-va", git: "https://github.com/department-of-veterans-affairs/
 gem "pg", "~> 0.18", platforms: :ruby
 gem "puma", "5.6.4"
 gem "rack-cors", ">= 1.0.4"
-gem "rails", "5.2.4.6"
+gem "rails", "5.2.8.1"
 gem "redis-namespace"
 gem "redis-rails", "~> 5.0.2"
 gem "redis-semaphore"
@@ -64,7 +65,7 @@ group :test do
   gem "database_cleaner"
   gem "launchy"
   gem "rspec"
-  gem "rspec-github", require: false # Github Actions Annotations Formatter 
+  gem "rspec-github", require: false # Github Actions Annotations Formatter
   gem "rspec-rails"
   gem "rspec-retry"
   gem "saml_idp", git: "https://github.com/18F/saml_idp.git", branch: "master"
