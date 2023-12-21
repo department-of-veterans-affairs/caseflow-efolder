@@ -103,7 +103,7 @@ jobs:
 
     # Artifact Uploads
     - uses: actions/upload-artifact@v3
-      if: sucess() || failure()
+      if: success() || failure()
       with:
         path: "./test-results"
 
@@ -113,7 +113,7 @@ jobs:
         path: "./tmp/capybara"
 
     - uses: actions/upload-artifact@v3
-      if: sucess() || failure()
+      if: success() || failure()
       with:
         path: "./log/test.log"
 
