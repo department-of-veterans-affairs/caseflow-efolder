@@ -53,11 +53,10 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Install chromium
+    - name: Install Chrome
       run: |
-        CHROME_VERSION="106.0.5249.119-1"
         apt-get update
-        wget --no-verbose -O /tmp/chrome.deb https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_${CHROME_VERSION}_amd64.deb \
+        wget --no-verbose -O /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
         && apt install -y /tmp/chrome.deb \
         && rm /tmp/chrome.deb
         echo "Chrome exe name: $(ls /usr/bin | chrome)"
@@ -96,21 +95,25 @@ jobs:
         mkdir -p ./test-results/rspec
         mkdir .webdrivers
         chmod -R 777 ${GITHUB_WORKSPACE}
+        set -o pipefail
         runuser -u circleci -- make -f Makefile.example test | tee ./test-results/rspec/rspec.out # circleci refers to user
       env:
         POSTGRES_HOST: postgres
+      shell: bash
 
     # Artifact Uploads
     - uses: actions/upload-artifact@v3
+      if: success() || failure()
       with:
         path: "./test-results"
+
     - uses: actions/upload-artifact@v3
-      with:
-        path: "./test-results"
-    - uses: actions/upload-artifact@v3
+      if: failure()
       with:
         path: "./tmp/capybara"
+
     - uses: actions/upload-artifact@v3
+      if: success() || failure()
       with:
         path: "./log/test.log"
 
