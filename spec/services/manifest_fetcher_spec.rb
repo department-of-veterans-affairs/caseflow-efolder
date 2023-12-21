@@ -70,8 +70,8 @@ describe ManifestFetcher do
           allow(VBMSService).to receive(:v2_fetch_documents_for).and_raise(VBMS::ClientError)
         end
         
-        it "saves manifest status as failed" do
-          expect(subject).to eq []
+        it "saves manifest status as failed and propagates errors" do
+          expect{ subject }.to raise_error(VBMS::ClientError)
           expect(source.reload.status).to eq "failed"
           expect(source.reload.fetched_at).to be_nil
         end
@@ -99,7 +99,7 @@ describe ManifestFetcher do
         end
         
         it "saves manifest status as failed" do
-          expect(subject).to eq []
+          expect { subject }.to raise_error(VVA::ClientError)
           expect(source.reload.status).to eq "failed"
           expect(source.reload.fetched_at).to be_nil
         end
