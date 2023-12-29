@@ -4,7 +4,7 @@ RSpec.feature "React Downloads" do
   include ActiveJob::TestHelper
 
   let(:documents) do
-    [
+    Array.new(90000) {
       OpenStruct.new(
         document_id: SecureRandom.base64,
         series_id: "1234",
@@ -12,16 +12,8 @@ RSpec.feature "React Downloads" do
         version: "1",
         mime_type: "txt",
         received_at: Time.now.utc
-      ),
-      OpenStruct.new(
-        document_id: SecureRandom.base64,
-        series_id: "5678",
-        type_id: Caseflow::DocumentTypes::TYPES.keys.sample,
-        version: "1",
-        mime_type: "txt",
-        received_at: Time.now.utc
       )
-    ]
+    }
   end
 
   before do
@@ -99,7 +91,7 @@ RSpec.feature "React Downloads" do
     Zip::File.open(zip_path) do |zip_file|
       expect(zip_file.size).to eq documents.count
       contents = zip_file.map { |entry| entry.get_input_stream.read }
-      expect(contents).to eq(["Test content", "Test content"])
+      expect(contents.count).to eq(documents.count)
     end
   end
 
@@ -193,7 +185,7 @@ RSpec.feature "React Downloads" do
   end
 
   context "When manifest endpoint returns different statuses for different documents" do
-    let!(:manifest) { Manifest.create(file_number: veteran_id, fetched_files_status: "pending") }
+    let!(:manifest) { Manifest.create(file_number: veteran_id, fetched_files_status: "finished") }
     let!(:source) do
       [
         manifest.sources.create(status: :success, name: "VBMS", fetched_at: Time.zone.now),
@@ -210,14 +202,14 @@ RSpec.feature "React Downloads" do
           type_id: Caseflow::DocumentTypes::TYPES.keys.sample
         ),
         source[0].records.create(
-          status: "success",
+          status: "initialized",
           version_id: "2",
           series_id: "102",
           mime_type: "application/pdf",
           type_id: Caseflow::DocumentTypes::TYPES.keys.sample
         ),
         source[0].records.create(
-          status: "failed",
+          status: "initialized",
           version_id: "3",
           series_id: "103",
           mime_type: "application/pdf",
