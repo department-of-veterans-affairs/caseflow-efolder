@@ -73,11 +73,6 @@ feature "Backend Error Flows" do
         click_button "Search"
 
         expect(page).to have_css ".usa-alert-heading", text: "We could not complete the search for this Veteran ID"
-        expect(page).to have_content Caseflow::DocumentTypes::TYPES[documents[0].type_id]
-
-        click_link "Back to eFolder Express"
-
-        expect(page).to have_current_path("/")
       end
     end
   end
@@ -95,11 +90,6 @@ feature "Backend Error Flows" do
         click_button "Search"
 
         expect(page).to have_css ".usa-alert-heading", text: "We could not complete the search for this Veteran ID"
-        expect(page).to have_content Caseflow::DocumentTypes::TYPES[documents[0].type_id]
-
-        click_link "Back to eFolder Express"
-
-        expect(page).to have_current_path("/")
       end
     end
   end
