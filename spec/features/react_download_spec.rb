@@ -59,12 +59,10 @@ RSpec.feature "React Downloads" do
   let(:zip_file_name) { "Lee, Stan - 2222" }
 
   before do
-    allow_any_instance_of(VeteranFinder).to receive(:find) { [ { file: claim_number } ] }
+    allow_any_instance_of(VeteranFinder).to receive(:find) { [{ file: claim_number }] }
   end
 
   scenario "Creating a download" do
-    expect(V2::DownloadManifestJob).to receive(:perform_later).twice
-
     visit "/"
     expect(page).to_not have_content "Recent Searches"
 

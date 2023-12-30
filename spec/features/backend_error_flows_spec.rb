@@ -35,7 +35,7 @@ feature "Backend Error Flows" do
   end
 
   before do
-    allow_any_instance_of(VeteranFinder).to receive(:find) { [ { file: veteran_info["file_number"] } ] }
+    allow_any_instance_of(VeteranFinder).to receive(:find) { [{ file: veteran_info["file_number"] }] }
   end
 
   before do
@@ -72,7 +72,7 @@ feature "Backend Error Flows" do
         fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
         click_button "Search"
 
-        expect(page).to have_css ".usa-alert-heading", text: "We are having trouble connecting to VBMS"
+        expect(page).to have_css ".usa-alert-heading", text: "We could not complete the search for this Veteran ID"
         expect(page).to have_content Caseflow::DocumentTypes::TYPES[documents[0].type_id]
 
         click_link "Back to eFolder Express"
@@ -94,7 +94,7 @@ feature "Backend Error Flows" do
         fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
         click_button "Search"
 
-        expect(page).to have_css ".usa-alert-heading", text: "We are having trouble connecting to VVA"
+        expect(page).to have_css ".usa-alert-heading", text: "We could not complete the search for this Veteran ID"
         expect(page).to have_content Caseflow::DocumentTypes::TYPES[documents[0].type_id]
 
         click_link "Back to eFolder Express"
@@ -109,7 +109,7 @@ feature "Backend Error Flows" do
       allow(Fakes::DocumentService).to receive(:v2_fetch_document_file) do |arg|
         case arg.id
         when 1
-          raise VBMS::ClientError.new("arg.id 1 failed")
+          raise VBMS::ClientError, "arg.id 1 failed"
         else
           "Test content"
         end
