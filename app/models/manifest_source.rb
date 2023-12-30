@@ -19,6 +19,9 @@ class ManifestSource < ApplicationRecord
 
   def start!
     return if current? || processing?
+
+    update(status: :pending)
+
     V2::DownloadManifestJob.perform_later(self, RequestStore[:current_user])
   rescue StandardError
     update(status: :initialized)
