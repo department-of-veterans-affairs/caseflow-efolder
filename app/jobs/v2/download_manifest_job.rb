@@ -7,10 +7,10 @@ class V2::DownloadManifestJob < ApplicationJob
 
     documents = ManifestFetcher.new(manifest_source: manifest_source).process
 
-    if documents.present?
-      V2::SaveFilesInS3Job.perform_later(manifest_source) unless ApplicationController.helpers.ui_user?
-      manifest_source.update!(status: :success, fetched_at: Time.zone.now)
-    end
+    V2::SaveFilesInS3Job.perform_later(manifest_source) unless documents.empty? || ApplicationController.helpers.ui_user?
+
+    # Always set manifest source status to success last
+    manifest_source.update!(status: :success, fetched_at: Time.zone.now)
 
     log_info(manifest_source.manifest.file_number, documents, manifest_source.manifest.zipfile_size)
   rescue StandardError => e
