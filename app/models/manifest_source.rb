@@ -18,7 +18,7 @@ class ManifestSource < ApplicationRecord
   delegate :file_number, to: :manifest
 
   def start!
-    return if current? || pending?
+    return if current? || processing?
 
     update(status: :pending)
 
@@ -44,5 +44,9 @@ class ManifestSource < ApplicationRecord
 
   def current?
     success? && fetched_at && fetched_at > expiry_hours.hours.ago
+  end
+
+  def processing?
+    fetched_at ? pending? && fetched_at > 24.hours.ago : pending?
   end
 end
