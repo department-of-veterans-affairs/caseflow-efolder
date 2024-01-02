@@ -13,13 +13,10 @@ class ZipfileCreator
     write_to_tempfile(t, records)
 
     S3Service.store_file(manifest.s3_filename, t.path, :filepath)
-    manifest.update(
-      zipfile_size: File.size(t.path),
-      fetched_files_status: :finished,
-      fetched_files_at: Time.zone.now
-    )
+    zipfile_size = File.size(t.path)
     t.close
     t.unlink
+    zipfile_size
   end
 
   private

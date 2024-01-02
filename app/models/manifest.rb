@@ -41,6 +41,7 @@ class Manifest < ApplicationRecord
                              expiration: SECONDS_TO_AUTO_UNLOCK)
     s.lock(SECONDS_TO_AUTO_UNLOCK) do
       return if pending?
+
       update(fetched_files_status: :pending)
     end
 
@@ -164,6 +165,7 @@ class Manifest < ApplicationRecord
 
   def update_veteran_info
     return unless veteran
+
     update(veteran_first_name: veteran.first_name || "",
            veteran_last_name: veteran.last_name || "",
            veteran_last_four_ssn: veteran.last_four_ssn || "")

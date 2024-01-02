@@ -14,7 +14,7 @@ class ManifestFetcher
     ExceptionLogger.capture(e)
     raise e
   ensure
-    return documents
+    documents
   end
 
   def documents
@@ -38,8 +38,9 @@ class ManifestFetcher
       end
     end.flatten.uniq
     if file_numbers_found.empty?
-      fail errors.first # don't care if there is more than one.
+      raise errors.first # don't care if there is more than one.
     end
+
     documents
   end
 
@@ -67,31 +68,29 @@ class ManifestFetcher
   private
 
   # If manifest not current fetch all documents from VBMS
-  # If manifest current, fetch delta documents from VBMS 
+  # If manifest current, fetch delta documents from VBMS
   # without feature flag, always fetch all documents from VBMS
   def fetch_documents_or_delta_documents_for(file_number)
     ft_delta_documents = FeatureToggle.enabled?(:cache_delta_documents, user: current_user)
 
-    if ft_delta_documents
-      docs = manifest_source.current? ? manifest_source.service.fetch_delta_documents_for(file_number, manifest_source.fetched_at) : manifest_source.service.v2_fetch_documents_for(file_number)
-    else
-      docs = manifest_source.service.v2_fetch_documents_for(file_number)
-    end
-    
+    docs = if ft_delta_documents
+             manifest_source.current? ? manifest_source.service.fetch_delta_documents_for(file_number, manifest_source.fetched_at) : manifest_source.service.v2_fetch_documents_for(file_number)
+           else
+             manifest_source.service.v2_fetch_documents_for(file_number)
+           end
+
     log_info(file_number, docs, ft_delta_documents, manifest_source.manifest.zipfile_size)
 
     docs
   end
-  
 
   def documents_from_service_for(file_number)
     documents = MetricsService.record("ManifestFetcher documents or delta documents for file_number: #{file_number}",
-                                               service: manifest_source.name.downcase.to_sym,
-                                               name: "fetch_documents_or_delta_from_service") do
+                                      service: manifest_source.name.downcase.to_sym,
+                                      name: "fetch_documents_or_delta_from_service") do
       fetch_documents_or_delta_documents_for(file_number)
     end
   end
-
 
   def current_user
     RequestStore[:current_user]
