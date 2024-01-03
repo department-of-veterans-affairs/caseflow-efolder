@@ -33,12 +33,13 @@ class ImageConverterService
   EXCEPTIONS = [Errno::ECONNREFUSED, HTTPClient::ReceiveTimeoutError].freeze
 
   # :nocov:
+  # update
   def convert_tiff_to_pdf
     url = "http://localhost:5000/tiff-convert"
 
     clnt = HTTPClient.new
     response = nil
-
+    
     MetricsService.record("Image Magick: Convert tiff to pdf",
                           service: :image_magick,
                           name: "image_magick_convert_tiff_to_pdf") do

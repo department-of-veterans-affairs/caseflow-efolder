@@ -23,7 +23,7 @@ module PumaThreadLogger
           backlog = @todo.size
           waiting = @waiting
         }
-
+        # update
         emit_datadog_point("idle", waiting)
         emit_datadog_point("active", thread_count - waiting)
 
@@ -48,7 +48,7 @@ module PumaThreadLogger
     end
     super *args
   end
-
+  # update
   def emit_datadog_point(type, count)
     DataDogService.emit_gauge(
       metric_group: "puma",

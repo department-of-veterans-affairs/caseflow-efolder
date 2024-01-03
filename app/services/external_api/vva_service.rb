@@ -1,7 +1,7 @@
 require "vva"
 
 # Thin interface to talk to Virtual VA
-class ExternalApi::VVAService
+# update
   def self.fetch_documents_for(download)
     vva_client = init_client
     documents ||= MetricsService.record("VVA: get document list for: #{download.file_number}",
@@ -12,7 +12,7 @@ class ExternalApi::VVAService
     Rails.logger.info("VVA Document list length: #{documents.length}")
     documents
   end
-
+  # update
   def self.v2_fetch_documents_for(file_number)
     vva_client = init_client
     documents ||= MetricsService.record("VVA: get document list for: #{file_number}",
@@ -23,7 +23,7 @@ class ExternalApi::VVAService
     Rails.logger.info("VVA Document list length: #{documents.length}")
     documents
   end
-
+  # update
   def self.fetch_document_file(document)
     vva_client = init_client
     result ||= MetricsService.record("VVA: fetch document content for: #{document.document_id}",

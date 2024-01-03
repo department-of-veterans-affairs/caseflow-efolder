@@ -12,7 +12,11 @@ gem "coffee-rails", "> 4.1.0"
 gem "connect_vbms", git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", branch: "master"
 gem "connect_vva", git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "dfd1aeb2605c1f237f520bcdc41b059202e8944d"
 gem "distribute_reads"
+# Sunset in progress
 gem "dogstatsd-ruby"
+# Added opentelemetry gems
+gem "opentelemetry-sdk"
+gem "opentelemetry-exporter-otlp"
 gem "httpclient"
 gem "jbuilder", "~> 2.0"
 gem "jquery-rails", ">= 4.3.4"

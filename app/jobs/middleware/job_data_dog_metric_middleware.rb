@@ -7,6 +7,7 @@ class JobDataDogMetricMiddleware
     end
 
     begin
+      # update
       DataDogService.emit_gauge(
         metric_group: "job",
         metric_name: "elapsed_time",

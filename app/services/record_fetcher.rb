@@ -21,7 +21,7 @@ class RecordFetcher
   end
 
   private
-
+  # update
   def content_from_va_service
     content = MetricsService.record("RecordFetcher fetch content from VA manifest source name: #{record.manifest_source.name} for file_number #{record.file_number}",
                                     service: record.manifest_source.name.downcase.to_sym,
