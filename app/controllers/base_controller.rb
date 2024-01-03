@@ -1,8 +1,13 @@
 class BaseController < ActionController::Base
   before_action :strict_transport_security
   before_action :current_user
+  before_action :set_application
 
   private
+
+  def set_application
+    RequestStore.store[:application] = 'efolder'
+  end
 
   def strict_transport_security
     response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains" if request.ssl?
