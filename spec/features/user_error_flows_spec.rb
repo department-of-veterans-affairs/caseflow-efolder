@@ -48,7 +48,7 @@ RSpec.feature "User Error Flows" do
 
     allow(Fakes::VBMSService).to receive(:v2_fetch_documents_for).and_return(documents)
     allow(Fakes::VVAService).to receive(:v2_fetch_documents_for).and_return([])
-    allow(Fakes::DocumentService).to receive(:v2_fetch_document_file).and_return("Test content")
+    allow(Caseflow::Fakes::DocumentService).to receive(:v2_fetch_document_file).and_return("Test content")
 
     S3Service.files = {}
 

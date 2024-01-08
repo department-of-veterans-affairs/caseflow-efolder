@@ -26,7 +26,7 @@ describe V2::DownloadManifestJob do
 
     context "when document list is empty" do
       before do
-        allow(Fakes::DocumentService).to receive(:v2_fetch_documents_for).and_return([])
+        allow(Caseflow::Fakes::DocumentService).to receive(:v2_fetch_documents_for).and_return([])
       end
 
       it "does not create any records and does not start caching files in s3" do
@@ -49,7 +49,7 @@ describe V2::DownloadManifestJob do
 
     context "when document list is not empty" do
       before do
-        allow(Fakes::DocumentService).to receive(:v2_fetch_documents_for).and_return(documents)
+        allow(Caseflow::Fakes::DocumentService).to receive(:v2_fetch_documents_for).and_return(documents)
       end
 
       context "when user is not a UI user" do

@@ -1,4 +1,6 @@
-class Fakes::VBMSService < Fakes::DocumentService
+require 'caseflow'
+
+class Fakes::VBMSService < Caseflow::Fakes::DocumentService
   def self.service_type
     "VBMS"
   end

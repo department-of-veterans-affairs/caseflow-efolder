@@ -37,7 +37,7 @@ describe "Files Downloads API v2", type: :request do
       let!(:files_download) { FilesDownload.create(user: current_user, manifest: manifest) }
       before do
         allow(S3Service).to receive(:fetch_content).and_return(nil)
-        allow(Fakes::DocumentService).to receive(:v2_fetch_document_file).and_return("stuff")
+        allow(Caseflow::Fakes::DocumentService).to receive(:v2_fetch_document_file).and_return("stuff")
       end
 
       it "returns status finished with all documents with successful statuses" do
@@ -56,7 +56,7 @@ describe "Files Downloads API v2", type: :request do
       let!(:files_download) { FilesDownload.create(user: current_user, manifest: manifest) }
       before do
         allow(S3Service).to receive(:fetch_content).and_return(nil)
-        allow(Fakes::DocumentService).to receive(:v2_fetch_document_file).and_raise([VBMS::ClientError, VVA::ClientError].sample)
+        allow(Caseflow::Fakes::DocumentService).to receive(:v2_fetch_document_file).and_raise([VBMS::ClientError, VVA::ClientError].sample)
       end
 
       it "returns status finished with all documents with failed statuses" do

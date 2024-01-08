@@ -1,1 +1,3 @@
-VBMSService = (!BaseController.dependencies_faked? ? ExternalApi::VBMSService : Fakes::VBMSService)
+require 'caseflow'
+
+VBMSService = (!BaseController.dependencies_faked? ? Caseflow::ExternalApi::VBMSService : Fakes::VBMSService)
