@@ -1,6 +1,6 @@
 require 'caseflow'
 
-class Fakes::VBMSService < Caseflow::Fakes::DocumentService
+class Fakes::VBMSService < Efolder::Fakes::DocumentService
   def self.service_type
     "VBMS"
   end

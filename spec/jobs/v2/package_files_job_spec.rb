@@ -36,7 +36,7 @@ describe V2::PackageFilesJob do
     context "when VBMS/VVA requests are not successful" do
       it "sets status to finished" do
         allow(S3Service).to receive(:store_file).and_return(nil)
-        allow(Caseflow::Fakes::DocumentService).to receive(:v2_fetch_document_file).and_raise([VBMS::ClientError, VVA::ClientError].sample)
+        allow(Efolder::Fakes::DocumentService).to receive(:v2_fetch_document_file).and_raise([VBMS::ClientError, VVA::ClientError].sample)
         subject
         # 1 time for uploading a zip file
         expect(S3Service).to have_received(:store_file).once
