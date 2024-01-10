@@ -9,7 +9,7 @@ gem "bgs", git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git"
 gem "bootsnap", require: false
 gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons", ref: "098177b58e35384d7b5c923ebe4920f69165d1c5"
 gem "coffee-rails", "> 4.1.0"
-gem "connect_vbms", git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", branch: "master"
+gem "connect_vbms", git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", branch: "9807d9c9f0f3e3494a60b6693dc4f455c1e3e922"
 gem "connect_vva", git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "dfd1aeb2605c1f237f520bcdc41b059202e8944d"
 gem "distribute_reads"
 gem "dogstatsd-ruby"
