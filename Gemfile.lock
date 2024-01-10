@@ -36,10 +36,10 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/connect_vbms.git
-  revision: 1834cf61310001c82e2e96d665518407c3bce947
-  branch: master
+  revision: 9807d9c9f0f3e3494a60b6693dc4f455c1e3e922
+  branch: 9807d9c9f0f3e3494a60b6693dc4f455c1e3e922
   specs:
-    connect_vbms (1.4.0)
+    connect_vbms (1.3.0)
       httpclient (~> 2.8.0)
       httpi (~> 2.4)
       mail
@@ -311,7 +311,7 @@ GEM
       pry (~> 0.13.0)
     psych (3.3.0)
     public_suffix (5.0.4)
-    puma (5.6.4)
+    puma (6.4.2)
       nio4r (~> 2.0)
     racc (1.7.3)
     rack (2.2.8)
@@ -560,7 +560,7 @@ DEPENDENCIES
   pg (~> 0.18)
   pry
   pry-byebug
-  puma (= 5.6.4)
+  puma (= 6.4.2)
   rack-cors (>= 1.0.4)
   rails (= 5.2.8.1)
   rails_stdout_logging
