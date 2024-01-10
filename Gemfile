@@ -7,7 +7,7 @@ gem "activejob_dj_overrides"
 gem "aws-sdk", "~> 2"
 gem "bgs", git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", ref: "98547485d863f2f0d3bb9a1b9ec92a8fe21ba306"
 gem "bootsnap", require: false
-gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons", ref: "fceb85c626eac06e8761ce1df58770192445e27e"
+gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons", ref: "098177b58e35384d7b5c923ebe4920f69165d1c5"
 gem "coffee-rails", "> 4.1.0"
 gem "connect_vbms", git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", branch: "master"
 gem "connect_vva", git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "dfd1aeb2605c1f237f520bcdc41b059202e8944d"
