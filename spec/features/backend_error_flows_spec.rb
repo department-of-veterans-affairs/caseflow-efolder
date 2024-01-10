@@ -1,4 +1,5 @@
 require "rails_helper"
+require "caseflow"
 
 feature "Backend Error Flows" do
   include ActiveJob::TestHelper
@@ -51,7 +52,7 @@ feature "Backend Error Flows" do
 
     allow(Fakes::VBMSService).to receive(:v2_fetch_documents_for).and_return(documents)
     allow(Fakes::VVAService).to receive(:v2_fetch_documents_for).and_return([])
-    allow(Fakes::DocumentService).to receive(:v2_fetch_document_file).and_return("Test content")
+    allow(Efolder::Fakes::DocumentService).to receive(:v2_fetch_document_file).and_return("Test content")
 
     S3Service.files = {}
 
@@ -106,7 +107,7 @@ feature "Backend Error Flows" do
 
   context "When at least one document fails" do
     before do
-      allow(Fakes::DocumentService).to receive(:v2_fetch_document_file) do |arg|
+      allow(Efolder::Fakes::DocumentService).to receive(:v2_fetch_document_file) do |arg|
         case arg.id
         when 1
           raise VBMS::ClientError.new("arg.id 1 failed")
@@ -187,7 +188,7 @@ feature "Backend Error Flows" do
         expect(page).to have_css ".cf-tab.cf-active", text: "Errors (1)"
         expect(page).to have_content "Some files could not be retrieved"
 
-        allow(Fakes::DocumentService).to receive(:v2_fetch_document_file).and_return("Test content")
+        allow(Efolder::Fakes::DocumentService).to receive(:v2_fetch_document_file).and_return("Test content")
         within first(".usa-alert-body") do
           click_on "Retry missing files"
         end
