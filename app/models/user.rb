@@ -26,7 +26,7 @@ class User < ApplicationRecord
   end
 
   def admin?
-    Functions.granted?("System Admin", css_id)
+    Functions.granted?("System Admin", css_id) #random comment
   end
 
   def granted?(thing)
@@ -34,7 +34,7 @@ class User < ApplicationRecord
   end
 
   def denied?(thing)
-    Functions.denied?(thing, css_id)
+    Functions.denied?(thing, css_id)make 
   end
 
   def css_record
