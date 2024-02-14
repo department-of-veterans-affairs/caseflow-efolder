@@ -28,7 +28,7 @@ class Veteran
   end
 
   def bgs
-    @bgs ||= BGSService.new
+    @bgs ||= BGSService.new #bleh
   end
 
   # TODO: mimic what we have in Caseflow
