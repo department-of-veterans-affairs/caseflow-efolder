@@ -1,9 +1,21 @@
-class Fakes::VBMSService < Fakes::DocumentService
-  def self.service_type
-    "VBMS"
+module Fakes::VbmsService
+  class GetDocumentContent
+    attr_reader :document_id
+
+    def initialize(document_id)
+      @document_id = document_id
+    end
+
+    def call
+      # Simulate a response from VBMS
+      FakeDocumentContent.generate_content(document_id)
+    end
   end
 
-  def self.raise_error
-    raise VBMS::ClientError
+  class FakeDocumentContent
+    def self.generate_content(document_id)
+      # Generate fake document content based on document_id
+      "Fake content for document #{document_id}"
+    end
   end
 end

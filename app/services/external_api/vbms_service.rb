@@ -27,26 +27,24 @@ class ExternalApi::VBMSService
     documents
   end
 
-  def self.v2_fetch_documents_for(veteran_file_number)
-    @vbms_client ||= init_client
+  def v2_fetch_documents_for(veteran_file_number)
+    initialize_vbms_client
 
-    documents = []
-
-    if FeatureToggle.enabled?(:vbms_pagination, user: RequestStore[:current_user])
-      service = VBMS::Service::PagedDocuments.new(client: @vbms_client)
-      documents = call_and_log_service(service: service, vbms_id: veteran_file_number)[:documents]
+    if Rails.deploy_env?(:prodtest)
+      # Return fake response grab document from eFolder Prod S3 bucket
+      fake_request = Fakes::VbmsService::GetDocumentContent.new(veteran_file_number)
+      result = send_and_log_request(veteran_file_number, fake_request)
     else
-      request = VBMS::Requests::FindDocumentVersionReference.new(veteran_file_number)
-      documents = send_and_log_request(veteran_file_number, request)
+      request = VBMS::Requests::GetDocumentContent.new(veteran_file_number)
+      result = send_and_log_request(veteran_file_number, request)
     end
 
-    Rails.logger.info("VBMS Document list length: #{documents.length}")
-    documents
+    result&.content
   end
 
   def self.fetch_delta_documents_for(veteran_file_number, begin_date_range, end_date_range = Time.zone.now)
     @vbms_client || init_client
-    
+
     request = VBMS::Requests::FindDocumentVersionReferenceByDateRange.new(veteran_file_number, begin_date_range, end_date_range)
     documents = send_and_log_request(veteran_file_number, request)
     documents
@@ -63,7 +61,13 @@ class ExternalApi::VBMSService
   def self.v2_fetch_document_file(document)
     @vbms_client ||= init_client
 
-    request = VBMS::Requests::GetDocumentContent.new(document.document_id)
+    request = if Rails.deploy_env?(:prodtest)
+                # return fake response grab document from eFolder Prod S3 bucket
+                Fake::VBMS::GetDocumentContent.new(document.document_id)
+              else
+                VBMS::Requests::GetDocumentContent.new(document.document_id)
+              end
+
     result = send_and_log_request(document.document_id, request)
     result&.content
   end
