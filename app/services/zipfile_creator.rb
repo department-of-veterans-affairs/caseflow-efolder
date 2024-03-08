@@ -18,7 +18,7 @@ class ZipfileCreator
       fetched_files_status: :finished,
       fetched_files_at: Time.zone.now
     )
-    records.update_all(status: 2)
+    records.update_all(status: 1)
     t.close
     t.unlink
   end
