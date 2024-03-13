@@ -23,6 +23,6 @@ Shoryuken.configure_server do |config|
 
   # register all shoryuken middleware
   config.server_middleware do |chain|
-    chain.add JobDataDogMetricMiddleware
+    chain.add JobMetricsServiceMetricMiddleware
   end
 end

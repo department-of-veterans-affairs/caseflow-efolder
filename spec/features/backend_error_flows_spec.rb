@@ -39,7 +39,7 @@ feature "Backend Error Flows" do
   end
 
   before do
-    allow(DataDogService).to receive(:emit_gauge) { true } # mock DD during tests
+    allow(MetricsService).to receive(:emit_gauge) { true } # mock DD during tests
 
     @user = User.create(css_id: "123123", station_id: "116")
 
