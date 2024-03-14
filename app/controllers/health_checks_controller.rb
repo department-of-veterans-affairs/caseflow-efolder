@@ -1,5 +1,5 @@
 class HealthChecksController < ApplicationController
-  include CollectMetricsServiceMetrics
+  include CollectCustomMetrics
   skip_before_action :authenticate
   skip_before_action :check_out_of_service
   newrelic_ignore_apdex
