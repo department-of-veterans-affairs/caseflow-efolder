@@ -470,6 +470,7 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
+    statsd-instrument (3.7.0)
     systemu (2.6.5)
     therubyracer (0.12.3)
       libv8 (~> 3.16.14.15)
@@ -584,6 +585,7 @@ DEPENDENCIES
   sinatra (= 2.2.0)
   single_cov
   sniffybara!
+  statsd-instrument
   therubyracer
   timecop
   turbolinks
