@@ -18,9 +18,9 @@ module CollectCustomMetrics
     dead = conns.count { |conn| conn.in_use? && !conn.owner.alive? }
     idle = conns.count { |conn| !conn.in_use? }
 
-    emit_metrics_point("postgres", "active", active)
-    emit_metrics_point("postgres", "dead", dead)
-    emit_metrics_point("postgres", "idle", idle)
+    emit_metrics_service_point("postgres", "active", active)
+    emit_metrics_service_point("postgres", "dead", dead)
+    emit_metrics_service_point("postgres", "idle", idle)
   end
 
   def emit_metrics_service_point(db_name, type, count)
