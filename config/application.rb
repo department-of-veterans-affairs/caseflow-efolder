@@ -92,15 +92,6 @@ module CaseflowEfolder
     # This can be changed to the defualt and removed if we no longer support IE5-8 (old browsers)
     Rails.application.config.action_view.default_enforce_utf8 = true
 
-    # Embed purpose and expiry metadata inside signed and encrypted
-    # cookies for increased security.
-    #
-    # This option is not backwards compatible with earlier Rails versions.
-    # It's best enabled when your entire app is migrated and stable on 6.0.
-    # Default change to true as of 6.0
-    # Remove after stable 6.0
-    Rails.application.config.action_dispatch.use_cookies_with_metadata = false
-
     # Enable the same cache key to be reused when the object being cached of type
     # `ActiveRecord::Relation` changes by moving the volatile information (max updated at and count)
     # of the relation's cache key into the cache version to support recycling cache key.
