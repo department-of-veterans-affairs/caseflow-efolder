@@ -20,13 +20,12 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/caseflow-commons
-  revision: fb6fa9658825c143eb8d202b87128f34ca7e210b
-  ref: fb6fa9658825c143eb8d202b87128f34ca7e210b
+  revision: 01dd8c52352ea558504af7da4e7ea73e8e2c4065
+  ref: 01dd8c52352ea558504af7da4e7ea73e8e2c4065
   specs:
-    caseflow (0.4.6)
+    caseflow (0.4.8)
       aws-sdk (~> 2.10)
       bourbon (= 4.2.7)
-      d3-rails
       jquery-rails
       momentjs-rails
       neat
@@ -188,8 +187,6 @@ GEM
     crack (0.4.5)
       rexml
     crass (1.0.6)
-    d3-rails (5.9.2)
-      railties (>= 3.1)
     database_cleaner (1.8.5)
     date (3.3.4)
     delayed_job (4.1.9)
@@ -470,6 +467,7 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
+    statsd-instrument (3.7.0)
     systemu (2.6.5)
     therubyracer (0.12.3)
       libv8 (~> 3.16.14.15)
@@ -584,6 +582,7 @@ DEPENDENCIES
   sinatra (= 2.2.0)
   single_cov
   sniffybara!
+  statsd-instrument
   therubyracer
   timecop
   turbolinks
