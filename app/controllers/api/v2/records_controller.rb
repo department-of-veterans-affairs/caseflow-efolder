@@ -2,6 +2,8 @@ class Api::V2::RecordsController < Api::V2::ApplicationController
   before_action :validate_access
 
   def show
+    #Check before fetch if the file is saved in S3
+    document_source_to_headers
     result = record.fetch!
     return document_failed if record.failed?
 
@@ -42,5 +44,10 @@ class Api::V2::RecordsController < Api::V2::ApplicationController
   def validate_access
     return record_not_found unless record
     sensitive_record unless record.accessible_by?(current_user)
+  end
+
+  def document_source_to_headers
+    from_s3 ||= S3Service.exists? record.s3_filename
+    headers["X-Document-Source"] = !!from_s3 ? "S3" : "VBMS"
   end
 end
