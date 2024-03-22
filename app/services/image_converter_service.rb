@@ -10,10 +10,10 @@ class ImageConverterService
     return image if self.class.converted_mime_type(record.mime_type) == record.mime_type
 
     converted_image = convert
-    record.update!(conversion_status: :conversion_success)
+    record.update_attributes!(conversion_status: :conversion_success)
     converted_image
   rescue ImageConverterError
-    record.update!(conversion_status: :conversion_failed)
+    record.update_attributes!(conversion_status: :conversion_failed)
 
     image
   end
