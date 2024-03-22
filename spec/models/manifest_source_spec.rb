@@ -62,7 +62,7 @@ describe ManifestSource do
 
     context "when fetched more than 3 hours ago" do
       before do
-        source.update!(fetched_at: Time.zone.now - 4.hours, status: :success)
+        source.update_attributes!(fetched_at: Time.zone.now - 4.hours, status: :success)
       end
 
       it "starts the manifest job" do
@@ -73,7 +73,7 @@ describe ManifestSource do
 
     context "when failed" do
       before do
-        source.update!(fetched_at: Time.zone.now - 2.hours, status: :failed)
+        source.update_attributes!(fetched_at: Time.zone.now - 2.hours, status: :failed)
       end
 
       it "starts the manifest job" do
@@ -84,7 +84,7 @@ describe ManifestSource do
 
     context "when manifest is pending less than 24 hours" do
       before do
-        source.update!(fetched_at: Time.zone.now - 3.hours, status: :pending)
+        source.update_attributes!(fetched_at: Time.zone.now - 3.hours, status: :pending)
       end
 
       it "does not start the manifest job" do
@@ -95,7 +95,7 @@ describe ManifestSource do
 
     context "when manifest is pending more than 24 hours" do
       before do
-        source.update!(fetched_at: Time.zone.now - 25.hours, status: :pending)
+        source.update_attributes!(fetched_at: Time.zone.now - 25.hours, status: :pending)
       end
 
       it "starts the manifest job" do
@@ -106,7 +106,7 @@ describe ManifestSource do
 
     context "when fetched less than 3 hours ago" do
       before do
-        source.update!(fetched_at: Time.zone.now - 2.hours, status: :success)
+        source.update_attributes!(fetched_at: Time.zone.now - 2.hours, status: :success)
       end
 
       it "does not start the manifest job" do
