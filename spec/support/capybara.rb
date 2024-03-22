@@ -12,9 +12,9 @@ Webdrivers.logger.level = :debug if ENV["DEBUG"]
 
 Sniffybara::Driver.run_configuration_file = File.expand_path("VA-axe-run-configuration.json", __dir__)
 
-tmp_directory = Rails.root.join("tmp")
-download_directory = Rails.root.join("tmp/downloads_all")
-cache_directory = Rails.root.join("tmp/browser_cache_all")
+tmp_directory = Rails.root.join("tmp").to_s
+download_directory = Rails.root.join("tmp/downloads_all").to_s
+cache_directory = Rails.root.join("tmp/browser_cache_all").to_s
 
 Dir.mkdir tmp_directory unless File.directory?(tmp_directory)
 Dir.mkdir download_directory unless File.directory?(download_directory)
@@ -34,8 +34,11 @@ Capybara.register_driver(:parallel_sniffybara) do |app|
   chrome_options.add_preference(:browser,
                                 disk_cache_dir: cache_directory)
 
+  service = ::Selenium::WebDriver::Service.chrome
+  service.port = 51_674
+
   options = {
-    service: ::Selenium::WebDriver::Service.chrome(args: { port: 51_674 }),
+    service: service,
     browser: :chrome,
     options: chrome_options
   }
@@ -69,8 +72,11 @@ Capybara.register_driver(:sniffybara_headless) do |app|
   chrome_options.args << "--disable-dev-shm-usage"
   chrome_options.args << "--disable-impl-side-painting"
 
+  service = ::Selenium::WebDriver::Service.chrome
+  service.port = 51_674
+
   options = {
-    service: ::Selenium::WebDriver::Service.chrome(args: { port: 51_674 }),
+    service: service,
     browser: :chrome,
     options: chrome_options
   }

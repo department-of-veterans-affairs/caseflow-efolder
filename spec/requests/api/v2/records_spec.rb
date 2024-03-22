@@ -119,5 +119,36 @@ describe "Records API v2", type: :request do
         expect(body["status"]).to match(/sensitive/)
       end
     end
+
+    context "document_source_to_headers" do
+      let!(:files_download) { FilesDownload.create(user: current_user, manifest: manifest2) }
+    
+
+      context "when document is not in S3" do
+        it "hedaers include X-Document-Source is VBMS" do
+          allow(S3Service).to receive(:exists?).and_return(false)
+          expect(S3Service).to receive(:fetch_content).and_return nil
+          expect(VBMSService).to receive(:v2_fetch_document_file)
+          expect(S3Service).to receive(:store_file)
+          get "/api/v2/records/#{version_id}"
+          expect(response.code).to eq("200")
+          expect(response.headers["X-Document-Source"]).to eq("VBMS")
+        end
+
+      end
+
+      context "when document is in S3" do
+        #Caseflow::Fake::S3Service.exists? returns true by default
+        it "headers include X-Document-Source is S3" do
+          allow(S3Service).to receive(:fetch_content).and_return("much document")
+          expect(VBMSService).not_to receive(:v2_fetch_document_file)
+          expect(S3Service).not_to receive(:store_file)
+          expect(S3Service).to receive(:fetch_content)
+          get "/api/v2/records/#{version_id}"
+          expect(response.code).to eq("200")
+          expect(response.headers["X-Document-Source"]).to eq("S3")
+        end
+      end
+    end
   end
 end

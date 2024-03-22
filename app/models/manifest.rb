@@ -29,7 +29,7 @@ class Manifest < ApplicationRecord
 
   def start!
     # Reset stale manifests.
-    update!(fetched_files_status: :initialized) if stale?
+    update!(fetched_files_status: :initialized) if ready_for_refresh?
 
     vbms_source.start!
     vva_source.start! unless FeatureToggle.enabled?(:skip_vva)
@@ -54,9 +54,9 @@ class Manifest < ApplicationRecord
     end
   end
 
-  # completed? because it can be recent pending with stale fetched_files_at
-  def stale?
-    completed? && fetched_files_at && fetched_files_at < UI_HOURS_UNTIL_EXPIRY.hours.ago
+  # ready_for_refresh? we want to refresh the manifest after 72 hours regardless of the state
+  def ready_for_refresh?
+    !initialized? && fetched_files_at && fetched_files_at < UI_HOURS_UNTIL_EXPIRY.hours.ago
   end
 
   def completed?
