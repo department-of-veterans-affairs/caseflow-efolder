@@ -54,7 +54,4 @@ Rails.application.configure do
   config.s3_enabled = false
 
   config.api_key = "token"
-
-  # Dynatrace variables
-  ENV["STATSD_ENV"] = "test"
 end

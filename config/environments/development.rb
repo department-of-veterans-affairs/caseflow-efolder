@@ -74,7 +74,4 @@ Rails.application.configure do
 
   config.sqs_create_queues = true
   config.sqs_endpoint = 'http://localhost:4566'
-
-  # Dynatrace variables
-  ENV["STATSD_ENV"] = "development"
 end
