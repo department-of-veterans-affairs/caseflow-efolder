@@ -1,6 +1,6 @@
-require_relative 'boot'
+require_relative "boot"
 
-require 'rails/all'
+require "rails/all"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -9,8 +9,16 @@ Bundler.require(*Rails.groups)
 module CaseflowEfolder
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 6.0
+    config.load_defaults 6.1
     config.autoloader = :classic
+
+    # Configuration for the application, engines, and railties goes here.
+    #
+    # These settings can be overridden in specific environments using the files
+    # in config/environments, which are processed later.
+    #
+    # config.time_zone = "Central Time (US & Canada)"
+    # config.eager_load_paths << Rails.root.join("extras")
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
@@ -104,12 +112,16 @@ module CaseflowEfolder
 
 
     #=======================================================================================
+    # Rails 6.1 default overrides
+    #---------------------------------------------------------------------------------------
+    
+
+    #=======================================================================================
     # eFolder Specific configs
     #---------------------------------------------------------------------------------------
     config.download_filepath = Rails.root + "tmp/files"
     config.autoload_paths += Dir[Rails.root + 'app/jobs']
     config.autoload_paths << Rails.root.join('lib')
-    config.autoload_paths << Rails.root.join('lib/scripts')
 
     # Currently the Caseflow client makes calls to get document content directly
     # from eFolder Express to reduce load on Caseflow. Since Caseflow and eFolder
@@ -131,7 +143,7 @@ module CaseflowEfolder
             methods:     :get,
             # when making a cross-origin request, only Cache-Control, Content-Language, 
             # Content-Type, Expires, Last-Modified, Pragma are exposed. PDF.js requires some additional headers to be sent as well
-            expose:      ['content-range, content-length, accept-ranges, x-document-source'], # Headers to send in response
+            expose:      ['content-range, content-length, accept-ranges'], # Headers to send in response
             credentials: true
         end
     end
