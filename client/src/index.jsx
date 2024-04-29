@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 import ReduxBase from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/ReduxBase';
 
@@ -8,14 +8,15 @@ import InitContainer from './containers/InitContainer';
 
 const efolderExpress = {
   init(props) {
-    render(
+    const container = document.getElementById('efolder_express_app');
+    const root = createRoot(container);
+    root.render(
       <ReduxBase reducer={reducer} initialState={{
         ...initState,
         ...props
       }}>
         <InitContainer />
-      </ReduxBase>,
-      document.getElementById('efolder_express_app')
+      </ReduxBase>
     );
   }
 };
