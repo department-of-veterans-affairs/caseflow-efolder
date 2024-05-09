@@ -61,11 +61,17 @@ class ExternalApi::VBMSService
   end
 
   def self.v2_fetch_document_file(document)
-    @vbms_client ||= init_client
+    if FeatureToggle.enabled?(:use_ce_api)
+      request = ExternalApi::VeteranFileFetcher.get_document_content(document.series_id)
+      result = send_and_log_request(document.series_id, request, service: :ce_api)
+      result&.content
+    else
+      @vbms_client ||= init_client
 
-    request = VBMS::Requests::GetDocumentContent.new(document.document_id)
-    result = send_and_log_request(document.document_id, request)
-    result&.content
+      request = VBMS::Requests::GetDocumentContent.new(document.document_id)
+      result = send_and_log_request(document.document_id, request)
+      result&.content
+    end
   end
 
   def self.init_client
@@ -74,10 +80,10 @@ class ExternalApi::VBMSService
                                use_forward_proxy: FeatureToggle.enabled?(:vbms_forward_proxy))
   end
 
-  def self.send_and_log_request(id, request)
+  def self.send_and_log_request(id, request, service: :vbms)
     name = request.class.name.split("::").last
     MetricsService.record("#{request.class} for #{id}",
-                          service: :vbms,
+                          service: service,
                           name: name) do
       @vbms_client.send_request(request)
     end
