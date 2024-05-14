@@ -28,13 +28,15 @@ class ExternalApi::VBMSService
   end
 
   def self.v2_fetch_documents_for(veteran_file_number)
-    @vbms_client ||= init_client
-
     documents = []
 
     if FeatureToggle.enabled?(:vbms_pagination, user: RequestStore[:current_user])
+      @vbms_client ||= init_client
       service = VBMS::Service::PagedDocuments.new(client: @vbms_client)
       documents = call_and_log_service(service: service, vbms_id: veteran_file_number)[:documents]
+    elsif FeatureToggle.enabled?(:use_ce_api)
+      response = ExternalApi::VeteranFileFetcher.new.fetch_veteran_file_list(veteran_file_number: veteran_file_number)
+      documents = JsonApiResponseAdapter.new.adapt_v2_fetch_documents_for(response)
     else
       request = VBMS::Requests::FindDocumentVersionReference.new(veteran_file_number)
       documents = send_and_log_request(veteran_file_number, request)
@@ -46,7 +48,7 @@ class ExternalApi::VBMSService
 
   def self.fetch_delta_documents_for(veteran_file_number, begin_date_range, end_date_range = Time.zone.now)
     @vbms_client || init_client
-    
+
     request = VBMS::Requests::FindDocumentVersionReferenceByDateRange.new(veteran_file_number, begin_date_range, end_date_range)
     documents = send_and_log_request(veteran_file_number, request)
     documents
@@ -61,11 +63,17 @@ class ExternalApi::VBMSService
   end
 
   def self.v2_fetch_document_file(document)
-    @vbms_client ||= init_client
+    if FeatureToggle.enabled?(:use_ce_api)
+      # Not using #send_and_log_request because logging to MetricService implemeneted in CE API gem
+      # Method call returns the response body, so no need to return response.content/body
+      ExternalApi::VeteranFileFetcher.get_document_content(document.series_id)
+    else
+      @vbms_client ||= init_client
 
-    request = VBMS::Requests::GetDocumentContent.new(document.document_id)
-    result = send_and_log_request(document.document_id, request)
-    result&.content
+      request = VBMS::Requests::GetDocumentContent.new(document.document_id)
+      result = send_and_log_request(document.document_id, request)
+      result&.content
+    end
   end
 
   def self.init_client
@@ -74,10 +82,10 @@ class ExternalApi::VBMSService
                                use_forward_proxy: FeatureToggle.enabled?(:vbms_forward_proxy))
   end
 
-  def self.send_and_log_request(id, request)
+  def self.send_and_log_request(id, request, service: :vbms)
     name = request.class.name.split("::").last
     MetricsService.record("#{request.class} for #{id}",
-                          service: :vbms,
+                          service: service,
                           name: name) do
       @vbms_client.send_request(request)
     end
