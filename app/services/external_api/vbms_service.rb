@@ -35,7 +35,7 @@ class ExternalApi::VBMSService
       service = VBMS::Service::PagedDocuments.new(client: @vbms_client)
       documents = call_and_log_service(service: service, vbms_id: veteran_file_number)[:documents]
     elsif FeatureToggle.enabled?(:use_ce_api)
-      response = ExternalApi::VeteranFileFetcher.new.fetch_veteran_file_list(veteran_file_number: veteran_file_number)
+      response = VeteranFileFetcher.fetch_veteran_file_list(veteran_file_number: veteran_file_number)
       documents = JsonApiResponseAdapter.new.adapt_v2_fetch_documents_for(response)
     else
       request = VBMS::Requests::FindDocumentVersionReference.new(veteran_file_number)
@@ -48,7 +48,7 @@ class ExternalApi::VBMSService
 
   def self.fetch_delta_documents_for(veteran_file_number, begin_date_range, end_date_range = Time.zone.now)
     if FeatureToggle.enabled?(:use_ce_api)
-      response = ExternalApi::VeteranFileFetcher.new.fetch_veteran_file_list_by_date_range(
+      response = VeteranFileFetcher.new.fetch_veteran_file_list_by_date_range(
         veteran_file_number: veteran_file_number,
         begin_date_range: begin_date_range,
         end_date_range: end_date_range
