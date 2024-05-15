@@ -35,7 +35,7 @@ class ExternalApi::VBMSService
       service = VBMS::Service::PagedDocuments.new(client: @vbms_client)
       documents = call_and_log_service(service: service, vbms_id: veteran_file_number)[:documents]
     elsif FeatureToggle.enabled?(:use_ce_api)
-      response = ExternalApi::VeteranFileFetcher.new.fetch_veteran_file_list(veteran_file_number: veteran_file_number)
+      response = VeteranFileFetcher.fetch_veteran_file_list(veteran_file_number: veteran_file_number)
       documents = JsonApiResponseAdapter.new.adapt_v2_fetch_documents_for(response)
     else
       request = VBMS::Requests::FindDocumentVersionReference.new(veteran_file_number)

@@ -15,20 +15,19 @@ class JsonApiResponseAdapter
   private
 
   def v2_fetch_documents_file_response(file_json)
-    current_version = file_json["currentVersion"]
-    system_data = current_version["systemData"]
-    provider_data = current_version["providerData"]
+    system_data = file_json["currentVersion"]["systemData"]
+    provider_data = file_json["currentVersion"]["providerData"]
 
     OpenStruct.new(
       document_id: file_json["currentVersionUuid"],
       series_id: file_json["uuid"],
       version: "1",
-      type_description: nil,
-      type_id: file_json["documentTypeId"],
-      doc_type: file_json["documentTypeId"],
+      type_description: provider_data["subject"],
+      type_id: provider_data["documentTypeId"],
+      doc_type: provider_data["documentTypeId"],
       subject: provider_data["subject"],
-      received_at: current_version["dateVaReceivedDocument"],
-      source: current_version["contentSource"],
+      received_at: provider_data["dateVaReceivedDocument"],
+      source: provider_data["contentSource"],
       mime_type: system_data["mimeType"],
       alt_doc_types: nil,
       restricted: nil,
