@@ -85,12 +85,16 @@ class Fakes::DocumentService
   end
 
   def self.v2_fetch_document_file(record)
-    demo = DEMOS[record.file_number] || DEMOS["DEMODEFAULT"]
+    if FeatureToggle.enabled?(:use_ce_api)
+      VeteranFileFetcher.get_document_content(doc_series_id: record.series_id)
+    else
+      demo = DEMOS[record.file_number] || DEMOS["DEMODEFAULT"]
 
-    sleep(rand(demo[:max_file_load] || 5))
-    raise [VBMS::ClientError, VVA::ClientError].sample if demo[:error] && rand(5) == 3
+      sleep(rand(demo[:max_file_load] || 5))
+      raise [VBMS::ClientError, VVA::ClientError].sample if demo[:error] && rand(5) == 3
 
-    file_content(record)
+      file_content(record)
+    end
   end
 
   def self.file_content(record)
