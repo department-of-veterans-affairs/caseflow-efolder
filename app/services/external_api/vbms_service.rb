@@ -48,7 +48,7 @@ class ExternalApi::VBMSService
 
   def self.fetch_delta_documents_for(veteran_file_number, begin_date_range, end_date_range = Time.zone.now)
     if FeatureToggle.enabled?(:use_ce_api)
-      response = VeteranFileFetcher.new.fetch_veteran_file_list_by_date_range(
+      response = VeteranFileFetcher.fetch_veteran_file_list_by_date_range(
         veteran_file_number: veteran_file_number,
         begin_date_range: begin_date_range,
         end_date_range: end_date_range
