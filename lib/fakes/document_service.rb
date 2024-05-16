@@ -56,14 +56,23 @@ class Fakes::DocumentService
 
   ### Fakes v2 START
   def self.v2_fetch_documents_for(file_number)
-    demo = DEMOS[file_number] || DEMOS["DEMODEFAULT"]
-    return [] if !demo || demo[:num_docs] <= 0
+    documents = []
 
-    sleep_and_check_for_error(demo, file_number)
+    if FeatureToggle.enabled?(:use_ce_api)
+      response = VeteranFileFetcher.fetch_veteran_file_list(veteran_file_number: "123456789")
+      documents = JsonApiResponseAdapter.new.adapt_v2_fetch_documents_for(response)
+    else
+      demo = DEMOS[file_number] || DEMOS["DEMODEFAULT"]
+      return [] if !demo || demo[:num_docs] <= 0
 
-    (1..(demo[:num_docs] || 0)).to_a.map do |i|
-      create_document(i)
+      sleep_and_check_for_error(demo, file_number)
+
+      documents = (1..(demo[:num_docs] || 0)).to_a.map do |i|
+        create_document(i)
+      end
     end
+
+    documents
   end
 
   def self.fetch_delta_documents_for(file_number, begin_date)
