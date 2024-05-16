@@ -47,11 +47,19 @@ class ExternalApi::VBMSService
   end
 
   def self.fetch_delta_documents_for(veteran_file_number, begin_date_range, end_date_range = Time.zone.now)
-    @vbms_client || init_client
-
-    request = VBMS::Requests::FindDocumentVersionReferenceByDateRange.new(veteran_file_number, begin_date_range, end_date_range)
-    documents = send_and_log_request(veteran_file_number, request)
-    documents
+    if FeatureToggle.enabled?(:use_ce_api)
+      response = VeteranFileFetcher.fetch_veteran_file_list_by_date_range(
+        veteran_file_number: veteran_file_number,
+        begin_date_range: begin_date_range,
+        end_date_range: end_date_range
+      )
+      documents = JsonApiResponseAdapter.new.adapt_v2_fetch_documents_for(response)
+    else
+      @vbms_client || init_client
+      request = VBMS::Requests::FindDocumentVersionReferenceByDateRange.new(veteran_file_number, begin_date_range, end_date_range)
+      documents = send_and_log_request(veteran_file_number, request)
+      documents
+    end
   end
 
   def self.fetch_document_file(document)
