@@ -40,6 +40,7 @@ class ManifestSource < ApplicationRecord
   end
 
   def current?
+    return false
     success? && fetched_at && fetched_at > expiry_hours.hours.ago
   end
 
