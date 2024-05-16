@@ -90,10 +90,10 @@ class ExternalApi::VBMSService
                                use_forward_proxy: FeatureToggle.enabled?(:vbms_forward_proxy))
   end
 
-  def self.send_and_log_request(id, request, service: :vbms)
+  def self.send_and_log_request(id, request)
     name = request.class.name.split("::").last
     MetricsService.record("#{request.class} for #{id}",
-                          service: service,
+                          service: :vbms,
                           name: name) do
       @vbms_client.send_request(request)
     end
