@@ -71,11 +71,17 @@ class ExternalApi::VBMSService
   end
 
   def self.v2_fetch_document_file(document)
-    @vbms_client ||= init_client
+    if FeatureToggle.enabled?(:use_ce_api)
+      # Not using #send_and_log_request because logging to MetricService implemeneted in CE API gem
+      # Method call returns the response body, so no need to return response.content/body
+      VeteranFileFetcher.get_document_content(doc_series_id: document.series_id)
+    else
+      @vbms_client ||= init_client
 
-    request = VBMS::Requests::GetDocumentContent.new(document.document_id)
-    result = send_and_log_request(document.document_id, request)
-    result&.content
+      request = VBMS::Requests::GetDocumentContent.new(document.document_id)
+      result = send_and_log_request(document.document_id, request)
+      result&.content
+    end
   end
 
   def self.init_client
