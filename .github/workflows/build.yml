@@ -53,6 +53,11 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: install node version
+      uses: actions/setup-node@v4
+      with:
+        node-version: '14.20.0'
+
     - name: Install Chrome
       run: |
         apt-get update
