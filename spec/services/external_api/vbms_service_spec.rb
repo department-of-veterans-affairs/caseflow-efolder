@@ -23,6 +23,26 @@ describe ExternalApi::VBMSService do
         described.v2_fetch_documents_for(veteran_id)
       end
     end
+
+    context "with vbms_pagination feature toggle enabled" do
+      let!(:user) do
+        user = User.create(css_id: "VSO", station_id: "283", participant_id: "1234")
+        RequestStore.store[:current_user] = user
+      end
+
+      it "calls the PagedDocuments SOAP API endpoint" do
+        veteran_id = "123456789"
+
+        expect(FeatureToggle).to receive(:enabled?).with(:use_ce_api).and_return(false)
+        expect(FeatureToggle).to receive(:enabled?).with(:vbms_pagination, user: user).and_return(true)
+        expect(described_class).to receive(:init_client)
+        expect(VBMS::Service::PagedDocuments).to receive(:new).and_return(:test_service)
+        expect(described_class).to receive(:call_and_log_service)
+          .with(service: :test_service, vbms_id: veteran_id).and_return({ documents: [] })
+
+        described.v2_fetch_documents_for(veteran_id)
+      end
+    end
   end
 
   describe ".fetch_delta_documents_for" do
@@ -51,7 +71,7 @@ describe ExternalApi::VBMSService do
       end
     end
   end
-  
+
   describe ".v2_fetch_document_file" do
     context "with use_ce_api feature toggle enabled" do
       before { FeatureToggle.enable!(:use_ce_api) }
