@@ -28,11 +28,13 @@ class ExternalApi::VBMSService
   end
 
   def self.v2_fetch_documents_for(veteran_file_number)
-    @vbms_client ||= init_client
-
     documents = []
 
-    if FeatureToggle.enabled?(:vbms_pagination, user: RequestStore[:current_user])
+    if FeatureToggle.enabled?(:use_ce_api)
+      response = VeteranFileFetcher.fetch_veteran_file_list(veteran_file_number: veteran_file_number)
+      documents = JsonApiResponseAdapter.new.adapt_v2_fetch_documents_for(response)
+    elsif FeatureToggle.enabled?(:vbms_pagination, user: RequestStore[:current_user])
+      @vbms_client ||= init_client
       service = VBMS::Service::PagedDocuments.new(client: @vbms_client)
       documents = call_and_log_service(service: service, vbms_id: veteran_file_number)[:documents]
     else
@@ -45,11 +47,19 @@ class ExternalApi::VBMSService
   end
 
   def self.fetch_delta_documents_for(veteran_file_number, begin_date_range, end_date_range = Time.zone.now)
-    @vbms_client || init_client
-    
-    request = VBMS::Requests::FindDocumentVersionReferenceByDateRange.new(veteran_file_number, begin_date_range, end_date_range)
-    documents = send_and_log_request(veteran_file_number, request)
-    documents
+    if FeatureToggle.enabled?(:use_ce_api)
+      response = VeteranFileFetcher.fetch_veteran_file_list_by_date_range(
+        veteran_file_number: veteran_file_number,
+        begin_date_range: begin_date_range,
+        end_date_range: end_date_range
+      )
+      documents = JsonApiResponseAdapter.new.adapt_v2_fetch_documents_for(response)
+    else
+      @vbms_client || init_client
+      request = VBMS::Requests::FindDocumentVersionReferenceByDateRange.new(veteran_file_number, begin_date_range, end_date_range)
+      documents = send_and_log_request(veteran_file_number, request)
+      documents
+    end
   end
 
   def self.fetch_document_file(document)
@@ -61,11 +71,17 @@ class ExternalApi::VBMSService
   end
 
   def self.v2_fetch_document_file(document)
-    @vbms_client ||= init_client
+    if FeatureToggle.enabled?(:use_ce_api)
+      # Not using #send_and_log_request because logging to MetricService implemeneted in CE API gem
+      # Method call returns the response body, so no need to return response.content/body
+      VeteranFileFetcher.get_document_content(doc_series_id: document.series_id)
+    else
+      @vbms_client ||= init_client
 
-    request = VBMS::Requests::GetDocumentContent.new(document.document_id)
-    result = send_and_log_request(document.document_id, request)
-    result&.content
+      request = VBMS::Requests::GetDocumentContent.new(document.document_id)
+      result = send_and_log_request(document.document_id, request)
+      result&.content
+    end
   end
 
   def self.init_client
