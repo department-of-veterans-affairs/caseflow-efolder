@@ -1,4 +1,4 @@
-describe RecordFetcher do
+describe RecordApiFetcher do
   let(:manifest) { Manifest.create(file_number: "1234") }
   let(:source) { ManifestSource.create(name: %w[VBMS VVA].sample, manifest: manifest) }
 
