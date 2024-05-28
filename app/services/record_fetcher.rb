@@ -23,6 +23,7 @@ class RecordFetcher
   private
 
   def content_from_va_service
+    record.update(sourced: "VBMS")
     content = MetricsService.record("RecordFetcher fetch content from VA manifest source name: #{record.manifest_source.name} for file_number #{record.file_number}",
                                     service: record.manifest_source.name.downcase.to_sym,
                                     name: "v2_fetch_document_file") do
@@ -42,6 +43,7 @@ class RecordFetcher
   end
 
   def content_from_s3
+    record.update(sourced: "S3")
     @content_from_s3 ||= MetricsService.record("RecordFetcher fetch content from S3 filename: #{record.s3_filename} for file_number #{record.file_number}",
                                                service: :s3,
                                                name: "content_from_s3") do
