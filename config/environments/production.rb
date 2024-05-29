@@ -23,7 +23,7 @@ Rails.application.configure do
   config.public_file_server.enabled = ENV['RAILS_SERVE_STATIC_FILES'].present?
 
   # Compress JavaScripts and CSS.
-  config.assets.js_compressor = :uglifier
+  config.assets.js_compressor = Uglifier.new(harmony: true)
   # config.assets.css_compressor = :sass
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
@@ -118,7 +118,7 @@ Rails.application.configure do
 # Keep all efolder specific config settings below for clean diff's when upgrading rails
 #=========================================================================================
   config.vva_wsdl = ENV["VVA_WSDL"]
-  
+
   config.s3_enabled = true
   config.s3_bucket_name = ENV["AWS_BUCKET_NAME"]
 
