@@ -1,10 +1,4 @@
-class RecordFetcher
-  include ActiveModel::Model
-
-  attr_accessor :record
-
-  EXCEPTIONS = [VBMS::ClientError, VVA::ClientError].freeze
-  SECONDS_TO_AUTO_UNLOCK = 90
+class RecordFetcher < RecordFetcherBase
 
   def process
     s = Redis::Semaphore.new("record_#{record.id}".to_s,
@@ -13,8 +7,8 @@ class RecordFetcher
                              expiration: SECONDS_TO_AUTO_UNLOCK)
     s.lock(SECONDS_TO_AUTO_UNLOCK)
     content_from_s3 || content_from_va_service
-  rescue *EXCEPTIONS => error
-    Rails.logger.error("Caught #{error}")
+  rescue *EXCEPTIONS => e
+    Rails.logger.error("Caught #{e}")
     nil
   ensure
     s&.unlock
@@ -29,25 +23,14 @@ class RecordFetcher
                                     name: "v2_fetch_document_file") do
       record.service.v2_fetch_document_file(record)
     end
-    content = MetricsService.record("ImageConverterService for #{record.s3_filename}",
-                                    service: :image_converter,
-                                    name: "image_converter_service") do
-      ImageConverterService.new(image: content, record: record).process
-    end
-    MetricsService.record("RecordFetcher S3 store content for #{record.s3_filename}",
-                          service: :s3,
-                          name: "content_from_va_service") do
-      S3Service.store_file(record.s3_filename, content)
-    end
+
+    # convert image to pdf
+    content = image_converter(content)
+
+    # store to s3
+    content_store_to_s3(content)
+
     content
   end
 
-  def content_from_s3
-    record.update(sourced: "S3")
-    @content_from_s3 ||= MetricsService.record("RecordFetcher fetch content from S3 filename: #{record.s3_filename} for file_number #{record.file_number}",
-                                               service: :s3,
-                                               name: "content_from_s3") do
-      S3Service.fetch_content(record.s3_filename)
-    end
-  end
 end
