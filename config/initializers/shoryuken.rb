@@ -8,7 +8,6 @@ ActiveJob::QueueAdapters::ShoryukenAdapter::JobWrapper
 if Rails.application.config.sqs_endpoint
   # override the sqs_endpoint
   Shoryuken::Client.sqs = Aws::SQS::Client.new(endpoint: Rails.application.config.sqs_endpoint)
-  byebug
 end
 
 if Rails.application.config.sqs_create_queues
