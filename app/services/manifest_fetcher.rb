@@ -3,7 +3,7 @@ class ManifestFetcher
 
   attr_accessor :manifest_source
 
-  EXCEPTIONS = [VBMS::ClientError, VVA::ClientError].freeze
+  EXCEPTIONS = [VBMS::ClientError, VVA::ClientError, ClaimEvidenceApi::Errors::ClaimEvidenceApiError].freeze
 
   def process
     DocumentCreator.new(manifest_source: manifest_source, external_documents: documents).create

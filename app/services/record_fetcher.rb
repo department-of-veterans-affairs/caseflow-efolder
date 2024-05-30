@@ -3,7 +3,7 @@ class RecordFetcher
 
   attr_accessor :record
 
-  EXCEPTIONS = [VBMS::ClientError, VVA::ClientError].freeze
+  EXCEPTIONS = [VBMS::ClientError, VVA::ClientError, ClaimEvidenceApi::Errors::ClaimEvidenceApiError].freeze
   SECONDS_TO_AUTO_UNLOCK = 90
 
   def process
