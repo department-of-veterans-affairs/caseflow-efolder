@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -20,71 +20,83 @@ import DownloadListContainer from './DownloadListContainer';
 import DownloadProgressContainer from './DownloadProgressContainer';
 import { documentDownloadStarted, manifestFetchComplete } from '../Utils';
 
-class DownloadContainer extends React.PureComponent {
-  componentDidMount() {
-    // Clear all previous error messages. The only errors we care about will happen after this component has mounted.
-    this.props.clearErrorMessage();
+const DownloadContainer = ({
+  csrfToken,
+  documents,
+  documentsFetchStatus,
+  documentSources,
+  errorMessage,
+  manifestId,
+  veteranId,
+  veteranName,
+  match,
+  pollManifestFetchEndpoint,
+  clearErrorMessage,
+  resetDefaultManifestState,
+  restartManifestFetch,
+  setManifestId
+}) => {
+  useEffect(() => {
+    clearErrorMessage();
 
-    const manifestId = this.props.match.params.manifestId;
+    const currentManifestId = match.params.manifestId;
     let forceManifestRequest = false;
 
-    if (this.props.manifestId && this.props.manifestId !== manifestId) {
+    if (manifestId && manifestId !== currentManifestId) {
       forceManifestRequest = true;
-      this.props.resetDefaultManifestState();
+      resetDefaultManifestState();
     }
 
-    this.props.setManifestId(manifestId);
+    setManifestId(currentManifestId);
 
     if (forceManifestRequest ||
-      !manifestFetchComplete(this.props.documentSources) ||
-      this.props.documentsFetchStatus === MANIFEST_DOWNLOAD_STATE.IN_PROGRESS
+      !manifestFetchComplete(documentSources) ||
+      documentsFetchStatus === MANIFEST_DOWNLOAD_STATE.IN_PROGRESS
     ) {
-      this.props.restartManifestFetch(manifestId, this.props.csrfToken);
-      this.props.pollManifestFetchEndpoint(0, manifestId, this.props.csrfToken);
+      restartManifestFetch(currentManifestId, csrfToken);
+      pollManifestFetchEndpoint(0, currentManifestId, csrfToken);
     }
-  }
+  }, [manifestId, match.params.manifestId, csrfToken, documentSources, documentsFetchStatus, clearErrorMessage, resetDefaultManifestState, setManifestId, restartManifestFetch, pollManifestFetchEndpoint]);
 
-  render() {
-    let pageBody = <React.Fragment>
-      <AppSegment filledBackground>
-        <PageLoadingIndicator>We are gathering the list of files in the eFolder now...</PageLoadingIndicator>
-      </AppSegment>
+  let pageBody = <React.Fragment>
+    <AppSegment filledBackground>
+      <PageLoadingIndicator>We are gathering the list of files in the eFolder now...</PageLoadingIndicator>
+    </AppSegment>
+    <DownloadPageFooter />
+  </React.Fragment>;
+
+  if (errorMessage.title) {
+    pageBody = <React.Fragment>
+      <StatusMessage title={errorMessage.title}>{errorMessage.message}</StatusMessage>
       <DownloadPageFooter />
     </React.Fragment>;
-
-    if (this.props.errorMessage.title) {
+  } else if (documentDownloadStarted(documentsFetchStatus)) {
+    pageBody = <DownloadProgressContainer />;
+  } else if (manifestFetchComplete(documentSources)) {
+    if (documents.length) {
+      pageBody = <DownloadListContainer />;
+    } else {
       pageBody = <React.Fragment>
-        <StatusMessage title={this.props.errorMessage.title}>{this.props.errorMessage.message}</StatusMessage>
+        <AppSegment filledBackground>
+          <h1 className="cf-msg-screen-heading">No Documents in eFolder</h1>
+          <h2 className="cf-msg-screen-deck">
+            eFolder Express could not find any documents in the eFolder with Veteran ID #{veteranId}.
+            It's possible this eFolder does not exist.
+          </h2>
+          <p className="cf-msg-screen-text">
+            Please check the Veteran ID number and <Link to="/">search again</Link>.
+          </p>
+        </AppSegment>
         <DownloadPageFooter />
       </React.Fragment>;
-    } else if (documentDownloadStarted(this.props.documentsFetchStatus)) {
-      pageBody = <DownloadProgressContainer />;
-    } else if (manifestFetchComplete(this.props.documentSources)) {
-      if (this.props.documents.length) {
-        pageBody = <DownloadListContainer />;
-      } else {
-        pageBody = <React.Fragment>
-          <AppSegment filledBackground>
-            <h1 className="cf-msg-screen-heading">No Documents in eFolder</h1>
-            <h2 className="cf-msg-screen-deck">
-              eFolder Express could not find any documents in the eFolder with Veteran ID #{this.props.veteranId}.
-              It's possible this eFolder does not exist.
-            </h2>
-            <p className="cf-msg-screen-text">
-              Please check the Veteran ID number and <Link to="/">search again</Link>.
-            </p>
-          </AppSegment>
-          <DownloadPageFooter />
-        </React.Fragment>;
-      }
     }
-
-    return <React.Fragment>
-      <DownloadPageHeader veteranId={this.props.veteranId} veteranName={this.props.veteranName} />
-      { pageBody }
-    </React.Fragment>;
   }
-}
+
+  return <React.Fragment>
+    <DownloadPageHeader veteranId={veteranId} veteranName={veteranName} />
+    { pageBody }
+  </React.Fragment>;
+};
 
 const mapStateToProps = (state) => ({
   csrfToken: state.csrfToken,
