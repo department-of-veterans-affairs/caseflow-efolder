@@ -1,4 +1,4 @@
-class JobMetricsServiceMetricMiddleware
+class JobDataDogMetricMiddleware
   def call(_worker, queue, _msg, body)
     job_class = body["job_class"]
 
@@ -7,7 +7,7 @@ class JobMetricsServiceMetricMiddleware
     end
 
     begin
-      MetricsService.emit_gauge(
+      DataDogService.emit_gauge(
         metric_group: "job",
         metric_name: "elapsed_time",
         metric_value: stopwatch.real,
