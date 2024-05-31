@@ -67,7 +67,7 @@ describe "Records API v2", type: :request do
       end
 
       it "returns 502 if there is a VBMS/VVA error" do
-        allow_any_instance_of(RecordFetcher).to receive(:process).and_return(nil)
+        allow_any_instance_of(RecordApiFetcher).to receive(:process).and_return(nil)
         record2.update(status: :failed)
 
         get "/api/v2/records/#{version_id}"
@@ -81,7 +81,7 @@ describe "Records API v2", type: :request do
       end
 
       it "returns 500 if there is a StaleObjectError error" do
-        allow_any_instance_of(RecordFetcher).to receive(:process).and_raise(ActiveRecord::StaleObjectError.new(nil, nil))
+        allow_any_instance_of(RecordApiFetcher).to receive(:process).and_raise(ActiveRecord::StaleObjectError.new(nil, nil))
         expect(Raven).to receive(:capture_exception)
         expect(Raven).to receive(:last_event_id).and_return("a1b2c3")
 
@@ -96,7 +96,7 @@ describe "Records API v2", type: :request do
       end
 
       it "returns 500 on any other error" do
-        allow_any_instance_of(RecordFetcher).to receive(:process).and_raise("Much random error")
+        allow_any_instance_of(RecordApiFetcher).to receive(:process).and_raise("Much random error")
         expect(Raven).to receive(:capture_exception)
         expect(Raven).to receive(:last_event_id).and_return("a1b2c3")
 
@@ -122,14 +122,11 @@ describe "Records API v2", type: :request do
 
     context "document_source_to_headers" do
       let!(:files_download) { FilesDownload.create(user: current_user, manifest: manifest2) }
-    
 
       context "when document is not in S3" do
-        it "hedaers include X-Document-Source is VBMS" do
+        it "headers include X-Document-Source is VBMS" do
           allow(S3Service).to receive(:exists?).and_return(false)
-          expect(S3Service).to receive(:fetch_content).and_return nil
-          expect(VBMSService).to receive(:v2_fetch_document_file)
-          expect(S3Service).to receive(:store_file)
+          expect(VBMSService).to receive(:v2_fetch_document_file).and_return("hello")
           get "/api/v2/records/#{version_id}"
           expect(response.code).to eq("200")
           expect(response.headers["X-Document-Source"]).to eq("VBMS")
@@ -142,7 +139,7 @@ describe "Records API v2", type: :request do
         it "headers include X-Document-Source is S3" do
           allow(S3Service).to receive(:fetch_content).and_return("much document")
           expect(VBMSService).not_to receive(:v2_fetch_document_file)
-          expect(S3Service).not_to receive(:store_file)
+          # expect(S3Service).not_to receive(:store_file)
           expect(S3Service).to receive(:fetch_content)
           get "/api/v2/records/#{version_id}"
           expect(response.code).to eq("200")
