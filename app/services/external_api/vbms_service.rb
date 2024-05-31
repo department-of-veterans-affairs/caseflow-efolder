@@ -18,8 +18,6 @@ end
 
 class ExternalApi::VBMSService
   def self.fetch_documents_for(download)
-    @vbms_client ||= init_client
-
     request = VBMS::Requests::ListDocuments.new(download.file_number)
 
     documents = send_and_log_request(download.file_number, request)
@@ -34,8 +32,7 @@ class ExternalApi::VBMSService
       response = VeteranFileFetcher.fetch_veteran_file_list(veteran_file_number: veteran_file_number)
       documents = JsonApiResponseAdapter.new.adapt_v2_fetch_documents_for(response)
     elsif FeatureToggle.enabled?(:vbms_pagination, user: RequestStore[:current_user])
-      @vbms_client ||= init_client
-      service = VBMS::Service::PagedDocuments.new(client: @vbms_client)
+      service = VBMS::Service::PagedDocuments.new(client: vbms_client)
       documents = call_and_log_service(service: service, vbms_id: veteran_file_number)[:documents]
     else
       request = VBMS::Requests::FindDocumentVersionReference.new(veteran_file_number)
@@ -47,6 +44,8 @@ class ExternalApi::VBMSService
   end
 
   def self.fetch_delta_documents_for(veteran_file_number, begin_date_range, end_date_range = Time.zone.now)
+    documents = []
+
     if FeatureToggle.enabled?(:use_ce_api)
       response = VeteranFileFetcher.fetch_veteran_file_list_by_date_range(
         veteran_file_number: veteran_file_number,
@@ -55,16 +54,15 @@ class ExternalApi::VBMSService
       )
       documents = JsonApiResponseAdapter.new.adapt_v2_fetch_documents_for(response)
     else
-      @vbms_client || init_client
       request = VBMS::Requests::FindDocumentVersionReferenceByDateRange.new(veteran_file_number, begin_date_range, end_date_range)
       documents = send_and_log_request(veteran_file_number, request)
-      documents
     end
+
+    Rails.logger.info("VBMS Document list length: #{documents.length}")
+    documents
   end
 
   def self.fetch_document_file(document)
-    @vbms_client ||= init_client
-
     request = VBMS::Requests::FetchDocumentById.new(document.document_id)
     result = send_and_log_request(document.document_id, request)
     result&.content
@@ -76,8 +74,6 @@ class ExternalApi::VBMSService
       # Method call returns the response body, so no need to return response.content/body
       VeteranFileFetcher.get_document_content(doc_series_id: document.series_id)
     else
-      @vbms_client ||= init_client
-
       request = VBMS::Requests::GetDocumentContent.new(document.document_id)
       result = send_and_log_request(document.document_id, request)
       result&.content
@@ -92,10 +88,11 @@ class ExternalApi::VBMSService
 
   def self.send_and_log_request(id, request)
     name = request.class.name.split("::").last
+
     MetricsService.record("#{request.class} for #{id}",
                           service: :vbms,
                           name: name) do
-      @vbms_client.send_request(request)
+      vbms_client.send_request(request)
     end
   end
 
@@ -106,5 +103,11 @@ class ExternalApi::VBMSService
                           name: name) do
       service.call(file_number: vbms_id)
     end
+  end
+
+  def self.vbms_client
+    return @vbms_client if @vbms_client.present?
+
+    @vbms_client = init_client
   end
 end
