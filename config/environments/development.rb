@@ -57,7 +57,7 @@ Rails.application.configure do
   # routes, locales, etc. This feature depends on the listen gem.
   # config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
-  
+
 #=========================================================================================
 # eFolder - Custom Config Settings
 # Keep all efolder specific config settings below for clean diff's when upgrading rails
@@ -74,6 +74,9 @@ Rails.application.configure do
 
   config.sqs_create_queues = true
   config.sqs_endpoint = 'http://localhost:4566'
+
+  ENV["AWS_ACCESS_KEY_ID"] ||= "dummykeyid"
+  ENV["AWS_SECRET_ACCESS_KEY"] ||= "dummysecretkey"
 
   # Dynatrace variables
   ENV["STATSD_ENV"] = "development"
