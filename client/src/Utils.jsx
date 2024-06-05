@@ -10,7 +10,7 @@ export const documentDownloadStarted = (status) => status !== MANIFEST_DOWNLOAD_
 export const formatDateString = (str) => {
   const date = new Date(str);
 
-  return `${date.getMonth() + 1}/${date.getUTCDate()}/${date.getFullYear()}`;
+  return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
 };
 
 // Before the manifest fetch request documentSources will be an empty array. The manifest fetch POST request kicks off
