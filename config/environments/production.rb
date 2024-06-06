@@ -118,7 +118,7 @@ Rails.application.configure do
 # Keep all efolder specific config settings below for clean diff's when upgrading rails
 #=========================================================================================
   config.vva_wsdl = ENV["VVA_WSDL"]
-  
+
   config.s3_enabled = true
   config.s3_bucket_name = ENV["AWS_BUCKET_NAME"]
 
