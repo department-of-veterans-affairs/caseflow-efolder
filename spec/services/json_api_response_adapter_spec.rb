@@ -1,0 +1,28 @@
+# frozen_string_literal: true
+
+require "json"
+
+describe JsonApiResponseAdapter do
+  subject(:described) { described_class.new }
+
+  let(:api_response) { instance_double(ExternalApi::Response) }
+
+  describe "#adapt_v2_fetch_documents_for" do
+    it "correctly parses an API response" do
+      expect(api_response).to receive(:body)
+        .and_return(JSON.load(Rails.root.join("spec/support/api_responses/ce_api_folders_files_search.json")))
+
+      parsed = described.adapt_v2_fetch_documents_for(api_response)
+
+      expect(parsed.length).to eq 2
+
+      expect(parsed[0].document_id).to eq "{03223945-468B-4E8A-B79B-82FA73C2D2D9}"
+      expect(parsed[0].received_at).to eq "2018-03-08"
+      expect(parsed[0].mime_type).to eq "application/pdf"
+
+      expect(parsed[1].document_id).to eq "{7D6AFD8C-3BF7-4224-93AE-E1F07AC43C71}"
+      expect(parsed[1].received_at).to eq "2018-12-08"
+      expect(parsed[1].mime_type).to eq "application/pdf"
+    end
+  end
+end
