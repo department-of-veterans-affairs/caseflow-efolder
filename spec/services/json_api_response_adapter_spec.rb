@@ -35,8 +35,8 @@ describe JsonApiResponseAdapter do
       data_hash = JSON.parse(File.read(file))
       file.close
 
-      expect(api_response).to receive(:body).exactly(3).times
-        .and_return(data_hash)
+      expect(api_response).to receive(:body)
+        .exactly(3).times.and_return(data_hash)
 
       parsed = described.adapt_v2_fetch_documents_for(api_response)
 
