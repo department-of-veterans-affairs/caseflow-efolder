@@ -18,9 +18,7 @@ class JsonApiResponseAdapter
   private
 
   def valid_json_response?(json_response)
-    return false if json_response.blank?
-
-    return false if json_response.body.blank?
+    return false if json_response&.body.blank?
 
     json_response.body.key?("files")
   end
