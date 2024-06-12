@@ -21,7 +21,7 @@ describe V2::SaveFilesInS3Job do
     context "when VBMS/VVA requests are not successful" do
       it "does not save files in S3" do
         allow(S3Service).to receive(:store_file).and_return(nil)
-        allow(Fakes::DocumentService).to receive(:v2_fetch_document_file).and_raise([VBMS::ClientError, VVA::ClientError].sample)
+        allow(Efolder::Fakes::DocumentService).to receive(:v2_fetch_document_file).and_raise([VBMS::ClientError, VVA::ClientError].sample)
         V2::SaveFilesInS3Job.perform_now(source)
         expect(S3Service).to_not have_received(:store_file)
       end

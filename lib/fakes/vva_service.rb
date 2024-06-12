@@ -1,4 +1,6 @@
-class Fakes::VVAService < Fakes::DocumentService
+require 'caseflow'
+
+class Fakes::VVAService < Efolder::Fakes::DocumentService
   def self.service_type
     "VVA"
   end
