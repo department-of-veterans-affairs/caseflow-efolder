@@ -558,6 +558,7 @@ PLATFORMS
 DEPENDENCIES
   active_model_serializers
   activejob_dj_overrides
+  aws-sdk-core (= 3.131.0)
   aws-sdk-ec2
   aws-sdk-s3
   aws-sdk-sqs
