@@ -3,9 +3,6 @@
   "private": true,
   "version": "1.0.0",
   "license": "UNLICENSED",
-  "engines": {
-    "node": "14.20.0"
-  },
   "scripts": {
     "build": "webpack --config webpack.config.js",
     "dev:watch": "yarn run build --watch",
