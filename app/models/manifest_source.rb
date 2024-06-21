@@ -17,24 +17,13 @@ class ManifestSource < ApplicationRecord
 
   delegate :file_number, to: :manifest
 
-  SECONDS_TO_AUTO_UNLOCK = 5
-
   def start!
-    s = Redis::Semaphore.new("download_manifest_source_#{id}".to_s,
-                             url: Rails.application.secrets.redis_url_cache,
-                             expiration: SECONDS_TO_AUTO_UNLOCK)
-    s.lock(SECONDS_TO_AUTO_UNLOCK) do
-      return if current? || pending?
-      update(status: :pending)
-    end
+    return if current? || processing?
+    V2::DownloadManifestJob.perform_later(self, RequestStore[:current_user])
+  rescue StandardError
+    update(status: :initialized)
 
-    begin
-      V2::DownloadManifestJob.perform_later(self, RequestStore[:current_user])
-    rescue StandardError
-      update(status: :initialized)
-
-      raise
-    end
+    raise
   end
 
   def service
@@ -52,5 +41,9 @@ class ManifestSource < ApplicationRecord
 
   def current?
     success? && fetched_at && fetched_at > expiry_hours.hours.ago
+  end
+
+  def processing?
+    pending? && fetched_at && fetched_at > 24.hours.ago
   end
 end
