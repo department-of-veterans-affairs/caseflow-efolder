@@ -20,11 +20,11 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/caseflow-commons
-  revision: fb6fa9658825c143eb8d202b87128f34ca7e210b
-  ref: fb6fa9658825c143eb8d202b87128f34ca7e210b
+  revision: 716b58caf2116da5fca21c3b3aeea6c9712f3b9d
+  ref: 716b58caf2116da5fca21c3b3aeea6c9712f3b9d
   specs:
-    caseflow (0.4.6)
-      aws-sdk (~> 2.10)
+    caseflow (0.4.8)
+      aws-sdk-s3
       bourbon (= 4.2.7)
       d3-rails
       jquery-rails
@@ -155,13 +155,25 @@ GEM
       nokogiri
     ast (2.4.1)
     aws-eventstream (1.1.0)
-    aws-sdk (2.11.632)
-      aws-sdk-resources (= 2.11.632)
-    aws-sdk-core (2.11.632)
-      aws-sigv4 (~> 1.0)
+    aws-partitions (1.942.0)
+    aws-sdk-core (3.131.0)
+      aws-eventstream (~> 1, >= 1.0.2)
+      aws-partitions (~> 1, >= 1.525.0)
+      aws-sigv4 (~> 1.1)
       jmespath (~> 1.0)
-    aws-sdk-resources (2.11.632)
-      aws-sdk-core (= 2.11.632)
+    aws-sdk-ec2 (1.341.0)
+      aws-sdk-core (~> 3, >= 3.127.0)
+      aws-sigv4 (~> 1.1)
+    aws-sdk-kms (1.58.0)
+      aws-sdk-core (~> 3, >= 3.127.0)
+      aws-sigv4 (~> 1.1)
+    aws-sdk-s3 (1.101.0)
+      aws-sdk-core (~> 3, >= 3.120.0)
+      aws-sdk-kms (~> 1)
+      aws-sigv4 (~> 1.1)
+    aws-sdk-sqs (1.51.1)
+      aws-sdk-core (~> 3, >= 3.127.0)
+      aws-sigv4 (~> 1.1)
     aws-sigv4 (1.2.2)
       aws-eventstream (~> 1, >= 1.0.2)
     bootsnap (1.16.0)
@@ -546,7 +558,10 @@ PLATFORMS
 DEPENDENCIES
   active_model_serializers
   activejob_dj_overrides
-  aws-sdk (~> 2)
+  aws-sdk-core (= 3.131.0)
+  aws-sdk-ec2
+  aws-sdk-s3
+  aws-sdk-sqs
   bgs!
   bootsnap
   brakeman
@@ -615,4 +630,4 @@ DEPENDENCIES
   zero_downtime_migrations
 
 BUNDLED WITH
-   1.17.3
+   2.4.19
