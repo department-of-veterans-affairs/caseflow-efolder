@@ -5,7 +5,11 @@ class RecordFetcher < RecordFetcherBase
                              url: Rails.application.secrets.redis_url_cache,
                              stale_client_timeout: 5,
                              expiration: SECONDS_TO_AUTO_UNLOCK)
-    s.lock(SECONDS_TO_AUTO_UNLOCK)
+    MetricsService.record("RecordFetcher Semaphore lock from VA manifest source name: #{record.manifest_source.name} for file_number #{record.file_number}",
+                           service: record.manifest_source.name.downcase.to_sym,
+                           name: "recordfetcher_semaphore_lock") do                        
+      s.lock(SECONDS_TO_AUTO_UNLOCK)
+    end
     content_from_s3 || content_from_va_service
   rescue *EXCEPTIONS => e
     Rails.logger.error("Caught #{e}")

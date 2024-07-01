@@ -5,7 +5,7 @@ source ENV["GEM_SERVER_URL"] || "https://rubygems.org"
 gem "active_model_serializers"
 gem "activejob_dj_overrides"
 gem "aws-sdk", "~> 2"
-gem "bgs", git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", ref: "98547485d863f2f0d3bb9a1b9ec92a8fe21ba306"
+gem "bgs", git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", ref: "a2e055b5a52bd1e2bb8c2b3b8d5820b1a404cd3d"
 gem "bootsnap", require: false
 gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons", ref: "fb6fa9658825c143eb8d202b87128f34ca7e210b"
 gem "coffee-rails", "> 4.1.0"
