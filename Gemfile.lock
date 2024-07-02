@@ -76,8 +76,8 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/ruby_claim_evidence_api.git
-  revision: 859e37b01d00de6b73d9c5e7346c72bf20e843ee
-  branch: feature/APPEALS-43121-efolder
+  revision: 095798918338650383b06ff535bc63fc5fbfc8dc
+  ref: 095798918338650383b06ff535bc63fc5fbfc8dc
   specs:
     ruby_claim_evidence_api (0.1.0)
       activesupport
@@ -85,6 +85,7 @@ GIT
       faraday
       faraday-multipart
       httpi
+      rack (< 3)
       railties
       webmock (~> 3.11.0)
 
