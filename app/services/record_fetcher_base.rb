@@ -9,6 +9,7 @@ class RecordFetcherBase
   private
 
   def content_from_s3
+    return false if BaseController.dependencies_faked?
     record.update(sourced: "S3")
     @content_from_s3 ||= MetricsService.record("RecordFetcher fetch content from S3 filename: #{record.s3_filename} for file_number #{record.file_number}",
                                                service: :s3,
@@ -18,10 +19,15 @@ class RecordFetcherBase
   end
 
   def content_store_to_s3(content)
-    MetricsService.record("RecordFetcher S3 store content for #{record.s3_filename}",
-                          service: :s3,
-                          name: "content_from_va_service") do
-      S3Service.store_file(record.s3_filename, content)
+    if BaseController.dependencies_faked?
+      save_path = Rails.root.join('tmp', 'temp_pdf.pdf')
+      IO.binwrite(save_path, content)
+    else
+      MetricsService.record("RecordFetcher S3 store content for #{record.s3_filename}",
+                            service: :s3,
+                            name: "content_from_va_service") do
+        S3Service.store_file(record.s3_filename, content)
+      end
     end
   end
 
