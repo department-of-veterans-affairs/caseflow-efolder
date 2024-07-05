@@ -3,7 +3,7 @@ class Api::V2::RecordsController < Api::V2::ApplicationController
 
   def show
 
-    result = if FeatureToggle.enabled?(:vbms_to_reader_on_s3_miss)
+    result = if FeatureToggle.enabled?(:vbms_to_reader_on_s3_miss, user: current_user)
                # return s3 cache miss directly from VBMS
                # instead of saving to s3 first
                record.api_fetch!
