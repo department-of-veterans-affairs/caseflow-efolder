@@ -39,7 +39,7 @@ class RecordFetcher
       ImageConverterService.new(image: content, record: record).process
     end
 
-    if BaseController.dependencies_faked?
+    if BaseController.dependencies_faked_for_CEAPI?
       save_path = Rails.root.join('tmp', 'temp_pdf.pdf')
       IO.binwrite(save_path, content)
     else
@@ -53,7 +53,7 @@ class RecordFetcher
   end
 
   def content_from_s3
-    return false if BaseController.dependencies_faked?
+    return false if BaseController.dependencies_faked_for_CEAPI?
 
     @content_from_s3 ||= MetricsService.record("RecordFetcher fetch content from S3 filename: #{record.s3_filename} for file_number #{record.file_number}",
                                                service: :s3,

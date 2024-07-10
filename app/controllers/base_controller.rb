@@ -22,5 +22,9 @@ class BaseController < ActionController::Base
     def dependencies_faked?
       Rails.env.development? || Rails.env.test? || Rails.env.demo?
     end
+
+    def dependencies_faked_for_CEAPI?
+      Rails.env.development? || Rails.env.demo?
+    end
   end
 end
