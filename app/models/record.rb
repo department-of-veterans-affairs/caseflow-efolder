@@ -5,8 +5,6 @@ class Record < ApplicationRecord
 
   belongs_to :manifest_source
 
-  attr_accessor :sourced
-
   validates :manifest_source, :version_id, :series_id, presence: true
 
   enum status: {
@@ -38,10 +36,6 @@ class Record < ApplicationRecord
 
   def fetch!
     fetcher.process
-  end
-
-  def api_fetch!
-    api_fetcher.process
   end
 
   # TODO: remove this method when implmenentation of VVA/VBMS service is changed towards v2 API
@@ -94,10 +88,6 @@ class Record < ApplicationRecord
 
   def fetcher
     @fetcher ||= RecordFetcher.new(record: self)
-  end
-
-  def api_fetcher
-    @api_fetcher ||= RecordApiFetcher.new(record: self)
   end
 
   # Since Windows has the maximum length for a path, we crop type_name if the filename is longer than set maximum (issue #371)
