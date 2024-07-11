@@ -56,23 +56,14 @@ class Fakes::DocumentService
 
   ### Fakes v2 START
   def self.v2_fetch_documents_for(file_number)
-    documents = []
+    demo = DEMOS[file_number] || DEMOS["DEMODEFAULT"]
+    return [] if !demo || demo[:num_docs] <= 0
 
-    if FeatureToggle.enabled?(:use_ce_api)
-      response = VeteranFileFetcher.fetch_veteran_file_list(veteran_file_number: "123456789")
-      documents = JsonApiResponseAdapter.new.adapt_v2_fetch_documents_for(response)
-    else
-      demo = DEMOS[file_number] || DEMOS["DEMODEFAULT"]
-      return [] if !demo || demo[:num_docs] <= 0
+    sleep_and_check_for_error(demo, file_number)
 
-      sleep_and_check_for_error(demo, file_number)
-
-      documents = (1..(demo[:num_docs] || 0)).to_a.map do |i|
-        create_document(i)
-      end
+    (1..(demo[:num_docs] || 0)).to_a.map do |i|
+      create_document(i)
     end
-
-    documents
   end
 
   def self.fetch_delta_documents_for(file_number, begin_date)
@@ -94,16 +85,12 @@ class Fakes::DocumentService
   end
 
   def self.v2_fetch_document_file(record)
-    if FeatureToggle.enabled?(:use_ce_api)
-      VeteranFileFetcher.get_document_content(doc_series_id: record.series_id)
-    else
-      demo = DEMOS[record.file_number] || DEMOS["DEMODEFAULT"]
+    demo = DEMOS[record.file_number] || DEMOS["DEMODEFAULT"]
 
-      sleep(rand(demo[:max_file_load] || 5))
-      raise [VBMS::ClientError, VVA::ClientError].sample if demo[:error] && rand(5) == 3
+    sleep(rand(demo[:max_file_load] || 5))
+    raise [VBMS::ClientError, VVA::ClientError].sample if demo[:error] && rand(5) == 3
 
-      file_content(record)
-    end
+    file_content(record)
   end
 
   def self.file_content(record)
