@@ -7,7 +7,7 @@ class ZipfileCreator
 
   def process
     records = manifest.records
-    return if records.blank?
+    return if records.blank? || BaseController.dependencies_faked_for_CEAPI?
 
     t = Tempfile.new
     write_to_tempfile(t, records)
