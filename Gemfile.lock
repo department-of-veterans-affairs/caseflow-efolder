@@ -20,12 +20,11 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/caseflow-commons
-  revision: 716b58caf2116da5fca21c3b3aeea6c9712f3b9d
-  ref: 716b58caf2116da5fca21c3b3aeea6c9712f3b9d
+  revision: 4c04f19bd6703d9b8b240cadad36455db9cedae8
+  branch: AlecK/APPEALS-43566
   specs:
     caseflow (0.4.8)
       aws-sdk-s3
-      bourbon (= 4.2.7)
       d3-rails
       jquery-rails
       momentjs-rails
@@ -162,10 +161,10 @@ GEM
       mini_mime (>= 1.1.0)
     activesupport (6.1.7.4)
       concurrent-ruby (~> 1.0, >= 1.0.2)
-      i18n (>= 0.7, < 2)
-      minitest (~> 5.1)
-      tzinfo (~> 1.1)
-      zeitwerk (~> 2.2, >= 2.2.2)
+      i18n (>= 1.6, < 2)
+      minitest (>= 5.1)
+      tzinfo (~> 2.0)
+      zeitwerk (~> 2.3)
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
     akami (1.3.1)
@@ -282,7 +281,7 @@ GEM
     jsonapi-renderer (0.2.2)
     launchy (2.5.0)
       addressable (~> 2.7)
-    libv8 (3.16.14.19)
+    libv8 (3.16.14.19-x86_64-linux)
     listen (3.4.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
@@ -309,7 +308,6 @@ GEM
     mime-types-data (3.2020.1104)
     mini_magick (4.11.0)
     mini_mime (1.1.5)
-    mini_portile2 (2.8.7)
     minitest (5.24.1)
     moment_timezone-rails (0.5.14)
       momentjs-rails (~> 2.15.1)
@@ -331,8 +329,7 @@ GEM
       net-protocol
     newrelic_rpm (6.14.0)
     nio4r (2.7.0)
-    nokogiri (1.15.6)
-      mini_portile2 (~> 2.8.2)
+    nokogiri (1.15.6-x86_64-linux)
       racc (~> 1.4)
     nori (2.6.0)
     omniauth (1.9.1)
@@ -573,7 +570,7 @@ GEM
       activerecord
 
 PLATFORMS
-  ruby
+  x86_64-linux
 
 DEPENDENCIES
   active_model_serializers
