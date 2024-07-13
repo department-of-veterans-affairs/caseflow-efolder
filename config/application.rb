@@ -72,11 +72,6 @@ module CaseflowEfolder
     # Default as of 5.2: true
     Rails.application.config.action_controller.default_protect_from_forgery = false
 
-    # Store boolean values are in sqlite3 databases as 1 and 0 instead of 't' and
-    # 'f' after migrating old data.
-    # Default as of 5.2: true
-    Rails.application.config.active_record.sqlite3.represent_boolean_as_integer = false
-
     # Make Active Record use stable #cache_key alongside new #cache_version method.
     # This is needed for recyclable cache keys.
     # Default as of 5.2: true
