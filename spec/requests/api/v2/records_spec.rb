@@ -2,6 +2,7 @@ describe "Records API v2", type: :request do
   include ActiveJob::TestHelper
 
   context "Record by document ID" do
+    FeatureToggle.disable!(:vbms_to_reader_on_s3_miss)
     let!(:current_user) do
       User.authenticate!(roles: ["Reader"])
     end
@@ -122,24 +123,51 @@ describe "Records API v2", type: :request do
 
     context "document_source_to_headers" do
       let!(:files_download) { FilesDownload.create(user: current_user, manifest: manifest2) }
-    
 
       context "when document is not in S3" do
-        it "hedaers include X-Document-Source is VBMS" do
+        it "headers include X-Document-Source is VBMS" do
           allow(S3Service).to receive(:exists?).and_return(false)
           expect(S3Service).to receive(:fetch_content).and_return nil
-          expect(VBMSService).to receive(:v2_fetch_document_file)
+          allow(Fakes::DocumentService).to receive(:v2_fetch_document_file)
           expect(S3Service).to receive(:store_file)
           get "/api/v2/records/#{version_id}"
           expect(response.code).to eq("200")
           expect(response.headers["X-Document-Source"]).to eq("VBMS")
         end
-
       end
 
       context "when document is in S3" do
-        #Caseflow::Fake::S3Service.exists? returns true by default
         it "headers include X-Document-Source is S3" do
+          allow(S3Service).to receive(:fetch_content).and_return("much document")
+          expect(VBMSService).not_to receive(:v2_fetch_document_file)
+          expect(S3Service).not_to receive(:store_file)
+          expect(S3Service).to receive(:fetch_content)
+          get "/api/v2/records/#{version_id}"
+          expect(response.code).to eq("200")
+          expect(response.headers["X-Document-Source"]).to eq("S3")
+        end
+      end
+
+      context "when document is not in S3 and enabled vbms to reader on s3 miss" do
+        before { FeatureToggle.enable!(:vbms_to_reader_on_s3_miss, users: [current_user.css_id]) }
+        after { FeatureToggle.disable!(:vbms_to_reader_on_s3_miss, users: [current_user.css_id]) }
+
+        it "headers include X-Document-Source is VBMS for api" do
+          allow(S3Service).to receive(:exists?).and_return(false)
+          expect(S3Service).to receive(:fetch_content).and_return nil
+          allow(Fakes::DocumentService).to receive(:v2_fetch_document_file)
+          expect(S3Service).not_to receive(:store_file)
+          get "/api/v2/records/#{version_id}"
+          expect(response.code).to eq("200")
+          expect(response.headers["X-Document-Source"]).to eq("VBMS")
+        end
+      end
+
+      context "when document is in S3 and enabled vbms to reader on s3 miss" do
+        before { FeatureToggle.enable!(:vbms_to_reader_on_s3_miss, users: [current_user.css_id]) }
+        after { FeatureToggle.disable!(:vbms_to_reader_on_s3_miss, users: [current_user.css_id]) }
+
+        it "headers include X-Document-Source is S3 for api" do
           allow(S3Service).to receive(:fetch_content).and_return("much document")
           expect(VBMSService).not_to receive(:v2_fetch_document_file)
           expect(S3Service).not_to receive(:store_file)
