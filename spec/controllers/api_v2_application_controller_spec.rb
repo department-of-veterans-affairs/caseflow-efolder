@@ -77,7 +77,7 @@ describe Api::V2::ApplicationController do
       get :index
 
       expect(response).to be_successful
-      expect(body).to eq(status: veteran_id) 
+      expect(body).to eq(status: veteran_id)
     end
 
     context "user is VSO" do
@@ -96,7 +96,7 @@ describe Api::V2::ApplicationController do
             end
           end
           allow_any_instance_of(BGSService).to receive(:fetch_poa_by_file_number)
-            .with(veteran_id) { nil }
+                                                 .with(veteran_id) { nil }
         end
 
         it "responds with error" do
@@ -112,11 +112,11 @@ describe Api::V2::ApplicationController do
           context "user has POA for Claimant" do
             before do
               allow_any_instance_of(BGSService).to receive(:fetch_poa_by_participant_id)
-                .with(claimant_participant_id) { claimants_poa_response }
+                                                     .with(claimant_participant_id) { claimants_poa_response }
               allow_any_instance_of(BGSService).to receive(:fetch_claims_for_file_number)
-                .with(veteran_id) { benefit_claims_response }
+                                                     .with(veteran_id) { benefit_claims_response }
               allow_any_instance_of(BGSService).to receive(:fetch_poa_org_record)
-                .with(poa_participant_id) { org_poa_response }
+                                                     .with(poa_participant_id) { org_poa_response }
             end
 
             it "responds with success" do
@@ -130,7 +130,7 @@ describe Api::V2::ApplicationController do
           context "user does not have POA for Claimant" do
             before do
               allow_any_instance_of(BGSService).to receive(:fetch_poa_by_participant_id)
-                .with(claimant_participant_id) { nil }
+                                                     .with(claimant_participant_id) { nil }
             end
 
             it "responds with error" do
@@ -153,9 +153,9 @@ describe Api::V2::ApplicationController do
             end
           end
           allow_any_instance_of(BGSService).to receive(:fetch_poa_by_file_number)
-            .with(veteran_id) { claimants_poa_response }
+                                                 .with(veteran_id) { claimants_poa_response }
           allow_any_instance_of(BGSService).to receive(:fetch_poa_org_record)
-            .with(poa_participant_id) { org_poa_response }
+                                                 .with(poa_participant_id) { org_poa_response }
         end
 
         it "responds with success" do
@@ -176,12 +176,25 @@ describe Api::V2::ApplicationController do
             end
           end
         end
-
         it "responds with error" do
           get :index
 
           expect(response).to_not be_successful
           expect(body[:status]).to include("This efolder contains sensitive information")
+        end
+      end
+      context 'when calling invalid_file_number' do
+        before do
+          routes.draw { get 'index' => 'api/v2/application#index' }
+          allow(controller).to receive(:bgs_service).and_return(double("BGSService", valid_file_number?: false))
+          get :index
+        end
+
+        it 'returns JSON with error message' do
+          expected_response = {
+            status: "File number is invalid. Veteran IDs must be at least 8 characters, no more than 9 and contain only numbers."
+          }
+          expect(JSON.parse(response.body, symbolize_names: true)).to eq(expected_response)
         end
       end
     end
