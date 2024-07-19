@@ -14,7 +14,7 @@ class RecordApiFetcher < RecordFetcherBase
 
   def content_from_va_service
     record.update(sourced: "VBMS")
-    content = MetricsService.record("RecordFetcher fetch content from VA manifest source name: #{record.manifest_source.name} for file_number #{record.file_number}",
+    content = MetricsService.record("RecordFetcher fetch content from VA manifest  - API source name: #{record.manifest_source.name} for file_number #{record.file_number}",
                                     service: record.manifest_source.name.downcase.to_sym,
                                     name: "v2_fetch_document_file") do
       record.service.v2_fetch_document_file(record)
