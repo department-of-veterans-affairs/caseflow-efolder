@@ -78,9 +78,9 @@ Rails.application.configure do
   # Uncomment if you wish to allow Action Cable access from any origin.
   # config.action_cable.disable_request_forgery_protection = true
 
-  # It's common to set config.assets.debug = true in the development environment. 
-  # This will split concatenated assets into their constituent files and include them all separately. 
-  # This may result in an exceptionally long Link header that exceeds the (effective) maximum 8192 bytes for HTTP response headers.
+  # When `config.assets.debug == true`, there is an edge case where the length of the Link header could become
+  # exceptionally long, due to the way concatenated assets are split and included separately, thus exceeding the
+  # maximum 8192 bytes for HTTP response headers. To preclude this from happening, we override the default here:
   # Default as of 6.1: true
   config.action_view.preload_links_header = false
 
