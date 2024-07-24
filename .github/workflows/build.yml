@@ -56,7 +56,7 @@ jobs:
     - name: install node version
       uses: actions/setup-node@v4
       with:
-        node-version: '16.16.0'
+        node-version: '18.20.2'
 
     - name: Install Chrome
       run: |
