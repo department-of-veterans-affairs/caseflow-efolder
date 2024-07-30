@@ -72,18 +72,26 @@ const getRequest = (endpoint, csrfToken, options) => baseRequest(endpoint, csrfT
 const postRequest = (endpoint, csrfToken, options) => baseRequest(endpoint, csrfToken, 'post', options);
 
 const buildErrorMessageFromResponse = (resp) => {
-  let message = `${resp.statusCode} (${resp.statusText})`;
+  if (resp.statusCode === 403) {
+    return {
+      title: 'Additional access needed',
+      message: `VBA employs a sensitive access system and to access records at any designated level requires approval for the same or
+      higher-level access. You are receiving this message because you do not have an authorized access level required to view this page.`
+    };
+  } else {
+    let message = `${resp.statusCode} (${resp.statusText})`;
 
-  if (resp.body.status) {
-    message = resp.body.status;
-  } else if (resp.body.errors[0].detail) {
-    message = resp.body.errors[0].detail;
+    if (resp.body.status) {
+      message = resp.body.status;
+    } else if (resp.body.errors[0].detail) {
+      message = resp.body.errors[0].detail;
+    }
+
+    return {
+      title: 'An unexpected error occurred',
+      message: `Error message: ${message} Please try again and if you continue to see an error, submit a support ticket.`
+    };
   }
-
-  return {
-    title: 'An unexpected error occurred',
-    message: `Error message: ${message} Please try again and if you continue to see an error, submit a support ticket.`
-  };
 };
 
 export const pollManifestFetchEndpoint = (retryCount = 0, manifestId, csrfToken) => (dispatch) => {
