@@ -44,7 +44,6 @@ gem "sentry-raven"
 gem "shoryuken", "3.1.11"
 gem "therubyracer", platforms: :ruby
 gem "turbolinks"
-gem "uglifier", ">= 1.3.0"
 gem "uswds-rails", git: "https://github.com/18F/uswds-rails-gem.git"
 gem "wannabe_bool"
 gem "zaru"
