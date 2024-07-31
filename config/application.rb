@@ -1,6 +1,6 @@
-require_relative 'boot'
+require_relative "boot"
 
-require 'rails/all'
+require "rails/all"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -9,14 +9,17 @@ Bundler.require(*Rails.groups)
 module CaseflowEfolder
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 6.0
+    config.load_defaults 6.1
     config.autoloader = :classic
 
-    # Settings in config/environments/* take precedence over those specified here.
-    # Application configuration can go into files in config/initializers
-    # -- all .rb files in that directory are automatically loaded after loading
-    # the framework and any gems in your application.
-
+    # Configuration for the application, engines, and railties goes here.
+    #
+    # These settings can be overridden in specific environments using the files
+    # in config/environments, which are processed later.
+    #
+    # config.time_zone = "Central Time (US & Canada)"
+    # config.eager_load_paths << Rails.root.join("extras")
+    
     #=======================================================================================
     # Rails 5.0 default overrides
     #---------------------------------------------------------------------------------------
@@ -52,16 +55,6 @@ module CaseflowEfolder
     # Rails 5.2 default overrides
     #---------------------------------------------------------------------------------------
 
-    # Use AES-256-GCM authenticated encryption for encrypted cookies.
-    # Also, embed cookie expiry in signed or encrypted cookies for increased security.
-    #
-    # This option is not backwards compatible with earlier Rails versions.
-    # It's best enabled when your entire app is migrated and stable on 5.2.
-    #
-    # Existing cookies will be converted on read then written with the new scheme.
-    # Default as of 5.2: true
-    Rails.application.config.action_dispatch.use_authenticated_cookie_encryption = false
-
     # Use AES-256-GCM authenticated encryption as default cipher for encrypting messages
     # instead of AES-256-CBC, when use_authenticated_message_encryption is set to true.
     # Default as of 5.2: true
@@ -71,11 +64,6 @@ module CaseflowEfolder
     # ApplicationController.
     # Default as of 5.2: true
     Rails.application.config.action_controller.default_protect_from_forgery = false
-
-    # Store boolean values are in sqlite3 databases as 1 and 0 instead of 't' and
-    # 'f' after migrating old data.
-    # Default as of 5.2: true
-    Rails.application.config.active_record.sqlite3.represent_boolean_as_integer = false
 
     # Make Active Record use stable #cache_key alongside new #cache_version method.
     # This is needed for recyclable cache keys.
@@ -92,21 +80,24 @@ module CaseflowEfolder
     # This can be changed to the defualt and removed if we no longer support IE5-8 (old browsers)
     Rails.application.config.action_view.default_enforce_utf8 = true
 
-    # Embed purpose and expiry metadata inside signed and encrypted
-    # cookies for increased security.
-    #
-    # This option is not backwards compatible with earlier Rails versions.
-    # It's best enabled when your entire app is migrated and stable on 6.0.
-    # Default change to true as of 6.0
-    # Remove after stable 6.0
-    Rails.application.config.action_dispatch.use_cookies_with_metadata = false
-
     # Enable the same cache key to be reused when the object being cached of type
     # `ActiveRecord::Relation` changes by moving the volatile information (max updated at and count)
     # of the relation's cache key into the cache version to support recycling cache key.
     # Default as of 6.0: true
     Rails.application.config.active_record.collection_cache_versioning = false
 
+
+    #=======================================================================================
+    # Rails 6.1 default overrides
+    #---------------------------------------------------------------------------------------
+    
+    # Support for inversing belongs_to -> has_many Active Record associations.
+    # Default as of 6.1: true
+    config.active_record.has_many_inversing = false
+
+    # Apply random variation to the delay when retrying failed jobs.
+    # Default as of 6.1: 0.15
+    config.active_job.retry_jitter = 0
 
     #=======================================================================================
     # eFolder Specific configs
