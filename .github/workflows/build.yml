@@ -38,7 +38,7 @@ jobs:
       options: --privileged # Necessary for Rspec to run with our configuration within GHA. Needed for rspec step to prevent chromedriver issue
       credentials:
           username: AWS
-          password: ${{ secrets.ECR_PASSWORD }}
+          password: ${{ secrets.VAEC_ECR_PASSWORD }}
       env:
         DBUS_SESSION_BUS_ADDRESS: /dev/null
         RAILS_ENV: test
