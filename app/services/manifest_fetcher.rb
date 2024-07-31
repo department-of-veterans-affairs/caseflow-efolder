@@ -3,18 +3,18 @@ class ManifestFetcher
 
   attr_accessor :manifest_source
 
-  EXCEPTIONS = [VBMS::ClientError, VVA::ClientError].freeze
+  EXCEPTIONS = [VBMS::ClientError, VVA::ClientError, ClaimEvidenceApi::Error::ClaimEvidenceApiError].freeze
 
   def process
-    begin
-      DocumentCreator.new(manifest_source: manifest_source, external_documents: documents).create
-      manifest_source.update!(status: :success, fetched_at: Time.zone.now)
-      documents
-    rescue *EXCEPTIONS => e
-      manifest_source.update!(status: :failed)
-      ExceptionLogger.capture(e)
-      []
-    end
+    DocumentCreator.new(manifest_source: manifest_source, external_documents: documents).create
+    manifest_source.update!(status: :success, fetched_at: Time.zone.now)
+    documents
+  rescue *EXCEPTIONS => e
+    manifest_source.update!(status: :failed)
+    ExceptionLogger.capture(e)
+    raise e
+  ensure
+    return documents
   end
 
   def documents

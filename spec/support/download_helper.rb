@@ -3,7 +3,7 @@
 
 module DownloadHelpers
   TIMEOUT = 60
-  WORKDIR = Rails.root.join("tmp/downloads_all")
+  WORKDIR = Rails.root.join("tmp/downloads_all").to_s
 
   module_function
 

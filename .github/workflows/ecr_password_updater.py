@@ -15,7 +15,7 @@ def encrypt(raw_public_key: str, secret_value: str) -> str:
     return b64encode(encrypted).decode("utf-8")
 
 
-def get_ecr_password() -> str:
+def get_VAEC_ECR_PASSWORD() -> str:
     """Retrieve ECR password, it comes b64 encoded, in the format user:password
        From https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/ecr.html#ECR.Client.get_authorization_token
     """
@@ -39,9 +39,9 @@ if __name__ == '__main__':
     public_key_value = get_public_key_response['key']
     public_key_id = get_public_key_response['key_id']
 
-    password = get_ecr_password()
+    password = get_VAEC_ECR_PASSWORD()
     encrypted_password = encrypt(public_key_value, password)
-    update_password = requests.put('https://api.github.com/repos/department-of-veterans-affairs/caseflow-efolder/actions/secrets/ECR_PASSWORD',
+    update_password = requests.put('https://api.github.com/repos/department-of-veterans-affairs/caseflow-efolder/actions/secrets/VAEC_ECR_PASSWORD',
                                    headers={'Accept': 'application/vnd.github.v3+json',
                                             'Authorization': 'token ' + os.environ['GH_API_ACCESS_TOKEN']},
                                    data=json.dumps({'encrypted_value': encrypted_password, 'key_id': public_key_id,
