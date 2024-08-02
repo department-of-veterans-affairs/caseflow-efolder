@@ -38,6 +38,51 @@ class ExternalApi::BGSService
     @client = client || self.class.init_client
   end
 
+  def sensitivity_level_for_user(user)
+    fail "Invalid user" if !user.instance_of?(User)
+
+    participant_id = user.participant_id
+
+    Rails.cache.fetch("sensitivity_level_for_user_id_#{user.id}", expires_in: 1.hour) do
+      MetricsService.record(
+        "Efolder BGS: sensitivity level for user #{user.id}",
+        service: :bgs,
+        name: "security.find_person_scrty_log_by_ptcpnt_id"
+      ) do
+        response = client.security.find_person_scrty_log_by_ptcpnt_id(participant_id)
+
+        response.key?(:scrty_level_type_cd) ? Integer(response[:scrty_level_type_cd]) : 0
+      rescue BGS::ShareError
+        0
+      end
+    end
+  end
+
+  def sensitivity_level_for_veteran(veteran_file_number)
+    vet_info = fetch_veteran_info(veteran_file_number)
+
+    participant_id = vet_info.present? ? vet_info[:participant_id] : nil
+
+    fail "Invalid veteran" if participant_id.blank?
+
+    Rails.cache.fetch("sensitivity_level_for_veteran_participant_id_#{participant_id}", expires_in: 1.hour) do
+      MetricsService.record(
+        "Efolder BGS: sensitivity level for veteran participant ID #{participant_id}",
+        service: :bgs,
+        name: "security.find_sensitivity_level_by_participant_id"
+      ) do
+        response = client.security.find_sensitivity_level_by_participant_id(participant_id)
+
+        # guard clause for no response
+        return 0 if response.blank?
+
+        response&.key?(:scrty_level_type_cd) ? Integer(response[:scrty_level_type_cd]) : 0
+      rescue BGS::ShareError
+        0
+      end
+    end
+  end
+
   def parse_veteran_info(veteran_data)
     ssn = veteran_data[:ssn] ? veteran_data[:ssn] : veteran_data[:soc_sec_number]
     last_four_ssn = ssn ? ssn[ssn.length - 4..ssn.length] : nil
