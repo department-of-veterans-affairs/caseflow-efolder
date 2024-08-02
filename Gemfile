@@ -15,7 +15,6 @@ gem "coffee-rails", "> 4.1.0"
 gem "connect_vbms", git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", branch: "master"
 gem "connect_vva", git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "dfd1aeb2605c1f237f520bcdc41b059202e8944d"
 gem "distribute_reads"
-gem "dogstatsd-ruby"
 gem "statsd-instrument"
 gem "httpclient"
 gem "jbuilder", "~> 2.0"
@@ -27,6 +26,25 @@ gem "mini_magick"
 gem "moment_timezone-rails"
 gem "newrelic_rpm"
 gem "nokogiri", ">=1.10.5"
+
+gem "opentelemetry-sdk", require: false
+gem "opentelemetry-exporter-otlp", require: false
+gem "opentelemetry-instrumentation-rack", require: false
+gem "opentelemetry-instrumentation-rails", require: false
+gem "opentelemetry-instrumentation-active_job", require: false
+gem "opentelemetry-instrumentation-action_pack", require: false
+gem "opentelemetry-instrumentation-active_record", require: false
+gem "opentelemetry-instrumentation-action_view", require: false
+gem "opentelemetry-instrumentation-active_model_serializers", require: false
+gem "opentelemetry-instrumentation-aws_sdk", require: false
+gem "opentelemetry-instrumentation-concurrent_ruby", require: false
+gem "opentelemetry-instrumentation-faraday", require: false
+gem "opentelemetry-instrumentation-http", require: false
+gem "opentelemetry-instrumentation-http_client", require: false
+gem "opentelemetry-instrumentation-net_http", require: false
+# gem "opentelemetry-instrumentation-pg", require: false
+# gem "opentelemetry-instrumentation-redis", require: false
+
 gem "omniauth-saml-va", git: "https://github.com/department-of-veterans-affairs/omniauth-saml-va", branch: "pek-iam-ssoi"
 #gem "omniauth-saml-va", git: "https://github.com/department-of-veterans-affairs/omniauth-saml-va", ref: "fbe2b878c250b14ee996ef6699c42df2c42e41a1"
 gem "pg", "~> 0.18", platforms: :ruby
