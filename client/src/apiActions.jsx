@@ -8,6 +8,7 @@ import {
   setDocumentsFetchStatus,
   setDocumentSources,
   setErrorMessage,
+  setShowUnauthorizedVeteranMessage,
   setManifestId,
   setRecentDownloads,
   setVeteranId,
@@ -175,7 +176,13 @@ export const startManifestFetch = (veteranId, csrfToken, redirectFunction) => (d
         dispatch(setManifestId(manifestId));
         redirectFunction(`/downloads/${manifestId}`);
       },
-      (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
+      (err) => {
+        if (err.response.statusCode === 403) {
+          dispatch(setShowUnauthorizedVeteranMessage(true));
+        } else {
+          dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)));
+        }
+      }
     );
 };
 

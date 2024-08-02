@@ -12,6 +12,7 @@ import {
   SET_MANIFEST_ID,
   SET_RECENT_DOWNLOADS,
   SET_SEARCH_TEXT,
+  SET_SHOW_UNAUTHORIZED_VETERAN_MESSAGE,
   SET_VETERAN_ID,
   SET_VETERAN_NAME,
   SHOW_CONFIRM_DOWNLOAD_MODAL
@@ -54,6 +55,11 @@ export const setDocumentsFetchStatus = (status) => ({
 export const setDocumentSources = (sources) => ({
   type: SET_DOCUMENT_SOURCES,
   payload: sources
+});
+
+export const setShowUnauthorizedVeteranMessage = (showMessage) => ({
+  type: SET_SHOW_UNAUTHORIZED_VETERAN_MESSAGE,
+  payload: showMessage
 });
 
 export const setErrorMessage = (msg) => ({
