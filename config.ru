@@ -2,7 +2,7 @@
 
 # This file is used by Rack-based servers to start the application.
 
-require ::File.expand_path("../config/environment", __FILE__)
+require_relative "config/environment"
 require "rack"
 
 # rubocop:disable all
@@ -24,8 +24,8 @@ module PumaThreadLogger
           waiting = @waiting
         }
 
-        emit_metrics_service_point("idle", waiting)
-        emit_metrics_service_point("active", thread_count - waiting)
+        emit_datadog_point("idle", waiting)
+        emit_datadog_point("active", thread_count - waiting)
 
         # For some reason, even a single Puma server (not clustered) has two booted ThreadPools.
         # One of them is empty, and the other is actually doing work.
@@ -49,8 +49,8 @@ module PumaThreadLogger
     super *args
   end
 
-  def emit_metrics_service_point(type, count)
-    MetricsService.emit_gauge(
+  def emit_datadog_point(type, count)
+    DataDogService.emit_gauge(
       metric_group: "puma",
       metric_name: "#{type}_threads",
       metric_value: count,
@@ -69,3 +69,4 @@ end
 # rubocop:enable all
 
 run Rails.application
+Rails.application.load_server
