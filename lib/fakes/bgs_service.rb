@@ -120,6 +120,14 @@ class Fakes::BGSService
     ExternalApi::BGSService.new(client: true).record_found?(veteran_info)
   end
 
+  def sensitivity_level_for_user(user)
+    0
+  end
+
+  def sensitivity_level_for_veteran(veteran_file_number)
+    9
+  end
+
   # Methods to be stubbed out in tests:
   def veteran_info; end
 
