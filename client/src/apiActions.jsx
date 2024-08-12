@@ -178,8 +178,10 @@ export const startManifestFetch = (veteranId, csrfToken, redirectFunction) => (d
       },
       (err) => {
         if (err.response.statusCode === 403) {
+          console.debug('showing unauthorized message');
           dispatch(setShowUnauthorizedVeteranMessage(true));
         } else {
+          console.debug('showing error message');
           dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)));
         }
       }
