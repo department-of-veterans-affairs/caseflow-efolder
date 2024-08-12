@@ -14,7 +14,7 @@ class Api::V2::ApplicationController < Api::V1::ApplicationController
   end
 
   def invalid_file_number
-    render json: { status: "File number is invalid. Veteran IDs must be 8 or more characters and contain only numbers." }, status: 400
+    render json: { status: "File number is invalid. Veteran IDs must be at least 8 characters, no more than 9 and contain only numbers." }, status: 400
   end
 
   def verify_veteran_file_number
