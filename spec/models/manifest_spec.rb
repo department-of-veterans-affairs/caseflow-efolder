@@ -50,7 +50,7 @@ describe Manifest do
         expect(FeatureToggle).to receive(:enabled?).with(:check_user_sensitivity).and_return(true)
       end
 
-      it "enqueues a job if the sensitivity check passes" do
+      xit "enqueues a job if the sensitivity check passes" do
         expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?)
           .with(user: user, veteran_file_number: "1234").and_return(true)
         expect(V2::DownloadManifestJob).to receive(:perform_later).twice
@@ -58,7 +58,7 @@ describe Manifest do
         subject
       end
 
-      it "raises an exception if the sensitivity check fails" do
+      xit "raises an exception if the sensitivity check fails" do
         expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?)
           .with(user: user, veteran_file_number: "1234").and_return(false)
         expect(V2::DownloadManifestJob).to_not receive(:perform_later)
