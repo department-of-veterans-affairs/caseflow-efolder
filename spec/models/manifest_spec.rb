@@ -1,38 +1,83 @@
 describe Manifest do
-  context "#start!" do
-    before do
-      Timecop.freeze(Time.utc(2015, 12, 2, 17, 0, 0))
-      allow(V2::DownloadManifestJob).to receive(:perform_later)
-    end
-
-    let(:manifest) { Manifest.create(file_number: "1234") }
+  describe "#start!" do
+    let(:user) { User.create(css_id: "Foo", station_id: "112") }
+    let(:manifest) { Manifest.create(file_number: "1234", user: user) }
 
     subject { manifest.start! }
 
-    context "when never fetched" do
-      it "starts all jobs" do
-        expect(manifest.sources.size).to eq 0
-        subject
-        expect(manifest.sources.size).to eq 2
-        expect(V2::DownloadManifestJob).to have_received(:perform_later).twice
+    context "without sensitivity level check" do
+      before do
+        Timecop.freeze(Time.utc(2015, 12, 2, 17, 0, 0))
+        allow(V2::DownloadManifestJob).to receive(:perform_later)
+        expect(FeatureToggle).to receive(:enabled?).with(:check_user_sensitivity).and_return(false)
+        expect(FeatureToggle).to receive(:enabled?).with(:skip_vva).and_return(false)
+      end
+
+      context "when never fetched" do
+        it "starts all jobs" do
+          expect(manifest.sources.size).to eq 0
+          subject
+          expect(manifest.sources.size).to eq 2
+          expect(V2::DownloadManifestJob).to have_received(:perform_later).twice
+        end
+      end
+
+      context "when all manifests are current" do
+        it "does not start any jobs" do
+          manifest.sources.create(name: "VVA", status: :success, fetched_at: 2.hours.ago)
+          manifest.sources.create(name: "VBMS", status: :success, fetched_at: 2.hours.ago)
+          subject
+          expect(V2::DownloadManifestJob).to_not have_received(:perform_later)
+        end
+      end
+
+      context "when one manifest is expired" do
+        it "starts one job" do
+          manifest.sources.create(name: "VVA", status: :success, fetched_at: 2.hours.ago)
+          manifest.sources.create(name: "VBMS", status: :success, fetched_at: 5.hours.ago)
+          subject
+          expect(V2::DownloadManifestJob).to have_received(:perform_later).once
+        end
       end
     end
 
-    context "when all manifests are current" do
-      it "does not start any jobs" do
-        manifest.sources.create(name: "VVA", status: :success, fetched_at: 2.hours.ago)
-        manifest.sources.create(name: "VBMS", status: :success, fetched_at: 2.hours.ago)
-        subject
-        expect(V2::DownloadManifestJob).to_not have_received(:perform_later)
-      end
-    end
+    context "with sensitivity level check" do
+      let(:mock_sensitivity_checker) { instance_double(SensitivityChecker) }
 
-    context "when one manifest is expired" do
-      it "starts one job" do
-        manifest.sources.create(name: "VVA", status: :success, fetched_at: 2.hours.ago)
-        manifest.sources.create(name: "VBMS", status: :success, fetched_at: 5.hours.ago)
-        subject
-        expect(V2::DownloadManifestJob).to have_received(:perform_later).once
+      before do
+        allow(SensitivityChecker).to receive(:new).and_return(mock_sensitivity_checker)
+      end
+
+      context "when check_user_sensitivity feature toggle is enabled" do
+        before { FeatureToggle.enable!(:check_user_sensitivity) }
+        after { FeatureToggle.disable!(:check_user_sensitivity) }
+
+        it "enqueues a job if the sensitivity check passes" do
+          expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?)
+            .with(user: user, veteran_file_number: "1234").and_return(true)
+          expect(V2::DownloadManifestJob).to receive(:perform_later).twice
+
+          subject
+        end
+
+        it "raises an exception if the sensitivity check fails" do
+          expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?)
+            .with(user: user, veteran_file_number: "1234").and_return(false)
+          expect(V2::DownloadManifestJob).to_not receive(:perform_later)
+
+          expect { subject }.to raise_error(BGS::SensitivityLevelCheckFailure)
+        end
+      end
+
+      context "when check_user_sensitivity feature toggle is disabled" do
+        before { FeatureToggle.disable!(:check_user_sensitivity) }
+
+        it "enqueues a job to fetch the manifest" do
+          expect(mock_sensitivity_checker).to_not receive(:sensitivity_levels_compatible?)
+          expect(V2::DownloadManifestJob).to receive(:perform_later).twice
+
+          subject
+        end
       end
     end
   end
