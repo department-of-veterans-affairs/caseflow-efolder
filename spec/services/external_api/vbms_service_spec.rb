@@ -52,7 +52,6 @@ describe ExternalApi::VBMSService do
     before do
       allow(JsonApiResponseAdapter).to receive(:new).and_return(mock_json_adapter)
       FeatureToggle.enable!(:check_user_sensitivity)
-      allow(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?).and_return(true)
     end
 
     after { FeatureToggle.disable!(:check_user_sensitivity) }
@@ -120,7 +119,6 @@ describe ExternalApi::VBMSService do
     before do
       allow(JsonApiResponseAdapter).to receive(:new).and_return(mock_json_adapter)
       FeatureToggle.enable!(:check_user_sensitivity)
-      allow(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?).and_return(true)
     end
 
     after { FeatureToggle.disable!(:check_user_sensitivity) }
