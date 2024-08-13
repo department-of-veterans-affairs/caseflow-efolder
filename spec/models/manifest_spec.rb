@@ -46,24 +46,38 @@ describe Manifest do
 
       before do
         allow(SensitivityChecker).to receive(:new).and_return(mock_sensitivity_checker)
-        allow(FeatureToggle).to receive(:enabled?).with(:skip_vva).and_return(false)
-        expect(FeatureToggle).to receive(:enabled?).with(:check_user_sensitivity).and_return(true)
       end
 
-      xit "enqueues a job if the sensitivity check passes" do
-        expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?)
-          .with(user: user, veteran_file_number: "1234").and_return(true)
-        expect(V2::DownloadManifestJob).to receive(:perform_later).twice
+      context "when check_user_sensitivity feature toggle is enabled" do
+        before { FeatureToggle.enable!(:check_user_sensitivity) }
+        after { FeatureToggle.disable!(:check_user_sensitivity) }
 
-        subject
+        it "enqueues a job if the sensitivity check passes" do
+          expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?)
+            .with(user: user, veteran_file_number: "1234").and_return(true)
+          expect(V2::DownloadManifestJob).to receive(:perform_later).twice
+
+          subject
+        end
+
+        it "raises an exception if the sensitivity check fails" do
+          expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?)
+            .with(user: user, veteran_file_number: "1234").and_return(false)
+          expect(V2::DownloadManifestJob).to_not receive(:perform_later)
+
+          expect { subject }.to raise_error(BGS::SensitivityLevelCheckFailure)
+        end
       end
 
-      xit "raises an exception if the sensitivity check fails" do
-        expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?)
-          .with(user: user, veteran_file_number: "1234").and_return(false)
-        expect(V2::DownloadManifestJob).to_not receive(:perform_later)
+      context "when check_user_sensitivity feature toggle is disabled" do
+        before { FeatureToggle.disable!(:check_user_sensitivity) }
 
-        expect { subject }.to raise_error(BGS::SensitivityLevelCheckFailure)
+        it "enqueues a job to fetch the manifest" do
+          expect(mock_sensitivity_checker).to_not receive(:sensitivity_levels_compatible?)
+          expect(V2::DownloadManifestJob).to receive(:perform_later).twice
+
+          subject
+        end
       end
     end
   end
