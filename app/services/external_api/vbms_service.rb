@@ -26,6 +26,8 @@ class ExternalApi::VBMSService
   end
 
   def self.v2_fetch_documents_for(veteran_file_number)
+    verify_user_veteran_access(veteran_file_number)
+
     documents = []
 
     if FeatureToggle.enabled?(:use_ce_api)
@@ -44,6 +46,8 @@ class ExternalApi::VBMSService
   end
 
   def self.fetch_delta_documents_for(veteran_file_number, begin_date_range, end_date_range = Time.zone.now)
+    verify_user_veteran_access(veteran_file_number)
+
     documents = []
 
     if FeatureToggle.enabled?(:use_ce_api)
@@ -69,6 +73,8 @@ class ExternalApi::VBMSService
   end
 
   def self.v2_fetch_document_file(document)
+    verify_user_veteran_access(document.file_number)
+
     if FeatureToggle.enabled?(:use_ce_api)
       # Not using #send_and_log_request because logging to MetricService implemeneted in CE API gem
       # Method call returns the response body, so no need to return response.content/body
@@ -109,5 +115,15 @@ class ExternalApi::VBMSService
     return @vbms_client if @vbms_client.present?
 
     @vbms_client = init_client
+  end
+
+  def self.verify_user_veteran_access(veteran_file_number)
+    return if !FeatureToggle.enabled?(:check_user_sensitivity)
+
+    raise "User does not have permission to access this information" unless
+      SensitivityChecker.new.sensitivity_levels_compatible?(
+        user: RequestStore[:current_user],
+        veteran_file_number: veteran_file_number
+      )
   end
 end
