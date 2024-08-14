@@ -6,8 +6,6 @@ class Api::V2::ManifestsController < Api::V2::ApplicationController
     manifest = Manifest.includes(:sources, :records).find_or_create_by_user(user: current_user, file_number: file_number)
     manifest.start!
     render json: json_manifests(manifest)
-  rescue BGS::SensitivityLevelCheckFailure => e
-    sensitivity_check_failure_response
   end
 
   def refresh
@@ -17,8 +15,6 @@ class Api::V2::ManifestsController < Api::V2::ApplicationController
 
     manifest.start!
     render json: json_manifests(manifest)
-  rescue BGS::SensitivityLevelCheckFailure => e
-    sensitivity_check_failure_response
   end
 
   def progress
@@ -27,6 +23,7 @@ class Api::V2::ManifestsController < Api::V2::ApplicationController
       files_download ||= FilesDownload.find_with_manifest(manifest_id: params[:id], user_id: current_user.id)
     end
     return record_not_found unless files_download
+
     render json: json_manifests(files_download.manifest)
   end
 
@@ -35,10 +32,6 @@ class Api::V2::ManifestsController < Api::V2::ApplicationController
   end
 
   private
-
-  def sensitivity_check_failure_response
-    render json: { statusText: "This user does not have permission to access this information" }, status: :forbidden
-  end
 
   def json_manifests(manifest)
     ActiveModelSerializers::SerializableResource.new(
