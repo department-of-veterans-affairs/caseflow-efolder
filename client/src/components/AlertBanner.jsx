@@ -25,7 +25,7 @@ export default class AlertBanner extends React.PureComponent {
       break;
     }
 
-    return <div className={`usa-alert ${alertTypeClass}`} role="alert" {...css(this.props.style)}>
+    return <div className={`usa-alert ${alertTypeClass}`} role="alert" style={this.props.inlineStyles}>
       <div className="usa-alert-body">
         <h2 className="usa-alert-heading">{this.props.title}</h2>
         <div className="usa-alert-text" {...reduceDoubleTopMargin}>{this.props.children}</div>
