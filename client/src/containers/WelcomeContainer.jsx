@@ -24,6 +24,11 @@ const searchBarNoteTextStyling = css({
   textAlign: 'center'
 });
 
+const alertBannerStyling = {
+  marginTop: '0px',
+  marginBottom: '30px'
+};
+
 class WelcomeContainer extends React.PureComponent {
   componentDidMount() {
     this.props.setShowUnauthorizedVeteranMessage(false);
@@ -49,7 +54,7 @@ class WelcomeContainer extends React.PureComponent {
         <AlertBanner
           title="We could not complete the search for this Veteran ID"
           alertType="error"
-          style={{ marginTop: '0px !important', marginBottom: '30px' }}
+          inlineStyles={alertBannerStyling}
         >
           <p>{this.props.errorMessage.message}</p>
         </AlertBanner>
@@ -59,7 +64,7 @@ class WelcomeContainer extends React.PureComponent {
         <AlertBanner
           title="Additional access needed to search for this veteran ID"
           alertType="warning"
-          style={{ marginTop: '0px !important', marginBottom: '30px' }}
+          inlineStyles={alertBannerStyling}
         >
           <p>
             Please try searching for another veteran or&nbsp;

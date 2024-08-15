@@ -38,12 +38,11 @@ class Manifest < ApplicationRecord
       )
         vbms_source.start!
       else
-        raise BGS::SensitivityLevelCheckFailure.new
+        raise BGS::SensitivityLevelCheckFailure.new, "Unauthorized"
       end
     else
       vbms_source.start!
     end
-
     vva_source.start! unless FeatureToggle.enabled?(:skip_vva)
   end
 
@@ -53,6 +52,7 @@ class Manifest < ApplicationRecord
                              expiration: SECONDS_TO_AUTO_UNLOCK)
     s.lock(SECONDS_TO_AUTO_UNLOCK) do
       return if pending?
+
       update(fetched_files_status: :pending)
     end
 
