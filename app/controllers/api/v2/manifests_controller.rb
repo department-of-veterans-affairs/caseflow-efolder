@@ -6,6 +6,8 @@ class Api::V2::ManifestsController < Api::V2::ApplicationController
     manifest = Manifest.includes(:sources, :records).find_or_create_by_user(user: current_user, file_number: file_number)
     manifest.start!
     render json: json_manifests(manifest)
+  rescue BGS::SensitivityLevelCheckFailure
+    forbidden("This user does not have permission to access this information")
   end
 
   def refresh
@@ -15,6 +17,8 @@ class Api::V2::ManifestsController < Api::V2::ApplicationController
 
     manifest.start!
     render json: json_manifests(manifest)
+  rescue BGS::SensitivityLevelCheckFailure
+    forbidden("This user does not have permission to access this information")
   end
 
   def progress
