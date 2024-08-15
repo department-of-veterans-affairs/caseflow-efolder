@@ -309,7 +309,7 @@ GEM
     mini_magick (4.11.0)
     mini_mime (1.1.5)
     mini_portile2 (2.8.7)
-    minitest (5.25.1)
+    minitest (5.25.0)
     moment_timezone-rails (0.5.14)
       momentjs-rails (~> 2.15.1)
     momentjs-rails (2.15.1)
@@ -508,6 +508,7 @@ GEM
     request_store (1.5.0)
       rack (>= 1.4)
     rexml (3.3.7)
+      strscan
     rspec (3.10.0)
       rspec-core (~> 3.10.0)
       rspec-expectations (~> 3.10.0)
