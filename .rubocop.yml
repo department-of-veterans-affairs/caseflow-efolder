@@ -12,10 +12,6 @@ AllCops:
     - 'script/**/*'
     - 'vendor/**/*'
 
-Rails/Output:
-  Exclude:
-    - 'lib/**/*.rb'
-
 Style/GuardClause:
   Enabled: false
 
@@ -51,9 +47,6 @@ Metrics/AbcSize:
 
 Style/DoubleNegation:
   Enabled: false
-
-Rails:
-  Enabled: true
 
 Style/NegatedIf:
   Enabled: false
