@@ -43,7 +43,6 @@ class Manifest < ApplicationRecord
     else
       vbms_source.start!
     end
-
     vva_source.start! unless FeatureToggle.enabled?(:skip_vva)
   end
 
@@ -180,9 +179,5 @@ class Manifest < ApplicationRecord
     update(veteran_first_name: veteran.first_name || "",
            veteran_last_name: veteran.last_name || "",
            veteran_last_four_ssn: veteran.last_four_ssn || "")
-  end
-
-  def sensitivity_checker
-    @sensitivity_checker ||= SensitivityChecker.new
   end
 end
