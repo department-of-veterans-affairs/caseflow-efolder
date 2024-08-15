@@ -32,9 +32,12 @@ Rails.logger.info("DT_API_TOKEN is set to #{DT_API_TOKEN}")
 
 config = {
   "OpenTelemetry::Instrumentation::Redis" => { enabled: false },
-  "OpenTelemetry::Instrumentation::PG" => { enabled: true },
+  # pg gem is outdated and doesn't work with otel instrument, requires version 1.1.0 or higher currently using 0.23.0 
+  # https://rubygems.org/gems/opentelemetry-instrumentation-pg/versions/0.23.0
+  "OpenTelemetry::Instrumentation::PG" => { enabled: false },
   "OpenTelemetry::Instrumentation::AwsSdk" => { enabled: false },
-  "OpenTelemetry::Instrumentation::Net::HTTP" => { enabled: true },
+  # Net::HTTP instrument disabled due to noisey shoryuken traces. 
+  "OpenTelemetry::Instrumentation::Net::HTTP" => { enabled: false },
   "OpenTelemetry::Instrumentation::Rack" => { untraced_endpoints: ["/health-check", "/sample", "/logs"] }
 }
 
