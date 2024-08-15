@@ -16,24 +16,6 @@ Rails/Output:
   Exclude:
     - 'lib/**/*.rb'
 
-Rails/SkipsModelValidations:
-  Enabled: false
-
-Rails/FilePath:
-  Enabled: false
-
-Rails/HasManyOrHasOneDependent:
-  Enabled: false
-
-Rails/UnknownEnv:
-  Enabled: false
-
-Rails/OutputSafety:
-  Enabled: false
-
-Rails/InverseOf:
-  Enabled: false
-
 Style/GuardClause:
   Enabled: false
 
@@ -52,7 +34,7 @@ Style/Documentation:
 Style/FrozenStringLiteralComment:
   Enabled: false
 
-Metrics/LineLength:
+Layout/LineLength:
   Max: 200
 
 Metrics/BlockLength:
@@ -80,9 +62,6 @@ Naming/FileName:
   Enabled: false
 
 Naming/HeredocDelimiterNaming:
-  Enabled: false
-
-Rails/DynamicFindBy:
   Enabled: false
 
 Style/TrailingCommaInArrayLiteral:
