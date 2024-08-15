@@ -166,6 +166,10 @@ export const restartManifestFetch = (manifestId, csrfToken) => (dispatch) => {
 };
 
 export const startManifestFetch = (veteranId, csrfToken, redirectFunction) => (dispatch) => {
+  // Reset any error messages currently being displayed
+  dispatch(setShowUnauthorizedVeteranMessage(false));
+  dispatch(setErrorMessage(''));
+
   postRequest('/api/v2/manifests/', csrfToken, { 'FILE-NUMBER': veteranId }).
     then(
       (resp) => {
@@ -177,7 +181,7 @@ export const startManifestFetch = (veteranId, csrfToken, redirectFunction) => (d
         redirectFunction(`/downloads/${manifestId}`);
       },
       (err) => {
-        if (err.response.statusCode === 403) {
+        if (err.response.statusCode === 403 && err.response.body.featureToggles.checkUserSensitivity === true) {
           dispatch(setShowUnauthorizedVeteranMessage(true));
         } else {
           dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)));

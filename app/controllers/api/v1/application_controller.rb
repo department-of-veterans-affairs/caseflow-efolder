@@ -28,7 +28,12 @@ class Api::V1::ApplicationController < BaseController
   end
 
   def forbidden(reason = "Forbidden: unspecified")
-    render json: { status: reason }, status: 403
+    render json: {
+      status: reason,
+      featureToggles: {
+        checkUserSensitivity: FeatureToggle.enabled?(:check_user_sensitivity)
+      }
+    }, status: :forbidden
   end
 
   def missing_header(header)
