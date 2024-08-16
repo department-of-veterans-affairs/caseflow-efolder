@@ -55,6 +55,16 @@ module CaseflowEfolder
     # Rails 5.2 default overrides
     #---------------------------------------------------------------------------------------
 
+    # Use AES-256-GCM authenticated encryption for encrypted cookies.
+    # Also, embed cookie expiry in signed or encrypted cookies for increased security.
+    #
+    # This option is not backwards compatible with earlier Rails versions.
+    # It's best enabled when your entire app is migrated and stable on 5.2.
+    #
+    # Existing cookies will be converted on read then written with the new scheme.
+    # Default as of 5.2: true
+    Rails.application.config.action_dispatch.use_authenticated_cookie_encryption = false
+
     # Use AES-256-GCM authenticated encryption as default cipher for encrypting messages
     # instead of AES-256-CBC, when use_authenticated_message_encryption is set to true.
     # Default as of 5.2: true
@@ -79,6 +89,15 @@ module CaseflowEfolder
     # Default changed as of 6.0 to false
     # This can be changed to the defualt and removed if we no longer support IE5-8 (old browsers)
     Rails.application.config.action_view.default_enforce_utf8 = true
+
+    # Embed purpose and expiry metadata inside signed and encrypted
+    # cookies for increased security.
+    #
+    # This option is not backwards compatible with earlier Rails versions.
+    # It's best enabled when your entire app is migrated and stable on 6.0.
+    # Default change to true as of 6.0
+    # Remove after stable 6.0
+    Rails.application.config.action_dispatch.use_cookies_with_metadata = false
 
     # Enable the same cache key to be reused when the object being cached of type
     # `ActiveRecord::Relation` changes by moving the volatile information (max updated at and count)
