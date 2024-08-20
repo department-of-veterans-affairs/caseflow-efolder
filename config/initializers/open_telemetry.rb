@@ -66,7 +66,7 @@ if !Rails.env.development? && !Rails.env.test? && !Rails.env.demo?
   end
 end
 # Uncomment this line to enbale console exporting.
-ENV["OTEL_TRACES_EXPORTER"] = "console"
+# ENV["OTEL_TRACES_EXPORTER"] = "console"
 if Rails.env.development? && ENV["OTEL_TRACES_EXPORTER"] == "console"
   OpenTelemetry::SDK.configure do |c|
     c.service_name = "efolder-quickstart"
