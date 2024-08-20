@@ -18,15 +18,9 @@
 # Alternatively an rspec test has been added, check CI output for details
 
 Rails.autoloaders.each do |autoloader|
-  # A collapse statement will remove the need for a namespace based on the direcotry given.
-  # Tasks::Support::ModuleOrClassNme becomes ModuleOrClassName with the below statements.
-  autoloader.collapse("app/jobs/middleware")
-  autoloader.collapse("lib/tasks")
-  autoloader.collapse("lib/tasks/support")
-  
   # "file_name" => Expected Module or Class name. 
   autoloader.inflector.inflect(
-    "bgs_errors" => "BGS",
+    "bgs_errors" => "BGSErrors",
     "bgs_service" => "BGSService",
     "poa_mapper" => "POAMapper",
     "vbms_service" => "VBMSService",

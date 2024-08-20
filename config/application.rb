@@ -122,14 +122,27 @@ module CaseflowEfolder
     #---------------------------------------------------------------------------------------
     config.download_filepath = Rails.root + "tmp/files"
     
-    config.autoload_paths += Dir[Rails.root + 'app/jobs']
-    config.eager_load_paths += Dir[Rails.root + 'app/jobs']
-    
-    config.autoload_paths << Rails.root.join('lib')
-    config.eager_load_paths << Rails.root.join('lib')
+    config.autoload_paths += [
+      "#{root}/lib",
+    ]
 
-    config.autoload_paths << Rails.root.join('lib/scripts')
-    config.eager_load_paths << Rails.root.join('lib/scripts')
+    config.eager_load_paths += [
+      "#{root}/lib",
+    ]
+    Rails.autoloaders.log!
+    # A collapse statement will remove the need for a namespace based on the direcotry given.
+    # Tasks::Support::ModuleOrClassName becomes ModuleOrClassName with the below statements.
+    Rails.autoloaders.main.collapse(
+      "app/jobs/middleware",
+      "#{root}/lib/tasks",
+      "#{root}/lib/tasks/support"
+    )
+
+    Rails.autoloaders.main.ignore(
+      "#{root}/lib/assets",
+      "#{root}/lib/pdfs",
+      "#{root}/lib/scripts"
+    )
 
     # Currently the Caseflow client makes calls to get document content directly
     # from eFolder Express to reduce load on Caseflow. Since Caseflow and eFolder
