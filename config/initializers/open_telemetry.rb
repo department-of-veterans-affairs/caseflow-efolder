@@ -39,7 +39,9 @@ config = {
   # Net::HTTP instrument disabled due to noisey shoryuken traces. 
   "OpenTelemetry::Instrumentation::Net::HTTP" => { enabled: false },
   "OpenTelemetry::Instrumentation::Rack" => { untraced_endpoints: ["/health-check", "/sample", "/logs"] },
-  "OpenTelemetry::Instrumentation::ConcurrentRuby" => { enabled: false }
+  "OpenTelemetry::Instrumentation::ConcurrentRuby" => { enabled: true }, 
+  "OpenTelemetry::Instrumentation::ActiveSupport" => { enabled: false }, 
+  "OpenTelemetry::Instrumentation::ActiveJob" => { enabled: false }
 }
 
 if !Rails.env.development? && !Rails.env.test? && !Rails.env.demo?
