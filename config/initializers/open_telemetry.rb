@@ -10,15 +10,15 @@ require "opentelemetry-instrumentation-active_record"
 require "opentelemetry-instrumentation-active_model_serializers"
 require "opentelemetry-instrumentation-active_support"
 require "opentelemetry-instrumentation-aws_sdk"
-# require "opentelemetry-instrumentation-concurrent_ruby"
-# require "opentelemetry-instrumentation-faraday"
-# require "opentelemetry-instrumentation-http_client"
-# require "opentelemetry-instrumentation-net_http"
-# require "opentelemetry-instrumentation-pg"
-# require "opentelemetry-instrumentation-rack"
-# require "opentelemetry-instrumentation-rails"
-# require "opentelemetry-instrumentation-rake"
-# require "opentelemetry-instrumentation-redis"
+require "opentelemetry-instrumentation-concurrent_ruby"
+require "opentelemetry-instrumentation-faraday"
+require "opentelemetry-instrumentation-http_client"
+require "opentelemetry-instrumentation-net_http"
+require "opentelemetry-instrumentation-pg"
+require "opentelemetry-instrumentation-rack"
+require "opentelemetry-instrumentation-rails"
+require "opentelemetry-instrumentation-rake"
+require "opentelemetry-instrumentation-redis"
 
 require "opentelemetry-exporter-otlp"
 require "opentelemetry-sdk"
@@ -38,7 +38,8 @@ config = {
   "OpenTelemetry::Instrumentation::AwsSdk" => { enabled: false },
   # Net::HTTP instrument disabled due to noisey shoryuken traces. 
   "OpenTelemetry::Instrumentation::Net::HTTP" => { enabled: false },
-  "OpenTelemetry::Instrumentation::Rack" => { untraced_endpoints: ["/health-check", "/sample", "/logs"] }
+  "OpenTelemetry::Instrumentation::Rack" => { untraced_endpoints: ["/health-check", "/sample", "/logs"] },
+  "OpenTelemetry::Instrumentation::ConcurrentRuby" => { enabled: false }
 }
 
 if !Rails.env.development? && !Rails.env.test? && !Rails.env.demo?
