@@ -1,4 +1,4 @@
-module BGS
+module BGSErrors
   class InvalidUsername < StandardError; end
   class InvalidStation < StandardError; end
   class InvalidApplication < StandardError; end

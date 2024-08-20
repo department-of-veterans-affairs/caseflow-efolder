@@ -1,22 +1,23 @@
 
 
-class RailsVBMSLogger
-  def log(event, data)
-    case event
-    when :request
-      if data[:response_code] != 200
-        name = data[:request].class.name.split("::").last
 
-        Rails.logger.error(
-          "VBMS HTTP Error #{data[:response_code]}\n" \
-          "VBMS #{name} Response #{data[:response_body]}"
-        )
+class ExternalApi::VBMSService
+  class RailsVBMSLogger
+    def log(event, data)
+      case event
+      when :request
+        if data[:response_code] != 200
+          name = data[:request].class.name.split("::").last
+  
+          Rails.logger.error(
+            "VBMS HTTP Error #{data[:response_code]}\n" \
+            "VBMS #{name} Response #{data[:response_body]}"
+          )
+        end
       end
     end
   end
-end
 
-class ExternalApi::VBMSService
   def self.fetch_documents_for(download)
     request = VBMS::Requests::ListDocuments.new(download.file_number)
 
