@@ -47,7 +47,7 @@ class ApplicationController < BaseController
   end
 
   def initial_react_data
-    {
+    JSON.dump({
       csrfToken: form_authenticity_token,
       dropdownUrls: dropdown_urls,
       efolderAccessImagePath: ActionController::Base.helpers.image_path("help/efolder-access.png"),
@@ -56,7 +56,7 @@ class ApplicationController < BaseController
       trainingGuidePath: ActionController::Base.helpers.asset_path("training_guide.pdf"),
       userDisplayName: current_user.try(:display_name) || 'Help',
       userIsAuthorized: user_is_authorized?
-    }.to_json
+    })
   end
   helper_method :initial_react_data
 
