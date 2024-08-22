@@ -333,7 +333,6 @@ GEM
       timeout
     net-smtp (0.4.0.1)
       net-protocol
-    newrelic_rpm (6.14.0)
     nio4r (2.7.0)
     nokogiri (1.15.6)
       mini_portile2 (~> 2.8.2)
@@ -692,7 +691,6 @@ DEPENDENCIES
   mime-types
   mini_magick
   moment_timezone-rails
-  newrelic_rpm
   nokogiri (>= 1.10.5)
   omniauth-saml-va!
   opentelemetry-exporter-otlp
