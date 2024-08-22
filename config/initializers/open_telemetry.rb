@@ -4,7 +4,7 @@ require "rubygems"
 require "bundler/setup"
 
 require "opentelemetry-instrumentation-action_pack"
-# require "opentelemetry-instrumentation-action_view"
+require "opentelemetry-instrumentation-action_view"
 # require "opentelemetry-instrumentation-active_job"
 require "opentelemetry-instrumentation-active_record"
 # require "opentelemetry-instrumentation-active_model_serializers"
@@ -30,25 +30,15 @@ DT_API_TOKEN = ENV["DT_API_TOKEN"]
 
 Rails.logger.info("DT_API_TOKEN is set to #{DT_API_TOKEN}")
 
-config = {
-  # "OpenTelemetry::Instrumentation::Redis" => { enabled: false },
-  # pg gem is outdated and doesn't work with otel instrument, requires version 1.1.0 or higher currently using 0.23.0 
-  # https://rubygems.org/gems/opentelemetry-instrumentation-pg/versions/0.23.0
-  # "OpenTelemetry::Instrumentation::PG" => { enabled: false },
-  # "OpenTelemetry::Instrumentation::AwsSdk" => { enabled: false },
-  # # Net::HTTP instrument disabled due to noisey shoryuken traces. 
-  # "OpenTelemetry::Instrumentation::Net::HTTP" => { enabled: false },
-  "OpenTelemetry::Instrumentation::Rack" => { untraced_endpoints: ["/health-check", "/sample", "/logs"] }
-  # "OpenTelemetry::Instrumentation::ConcurrentRuby" => { enabled: true }, 
-  # "OpenTelemetry::Instrumentation::ActiveSupport" => { enabled: false }, 
-  # "OpenTelemetry::Instrumentation::ActiveJob" => { enabled: false }
-}
-
 if !Rails.env.development? && !Rails.env.test? && !Rails.env.demo?
   OpenTelemetry::SDK.configure do |c|
     c.service_name = "efolder-quickstart"
     c.service_version = "1.0.1"
-    c.use_all(config)
+    c.use "OpenTelemetry::Instrumentation::Rails"
+    c.use "OpenTelemetry::Instrumentation::Rack", untraced_endpoints: ["/health-check", "/sample", "/logs"]
+    c.use "OpenTelemetry::Instrumentation::ActiveRecord"
+    c.use "OpenTelemetry::Instrumentation::ActionView"
+    c.use "OpenTelemetry::Instrumentation::ActionPack"
 
     %w[dt_metadata_e617c525669e072eebe3d0f08212e8f2.properties /var/lib/dynatrace/enrichment/dt_host_metadata.properties].each { |name|
       begin
