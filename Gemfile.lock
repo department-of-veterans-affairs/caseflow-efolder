@@ -388,6 +388,9 @@ GEM
       opentelemetry-api (~> 1.0)
       opentelemetry-common (~> 0.19.3)
       opentelemetry-instrumentation-base (~> 0.21.0)
+    opentelemetry-instrumentation-http (0.21.0)
+      opentelemetry-api (~> 1.0)
+      opentelemetry-instrumentation-base (~> 0.21.0)
     opentelemetry-instrumentation-http_client (0.21.0)
       opentelemetry-api (~> 1.0)
       opentelemetry-common (~> 0.19.3)
@@ -699,10 +702,10 @@ DEPENDENCIES
   opentelemetry-instrumentation-active_job
   opentelemetry-instrumentation-active_model_serializers
   opentelemetry-instrumentation-active_record
-  opentelemetry-instrumentation-active_support
   opentelemetry-instrumentation-aws_sdk
   opentelemetry-instrumentation-concurrent_ruby
   opentelemetry-instrumentation-faraday
+  opentelemetry-instrumentation-http
   opentelemetry-instrumentation-http_client
   opentelemetry-instrumentation-net_http
   opentelemetry-instrumentation-pg
