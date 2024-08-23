@@ -2,7 +2,6 @@ class HealthChecksController < ApplicationController
   include CollectCustomMetrics
   skip_before_action :authenticate
   skip_before_action :check_out_of_service
-  # newrelic_ignore_apdex
 
   def show
     migrations = check_migrations
@@ -17,8 +16,8 @@ class HealthChecksController < ApplicationController
     migrations = []
     pending_migrations = false
     ActiveRecord::Base.connection.migration_context.migrations_status.each do |status, version, name|
-        migrations << { status: status, version: version, name: name }
-        pending_migrations = true if status != "up"
+      migrations << { status: status, version: version, name: name }
+      pending_migrations = true if status != "up"
     end
     { migrations: migrations, pending_migrations: pending_migrations }
   end

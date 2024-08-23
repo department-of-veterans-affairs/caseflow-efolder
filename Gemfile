@@ -23,7 +23,6 @@ gem "logstasher"
 gem "mime-types"
 gem "mini_magick"
 gem "moment_timezone-rails"
-# gem "newrelic_rpm"
 gem "nokogiri", ">=1.10.5"
 gem "statsd-instrument"
 
