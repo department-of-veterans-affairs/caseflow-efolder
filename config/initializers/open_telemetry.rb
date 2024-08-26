@@ -41,15 +41,15 @@ if !Rails.env.development? && !Rails.env.test? && !Rails.env.demo?
     # ActionPack seems to be causing some issues that we need to investigate
     # c.use 'OpenTelemetry::Instrumentation::ActionPack'
     # c.use 'OpenTelemetry::Instrumentation::PG'
-    # c.use 'OpenTelemetry::Instrumentation::ActiveSupport'
+    # c.use 'OpenTelemetry::Instrumentation::ActionView'
+    # c.use 'OpenTelemetry::Instrumentation::Redis'
 
-    c.use 'OpenTelemetry::Instrumentation::ActionView'
+    c.use 'OpenTelemetry::Instrumentation::ActiveSupport'
     c.use 'OpenTelemetry::Instrumentation::ActiveJob'
     c.use 'OpenTelemetry::Instrumentation::AwsSdk', { suppress_internal_instrumentation: true }
     c.use 'OpenTelemetry::Instrumentation::ConcurrentRuby'
     c.use 'OpenTelemetry::Instrumentation::Faraday'
     c.use 'OpenTelemetry::Instrumentation::HttpClient'
-    c.use 'OpenTelemetry::Instrumentation::Redis'
     c.use 'OpenTelemetry::Instrumentation::Net::HTTP'
 
     Rails.logger.info("Loaded instruments")
