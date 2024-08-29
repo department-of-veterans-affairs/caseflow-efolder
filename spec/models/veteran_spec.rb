@@ -26,9 +26,9 @@ describe Veteran do
       it { is_expected.to_not be_found }
     end
 
-    context "when veteran has no BIRLS record", pending: true do
-      let(:veteran_record) do
-        { file_number: nil }
+    context "when veteran has no BIRLS record" do
+      before do
+        veteran.file_number = nil
       end
 
       it { is_expected.to_not be_found }
