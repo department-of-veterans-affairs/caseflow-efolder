@@ -2,18 +2,18 @@
 
 class Api::V2::ManifestsController < Api::V2::ApplicationController
   # Need this as a before action since it gates access to these controller methods
-  before_action :file_number, only: [:start, :refresh]
+  before_action :veteran_file_number, only: [:start, :refresh]
 
   def start
     return if performed?
 
-    manifest = Manifest.includes(:sources, :records).find_or_create_by_user(user: current_user, file_number: file_number)
+    manifest = Manifest.includes(:sources, :records).find_or_create_by_user(user: current_user, file_number: veteran_file_number)
     manifest.start!
     render json: json_manifests(manifest)
   end
 
   def refresh
-    manifest = Manifest.includes(:sources, :records).find_or_create_by_user(user: current_user, file_number: file_number)
+    manifest = Manifest.includes(:sources, :records).find_or_create_by_user(user: current_user, file_number: veteran_file_number)
 
     return record_not_found if manifest.blank?
     return sensitive_record unless manifest.files_downloads.find_by(user: current_user)
@@ -38,8 +38,8 @@ class Api::V2::ManifestsController < Api::V2::ApplicationController
 
   private
 
-  def file_number
-    @file_number ||= verify_veteran_file_number
+  def veteran_file_number
+    @veteran_file_number ||= verify_veteran_file_number
   end
 
   def json_manifests(manifest)
