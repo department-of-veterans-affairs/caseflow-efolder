@@ -129,7 +129,7 @@ module CaseflowEfolder
     config.eager_load_paths += [
       "#{root}/lib",
     ]
-    Rails.autoloaders.log!
+    
     # A collapse statement will remove the need for a namespace based on the direcotry given.
     # Tasks::Support::ModuleOrClassName becomes ModuleOrClassName with the below statements.
     Rails.autoloaders.main.collapse(
