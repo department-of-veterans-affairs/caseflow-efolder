@@ -1,6 +1,20 @@
+# frozen_string_literal: true
+
+require "bgs"
+require "bgs_errors"
+
 class BaseController < ActionController::Base
   before_action :strict_transport_security
   before_action :current_user
+
+  rescue_from BGS::SensitivityLevelCheckFailure do |e|
+    render json: {
+      status: e.message,
+      featureToggles: {
+        checkUserSensitivity: FeatureToggle.enabled?(:check_user_sensitivity)
+      }
+    }, status: :forbidden
+  end
 
   private
 
