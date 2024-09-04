@@ -38,7 +38,7 @@ class Manifest < ApplicationRecord
       )
         vbms_source.start!
       else
-        raise BGS::SensitivityLevelCheckFailure.new, "Unauthorized"
+        raise BGS::SensitivityLevelCheckFailure.new, "You are not authorized to access this manifest"
       end
     else
       vbms_source.start!
