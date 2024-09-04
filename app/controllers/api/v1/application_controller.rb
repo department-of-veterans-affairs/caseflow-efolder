@@ -13,6 +13,15 @@ class Api::V1::ApplicationController < BaseController
     }, status: 500
   end
 
+  rescue_from BGS::SensitivityLevelCheckFailure do |e|
+    render json: {
+      status: e.message,
+      featureToggles: {
+        checkUserSensitivity: FeatureToggle.enabled?(:check_user_sensitivity)
+      }
+    }, status: :forbidden
+  end
+
   rescue_from BGS::PublicError do |error|
     forbidden(error.public_message)
   end
