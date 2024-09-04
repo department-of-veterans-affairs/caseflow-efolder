@@ -1,24 +1,25 @@
+# frozen_string_literal: true
+
 class Api::V2::ManifestsController < Api::V2::ApplicationController
+  # Need this as a before action since it gates access to these controller methods
+  before_action :veteran_file_number, only: [:start, :refresh]
+
   def start
-    file_number = verify_veteran_file_number
     return if performed?
 
-    manifest = Manifest.includes(:sources, :records).find_or_create_by_user(user: current_user, file_number: file_number)
+    manifest = Manifest.includes(:sources, :records).find_or_create_by_user(user: current_user, file_number: veteran_file_number)
     manifest.start!
     render json: json_manifests(manifest)
-  rescue BGS::SensitivityLevelCheckFailure
-    forbidden("This user does not have permission to access this information")
   end
 
   def refresh
-    manifest = Manifest.find(params[:id])
-    return record_not_found unless manifest
+    manifest = Manifest.includes(:sources, :records).find_or_create_by_user(user: current_user, file_number: veteran_file_number)
+
+    return record_not_found if manifest.blank?
     return sensitive_record unless manifest.files_downloads.find_by(user: current_user)
 
     manifest.start!
     render json: json_manifests(manifest)
-  rescue BGS::SensitivityLevelCheckFailure
-    forbidden("This user does not have permission to access this information")
   end
 
   def progress
@@ -36,6 +37,10 @@ class Api::V2::ManifestsController < Api::V2::ApplicationController
   end
 
   private
+
+  def veteran_file_number
+    @veteran_file_number ||= verify_veteran_file_number
+  end
 
   def json_manifests(manifest)
     ActiveModelSerializers::SerializableResource.new(
