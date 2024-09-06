@@ -71,7 +71,7 @@ class WelcomeContainer extends React.PureComponent {
             <a
               href="https://leaf.va.gov/VBA/335/sensitive_level_access_request/"
               target="_blank"
-              rel="noopener"
+              rel="noreferrer noopener"
             >request access&nbsp;<ExternalLinkIcon /></a>
             &nbsp;to search for this veteran ID.
           </p>
