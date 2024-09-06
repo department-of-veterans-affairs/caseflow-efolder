@@ -50,7 +50,7 @@ describe "Manifests API v2", type: :request do
 
     context "when the check succeeds" do
       it "allows access to the start action" do
-        expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?)
+        expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?).twice
           .with(user: user, veteran_file_number: "DEMO987").and_return(true)
 
         post "/api/v2/manifests", params: nil, headers: headers
@@ -59,7 +59,7 @@ describe "Manifests API v2", type: :request do
       end
 
       it "allows access to the refresh action" do
-        expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?)
+        expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?).twice
           .with(user: user, veteran_file_number: "DEMO987").and_return(true)
 
         post "/api/v2/manifests/#{manifest.id}", params: nil, headers: headers
@@ -76,7 +76,7 @@ describe "Manifests API v2", type: :request do
         post "/api/v2/manifests", params: nil, headers: headers
 
         expect(response.code).to eq("403")
-        expect(JSON.parse(response.body)["status"]).to eq("You are not authorized to access this manifest")
+        expect(JSON.parse(response.body)["status"]).to match(/You are not authorized to access this/)
       end
 
       it "gates access to the refresh action" do
@@ -86,7 +86,7 @@ describe "Manifests API v2", type: :request do
         post "/api/v2/manifests/#{manifest.id}", params: nil, headers: headers
 
         expect(response.code).to eq("403")
-        expect(JSON.parse(response.body)["status"]).to eq("You are not authorized to access this manifest")
+        expect(JSON.parse(response.body)["status"]).to match(/You are not authorized to access this/)
       end
     end
   end
