@@ -23,7 +23,18 @@ class Api::V2::ApplicationController < Api::V1::ApplicationController
 
     return invalid_file_number unless bgs_service.valid_file_number?(file_number)
 
-    fetch_veteran_by_file_number(file_number)
+    if FeatureToggle.enabled?(:check_user_sensitivity)
+      if sensitivity_checker.sensitivity_levels_compatible?(
+        user: current_user,
+        veteran_file_number: file_number
+      )
+        return file_number
+      else
+        raise BGS::SensitivityLevelCheckFailure.new, "You are not authorized to access this file number"
+      end
+    else
+      fetch_veteran_by_file_number(file_number)
+    end
   end
 
   def fetch_veteran_by_file_number(file_number)
@@ -40,5 +51,9 @@ class Api::V2::ApplicationController < Api::V1::ApplicationController
     else
       raise BGS::ShareError, "Cannot access Veteran record"
     end
+  end
+
+  def sensitivity_checker
+    @sensitivity_checker ||= SensitivityChecker.new
   end
 end
