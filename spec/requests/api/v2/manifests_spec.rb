@@ -50,7 +50,7 @@ describe "Manifests API v2", type: :request do
 
     context "when the check succeeds" do
       it "allows access to the start action" do
-        expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?).twice
+        expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?).exactly(3).times
           .with(user: user, veteran_file_number: "DEMO987").and_return(true)
 
         post "/api/v2/manifests", params: nil, headers: headers
@@ -59,7 +59,7 @@ describe "Manifests API v2", type: :request do
       end
 
       it "allows access to the refresh action" do
-        expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?).twice
+        expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?).exactly(3).times
           .with(user: user, veteran_file_number: "DEMO987").and_return(true)
 
         post "/api/v2/manifests/#{manifest.id}", params: nil, headers: headers
