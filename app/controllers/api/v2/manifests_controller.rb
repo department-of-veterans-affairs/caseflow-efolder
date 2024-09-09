@@ -42,6 +42,19 @@ class Api::V2::ManifestsController < Api::V2::ApplicationController
     @veteran_file_number ||= verify_veteran_file_number
   end
 
+  def verify_veteran_file_number
+    # The frontend may not have set this value (needed by parent's verify_veteran_file_number)
+    # but we are still able to determine it here in the child using the manifest
+    if request.headers["HTTP_FILE_NUMBER"].blank?
+      if params[:id].present?
+        manifest = Manifest.find(params[:id])
+        request.headers["HTTP_FILE_NUMBER"] = manifest.file_number
+      end
+    end
+
+    super
+  end
+
   def json_manifests(manifest)
     ActiveModelSerializers::SerializableResource.new(
       manifest,
