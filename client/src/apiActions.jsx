@@ -157,8 +157,8 @@ export const startDocumentDownload = (manifestId, csrfToken) => (dispatch) => {
     );
 };
 
-export const restartManifestFetch = (manifestId, veteranId, csrfToken) => (dispatch) => {
-  postRequest(`/api/v2/manifests/${manifestId}`, csrfToken, { 'FILE-NUMBER': veteranId }).
+export const restartManifestFetch = (manifestId, csrfToken) => (dispatch) => {
+  postRequest(`/api/v2/manifests/${manifestId}`, csrfToken).
     then(
       (resp) => setStateFromResponse(dispatch, resp),
       (err) => dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)))
