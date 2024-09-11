@@ -178,4 +178,36 @@ describe ExternalApi::VBMSService do
       end
     end
   end
+
+  describe ".process_fetch_veteran_file_list_response" do
+    let(:mock_json_adapter) { instance_double(JsonApiResponseAdapter) }
+
+    before do
+      allow(JsonApiResponseAdapter).to receive(:new).and_return(mock_json_adapter)
+      FeatureToggle.enable!(:use_ce_api)
+    end
+
+    after { FeatureToggle.disable!(:use_ce_api) }
+
+    context "when the adapted response is present" do
+      it "does not log any errors and returns the adapted response" do
+        expect(mock_json_adapter).to receive(:adapt_v2_fetch_documents_for).and_return(["foo"])
+        expect(ExceptionLogger).not_to receive(:capture)
+
+        result = described.process_fetch_veteran_file_list_response(nil)
+	expect(result.count).to eq 1
+      end
+    end
+
+    context "when the adapted response is nil" do
+      it "logs an exception and returns an empty array" do
+        expect(mock_json_adapter).to receive(:adapt_v2_fetch_documents_for).and_return(nil)
+        expect(RuntimeError).to receive(:new).with(/API response could not be parsed/).and_call_original
+        expect(ExceptionLogger).to receive(:capture).with(instance_of(RuntimeError))
+
+        result = described.process_fetch_veteran_file_list_response(nil)
+	expect(result).to eq []
+      end
+    end
+  end
 end
