@@ -4,11 +4,12 @@
 # by most of caseflow-efolder
 class JsonApiResponseAdapter
   def adapt_v2_fetch_documents_for(json_response)
+    json_response = normalize_json_response(json_response)
+
+    return nil unless valid_file_response?(json_response)
+
     documents = []
-
-    return documents unless valid_json_response?(json_response)
-
-    json_response.body["files"].each do |file_resp|
+    json_response["files"].each do |file_resp|
       documents.push(v2_fetch_documents_file_response(file_resp))
     end
 
@@ -17,10 +18,18 @@ class JsonApiResponseAdapter
 
   private
 
-  def valid_json_response?(json_response)
-    return false if json_response&.body.blank?
+  def normalize_json_response(json_response)
+    if json_response.blank?
+      {}
+    elsif json_response.instance_of?(Hash)
+      json_response.with_indifferent_access
+    elsif json_response.instance_of?(String)
+      JSON.parse(json_response)
+    end
+  end
 
-    json_response.body.key?("files")
+  def valid_file_response?(json_response)
+    json_response.key?("files")
   end
 
   def v2_fetch_documents_file_response(file_json)
