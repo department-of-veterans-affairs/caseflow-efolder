@@ -25,10 +25,10 @@ class Fakes::BGSService
       return multiple_stations_user
     end
 
-    fail BGS::NoActiveStations if username == "zero-stations"
-    fail BGS::InvalidStation if station_id == "invalid"
-    fail BGS::InvalidUsername if username == "invalid"
-    fail BGS::NoCaseflowAccess if station_id == "noaccess"
+    fail BGSErrors::NoActiveStations if username == "zero-stations"
+    fail BGSErrors::InvalidStation if station_id == "invalid"
+    fail BGSErrors::InvalidUsername if username == "invalid"
+    fail BGSErrors::NoCaseflowAccess if station_id == "noaccess"
 
     {
       css_id: "BVALASTFIRST",

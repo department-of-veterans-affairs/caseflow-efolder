@@ -160,7 +160,7 @@ describe 'SSO' do
       post "/login", params: { username: "multiple-stations", station_id: "" }
       saml_idp_handshake
 
-      expect_redirect_to_login_with_error(BGS::StationAssertionRequired)
+      expect_redirect_to_login_with_error(BGSErrors::StationAssertionRequired)
     end
   end
 
@@ -175,7 +175,7 @@ describe 'SSO' do
 
         saml_idp_handshake
 
-        expect_redirect_to_login_with_error(BGS::InvalidUsername)
+        expect_redirect_to_login_with_error(BGSErrors::InvalidUsername)
       end
     end
 
@@ -189,7 +189,7 @@ describe 'SSO' do
 
         saml_idp_handshake
 
-        expect_redirect_to_login_with_error(BGS::InvalidStation)
+        expect_redirect_to_login_with_error(BGSErrors::InvalidStation)
       end
     end
   end
