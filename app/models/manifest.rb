@@ -31,7 +31,18 @@ class Manifest < ApplicationRecord
     # Reset stale manifests.
     update!(fetched_files_status: :initialized) if ready_for_refresh?
 
-    vbms_source.start!
+    if FeatureToggle.enabled?(:check_user_sensitivity)
+      if sensitivity_checker.sensitivity_levels_compatible?(
+        user: user,
+        veteran_file_number: file_number
+      )
+        vbms_source.start!
+      else
+        raise BGS::SensitivityLevelCheckFailure.new, "You are not authorized to access this manifest"
+      end
+    else
+      vbms_source.start!
+    end
     vva_source.start! unless FeatureToggle.enabled?(:skip_vva)
   end
 
@@ -41,6 +52,7 @@ class Manifest < ApplicationRecord
                              expiration: SECONDS_TO_AUTO_UNLOCK)
     s.lock(SECONDS_TO_AUTO_UNLOCK) do
       return if pending?
+
       update(fetched_files_status: :pending)
     end
 
@@ -167,5 +179,9 @@ class Manifest < ApplicationRecord
     update(veteran_first_name: veteran.first_name || "",
            veteran_last_name: veteran.last_name || "",
            veteran_last_four_ssn: veteran.last_four_ssn || "")
+  end
+
+  def sensitivity_checker
+    @sensitivity_checker ||= SensitivityChecker.new
   end
 end
