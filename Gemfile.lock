@@ -309,7 +309,7 @@ GEM
     mini_magick (4.11.0)
     mini_mime (1.1.5)
     mini_portile2 (2.8.7)
-    minitest (5.25.0)
+    minitest (5.25.1)
     moment_timezone-rails (0.5.14)
       momentjs-rails (~> 2.15.1)
     momentjs-rails (2.15.1)
