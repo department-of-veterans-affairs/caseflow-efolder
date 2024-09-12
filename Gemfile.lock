@@ -74,8 +74,8 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/ruby_claim_evidence_api.git
-  revision: e55f0586a618719e8f6987b8fe8860903d802012
-  ref: e55f0586a618719e8f6987b8fe8860903d802012
+  revision: 34bc7bff0abea570abd7a7c1ae401c1d528a8d91
+  ref: 34bc7bff0abea570abd7a7c1ae401c1d528a8d91
   specs:
     ruby_claim_evidence_api (0.1.0)
       activesupport
@@ -311,7 +311,7 @@ GEM
     mini_magick (4.11.0)
     mini_mime (1.1.5)
     mini_portile2 (2.8.7)
-    minitest (5.25.0)
+    minitest (5.25.1)
     moment_timezone-rails (0.5.14)
       momentjs-rails (~> 2.15.1)
     momentjs-rails (2.15.1)
@@ -510,8 +510,7 @@ GEM
     regexp_parser (2.8.3)
     request_store (1.5.0)
       rack (>= 1.4)
-    rexml (3.3.5)
-      strscan
+    rexml (3.3.7)
     rspec (3.10.0)
       rspec-core (~> 3.10.0)
       rspec-expectations (~> 3.10.0)
@@ -604,7 +603,6 @@ GEM
       activesupport (>= 6.1)
       sprockets (>= 3.0.0)
     statsd-instrument (3.7.0)
-    strscan (3.1.0)
     systemu (2.6.5)
     therubyracer (0.12.3)
       libv8 (~> 3.16.14.15)
@@ -652,7 +650,7 @@ GEM
     xpath (3.2.0)
       nokogiri (~> 1.8)
     zaru (0.3.0)
-    zeitwerk (2.6.17)
+    zeitwerk (2.6.18)
     zero_downtime_migrations (0.0.7)
       activerecord
 

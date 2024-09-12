@@ -32,7 +32,7 @@ class ExternalApi::VBMSService
 
     if FeatureToggle.enabled?(:use_ce_api)
       response = VeteranFileFetcher.fetch_veteran_file_list(veteran_file_number: veteran_file_number)
-      documents = JsonApiResponseAdapter.new.adapt_v2_fetch_documents_for(response)
+      documents = process_fetch_veteran_file_list_response(response)
     elsif FeatureToggle.enabled?(:vbms_pagination, user: RequestStore[:current_user])
       service = VBMS::Service::PagedDocuments.new(client: vbms_client)
       documents = call_and_log_service(service: service, vbms_id: veteran_file_number)[:documents]
@@ -56,7 +56,7 @@ class ExternalApi::VBMSService
         begin_date_range: begin_date_range,
         end_date_range: end_date_range
       )
-      documents = JsonApiResponseAdapter.new.adapt_v2_fetch_documents_for(response)
+      documents = process_fetch_veteran_file_list_response(response)
     else
       request = VBMS::Requests::FindDocumentVersionReferenceByDateRange.new(veteran_file_number, begin_date_range, end_date_range)
       documents = send_and_log_request(veteran_file_number, request)
@@ -125,5 +125,17 @@ class ExternalApi::VBMSService
         user: RequestStore[:current_user],
         veteran_file_number: veteran_file_number
       )
+  end
+
+  def self.process_fetch_veteran_file_list_response(response)
+    documents = JsonApiResponseAdapter.new.adapt_v2_fetch_documents_for(response)
+
+    # We want to be notified of any API responses that are not parsable
+    if documents.blank?
+      ex = RuntimeError.new("API response could not be parsed: #{response}")
+      ExceptionLogger.capture(ex)
+    end
+
+    documents || []
   end
 end
