@@ -1,3 +1,5 @@
+@import 'bourbon';
+@import 'neat';
 @import 'uswds_rails_overrides/core/defaults';
 @import 'uswds/all';
 @import 'uswds_rails_overrides/all';
@@ -569,6 +571,14 @@ div {
     overflow: hidden;
   }
 }
+
+
+//-----------------------------------*
+// CSS based on Web Design Guidelines.
+// - Uses Neat.bourbon.io as a grid
+// - Uses patterns and components
+//   from refills.bourbon.io/unstyled/
+//-----------------------------------*/
 
 
 //===========================
