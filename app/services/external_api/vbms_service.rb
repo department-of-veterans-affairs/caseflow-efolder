@@ -77,7 +77,6 @@ class ExternalApi::VBMSService
 
     if FeatureToggle.enabled?(:use_ce_api)
       # Not using #send_and_log_request because logging to MetricService implemeneted in CE API gem
-      # Method call returns the response body, so no need to return response.content/body
       VeteranFileFetcher.get_document_content(doc_series_id: document.series_id)
     else
       request = VBMS::Requests::GetDocumentContent.new(document.document_id)
@@ -131,7 +130,7 @@ class ExternalApi::VBMSService
     documents = JsonApiResponseAdapter.new.adapt_v2_fetch_documents_for(response)
 
     # We want to be notified of any API responses that are not parsable
-    if documents.blank?
+    if documents.nil?
       ex = RuntimeError.new("API response could not be parsed: #{response}")
       ExceptionLogger.capture(ex)
     end
