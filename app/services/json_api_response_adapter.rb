@@ -6,6 +6,7 @@ class JsonApiResponseAdapter
   def adapt_v2_fetch_documents_for(json_response)
     json_response = normalize_json_response(json_response)
 
+    return [] if check_empty_result?(json_response)
     return nil unless valid_file_response?(json_response)
 
     documents = []
@@ -30,6 +31,10 @@ class JsonApiResponseAdapter
 
   def valid_file_response?(json_response)
     json_response.key?("files")
+  end
+
+  def check_empty_result?(json_response)
+    json_response.key?("page") && json_response['page']['totalResults'].to_i == 0
   end
 
   def v2_fetch_documents_file_response(file_json)

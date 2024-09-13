@@ -130,7 +130,7 @@ class ExternalApi::VBMSService
     documents = JsonApiResponseAdapter.new.adapt_v2_fetch_documents_for(response)
 
     # We want to be notified of any API responses that are not parsable
-    if documents.blank?
+    if documents.nil?
       ex = RuntimeError.new("API response could not be parsed: #{response}")
       ExceptionLogger.capture(ex)
     end
