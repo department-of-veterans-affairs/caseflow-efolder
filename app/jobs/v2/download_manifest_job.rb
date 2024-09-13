@@ -4,18 +4,18 @@ class V2::DownloadManifestJob < ApplicationJob
   def perform(manifest_source, user = nil)
     manifest_source.update(status: :pending)
 
-    RequestStore.store[:current_user] = user if user
+    RequestStore.store[:current_user] = user if user.present?
     Raven.extra_context(manifest_source: manifest_source.id)
 
     documents = ManifestFetcher.new(manifest_source: manifest_source).process
 
     log_info(manifest_source.manifest.file_number, documents, manifest_source.manifest.zipfile_size)
 
-    V2::SaveFilesInS3Job.perform_later(manifest_source) if documents.present? && !ApplicationController.helpers.ui_user?
-  rescue StandardError => error
+    V2::SaveFilesInS3Job.perform_later(manifest_source, current_user&.id) if documents.present? && !ApplicationController.helpers.ui_user?
+  rescue StandardError => e
     manifest_source.update!(status: :failed)
-    Rails.logger.error "DownloadManifestJob encountered error #{error.class.name} when fetching manifest for appeal #{manifest_source.manifest.file_number}"
-    raise error
+    Rails.logger.error "DownloadManifestJob encountered error #{e.class.name} when fetching manifest for appeal #{manifest_source.manifest.file_number}"
+    raise e
   end
 
   def max_attempts
