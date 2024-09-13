@@ -23,4 +23,8 @@ module Rails
   def self.deploy_env
     current_env
   end
+
+  def self.non_production_env?
+    deploy_env == :uat || deploy_env == :test || deploy_env == :development
+  end
 end
