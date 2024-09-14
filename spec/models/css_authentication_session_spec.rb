@@ -63,7 +63,7 @@ describe CssAuthenticationSession do
       let(:username) { "invalid" }
 
       it "raises InvalidUsername error" do
-        expect { subject }.to raise_error(BGSErrors::InvalidUsername)
+        expect { subject }.to raise_error(BGS::InvalidUsername)
       end
     end
 
@@ -71,7 +71,7 @@ describe CssAuthenticationSession do
       let(:station_id) { "invalid" }
 
       it "raises InvalidStation error" do
-        expect { subject }.to raise_error(BGSErrors::InvalidStation)
+        expect { subject }.to raise_error(BGS::InvalidStation)
       end
     end
 
@@ -79,7 +79,7 @@ describe CssAuthenticationSession do
       let(:username) { "zero-stations" }
 
       it "raises NoActiveStations error" do
-        expect { subject }.to raise_error(BGSErrors::NoActiveStations)
+        expect { subject }.to raise_error(BGS::NoActiveStations)
       end
     end
   end

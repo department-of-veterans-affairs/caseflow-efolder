@@ -1,6 +1,5 @@
 
 Rails.application.reloader.to_prepare do
-
   # set up default exponential backoff parameters
   ActiveJob::QueueAdapters::ShoryukenAdapter::JobWrapper
     .shoryuken_options(auto_visibility_timeout: true,
@@ -17,7 +16,7 @@ Rails.application.reloader.to_prepare do
     Shoryuken::Client.sqs.create_queue(queue_name: ActiveJob::Base.queue_name_prefix + "_med_priority")
     Shoryuken::Client.sqs.create_queue(queue_name: ActiveJob::Base.queue_name_prefix + "_high_priority")
   end
-
+  
   Shoryuken.configure_server do |config|
     Rails.logger = Shoryuken::Logging.logger
     Rails.logger.level = Logger::INFO

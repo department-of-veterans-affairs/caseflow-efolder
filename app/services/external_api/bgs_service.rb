@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "bgs"
-require "bgs_errors"
 
 # Thin interface to all things BGS
 class ExternalApi::BGSService
@@ -204,11 +203,11 @@ class ExternalApi::BGSService
     css_id = resp[:network_login_name] # probably the same as username but just in case.
     stations = Array.wrap(resp[:user_stations]).select { |station| station[:enabled] }
 
-    fail BGSErrors::NoActiveStations unless stations.any?
+    fail BGS::NoActiveStations unless stations.any?
 
-    fail BGSErrors::StationAssertionRequired if stations.size > 1 && station_id.blank?
+    fail BGS::StationAssertionRequired if stations.size > 1 && station_id.blank?
 
-    fail BGSErrors::InvalidStation if station_id.present? && !stations.map { |station| station[:id] }.include?(station_id)
+    fail BGS::InvalidStation if station_id.present? && !stations.map { |station| station[:id] }.include?(station_id)
 
     station_id = stations.first[:id] if station_id.blank? # treat "" like nil
     application ||= resp[:user_application]
@@ -233,10 +232,10 @@ class ExternalApi::BGSService
       roles: Array.wrap(profile[:functions]).select { |func| func[:assigned_value] == "YES" }.map { |func| func[:name] }
     }
   rescue BGS::ShareError => error
-    fail BGSErrors::InvalidUsername if error.message =~ /Unable to get user authroization/
-    fail BGSErrors::InvalidStation if error.message =~ /is invalid station number/
-    fail BGSErrors::InvalidApplication if error.message =~ /Application Does Not Exist/
-    fail BGSErrors::NoCaseflowAccess if error.message =~ /TODO unknown error string/
+    fail BGS::InvalidUsername if error.message =~ /Unable to get user authroization/
+    fail BGS::InvalidStation if error.message =~ /is invalid station number/
+    fail BGS::InvalidApplication if error.message =~ /Application Does Not Exist/
+    fail BGS::NoCaseflowAccess if error.message =~ /TODO unknown error string/
     {}
   end
 

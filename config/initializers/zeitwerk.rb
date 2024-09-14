@@ -20,7 +20,7 @@
 Rails.autoloaders.each do |autoloader|
   # "file_name" => Expected Module or Class name. 
   autoloader.inflector.inflect(
-    "bgs_errors" => "BGSErrors",
+    "bgs" => "BGS",
     "bgs_service" => "BGSService",
     "poa_mapper" => "POAMapper",
     "vbms_service" => "VBMSService",
