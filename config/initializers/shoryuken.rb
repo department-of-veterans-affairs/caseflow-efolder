@@ -1,4 +1,4 @@
-require "#{Rails.root}/app/jobs/middleware/job_metrics_service_metric_middleware"
+
 
 
 Rails.application.reloader.to_prepare do
