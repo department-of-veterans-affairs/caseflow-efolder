@@ -1,4 +1,4 @@
-class CurrentUserLoadTests
+class CurrentUserLoadTest
   def initialize(iterations = 100)
     @iterations = iterations
   end
