@@ -1,4 +1,4 @@
-require "vva"
+
 
 # Thin interface to talk to Virtual VA
 class ExternalApi::VVAService
