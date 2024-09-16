@@ -19,7 +19,7 @@ class Manifest < ApplicationRecord
     failed: 3
   }
 
-  UI_HOURS_UNTIL_EXPIRY = 72
+  UI_HOURS_UNTIL_EXPIRY = Rails.non_production_env? ? 0.25 : 72
   API_HOURS_UNTIL_EXPIRY = 3
 
   SECONDS_TO_AUTO_UNLOCK = 5
