@@ -1,3 +1,6 @@
+require:
+  - .rubocop/custom_cop/top_level_constants_per_file.rb
+
 AllCops:
   TargetRubyVersion: 2.3
   TargetRailsVersion: 4.2
@@ -58,3 +61,11 @@ Style/TrailingCommaInArrayLiteral:
 
 Style/TrailingCommaInHashLiteral:
   Enabled: false
+
+CustomCop/TopLevelConstantsPerFile:
+  Enabled: true
+  Include:
+    - 'app/**/*'
+    - 'lib/**/*'
+  Exclude:
+    - '**/*[^.rb]' # exclude non-.rb files (ex: .rake files)
