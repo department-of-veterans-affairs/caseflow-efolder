@@ -1,10 +1,6 @@
 AllCops:
   TargetRubyVersion: 2.3
   TargetRailsVersion: 4.2
-  Include:
-    - '**/config.ru'
-    - '**/Rakefile'
-    - '**/*.rake'
   Exclude:
     - 'bin/**/*'
     - 'db/**/*'
