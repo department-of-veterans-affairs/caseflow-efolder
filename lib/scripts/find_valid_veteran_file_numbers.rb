@@ -27,7 +27,7 @@ class FindValidVeteranFileNumbers
         valid_file_numbers[key].push(file_number)
       rescue RuntimeError => e
         invalid_file_numbers.push(manifest.file_number)
-        continue
+        next
       end
     end
 
