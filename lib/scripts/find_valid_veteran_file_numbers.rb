@@ -43,17 +43,21 @@ class FindValidVeteranFileNumbers
     puts "================================================================================"
 
     puts "VALID FILE NUMBERS:"
-    valid_file_numbers.each do |k, v|
-      puts "#{k.upcase}"
+    valid_file_numbers.sort.to_h.each do |k, v|
+      puts "#{k.upcase} (#{valid_file_numbers[k].count} total numbers)"
 
       valid_file_numbers[k].each do |number|
-        puts "- #{number}"
+        puts "#{number}"
       end
+
+      puts ""
     end
 
-    puts "\nINVALID FILE NUMBERS:"
+    puts "================================================================================"
+
+    puts "\nINVALID FILE NUMBERS (#{invalid_file_numbers.count} total numbers):"
     invalid_file_numbers.each do |number|
-      puts "- #{number}"
+      puts "#{number}"
     end
 
     puts "================================================================================"
