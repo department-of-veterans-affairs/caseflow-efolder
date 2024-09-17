@@ -122,6 +122,10 @@ module CaseflowEfolder
     #---------------------------------------------------------------------------------------
     config.download_filepath = Rails.root + "tmp/files"
     
+  # Zeitwerk has specific requirements for auto/eager loading. See below links for more details
+  # https://guides.rubyonrails.org/classic_to_zeitwerk_howto.html
+  # https://github.com/fxn/zeitwerk
+
     config.autoload_paths += [
       "#{root}/lib",
     ]
@@ -130,14 +134,26 @@ module CaseflowEfolder
       "#{root}/lib",
     ]
     
+    Rails.autoloaders.each do | autoloader |
+      # "file_name" => Expected Module or Class name.
+      autoloader.inflector.inflect(
+        "bgs" => "BGS",
+        "bgs_service" => "BGSService",
+        "poa_mapper" => "POAMapper",
+        "vbms_service" => "VBMSService",
+        "vva_service" => "VVAService"
+      )
+    end
+
     # A collapse statement will remove the need for a namespace based on the direcotry given.
-    # Tasks::Support::ModuleOrClassName becomes ModuleOrClassName with the below statements.
+    # Tasks::Support::ModuleOrClassName becomes ModuleOrClassName with the last two statements.
     Rails.autoloaders.main.collapse(
       "app/jobs/middleware",
       "#{root}/lib/tasks",
       "#{root}/lib/tasks/support"
     )
 
+    # Will not autoload any files within directories added here
     Rails.autoloaders.main.ignore(
       "#{root}/lib/assets",
       "#{root}/lib/pdfs",
