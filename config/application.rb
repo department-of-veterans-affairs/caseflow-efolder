@@ -122,9 +122,13 @@ module CaseflowEfolder
     #---------------------------------------------------------------------------------------
     config.download_filepath = Rails.root + "tmp/files"
     
-  # Zeitwerk has specific requirements for auto/eager loading. See below links for more details
-  # https://guides.rubyonrails.org/classic_to_zeitwerk_howto.html
-  # https://github.com/fxn/zeitwerk
+
+    # --------------------------------------------------------------------------------------
+    # Autoloading & Eager loading
+    
+    # Zeitwerk has specific requirements for auto/eager loading. See below links for more details
+    # https://guides.rubyonrails.org/classic_to_zeitwerk_howto.html
+    # https://github.com/fxn/zeitwerk
 
     config.autoload_paths += [
       "#{root}/lib",
@@ -159,7 +163,7 @@ module CaseflowEfolder
       "#{root}/lib/pdfs",
       "#{root}/lib/scripts"
     )
-
+    # --------------------------------------------------------------------------------------
 
 
     # Currently the Caseflow client makes calls to get document content directly
