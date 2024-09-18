@@ -150,15 +150,15 @@ module CaseflowEfolder
     end
 
     # A collapse statement will remove the need for a namespace based on the direcotry given.
-    # Tasks::Support::ModuleOrClassName becomes ModuleOrClassName with the last two statements.
+    # Tasks::Support::ModuleOrClassName becomes ModuleOrClassName with the two statements below.
     Rails.autoloaders.main.collapse(
-      "app/jobs/middleware",
       "#{root}/lib/tasks",
       "#{root}/lib/tasks/support"
     )
 
     # Will not autoload any files within directories added here
     Rails.autoloaders.main.ignore(
+      "app/jobs/middleware",
       "#{root}/lib/assets",
       "#{root}/lib/pdfs",
       "#{root}/lib/scripts"
