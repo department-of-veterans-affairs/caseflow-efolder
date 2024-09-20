@@ -222,13 +222,6 @@ SINGLE_COV=true bundle exec rspec spec/path/to/file_spec.rb
 Missing test coverage will be reported automatically at the end of the test run.
 
 ## Monitoring
-We use NewRelic to monitor the app. By default, it's disabled locally. To enable it, do:
-
-```
-NEW_RELIC_LICENSE_KEY='<key as displayed on NewRelic.com>' NEW_RELIC_AGENT_ENABLED=true bundle exec rails s
-```
-
-You may wish to do this if you are debugging our NewRelic integration, for instance.
 
 ## Additional Setup
 
