@@ -50,7 +50,7 @@ gem "opentelemetry-instrumentation-redis", require: false
 gem "omniauth-saml-va", git: "https://github.com/department-of-veterans-affairs/omniauth-saml-va", branch: "pek-iam-ssoi"
 #gem "omniauth-saml-va", git: "https://github.com/department-of-veterans-affairs/omniauth-saml-va", ref: "fbe2b878c250b14ee996ef6699c42df2c42e41a1"
 gem "pg", "~> 1.1.0", platforms: :ruby
-gem "puma", "5.6.4"
+gem "puma", '~> 5.6.9'
 gem "rack-cors", ">= 1.0.4"
 gem "rails", "6.1.7.4"
 gem "redis-namespace"
