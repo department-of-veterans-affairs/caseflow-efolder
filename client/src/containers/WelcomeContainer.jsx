@@ -1,5 +1,5 @@
 import { css } from 'glamor';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -20,29 +20,28 @@ const searchBarNoteTextStyling = css({
   textAlign: 'center'
 });
 
-class WelcomeContainer extends React.PureComponent {
-  componentDidMount() {
-    this.props.clearErrorMessage();
-    this.props.clearSearchInputText();
+const WelcomeContainer = (props) => {
+  useEffect(() => {
+    props.clearErrorMessage();
+    props.clearSearchInputText();
+  }, []);
+
+  const handleInputChange = (event) => {
+    props.setSearchInputText(event.target.value);
   }
 
-  handleInputChange = (event) => {
-    this.props.setSearchInputText(event.target.value);
-  }
+  const handleFormSubmit = (event) => {
+    const veteranId = props.searchInputText;
 
-  handleFormSubmit = (event) => {
-    const veteranId = this.props.searchInputText;
-
-    this.props.setVeteranId(veteranId);
-    this.props.startManifestFetch(veteranId, this.props.csrfToken, this.props.history.push);
+    props.setVeteranId(veteranId);
+    props.startManifestFetch(veteranId, props.csrfToken, props.history.push);
     event.preventDefault();
   }
 
-  render() {
     return <AppSegment filledBackground>
-      { this.props.errorMessage.title &&
-        <AlertBanner title="We could not complete the search for this Veteran ID" alertType="error">
-          <p>{this.props.errorMessage.message}</p>
+      { props.errorMessage.title &&
+        <AlertBanner title="We could not complete the search for  Veteran ID" alertType="error">
+          <p>{props.errorMessage.message}</p>
         </AlertBanner>
       }
 
@@ -55,7 +54,7 @@ class WelcomeContainer extends React.PureComponent {
 
       <div className="ee-search">
 
-        <form className="usa-search usa-search-big cf-form" id="new_download" onSubmit={this.handleFormSubmit}>
+        <form className="usa-search usa-search-big cf-form" id="new_download" onSubmit={handleFormSubmit}>
           <div role="search">
             <label className="usa-sr-only" htmlFor="file_number">
               Search for a Veteran ID number below to get started.
@@ -64,8 +63,8 @@ class WelcomeContainer extends React.PureComponent {
               type="search"
               name="file_number"
               id="file_number"
-              value={this.props.searchInputText}
-              onChange={this.handleInputChange}
+              value={props.searchInputText}
+              onChange={handleInputChange}
             />
             <button type="submit" className="cf-submit">
               <span className="usa-search-submit-text">Search</span>
@@ -74,14 +73,13 @@ class WelcomeContainer extends React.PureComponent {
         </form>
 
         <p {...searchBarNoteTextStyling}>
-Note: eFolder Express now includes Virtual VA documents from the Legacy Content Manager Documents tab in VBMS.
+  Note: eFolder Express now includes Virtual VA documents from the Legacy Content Manager Documents tab in VBMS.
         </p>
       </div>
 
       <Link to="/recent-downloads">Recent downloads...</Link>
     </AppSegment>;
   }
-}
 
 const mapStateToProps = (state) => ({
   csrfToken: state.csrfToken,
@@ -96,5 +94,6 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   startManifestFetch,
   setSearchInputText
 }, dispatch);
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(WelcomeContainer);
