@@ -61,7 +61,7 @@ const RecentDownloadsContainer = (props) => {
       <Link to="/">Back to search</Link>
     </div>
   );
-}
+};
 
 const mapStateToProps = (state) => ({
   csrfToken: state.csrfToken,
@@ -71,7 +71,4 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => bindActionCreators({ getDownloadHistory }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(RecentDownloadsContainer);
-
-
-
 

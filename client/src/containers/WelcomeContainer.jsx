@@ -28,7 +28,7 @@ const WelcomeContainer = (props) => {
 
   const handleInputChange = (event) => {
     props.setSearchInputText(event.target.value);
-  }
+  };
 
   const handleFormSubmit = (event) => {
     const veteranId = props.searchInputText;
@@ -36,50 +36,50 @@ const WelcomeContainer = (props) => {
     props.setVeteranId(veteranId);
     props.startManifestFetch(veteranId, props.csrfToken, props.history.push);
     event.preventDefault();
-  }
+  };
 
-    return <AppSegment filledBackground>
-      { props.errorMessage.title &&
+  return <AppSegment filledBackground>
+    { props.errorMessage.title &&
         <AlertBanner title="We could not complete the search for this Veteran ID" alertType="error">
           <p>{props.errorMessage.message}</p>
         </AlertBanner>
-      }
+    }
 
-      <div className="ee-heading">
-        <h1>Welcome to eFolder Express</h1>
-        <p>eFolder Express allows VA employees to bulk-download VBMS eFolders.
-          <br />Search for a Veteran ID number below to get started.
-        </p>
-      </div>
+    <div className="ee-heading">
+      <h1>Welcome to eFolder Express</h1>
+      <p>eFolder Express allows VA employees to bulk-download VBMS eFolders.
+        <br />Search for a Veteran ID number below to get started.
+      </p>
+    </div>
 
-      <div className="ee-search">
+    <div className="ee-search">
 
-        <form className="usa-search usa-search-big cf-form" id="new_download" onSubmit={handleFormSubmit}>
-          <div role="search">
-            <label className="usa-sr-only" htmlFor="file_number">
+      <form className="usa-search usa-search-big cf-form" id="new_download" onSubmit={handleFormSubmit}>
+        <div role="search">
+          <label className="usa-sr-only" htmlFor="file_number">
               Search for a Veteran ID number below to get started.
-            </label>
-            <input
-              type="search"
-              name="file_number"
-              id="file_number"
-              value={props.searchInputText}
-              onChange={handleInputChange}
-            />
-            <button type="submit" className="cf-submit">
-              <span className="usa-search-submit-text">Search</span>
-            </button>
-          </div>
-        </form>
+          </label>
+          <input
+            type="search"
+            name="file_number"
+            id="file_number"
+            value={props.searchInputText}
+            onChange={handleInputChange}
+          />
+          <button type="submit" className="cf-submit">
+            <span className="usa-search-submit-text">Search</span>
+          </button>
+        </div>
+      </form>
 
-        <p {...searchBarNoteTextStyling}>
+      <p {...searchBarNoteTextStyling}>
   Note: eFolder Express now includes Virtual VA documents from the Legacy Content Manager Documents tab in VBMS.
-        </p>
-      </div>
+      </p>
+    </div>
 
-      <Link to="/recent-downloads">Recent downloads...</Link>
-    </AppSegment>;
-  }
+    <Link to="/recent-downloads">Recent downloads...</Link>
+  </AppSegment>;
+};
 
 const mapStateToProps = (state) => ({
   csrfToken: state.csrfToken,
@@ -94,6 +94,5 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   startManifestFetch,
   setSearchInputText
 }, dispatch);
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(WelcomeContainer);

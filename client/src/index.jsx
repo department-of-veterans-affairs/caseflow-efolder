@@ -10,6 +10,7 @@ const efolderExpress = {
   init(props) {
     const container = document.getElementById('efolder_express_app');
     const root = createRoot(container);
+
     root.render(
       <ReduxBase reducer={reducer} initialState={{
         ...initState,
