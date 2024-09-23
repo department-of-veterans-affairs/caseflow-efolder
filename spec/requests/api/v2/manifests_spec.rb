@@ -33,6 +33,64 @@ describe "Manifests API v2", type: :request do
     Timecop.freeze(Time.utc(2015, 1, 1, 17, 0, 0))
   end
 
+  context "With sensitivity check failures" do
+    let(:mock_sensitivity_checker) { instance_double(SensitivityChecker) }
+
+    before do
+      allow(SensitivityChecker).to receive(:new).and_return(mock_sensitivity_checker)
+
+      FeatureToggle.enable!(:check_user_sensitivity)
+      FeatureToggle.enable!(:skip_vva)
+    end
+
+    after do
+      FeatureToggle.disable!(:check_user_sensitivity)
+      FeatureToggle.disable!(:skip_vva)
+    end
+
+    context "when the check succeeds" do
+      it "allows access to the start action" do
+        expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?).exactly(3).times
+          .with(user: user, veteran_file_number: "DEMO987").and_return(true)
+
+        post "/api/v2/manifests", params: nil, headers: headers
+
+        expect(response.code).to eq("200")
+      end
+
+      it "allows access to the refresh action" do
+        expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?).exactly(3).times
+          .with(user: user, veteran_file_number: "DEMO987").and_return(true)
+
+        post "/api/v2/manifests/#{manifest.id}", params: nil, headers: headers
+
+        expect(response.code).to eq("200")
+      end
+    end
+
+    context "when the check fails" do
+      it "gates access to the start action" do
+        expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?)
+          .with(user: user, veteran_file_number: "DEMO987").and_return(false)
+
+        post "/api/v2/manifests", params: nil, headers: headers
+
+        expect(response.code).to eq("403")
+        expect(JSON.parse(response.body)["status"]).to match(/You are not authorized to access this/)
+      end
+
+      it "gates access to the refresh action" do
+        expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?)
+          .with(user: user, veteran_file_number: "DEMO987").and_return(false)
+
+        post "/api/v2/manifests/#{manifest.id}", params: nil, headers: headers
+
+        expect(response.code).to eq("403")
+        expect(JSON.parse(response.body)["status"]).to match(/You are not authorized to access this/)
+      end
+    end
+  end
+
   context "View download history" do
     let(:manifest1) { Manifest.find_or_create_by!(file_number: "123C") }
     let(:manifest2) { Manifest.find_or_create_by!(file_number: "567C") }

@@ -10,8 +10,12 @@ import {
   clearErrorMessage,
   clearSearchInputText,
   setVeteranId,
-  setSearchInputText
+  setSearchInputText,
+  setShowUnauthorizedVeteranMessage
 } from '../actions';
+import {
+  ExternalLinkIcon
+} from '../components/Icons';
 import { startManifestFetch } from '../apiActions';
 import AlertBanner from '../components/AlertBanner';
 
@@ -20,8 +24,14 @@ const searchBarNoteTextStyling = css({
   textAlign: 'center'
 });
 
+const alertBannerStyling = {
+  marginTop: '0px',
+  marginBottom: '30px'
+};
+
 class WelcomeContainer extends React.PureComponent {
   componentDidMount() {
+    this.props.setShowUnauthorizedVeteranMessage(false);
     this.props.clearErrorMessage();
     this.props.clearSearchInputText();
   }
@@ -41,8 +51,30 @@ class WelcomeContainer extends React.PureComponent {
   render() {
     return <AppSegment filledBackground>
       { this.props.errorMessage.title &&
-        <AlertBanner title="We could not complete the search for this Veteran ID" alertType="error">
+        <AlertBanner
+          title="We could not complete the search for this Veteran ID"
+          alertType="error"
+          inlineStyles={alertBannerStyling}
+        >
           <p>{this.props.errorMessage.message}</p>
+        </AlertBanner>
+      }
+
+      { this.props.showUnauthorizedVeteranMessage &&
+        <AlertBanner
+          title="Additional access needed to search for this veteran ID"
+          alertType="warning"
+          inlineStyles={alertBannerStyling}
+        >
+          <p>
+            Please try searching for another veteran or&nbsp;
+            <a
+              href="https://leaf.va.gov/VBA/335/sensitive_level_access_request/"
+              target="_blank"
+              rel="noreferrer noopener"
+            >request access&nbsp;<ExternalLinkIcon /></a>
+            &nbsp;to search for this veteran ID.
+          </p>
         </AlertBanner>
       }
 
@@ -86,6 +118,7 @@ Note: eFolder Express now includes Virtual VA documents from the Legacy Content 
 const mapStateToProps = (state) => ({
   csrfToken: state.csrfToken,
   errorMessage: state.errorMessage,
+  showUnauthorizedVeteranMessage: state.showUnauthorizedVeteranMessage,
   searchInputText: state.searchInputText
 });
 
@@ -94,7 +127,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   clearSearchInputText,
   setVeteranId,
   startManifestFetch,
-  setSearchInputText
+  setSearchInputText,
+  setShowUnauthorizedVeteranMessage
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(WelcomeContainer);

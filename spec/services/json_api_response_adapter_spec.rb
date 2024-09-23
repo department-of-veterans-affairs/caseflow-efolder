@@ -5,28 +5,24 @@ require "json"
 describe JsonApiResponseAdapter do
   subject(:described) { described_class.new }
 
-  let(:api_response) { instance_double(ExternalApi::Response) }
-
   describe "#adapt_v2_fetch_documents_for" do
     context "with invalid responses" do
       it "handles blank responses" do
         parsed = described.adapt_v2_fetch_documents_for(nil)
 
-        expect(parsed.length).to eq 0
+        expect(parsed).to be_nil
+      end
+
+      it "handles empty response bodies" do
+        parsed = described.adapt_v2_fetch_documents_for({})
+
+        expect(parsed).to be_nil
       end
 
       it "handles blank response bodies" do
-        response = instance_double(ExternalApi::Response, body: nil)
-        parsed = described.adapt_v2_fetch_documents_for(response)
+        parsed = described.adapt_v2_fetch_documents_for("")
 
-        expect(parsed.length).to eq 0
-      end
-
-      it "handles response bodies with no files" do
-        response = instance_double(ExternalApi::Response, body: {})
-        parsed = described.adapt_v2_fetch_documents_for(response)
-
-        expect(parsed.length).to eq 0
+        expect(parsed).to be_nil
       end
     end
 
@@ -35,10 +31,7 @@ describe JsonApiResponseAdapter do
       data_hash = JSON.parse(File.read(file))
       file.close
 
-      expect(api_response).to receive(:body)
-        .exactly(3).times.and_return(data_hash)
-
-      parsed = described.adapt_v2_fetch_documents_for(api_response)
+      parsed = described.adapt_v2_fetch_documents_for(data_hash)
 
       expect(parsed.length).to eq 2
 
