@@ -34,11 +34,11 @@ jobs:
         image: localstack/localstack:0.12.5
 
     container:
-      image: 008577686731.dkr.ecr.us-gov-west-1.amazonaws.com/gaimg-ruby:2.7.3-ga-browsers
+      image: 065403089830.dkr.ecr.us-gov-west-1.amazonaws.com/gaimg-ruby:2.7.3-ga-browsers
       options: --privileged # Necessary for Rspec to run with our configuration within GHA. Needed for rspec step to prevent chromedriver issue
       credentials:
           username: AWS
-          password: ${{ secrets.ECR_PASSWORD }}
+          password: ${{ secrets.VAEC_ECR_PASSWORD }}
       env:
         DBUS_SESSION_BUS_ADDRESS: /dev/null
         RAILS_ENV: test

