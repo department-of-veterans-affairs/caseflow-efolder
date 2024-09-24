@@ -1,6 +1,6 @@
 AllCops:
-  TargetRubyVersion: 2.3
-  TargetRailsVersion: 4.2
+  TargetRubyVersion: 2.5
+  TargetRailsVersion: 5.1
   Include:
     - '**/config.ru'
     - '**/Rakefile'
@@ -11,28 +11,6 @@ AllCops:
     - 'config/**/*'
     - 'script/**/*'
     - 'vendor/**/*'
-
-Rails/Output:
-  Exclude:
-    - 'lib/**/*.rb'
-
-Rails/SkipsModelValidations:
-  Enabled: false
-
-Rails/FilePath:
-  Enabled: false
-
-Rails/HasManyOrHasOneDependent:
-  Enabled: false
-
-Rails/UnknownEnv:
-  Enabled: false
-
-Rails/OutputSafety:
-  Enabled: false
-
-Rails/InverseOf:
-  Enabled: false
 
 Style/GuardClause:
   Enabled: false
@@ -52,7 +30,7 @@ Style/Documentation:
 Style/FrozenStringLiteralComment:
   Enabled: false
 
-Metrics/LineLength:
+Layout/LineLength:
   Max: 200
 
 Metrics/BlockLength:
@@ -70,9 +48,6 @@ Metrics/AbcSize:
 Style/DoubleNegation:
   Enabled: false
 
-Rails:
-  Enabled: true
-
 Style/NegatedIf:
   Enabled: false
 
@@ -80,9 +55,6 @@ Naming/FileName:
   Enabled: false
 
 Naming/HeredocDelimiterNaming:
-  Enabled: false
-
-Rails/DynamicFindBy:
   Enabled: false
 
 Style/TrailingCommaInArrayLiteral:
