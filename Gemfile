@@ -49,7 +49,7 @@ gem "opentelemetry-instrumentation-redis", require: false
 
 gem "omniauth-saml-va", git: "https://github.com/department-of-veterans-affairs/omniauth-saml-va", branch: "pek-iam-ssoi"
 #gem "omniauth-saml-va", git: "https://github.com/department-of-veterans-affairs/omniauth-saml-va", ref: "fbe2b878c250b14ee996ef6699c42df2c42e41a1"
-gem "pg", "~> 1.1.0", platforms: :ruby
+gem "pg", "~> 1.5.7", platforms: :ruby
 gem "puma", "5.6.4"
 gem "rack-cors", ">= 1.0.4"
 gem "rails", "6.1.7.4"
@@ -62,7 +62,6 @@ gem "rubyzip", ">= 1.3.0"
 gem "sass-rails", "~> 5.0"
 gem "sentry-raven"
 gem "shoryuken", "3.1.11"
-gem "therubyracer", platforms: :ruby
 gem "turbolinks"
 gem "uswds-rails", git: "https://github.com/18F/uswds-rails-gem.git"
 gem "wannabe_bool"
@@ -79,7 +78,7 @@ group :development, :test do
   gem "dotenv-rails"
   gem "pry"
   gem "pry-byebug"
-  gem "rubocop", "~> 0.67.2", require: false
+  gem "rubocop", "= 0.83", require: false
   gem "scss_lint", require: false
 end
 
