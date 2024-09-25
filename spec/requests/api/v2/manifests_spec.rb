@@ -39,12 +39,12 @@ describe "Manifests API v2", type: :request do
     before do
       allow(SensitivityChecker).to receive(:new).and_return(mock_sensitivity_checker)
 
-      FeatureToggle.enable!(:check_user_sensitivity)
+      FeatureToggle.enable!(:send_current_user_cred)
       FeatureToggle.enable!(:skip_vva)
     end
 
     after do
-      FeatureToggle.disable!(:check_user_sensitivity)
+      FeatureToggle.disable!(:send_current_user_cred)
       FeatureToggle.disable!(:skip_vva)
     end
 

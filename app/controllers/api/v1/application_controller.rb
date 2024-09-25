@@ -17,7 +17,7 @@ class Api::V1::ApplicationController < BaseController
     render json: {
       status: e.message,
       featureToggles: {
-        checkUserSensitivity: FeatureToggle.enabled?(:check_user_sensitivity)
+        checkUserSensitivity: FeatureToggle.enabled?(:send_current_user_cred)
       }
     }, status: :forbidden
   end
@@ -40,7 +40,7 @@ class Api::V1::ApplicationController < BaseController
     render json: {
       status: reason,
       featureToggles: {
-        checkUserSensitivity: FeatureToggle.enabled?(:check_user_sensitivity)
+        checkUserSensitivity: FeatureToggle.enabled?(:send_current_user_cred)
       }
     }, status: :forbidden
   end

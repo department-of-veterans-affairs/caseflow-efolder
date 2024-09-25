@@ -115,7 +115,7 @@ class ExternalApi::VBMSService
   end
 
   def self.verify_user_veteran_access(veteran_file_number)
-    return if !FeatureToggle.enabled?(:check_user_sensitivity)
+    return if !FeatureToggle.enabled?(:send_current_user_cred)
 
     raise "User does not have permission to access this information" unless
       SensitivityChecker.new.sensitivity_levels_compatible?(
