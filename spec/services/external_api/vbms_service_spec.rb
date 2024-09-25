@@ -10,9 +10,9 @@ describe ExternalApi::VBMSService do
   end
 
   describe ".verify_user_veteran_access" do
-    context "with check_user_sensitivity feature flag enabled" do
-      before { FeatureToggle.enable!(:check_user_sensitivity) }
-      after { FeatureToggle.disable!(:check_user_sensitivity) }
+    context "with send_current_user_cred feature flag enabled" do
+      before { FeatureToggle.enable!(:send_current_user_cred) }
+      after { FeatureToggle.disable!(:send_current_user_cred) }
 
       let!(:user) do
         user = User.create(css_id: "VSO", station_id: "283", participant_id: "1234")
@@ -35,8 +35,8 @@ describe ExternalApi::VBMSService do
       end
     end
 
-    context "with check_user_sensitivity feature flag disabled" do
-      before { FeatureToggle.disable!(:check_user_sensitivity) }
+    context "with send_current_user_cred feature flag disabled" do
+      before { FeatureToggle.disable!(:send_current_user_cred) }
 
       it "does not check the user's sensitivity" do
         expect(mock_sensitivity_checker).not_to receive(:sensitivity_levels_compatible?)
@@ -51,10 +51,10 @@ describe ExternalApi::VBMSService do
 
     before do
       allow(JsonApiResponseAdapter).to receive(:new).and_return(mock_json_adapter)
-      FeatureToggle.enable!(:check_user_sensitivity)
+      FeatureToggle.enable!(:send_current_user_cred)
     end
 
-    after { FeatureToggle.disable!(:check_user_sensitivity) }
+    after { FeatureToggle.disable!(:send_current_user_cred) }
 
     context "with use_ce_api feature toggle enabled" do
       before { FeatureToggle.enable!(:use_ce_api) }
@@ -79,7 +79,7 @@ describe ExternalApi::VBMSService do
       it "calls the PagedDocuments SOAP API endpoint" do
         veteran_id = "123456789"
 
-        expect(FeatureToggle).to receive(:enabled?).with(:check_user_sensitivity).and_return(false)
+        expect(FeatureToggle).to receive(:enabled?).with(:send_current_user_cred).and_return(false)
         expect(FeatureToggle).to receive(:enabled?).with(:use_ce_api).and_return(false)
         expect(FeatureToggle).to receive(:enabled?).with(:vbms_pagination, user: user).and_return(true)
         expect(described_class).to receive(:vbms_client)
@@ -100,7 +100,7 @@ describe ExternalApi::VBMSService do
       it "calls the FindDocumentVersionReference SOAP API endpoint" do
         veteran_id = "123456789"
 
-        expect(FeatureToggle).to receive(:enabled?).with(:check_user_sensitivity).and_return(false)
+        expect(FeatureToggle).to receive(:enabled?).with(:send_current_user_cred).and_return(false)
         expect(FeatureToggle).to receive(:enabled?).with(:use_ce_api).and_return(false)
         expect(FeatureToggle).to receive(:enabled?).with(:vbms_pagination, user: user).and_return(false)
         expect(VBMS::Requests::FindDocumentVersionReference).to receive(:new)
@@ -118,10 +118,10 @@ describe ExternalApi::VBMSService do
 
     before do
       allow(JsonApiResponseAdapter).to receive(:new).and_return(mock_json_adapter)
-      FeatureToggle.enable!(:check_user_sensitivity)
+      FeatureToggle.enable!(:send_current_user_cred)
     end
 
-    after { FeatureToggle.disable!(:check_user_sensitivity) }
+    after { FeatureToggle.disable!(:send_current_user_cred) }
 
     context "with use_ce_api feature toggle enabled" do
       before { FeatureToggle.enable!(:use_ce_api) }
@@ -147,7 +147,7 @@ describe ExternalApi::VBMSService do
     context "with use_ce_api feature toggle enabled" do
       before do
         FeatureToggle.enable!(:use_ce_api)
-        FeatureToggle.disable!(:check_user_sensitivity)
+        FeatureToggle.disable!(:send_current_user_cred)
       end
 
       after do
