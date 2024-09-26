@@ -9,7 +9,7 @@ describe Manifest do
       before do
         Timecop.freeze(Time.utc(2015, 12, 2, 17, 0, 0))
         allow(V2::DownloadManifestJob).to receive(:perform_later)
-        expect(FeatureToggle).to receive(:enabled?).with(:send_current_user_cred_to_ce_api).and_return(false)
+        expect(FeatureToggle).to receive(:enabled?).with(:use_ce_api).and_return(false)
         expect(FeatureToggle).to receive(:enabled?).with(:skip_vva).and_return(false)
       end
 
@@ -24,8 +24,8 @@ describe Manifest do
 
       context "when all manifests are current" do
         it "does not start any jobs" do
-          manifest.sources.create(name: "VVA", status: :success, fetched_at: 2.hours.ago)
-          manifest.sources.create(name: "VBMS", status: :success, fetched_at: 2.hours.ago)
+          manifest.sources.create(name: "VVA", status: :success, fetched_at: 0.1.hours.ago)
+          manifest.sources.create(name: "VBMS", status: :success, fetched_at: 0.1.hours.ago)
           subject
           expect(V2::DownloadManifestJob).to_not have_received(:perform_later)
         end
@@ -33,7 +33,7 @@ describe Manifest do
 
       context "when one manifest is expired" do
         it "starts one job" do
-          manifest.sources.create(name: "VVA", status: :success, fetched_at: 2.hours.ago)
+          manifest.sources.create(name: "VVA", status: :success, fetched_at: 0.1.hours.ago)
           manifest.sources.create(name: "VBMS", status: :success, fetched_at: 5.hours.ago)
           subject
           expect(V2::DownloadManifestJob).to have_received(:perform_later).once
@@ -47,7 +47,7 @@ describe Manifest do
       before do
         allow(SensitivityChecker).to receive(:new).and_return(mock_sensitivity_checker)
         allow(FeatureToggle).to receive(:enabled?).with(:skip_vva).and_return(false)
-        expect(FeatureToggle).to receive(:enabled?).with(:send_current_user_cred_to_ce_api).and_return(true)
+        expect(FeatureToggle).to receive(:enabled?).with(:use_ce_api).and_return(true)
       end
 
       it "enqueues a job if the sensitivity check passes" do
@@ -159,7 +159,7 @@ describe Manifest do
     context "when there is a record of files download" do
       let!(:current_user) { User.authenticate!(roles: ["Reader"]) }
       let!(:files_download) { FilesDownload.create(manifest: manifest, user: current_user, requested_zip_at: 14.hours.ago) }
-      it { is_expected.to eq "12/05" }
+      it { is_expected.to eq "12/02" }
     end
   end
 
