@@ -14,12 +14,7 @@ class Api::V1::ApplicationController < BaseController
   end
 
   rescue_from BGS::SensitivityLevelCheckFailure do |e|
-    render json: {
-      status: e.message,
-      featureToggles: {
-        checkUserSensitivity: FeatureToggle.enabled?(:send_current_user_cred_to_ce_api)
-      }
-    }, status: :forbidden
+    render json: { status: e.message }, status: :forbidden
   end
 
   rescue_from BGS::PublicError do |error|
@@ -37,12 +32,7 @@ class Api::V1::ApplicationController < BaseController
   end
 
   def forbidden(reason = "Forbidden: unspecified")
-    render json: {
-      status: reason,
-      featureToggles: {
-        checkUserSensitivity: FeatureToggle.enabled?(:send_current_user_cred_to_ce_api)
-      }
-    }, status: :forbidden
+    render json: { status: reason }, status: :forbidden
   end
 
   def missing_header(header)
