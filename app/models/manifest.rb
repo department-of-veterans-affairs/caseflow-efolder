@@ -31,7 +31,7 @@ class Manifest < ApplicationRecord
     # Reset stale manifests.
     update!(fetched_files_status: :initialized) if ready_for_refresh?
 
-    if FeatureToggle.enabled?(:send_current_user_cred)
+    if FeatureToggle.enabled?(:send_current_user_cred_to_ce_api)
       if sensitivity_checker.sensitivity_levels_compatible?(
         user: user,
         veteran_file_number: file_number
