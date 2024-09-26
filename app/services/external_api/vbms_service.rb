@@ -26,11 +26,10 @@ class ExternalApi::VBMSService
   end
 
   def self.v2_fetch_documents_for(veteran_file_number)
-    verify_user_veteran_access(veteran_file_number)
-
     documents = []
 
     if FeatureToggle.enabled?(:use_ce_api)
+      verify_user_veteran_access(veteran_file_number)
       response = VeteranFileFetcher.fetch_veteran_file_list(veteran_file_number: veteran_file_number)
       documents = process_fetch_veteran_file_list_response(response)
     elsif FeatureToggle.enabled?(:vbms_pagination, user: RequestStore[:current_user])
@@ -46,11 +45,10 @@ class ExternalApi::VBMSService
   end
 
   def self.fetch_delta_documents_for(veteran_file_number, begin_date_range, end_date_range = Time.zone.now)
-    verify_user_veteran_access(veteran_file_number)
-
     documents = []
 
     if FeatureToggle.enabled?(:use_ce_api)
+      verify_user_veteran_access(veteran_file_number)
       response = VeteranFileFetcher.fetch_veteran_file_list_by_date_range(
         veteran_file_number: veteran_file_number,
         begin_date_range: begin_date_range,
@@ -73,9 +71,8 @@ class ExternalApi::VBMSService
   end
 
   def self.v2_fetch_document_file(document)
-    verify_user_veteran_access(document.file_number)
-
     if FeatureToggle.enabled?(:use_ce_api)
+      verify_user_veteran_access(document.file_number)
       # Not using #send_and_log_request because logging to MetricService implemeneted in CE API gem
       VeteranFileFetcher.get_document_content(doc_series_id: document.series_id)
     else
@@ -117,7 +114,7 @@ class ExternalApi::VBMSService
   end
 
   def self.verify_user_veteran_access(veteran_file_number)
-    return if !FeatureToggle.enabled?(:send_current_user_cred_to_ce_api)
+    return unless FeatureToggle.enabled?(:use_ce_api)
 
     raise "User does not have permission to access this information" unless
       SensitivityChecker.new.sensitivity_levels_compatible?(
