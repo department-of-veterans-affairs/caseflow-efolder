@@ -19,8 +19,8 @@ class Manifest < ApplicationRecord
     failed: 3
   }
 
-  UI_HOURS_UNTIL_EXPIRY = Rails.non_production_env? ? 0.25 : 72
-  API_HOURS_UNTIL_EXPIRY = Rails.non_production_env? ? 0.25 : 3
+  UI_HOURS_UNTIL_EXPIRY = Rails.non_production_env? && Rails.non_test_env? ? 0.25 : 72
+  API_HOURS_UNTIL_EXPIRY = Rails.non_production_env? && Rails.non_test_env? ? 0.25 : 3
 
   SECONDS_TO_AUTO_UNLOCK = 5
 
@@ -31,7 +31,7 @@ class Manifest < ApplicationRecord
     # Reset stale manifests.
     update!(fetched_files_status: :initialized) if ready_for_refresh?
 
-    if FeatureToggle.enabled?(:check_user_sensitivity)
+    if FeatureToggle.enabled?(:use_ce_api)
       if sensitivity_checker.sensitivity_levels_compatible?(
         user: user,
         veteran_file_number: file_number

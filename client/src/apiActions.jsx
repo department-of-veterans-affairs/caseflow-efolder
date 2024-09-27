@@ -181,7 +181,7 @@ export const startManifestFetch = (veteranId, csrfToken, redirectFunction) => (d
         redirectFunction(`/downloads/${manifestId}`);
       },
       (err) => {
-        if (err.response.statusCode === 403 && err.response.body.featureToggles.checkUserSensitivity === true) {
+        if (err.response.statusCode === 403 && err.response.body.featureToggles?.use_ce_api === true) {
           dispatch(setShowUnauthorizedVeteranMessage(true));
         } else {
           dispatch(setErrorMessage(buildErrorMessageFromResponse(err.response)));

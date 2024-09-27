@@ -39,18 +39,18 @@ describe "Manifests API v2", type: :request do
     before do
       allow(SensitivityChecker).to receive(:new).and_return(mock_sensitivity_checker)
 
-      FeatureToggle.enable!(:check_user_sensitivity)
+      FeatureToggle.enable!(:use_ce_api)
       FeatureToggle.enable!(:skip_vva)
     end
 
     after do
-      FeatureToggle.disable!(:check_user_sensitivity)
+      FeatureToggle.disable!(:use_ce_api)
       FeatureToggle.disable!(:skip_vva)
     end
 
     context "when the check succeeds" do
       it "allows access to the start action" do
-        expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?).exactly(3).times
+        expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?).twice
           .with(user: user, veteran_file_number: "DEMO987").and_return(true)
 
         post "/api/v2/manifests", params: nil, headers: headers
@@ -59,7 +59,7 @@ describe "Manifests API v2", type: :request do
       end
 
       it "allows access to the refresh action" do
-        expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?).exactly(3).times
+        expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?).twice
           .with(user: user, veteran_file_number: "DEMO987").and_return(true)
 
         post "/api/v2/manifests/#{manifest.id}", params: nil, headers: headers
