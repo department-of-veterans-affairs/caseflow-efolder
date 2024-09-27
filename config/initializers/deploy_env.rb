@@ -27,4 +27,8 @@ module Rails
   def self.non_production_env?
     deploy_env == :uat || deploy_env == :test || deploy_env == :development
   end
+
+  def self.non_test_env?
+    deploy_env =! :test
+  end
 end

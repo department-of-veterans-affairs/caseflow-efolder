@@ -17,7 +17,7 @@ class Api::V1::ApplicationController < BaseController
     render json: {
       status: e.message,
       featureToggles: {
-        checkUserSensitivity: FeatureToggle.enabled?(:send_current_user_cred_to_ce_api)
+        use_ce_api: FeatureToggle.enabled?(:use_ce_api)
       }
     }, status: :forbidden
   end
@@ -37,12 +37,7 @@ class Api::V1::ApplicationController < BaseController
   end
 
   def forbidden(reason = "Forbidden: unspecified")
-    render json: {
-      status: reason,
-      featureToggles: {
-        checkUserSensitivity: FeatureToggle.enabled?(:send_current_user_cred_to_ce_api)
-      }
-    }, status: :forbidden
+    render json: { status: reason }, status: :forbidden
   end
 
   def missing_header(header)
