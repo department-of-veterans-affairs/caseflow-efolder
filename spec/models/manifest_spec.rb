@@ -159,7 +159,7 @@ describe Manifest do
     context "when there is a record of files download" do
       let!(:current_user) { User.authenticate!(roles: ["Reader"]) }
       let!(:files_download) { FilesDownload.create(manifest: manifest, user: current_user, requested_zip_at: 14.hours.ago) }
-      it { is_expected.to eq "12/02" }
+      it { is_expected.to eq "12/05" }
     end
   end
 

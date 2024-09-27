@@ -168,7 +168,6 @@ describe "Manifests API v2", type: :request do
     it "checks all the efolder records" do
       perform_enqueued_jobs do
         post "/api/v2/manifests", params: nil, headers: headers
-        binding.pry
         expect(response.code).to eq("200")
 
         # once for each "file number"
