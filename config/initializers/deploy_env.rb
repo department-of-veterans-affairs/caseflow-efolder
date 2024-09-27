@@ -29,6 +29,6 @@ module Rails
   end
 
   def self.non_test_env?
-    deploy_env =! :test
+    deploy_env != :test
   end
 end
