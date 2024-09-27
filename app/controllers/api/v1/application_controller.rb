@@ -14,7 +14,12 @@ class Api::V1::ApplicationController < BaseController
   end
 
   rescue_from BGS::SensitivityLevelCheckFailure do |e|
-    render json: { status: e.message }, status: :forbidden
+    render json: { 
+      status: e.message,
+      featureToggles: {
+        use_ce_api: FeatureToggle.enabled?(:use_ce_api)
+      }
+    }, status: :forbidden
   end
 
   rescue_from BGS::PublicError do |error|
