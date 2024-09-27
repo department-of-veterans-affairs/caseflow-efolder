@@ -9,7 +9,7 @@ describe Manifest do
       before do
         Timecop.freeze(Time.utc(2015, 12, 2, 17, 0, 0))
         allow(V2::DownloadManifestJob).to receive(:perform_later)
-        expect(FeatureToggle).to receive(:enabled?).with(:send_current_user_cred_to_ce_api).and_return(false)
+        expect(FeatureToggle).to receive(:enabled?).with(:use_ce_api).and_return(false)
         expect(FeatureToggle).to receive(:enabled?).with(:skip_vva).and_return(false)
       end
 
@@ -47,7 +47,7 @@ describe Manifest do
       before do
         allow(SensitivityChecker).to receive(:new).and_return(mock_sensitivity_checker)
         allow(FeatureToggle).to receive(:enabled?).with(:skip_vva).and_return(false)
-        expect(FeatureToggle).to receive(:enabled?).with(:send_current_user_cred_to_ce_api).and_return(true)
+        expect(FeatureToggle).to receive(:enabled?).with(:use_ce_api).and_return(true)
       end
 
       it "enqueues a job if the sensitivity check passes" do

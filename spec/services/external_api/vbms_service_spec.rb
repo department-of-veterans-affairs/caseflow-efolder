@@ -10,39 +10,24 @@ describe ExternalApi::VBMSService do
   end
 
   describe ".verify_user_veteran_access" do
-    context "with send_current_user_cred_to_ce_api feature flag enabled" do
-      before { FeatureToggle.enable!(:send_current_user_cred_to_ce_api) }
-      after { FeatureToggle.disable!(:send_current_user_cred_to_ce_api) }
-
-      let!(:user) do
-        user = User.create(css_id: "VSO", station_id: "283", participant_id: "1234")
-        RequestStore.store[:current_user] = user
-      end
-
-      it "checks the user's sensitivity" do
-        expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?)
-          .with(user: user, veteran_file_number: "123456789").and_return(true)
-
-        described.verify_user_veteran_access("123456789")
-      end
-
-      it "raises an exception when the sensitivity level is not compatible" do
-        expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?)
-          .with(user: user, veteran_file_number: "123456789").and_return(false)
-
-        expect { described.verify_user_veteran_access("123456789") }
-          .to raise_error(RuntimeError, "User does not have permission to access this information")
-      end
+    let!(:user) do
+      user = User.create(css_id: "VSO", station_id: "283", participant_id: "1234")
+      RequestStore.store[:current_user] = user
     end
 
-    context "with send_current_user_cred_to_ce_api feature flag disabled" do
-      before { FeatureToggle.disable!(:send_current_user_cred_to_ce_api) }
+    it "checks the user's sensitivity" do
+      expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?)
+        .with(user: user, veteran_file_number: "123456789").and_return(true)
 
-      it "does not check the user's sensitivity" do
-        expect(mock_sensitivity_checker).not_to receive(:sensitivity_levels_compatible?)
+      described.verify_user_veteran_access("123456789")
+    end
 
-        described.verify_user_veteran_access("123456789")
-      end
+    it "raises an exception when the sensitivity level is not compatible" do
+      expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?)
+        .with(user: user, veteran_file_number: "123456789").and_return(false)
+
+      expect { described.verify_user_veteran_access("123456789") }
+        .to raise_error(RuntimeError, "User does not have permission to access this information")
     end
   end
 
@@ -51,10 +36,10 @@ describe ExternalApi::VBMSService do
 
     before do
       allow(JsonApiResponseAdapter).to receive(:new).and_return(mock_json_adapter)
-      FeatureToggle.enable!(:send_current_user_cred_to_ce_api)
+      FeatureToggle.enable!(:use_ce_api)
     end
 
-    after { FeatureToggle.disable!(:send_current_user_cred_to_ce_api) }
+    after { FeatureToggle.disable!(:use_ce_api) }
 
     context "with use_ce_api feature toggle enabled" do
       before { FeatureToggle.enable!(:use_ce_api) }
@@ -79,7 +64,6 @@ describe ExternalApi::VBMSService do
       it "calls the PagedDocuments SOAP API endpoint" do
         veteran_id = "123456789"
 
-        expect(FeatureToggle).to receive(:enabled?).with(:send_current_user_cred_to_ce_api).and_return(false)
         expect(FeatureToggle).to receive(:enabled?).with(:use_ce_api).and_return(false)
         expect(FeatureToggle).to receive(:enabled?).with(:vbms_pagination, user: user).and_return(true)
         expect(described_class).to receive(:vbms_client)
@@ -100,7 +84,6 @@ describe ExternalApi::VBMSService do
       it "calls the FindDocumentVersionReference SOAP API endpoint" do
         veteran_id = "123456789"
 
-        expect(FeatureToggle).to receive(:enabled?).with(:send_current_user_cred_to_ce_api).and_return(false)
         expect(FeatureToggle).to receive(:enabled?).with(:use_ce_api).and_return(false)
         expect(FeatureToggle).to receive(:enabled?).with(:vbms_pagination, user: user).and_return(false)
         expect(VBMS::Requests::FindDocumentVersionReference).to receive(:new)
@@ -118,10 +101,10 @@ describe ExternalApi::VBMSService do
 
     before do
       allow(JsonApiResponseAdapter).to receive(:new).and_return(mock_json_adapter)
-      FeatureToggle.enable!(:send_current_user_cred_to_ce_api)
+      FeatureToggle.enable!(:use_ce_api)
     end
 
-    after { FeatureToggle.disable!(:send_current_user_cred_to_ce_api) }
+    after { FeatureToggle.disable!(:use_ce_api) }
 
     context "with use_ce_api feature toggle enabled" do
       before { FeatureToggle.enable!(:use_ce_api) }
@@ -147,7 +130,6 @@ describe ExternalApi::VBMSService do
     context "with use_ce_api feature toggle enabled" do
       before do
         FeatureToggle.enable!(:use_ce_api)
-        FeatureToggle.disable!(:send_current_user_cred_to_ce_api)
       end
 
       after do
@@ -195,7 +177,7 @@ describe ExternalApi::VBMSService do
         expect(ExceptionLogger).not_to receive(:capture)
 
         result = described.process_fetch_veteran_file_list_response(nil)
-	expect(result.count).to eq 1
+        expect(result.count).to eq 1
       end
     end
 
@@ -206,7 +188,7 @@ describe ExternalApi::VBMSService do
         expect(ExceptionLogger).to receive(:capture).with(instance_of(RuntimeError))
 
         result = described.process_fetch_veteran_file_list_response(nil)
-	expect(result).to eq []
+        expect(result).to eq []
       end
     end
   end

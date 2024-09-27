@@ -23,7 +23,7 @@ class Api::V2::ApplicationController < Api::V1::ApplicationController
 
     return invalid_file_number unless bgs_service.valid_file_number?(file_number)
 
-    if FeatureToggle.enabled?(:send_current_user_cred_to_ce_api)
+    if FeatureToggle.enabled?(:use_ce_api)
       if sensitivity_checker.sensitivity_levels_compatible?(
         user: current_user,
         veteran_file_number: file_number
