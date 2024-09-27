@@ -24,8 +24,8 @@ describe Manifest do
 
       context "when all manifests are current" do
         it "does not start any jobs" do
-          manifest.sources.create(name: "VVA", status: :success, fetched_at: 0.1.hours.ago)
-          manifest.sources.create(name: "VBMS", status: :success, fetched_at: 0.1.hours.ago)
+          manifest.sources.create(name: "VVA", status: :success, fetched_at: 2.hours.ago)
+          manifest.sources.create(name: "VBMS", status: :success, fetched_at: 2.hours.ago)
           subject
           expect(V2::DownloadManifestJob).to_not have_received(:perform_later)
         end
@@ -33,7 +33,7 @@ describe Manifest do
 
       context "when one manifest is expired" do
         it "starts one job" do
-          manifest.sources.create(name: "VVA", status: :success, fetched_at: 0.1.hours.ago)
+          manifest.sources.create(name: "VVA", status: :success, fetched_at: 2.hours.ago)
           manifest.sources.create(name: "VBMS", status: :success, fetched_at: 5.hours.ago)
           subject
           expect(V2::DownloadManifestJob).to have_received(:perform_later).once
