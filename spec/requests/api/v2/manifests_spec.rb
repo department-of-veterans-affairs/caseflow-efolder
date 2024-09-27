@@ -30,6 +30,7 @@ describe "Manifests API v2", type: :request do
 
   before do
     allow_any_instance_of(Fakes::BGSService).to receive(:sensitive_files).and_return(veteran_id.to_s => false)
+    allow(Rails).to receive(:non_production_env?).and_return(false)
     Timecop.freeze(Time.utc(2015, 1, 1, 17, 0, 0))
   end
 
@@ -168,6 +169,7 @@ describe "Manifests API v2", type: :request do
     it "checks all the efolder records" do
       perform_enqueued_jobs do
         post "/api/v2/manifests", params: nil, headers: headers
+        binding.pry
         expect(response.code).to eq("200")
 
         # once for each "file number"
