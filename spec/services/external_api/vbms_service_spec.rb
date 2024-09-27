@@ -10,39 +10,24 @@ describe ExternalApi::VBMSService do
   end
 
   describe ".verify_user_veteran_access" do
-    context "with use_ce_api feature flag enabled" do
-      before { FeatureToggle.enable!(:use_ce_api) }
-      after { FeatureToggle.disable!(:use_ce_api) }
-
-      let!(:user) do
-        user = User.create(css_id: "VSO", station_id: "283", participant_id: "1234")
-        RequestStore.store[:current_user] = user
-      end
-
-      it "checks the user's sensitivity" do
-        expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?)
-          .with(user: user, veteran_file_number: "123456789").and_return(true)
-
-        described.verify_user_veteran_access("123456789")
-      end
-
-      it "raises an exception when the sensitivity level is not compatible" do
-        expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?)
-          .with(user: user, veteran_file_number: "123456789").and_return(false)
-
-        expect { described.verify_user_veteran_access("123456789") }
-          .to raise_error(RuntimeError, "User does not have permission to access this information")
-      end
+    let!(:user) do
+      user = User.create(css_id: "VSO", station_id: "283", participant_id: "1234")
+      RequestStore.store[:current_user] = user
     end
 
-    context "with use_ce_api feature flag disabled" do
-      before { FeatureToggle.disable!(:use_ce_api) }
+    it "checks the user's sensitivity" do
+      expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?)
+        .with(user: user, veteran_file_number: "123456789").and_return(true)
 
-      it "does not check the user's sensitivity" do
-        expect(mock_sensitivity_checker).not_to receive(:sensitivity_levels_compatible?)
+      described.verify_user_veteran_access("123456789")
+    end
 
-        described.verify_user_veteran_access("123456789")
-      end
+    it "raises an exception when the sensitivity level is not compatible" do
+      expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?)
+        .with(user: user, veteran_file_number: "123456789").and_return(false)
+
+      expect { described.verify_user_veteran_access("123456789") }
+        .to raise_error(RuntimeError, "User does not have permission to access this information")
     end
   end
 

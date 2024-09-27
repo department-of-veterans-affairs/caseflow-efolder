@@ -114,8 +114,6 @@ class ExternalApi::VBMSService
   end
 
   def self.verify_user_veteran_access(veteran_file_number)
-    return unless FeatureToggle.enabled?(:use_ce_api)
-
     raise "User does not have permission to access this information" unless
       SensitivityChecker.new.sensitivity_levels_compatible?(
         user: RequestStore[:current_user],
