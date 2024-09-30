@@ -3,6 +3,8 @@
 # Translates JSON API responses into a format that's compatible with the legacy SOAP responses expected
 # by most of caseflow-efolder
 class JsonApiResponseAdapter
+  include Caseflow::DocumentTypes
+
   def adapt_v2_fetch_documents_for(json_response)
     json_response = normalize_json_response(json_response)
 
@@ -45,7 +47,9 @@ class JsonApiResponseAdapter
       document_id: "{#{file_json['currentVersionUuid'].upcase}}",
       series_id: "{#{file_json['uuid'].upcase}}",
       version: "1",
-      type_description: provider_data["subject"],
+      # CE Api doesn't provide document category type desciption.
+      # Use Caseflow document type mapping instead, and if not found then "Unknown"
+      type_description: TYPES[provider_data["documentTypeId"]] || TYPES[10],
       type_id: provider_data["documentTypeId"],
       doc_type: provider_data["documentTypeId"],
       subject: provider_data["subject"],
