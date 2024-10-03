@@ -44,45 +44,45 @@ const DownloadContainer = (props) => {
     }
   }, []);
 
-    let pageBody = <React.Fragment>
-      <AppSegment filledBackground>
-        <PageLoadingIndicator>We are gathering the list of files in the eFolder now...</PageLoadingIndicator>
-      </AppSegment>
+  let pageBody = <React.Fragment>
+    <AppSegment filledBackground>
+      <PageLoadingIndicator>We are gathering the list of files in the eFolder now...</PageLoadingIndicator>
+    </AppSegment>
+    <DownloadPageFooter />
+  </React.Fragment>;
+
+  if (props.errorMessage.title) {
+    pageBody = <React.Fragment>
+      <StatusMessage title={props.errorMessage.title}>{props.errorMessage.message}</StatusMessage>
       <DownloadPageFooter />
     </React.Fragment>;
-
-    if (props.errorMessage.title) {
+  } else if (documentDownloadStarted(props.documentsFetchStatus)) {
+    pageBody = <DownloadProgressContainer />;
+  } else if (manifestFetchComplete(props.documentSources)) {
+    if (props.documents.length) {
+      pageBody = <DownloadListContainer />;
+    } else {
       pageBody = <React.Fragment>
-        <StatusMessage title={props.errorMessage.title}>{props.errorMessage.message}</StatusMessage>
-        <DownloadPageFooter />
-      </React.Fragment>;
-    } else if (documentDownloadStarted(props.documentsFetchStatus)) {
-      pageBody = <DownloadProgressContainer />;
-    } else if (manifestFetchComplete(props.documentSources)) {
-      if (props.documents.length) {
-        pageBody = <DownloadListContainer />;
-      } else {
-        pageBody = <React.Fragment>
-          <AppSegment filledBackground>
-            <h1 className="cf-msg-screen-heading">No Documents in eFolder</h1>
-            <h2 className="cf-msg-screen-deck">
+        <AppSegment filledBackground>
+          <h1 className="cf-msg-screen-heading">No Documents in eFolder</h1>
+          <h2 className="cf-msg-screen-deck">
               eFolder Express could not find any documents in the eFolder with Veteran ID #{props.veteranId}.
               It's possible eFolder does not exist.
-            </h2>
-            <p className="cf-msg-screen-text">
+          </h2>
+          <p className="cf-msg-screen-text">
               Please check the Veteran ID number and <Link to="/">search again</Link>.
-            </p>
-          </AppSegment>
-          <DownloadPageFooter />
-        </React.Fragment>;
-      }
+          </p>
+        </AppSegment>
+        <DownloadPageFooter />
+      </React.Fragment>;
     }
+  }
 
-    return <React.Fragment>
-      <DownloadPageHeader veteranId={props.veteranId} veteranName={props.veteranName} />
-      { pageBody }
-    </React.Fragment>;
-}
+  return <React.Fragment>
+    <DownloadPageHeader veteranId={props.veteranId} veteranName={props.veteranName} />
+    { pageBody }
+  </React.Fragment>;
+};
 
 const mapStateToProps = (state) => ({
   csrfToken: state.csrfToken,
