@@ -40,7 +40,7 @@ const WelcomeContainer = (props) => {
 
     return <AppSegment filledBackground>
       { props.errorMessage.title &&
-        <AlertBanner title="We could not complete the search for  Veteran ID" alertType="error">
+        <AlertBanner title="We could not complete the search for this Veteran ID" alertType="error">
           <p>{props.errorMessage.message}</p>
         </AlertBanner>
       }
