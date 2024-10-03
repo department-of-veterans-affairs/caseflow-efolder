@@ -16,23 +16,21 @@ const linkText = (status, failedDocCount) => {
   return <React.Fragment>{icon} View {text} »</React.Fragment>;
 };
 
-const RecentDownloadsContainer = (props) => {
-  useEffect(() => {
-    props.getDownloadHistory(props.csrfToken);
-  }, [props.csrfToken]);
+class RecentDownloadsContainer extends React.PureComponent {
+  componentDidMount() {
+    this.props.getDownloadHistory(this.props.csrfToken);
+  }
 
-  if (!props.recentDownloads.length) {
-    return (
-      <StatusMessage>
+  render() {
+    if (!this.props.recentDownloads.length) {
+      return <StatusMessage>
         No recent downloads.
         <br />
         <Link to="/">Back to search</Link>
-      </StatusMessage>
-    );
-  }
+      </StatusMessage>;
+    }
 
-  return (
-    <div>
+    return <div>
       <h2 className="ee-recent-searches">History</h2>
       <table className="usa-table-borderless" summary="List of recent downloads and links to download their contents">
         <thead>
@@ -42,7 +40,7 @@ const RecentDownloadsContainer = (props) => {
           </tr>
         </thead>
         <tbody>
-          {props.recentDownloads.map((download) => (
+          { this.props.recentDownloads.map((download) => (
             <tr id={`download-${download.id}`} key={download.id}>
               <td>
                 {`${download.attributes.veteran_first_name} ${download.attributes.veteran_last_name}`}
@@ -51,16 +49,16 @@ const RecentDownloadsContainer = (props) => {
               </td>
               <td className="ee-actions-cell">
                 <Link to={`/downloads/${download.id}`}>
-                  {linkText(download.attributes.fetched_files_status, download.attributes.number_failed_documents)}
+                  { linkText(download.attributes.fetched_files_status, download.attributes.number_failed_documents) }
                 </Link>
               </td>
-            </tr>
-          ))}
+            </tr>)
+          )}
         </tbody>
       </table>
       <Link to="/">Back to search</Link>
-    </div>
-  );
+    </div>;
+  }
 }
 
 const mapStateToProps = (state) => ({
@@ -71,7 +69,3 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => bindActionCreators({ getDownloadHistory }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(RecentDownloadsContainer);
-
-
-
-
