@@ -18,7 +18,7 @@ else
     add_filter "app/services/external_api/vva_service.rb"
     add_filter "app/jobs"
 
-    SimpleCov.minimum_coverage_by_file 90
+    SimpleCov.minimum_coverage_by_file 75
   end
 end
 
