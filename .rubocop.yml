@@ -1,3 +1,5 @@
+inherit_from: .rubocop_todo.yml
+
 require:
   - .rubocop/custom_cop/top_level_constants_per_file.rb
 
