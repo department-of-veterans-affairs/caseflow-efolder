@@ -1,11 +1,13 @@
 inherit_from: .rubocop_todo.yml
 
 require:
+  - rubocop-performance
+  - rubocop-rails
   - .rubocop/custom_cop/top_level_constants_per_file.rb
 
 AllCops:
-  TargetRubyVersion: 2.3
-  TargetRailsVersion: 4.2
+  TargetRubyVersion: 2.5
+  TargetRailsVersion: 5.1
   Exclude:
     - 'bin/**/*'
     - 'db/**/*'
