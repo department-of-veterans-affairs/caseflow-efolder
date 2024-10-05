@@ -125,7 +125,7 @@ module CaseflowEfolder
 
     # --------------------------------------------------------------------------------------
     # Autoloading & Eager loading
-    
+
     # Zeitwerk has specific requirements for auto/eager loading. See below links for more details
     # https://guides.rubyonrails.org/classic_to_zeitwerk_howto.html
     # https://github.com/fxn/zeitwerk
@@ -161,7 +161,8 @@ module CaseflowEfolder
       "app/jobs/middleware",
       "#{root}/lib/assets",
       "#{root}/lib/pdfs",
-      "#{root}/lib/scripts"
+      "#{root}/lib/scripts",
+      "#{root}/lib/fakes/test_auth_strategy.rb"
     )
     # --------------------------------------------------------------------------------------
 
