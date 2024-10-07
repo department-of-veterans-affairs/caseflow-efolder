@@ -48,7 +48,8 @@ describe ExternalApi::VBMSService do
       it "calls the CE API" do
         veteran_id = "123456789"
 
-        expect(VeteranFileFetcher).to receive(:fetch_veteran_file_list).with(veteran_file_number: veteran_id)
+        expect(VeteranFileFetcher).to receive(:fetch_veteran_file_list)
+          .with(veteran_file_number: veteran_id, claim_evidence_request: instance_of(ClaimEvidenceRequest))
         expect(mock_json_adapter).to receive(:adapt_v2_fetch_documents_for).and_return([])
 
         described.v2_fetch_documents_for(veteran_id)
@@ -117,6 +118,7 @@ describe ExternalApi::VBMSService do
         expect(VeteranFileFetcher).to receive(:fetch_veteran_file_list_by_date_range)
         .with(
           veteran_file_number: veteran_file_number,
+          claim_evidence_request: instance_of(ClaimEvidenceRequest),
           begin_date_range: begin_date_range,
           end_date_range: end_date_range
         )
@@ -153,7 +155,7 @@ describe ExternalApi::VBMSService do
       it "calls the CE API" do
         expect(VeteranFileFetcher)
           .to receive(:get_document_content)
-          .with(doc_series_id: fake_record.series_id)
+          .with(doc_series_id: fake_record.series_id, claim_evidence_request: instance_of(ClaimEvidenceRequest))
           .and_return("Pdf Byte String")
 
         described.v2_fetch_document_file(fake_record)
@@ -189,6 +191,70 @@ describe ExternalApi::VBMSService do
 
         result = described.process_fetch_veteran_file_list_response(nil)
         expect(result).to eq []
+      end
+    end
+  end
+
+  describe ".claim_evidence_request" do
+    context "with send_current_user_cred_to_ce_api feature toggle enabled" do
+      before { FeatureToggle.enable!(:send_current_user_cred_to_ce_api) }
+
+      context "when current_user is set in the RequestStore" do
+        let!(:user) do
+          user = User.create(css_id: "VSO", station_id: "283", participant_id: "1234")
+          RequestStore[:current_user] = user
+        end
+
+        it "returns user credentials" do
+          result = described.claim_evidence_request
+
+          expect(result.user_css_id).to eq user.css_id
+          expect(result.station_id).to eq user.station_id
+        end
+      end
+
+      context "when current_user is NOT set in the RequestStore" do
+        before do
+          RequestStore[:current_user] = nil
+          ENV["CLAIM_EVIDENCE_VBMS_USER"] = "CSS_123"
+          ENV["CLAIM_EVIDENCE_STATION_ID"] = "123"
+        end
+        it "returns system credentials" do
+          result = described.claim_evidence_request
+          expect(result.user_css_id).to eq "CSS_123"
+          expect(result.station_id).to eq "123"
+        end
+      end
+    end
+
+    context "with send_current_user_cred_to_ce_api feature toggle disabled" do
+      before do
+        FeatureToggle.disable!(:send_current_user_cred_to_ce_api)
+        ENV["CLAIM_EVIDENCE_VBMS_USER"] = "CSS_999"
+        ENV["CLAIM_EVIDENCE_STATION_ID"] = "999"
+      end
+
+      context "when current_user is set in the RequestStore" do
+        let(:user) do
+          user = create(:user)
+          RequestStore[:current_user] = user
+        end
+
+        it "returns system credentials" do
+          result = described.claim_evidence_request
+
+          expect(result.user_css_id).to eq "CSS_999"
+          expect(result.station_id).to eq "999"
+        end
+      end
+
+      context "when current_user is NOT set in the RequestStore" do
+        before { RequestStore[:current_user] = nil }
+        it "returns system credentials" do
+          result = described.claim_evidence_request
+          expect(result.user_css_id).to eq "CSS_999"
+          expect(result.station_id).to eq "999"
+        end
       end
     end
   end
