@@ -308,7 +308,6 @@ GEM
     mime-types-data (3.2020.1104)
     mini_magick (4.11.0)
     mini_mime (1.1.5)
-    mini_portile2 (2.8.7)
     minitest (5.25.1)
     moment_timezone-rails (0.5.14)
       momentjs-rails (~> 2.15.1)
@@ -329,8 +328,7 @@ GEM
     net-smtp (0.5.0)
       net-protocol
     nio4r (2.7.3)
-    nokogiri (1.15.6)
-      mini_portile2 (~> 2.8.2)
+    nokogiri (1.15.6-x86_64-darwin)
       racc (~> 1.4)
     nori (2.6.0)
     omniauth (1.9.1)
@@ -507,8 +505,7 @@ GEM
     regexp_parser (2.8.3)
     request_store (1.5.0)
       rack (>= 1.4)
-    rexml (3.3.7)
-      strscan
+    rexml (3.3.8)
     rspec (3.10.0)
       rspec-core (~> 3.10.0)
       rspec-expectations (~> 3.10.0)
@@ -649,7 +646,7 @@ GEM
       activerecord
 
 PLATFORMS
-  ruby
+  x86_64-darwin-22
 
 DEPENDENCIES
   active_model_serializers
