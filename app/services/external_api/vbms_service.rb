@@ -1,5 +1,3 @@
-
-
 class ExternalApi::VBMSService
   class RailsVBMSLogger
     def log(event, data)
