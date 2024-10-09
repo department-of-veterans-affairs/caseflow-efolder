@@ -30,19 +30,11 @@ class Manifest < ApplicationRecord
   def start!
     # Reset stale manifests.
     update!(fetched_files_status: :initialized) if ready_for_refresh?
+    raise BGS::SensitivityLevelCheckFailure.new, "You are not authorized to access this manifest" if
+      FeatureToggle.enabled?(:use_ce_api) &&
+      !sensitivity_checker.sensitivity_levels_compatible?(user: user, veteran_file_number: file_number)
 
-    if FeatureToggle.enabled?(:use_ce_api)
-      if sensitivity_checker.sensitivity_levels_compatible?(
-        user: user,
-        veteran_file_number: file_number
-      )
-        vbms_source.start!
-      else
-        raise BGS::SensitivityLevelCheckFailure.new, "You are not authorized to access this manifest"
-      end
-    else
-      vbms_source.start!
-    end
+    vbms_source.start!
     vva_source.start! unless FeatureToggle.enabled?(:skip_vva)
   end
 
@@ -176,6 +168,7 @@ class Manifest < ApplicationRecord
 
   def update_veteran_info
     return unless veteran
+
     update(veteran_first_name: veteran.first_name || "",
            veteran_last_name: veteran.last_name || "",
            veteran_last_four_ssn: veteran.last_four_ssn || "")
