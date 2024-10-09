@@ -1,7 +1,7 @@
 class V2::SaveFilesInS3Job < ApplicationJob
   queue_as :low_priority
 
-  def perform(manifest_source, user_id)
+  def perform(manifest_source, user_id = nil)
     Raven.extra_context(manifest_source: manifest_source.id, user_id: user_id)
 
     # Set user for permission check if the user is blank
