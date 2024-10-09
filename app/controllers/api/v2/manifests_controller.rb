@@ -52,6 +52,8 @@ class Api::V2::ManifestsController < Api::V2::ApplicationController
   private
 
   def veteran_file_number
+    return if !FeatureToggle.enabled?(:use_ce_api)
+
     @veteran_file_number ||= verify_veteran_file_number
   end
 
