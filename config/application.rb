@@ -158,7 +158,7 @@ module CaseflowEfolder
 
     # Will not autoload any files within directories added here
     Rails.autoloaders.main.ignore(
-      "app/jobs/middleware",
+      "#{root}/app/jobs/middleware",
       "#{root}/lib/assets",
       "#{root}/lib/pdfs",
       "#{root}/lib/scripts",
