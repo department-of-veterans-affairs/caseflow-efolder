@@ -1,7 +1,6 @@
 require "omniauth/strategies/developer"
 require "omniauth/form"
 
-
 module Fakes
   module TestAuthStrategy
     class EfolderAuthForm < OmniAuth::Form
