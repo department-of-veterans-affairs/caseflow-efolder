@@ -30,7 +30,10 @@ class ExternalApi::VBMSService
 
     if FeatureToggle.enabled?(:use_ce_api)
       verify_user_veteran_access(veteran_file_number)
-      response = VeteranFileFetcher.fetch_veteran_file_list(veteran_file_number: veteran_file_number)
+      response = VeteranFileFetcher.fetch_veteran_file_list(
+        veteran_file_number: veteran_file_number,
+        claim_evidence_request: claim_evidence_request
+      )
       documents = process_fetch_veteran_file_list_response(response)
     elsif FeatureToggle.enabled?(:vbms_pagination, user: RequestStore[:current_user])
       service = VBMS::Service::PagedDocuments.new(client: vbms_client)
@@ -51,6 +54,7 @@ class ExternalApi::VBMSService
       verify_user_veteran_access(veteran_file_number)
       response = VeteranFileFetcher.fetch_veteran_file_list_by_date_range(
         veteran_file_number: veteran_file_number,
+        claim_evidence_request: claim_evidence_request,
         begin_date_range: begin_date_range,
         end_date_range: end_date_range
       )
@@ -74,7 +78,7 @@ class ExternalApi::VBMSService
     if FeatureToggle.enabled?(:use_ce_api)
       verify_user_veteran_access(document.file_number)
       # Not using #send_and_log_request because logging to MetricService implemeneted in CE API gem
-      VeteranFileFetcher.get_document_content(doc_series_id: document.series_id)
+      VeteranFileFetcher.get_document_content(doc_series_id: document.series_id, claim_evidence_request: claim_evidence_request)
     else
       request = VBMS::Requests::GetDocumentContent.new(document.document_id)
       result = send_and_log_request(document.document_id, request)
@@ -133,5 +137,16 @@ class ExternalApi::VBMSService
     end
 
     documents || []
+  end
+
+  def self.claim_evidence_request
+    ClaimEvidenceRequest.new(
+      user_css_id: allow_user_info? ? RequestStore[:current_user].css_id : ENV['CLAIM_EVIDENCE_VBMS_USER'],
+      station_id: allow_user_info? ? RequestStore[:current_user].station_id : ENV['CLAIM_EVIDENCE_STATION_ID']
+    )
+  end
+    
+  def self.allow_user_info?
+    RequestStore[:current_user].present? && FeatureToggle.enabled?(:send_current_user_cred_to_ce_api)
   end
 end
