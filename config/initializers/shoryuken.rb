@@ -1,6 +1,5 @@
 require "#{Rails.root}/app/jobs/middleware/job_metrics_service_metric_middleware"
 
-
 # set up default exponential backoff parameters
 ActiveJob::QueueAdapters::ShoryukenAdapter::JobWrapper
   .shoryuken_options(auto_visibility_timeout: true,
