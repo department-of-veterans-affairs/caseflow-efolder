@@ -5,4 +5,5 @@ module BGS
   class NoActiveStations < StandardError; end
   class NoCaseflowAccess < StandardError; end
   class StationAssertionRequired < StandardError; end
+  class SensitivityLevelCheckFailure < StandardError; end
 end

@@ -3,12 +3,43 @@
 describe ExternalApi::VBMSService do
   subject(:described) { described_class }
 
+  let(:mock_sensitivity_checker) { instance_double(SensitivityChecker, sensitivity_levels_compatible?: true) }
+
+  before do
+    allow(SensitivityChecker).to receive(:new).and_return(mock_sensitivity_checker)
+  end
+
+  describe ".verify_user_veteran_access" do
+    let!(:user) do
+      user = User.create(css_id: "VSO", station_id: "283", participant_id: "1234")
+      RequestStore.store[:current_user] = user
+    end
+
+    it "checks the user's sensitivity" do
+      expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?)
+        .with(user: user, veteran_file_number: "123456789").and_return(true)
+
+      described.verify_user_veteran_access("123456789")
+    end
+
+    it "raises an exception when the sensitivity level is not compatible" do
+      expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?)
+        .with(user: user, veteran_file_number: "123456789").and_return(false)
+
+      expect { described.verify_user_veteran_access("123456789") }
+        .to raise_error(RuntimeError, "User does not have permission to access this information")
+    end
+  end
+
   describe ".v2_fetch_documents_for" do
     let(:mock_json_adapter) { instance_double(JsonApiResponseAdapter) }
 
     before do
       allow(JsonApiResponseAdapter).to receive(:new).and_return(mock_json_adapter)
+      FeatureToggle.enable!(:use_ce_api)
     end
+
+    after { FeatureToggle.disable!(:use_ce_api) }
 
     context "with use_ce_api feature toggle enabled" do
       before { FeatureToggle.enable!(:use_ce_api) }
@@ -70,7 +101,10 @@ describe ExternalApi::VBMSService do
 
     before do
       allow(JsonApiResponseAdapter).to receive(:new).and_return(mock_json_adapter)
+      FeatureToggle.enable!(:use_ce_api)
     end
+
+    after { FeatureToggle.disable!(:use_ce_api) }
 
     context "with use_ce_api feature toggle enabled" do
       before { FeatureToggle.enable!(:use_ce_api) }
@@ -94,8 +128,16 @@ describe ExternalApi::VBMSService do
 
   describe ".v2_fetch_document_file" do
     context "with use_ce_api feature toggle enabled" do
-      before { FeatureToggle.enable!(:use_ce_api) }
-      after { FeatureToggle.disable!(:use_ce_api) }
+      before do
+        FeatureToggle.enable!(:use_ce_api)
+      end
+
+      after do
+        FeatureToggle.disable!(:use_ce_api)
+      end
+
+      let(:manifest) { Manifest.create(file_number: "1234") }
+      let(:source) { ManifestSource.create(name: %w[VBMS VVA].sample, manifest: manifest) }
 
       let(:fake_record) do
         Record.create(
@@ -103,7 +145,8 @@ describe ExternalApi::VBMSService do
           series_id: "{4444-4444}",
           received_at: Time.utc(2015, 9, 6, 1, 0, 0),
           type_id: "825",
-          mime_type: "application/pdf"
+          mime_type: "application/pdf",
+          manifest_source: source
         )
       end
 
@@ -114,6 +157,38 @@ describe ExternalApi::VBMSService do
           .and_return("Pdf Byte String")
 
         described.v2_fetch_document_file(fake_record)
+      end
+    end
+  end
+
+  describe ".process_fetch_veteran_file_list_response" do
+    let(:mock_json_adapter) { instance_double(JsonApiResponseAdapter) }
+
+    before do
+      allow(JsonApiResponseAdapter).to receive(:new).and_return(mock_json_adapter)
+      FeatureToggle.enable!(:use_ce_api)
+    end
+
+    after { FeatureToggle.disable!(:use_ce_api) }
+
+    context "when the adapted response is present" do
+      it "does not log any errors and returns the adapted response" do
+        expect(mock_json_adapter).to receive(:adapt_v2_fetch_documents_for).and_return(["foo"])
+        expect(ExceptionLogger).not_to receive(:capture)
+
+        result = described.process_fetch_veteran_file_list_response(nil)
+        expect(result.count).to eq 1
+      end
+    end
+
+    context "when the adapted response is nil" do
+      it "logs an exception and returns an empty array" do
+        expect(mock_json_adapter).to receive(:adapt_v2_fetch_documents_for).and_return(nil)
+        expect(RuntimeError).to receive(:new).with(/API response could not be parsed/).and_call_original
+        expect(ExceptionLogger).to receive(:capture).with(instance_of(RuntimeError))
+
+        result = described.process_fetch_veteran_file_list_response(nil)
+        expect(result).to eq []
       end
     end
   end

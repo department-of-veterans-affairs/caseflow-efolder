@@ -256,6 +256,16 @@ dd {
   }
 }
 
+.cf-icon-external-link {
+  vertical-align: -.45ex;
+  width: 1em;
+  height: 1em;
+
+  path {
+    fill: $cf-link;
+  }
+}
+
 .cf-icon-close {
   display: block;
   margin: auto;
