@@ -21,7 +21,7 @@ class Api::V2::ManifestsController < Api::V2::ApplicationController
   end
 
   def refresh
-    manifest = if FeatureToggle.enabled?(:use_ce_api) 
+    manifest = if FeatureToggle.enabled?(:use_ce_api)
                  Manifest.includes(:sources, :records).find_or_create_by_user(user: current_user, file_number: veteran_file_number)
                else
                  Manifest.find(params[:id])
