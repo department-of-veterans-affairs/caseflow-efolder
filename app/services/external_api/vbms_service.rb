@@ -145,8 +145,31 @@ class ExternalApi::VBMSService
       station_id: allow_user_info? ? RequestStore[:current_user].station_id : ENV['CLAIM_EVIDENCE_STATION_ID']
     )
   end
-    
+
   def self.allow_user_info?
     RequestStore[:current_user].present? && FeatureToggle.enabled?(:send_current_user_cred_to_ce_api)
+  end
+
+  class << self
+    private
+
+    def send_claim_evidence_request(class_name:, class_method:, method_args:)
+      class_name.public_send(class_method, **method_args)
+    rescue StandardError => e
+      current_user = RequestStore[:current_user]
+      user_sensitivity_level = if current_user.present?
+                                 SensitivityChecker.new(current_user).sensitivity_level_for_user(current_user)
+                               else
+                                 "User is not set in the RequestStore"
+                               end
+      error_details = {
+        user_css_id: current_user&.css_id || "User is not set in the RequestStore",
+        user_sensitivity_level: user_sensitivity_level,
+        error_uuid: SecureRandom.uuid
+      }
+      ErrorHandlers::ClaimEvidenceApiErrorHandler.new.handle_error(error: e, error_details: error_details)
+
+      nil
+    end
   end
 end
