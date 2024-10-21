@@ -16,10 +16,6 @@ import RecentDownloadsContainer from './RecentDownloadsContainer';
 import FeedbackContainer from './FeedbackContainer';
 
 class InitContainer extends React.PureComponent {
-  // componentDidMount() {
-  //   console.log('InitContainer mounted. Props:', this.props);
-  //   console.log('Redux store state:', this.context.store.getState());
-  // }
   render() {
     return <BrowserRouter basename="/">
       <React.Fragment>
