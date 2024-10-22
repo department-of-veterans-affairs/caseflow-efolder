@@ -16,7 +16,7 @@ class Api::V1::ApplicationController < BaseController
   rescue_from BGS::SensitivityLevelCheckFailure do |e|
     current_user = RequestStore[:current_user]
     user_sensitivity_level = if current_user.present?
-                               SensitivityChecker.new(current_user).sensitivity_level_for_user(current_user)
+                               SensitivityChecker.new.sensitivity_level_for_user(current_user)
                              else
                                "User is not set in the RequestStore"
                              end
