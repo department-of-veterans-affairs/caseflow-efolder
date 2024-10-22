@@ -121,6 +121,45 @@ describe ExternalApi::BGSService do
       .with(file_number) { bgs_benefit_claims_response }
   end
 
+  describe "#sensitivity_level_for_user" do
+    let(:user) { User.create(css_id: "Foo", station_id: "112", participant_id: "abc123") }
+
+    it "validates the user param" do
+      expect { bgs_service.sensitivity_level_for_user(nil) }.to raise_error(RuntimeError, "Invalid user")
+    end
+
+    it "calls the security service and caches the result" do
+      sensitivity_level = Random.new.rand(1..9)
+
+      expect(bgs_client).to receive(:security).and_return(bgs_security_service)
+      expect(bgs_security_service).to receive(:find_person_scrty_log_by_ptcpnt_id)
+        .with(user.participant_id).and_return({ scrty_level_type_cd: sensitivity_level.to_s })
+
+      expect(bgs_service.sensitivity_level_for_user(user)).to eq(sensitivity_level)
+
+      expect(Rails.cache.exist?("sensitivity_level_for_user_id_#{user.id}")).to be true
+    end
+  end
+
+  describe "#sensitivity_level_for_veteran" do
+    it "validates the veteran_file_number param" do
+      expect(bgs_veteran_service).to receive(:find_by_file_number).with(nil).and_return(nil)
+      expect { bgs_service.sensitivity_level_for_veteran(nil) }.to raise_error(RuntimeError, "Invalid veteran")
+    end
+
+    it "calls the security service and caches the result" do
+      sensitivity_level = Random.new.rand(1..9)
+
+      expect(bgs_client).to receive(:security).and_return(bgs_security_service)
+      expect(bgs_security_service).to receive(:find_sensitivity_level_by_participant_id)
+        .with(participant_id).and_return({ scrty_level_type_cd: sensitivity_level.to_s })
+
+      expect(bgs_service.sensitivity_level_for_veteran(file_number)).to eq(sensitivity_level)
+
+      expect(Rails.cache.exist?("sensitivity_level_for_veteran_participant_id_#{participant_id}")).to be true
+    end
+  end
+
   context "#parse_veteran_info" do
     before do
       @veteran_data = {
