@@ -3,9 +3,13 @@
 describe ExternalApi::VBMSService do
   subject(:described) { described_class }
 
+  let(:mock_error_handler) { instance_double(ErrorHandlers::ClaimEvidenceApiErrorHandler) }
+  let(:mock_json_adapter) { instance_double(JsonApiResponseAdapter) }
   let(:mock_sensitivity_checker) { instance_double(SensitivityChecker, sensitivity_levels_compatible?: true) }
 
   before do
+    allow(ErrorHandlers::ClaimEvidenceApiErrorHandler).to receive(:new).and_return(mock_error_handler)
+    allow(JsonApiResponseAdapter).to receive(:new).and_return(mock_json_adapter)
     allow(SensitivityChecker).to receive(:new).and_return(mock_sensitivity_checker)
   end
 
@@ -32,10 +36,7 @@ describe ExternalApi::VBMSService do
   end
 
   describe ".v2_fetch_documents_for" do
-    let(:mock_json_adapter) { instance_double(JsonApiResponseAdapter) }
-
     before do
-      allow(JsonApiResponseAdapter).to receive(:new).and_return(mock_json_adapter)
       FeatureToggle.enable!(:use_ce_api)
     end
 
@@ -98,10 +99,7 @@ describe ExternalApi::VBMSService do
   end
 
   describe ".fetch_delta_documents_for" do
-    let(:mock_json_adapter) { instance_double(JsonApiResponseAdapter) }
-
     before do
-      allow(JsonApiResponseAdapter).to receive(:new).and_return(mock_json_adapter)
       FeatureToggle.enable!(:use_ce_api)
     end
 
@@ -116,12 +114,12 @@ describe ExternalApi::VBMSService do
         begin_date_range = "2024-05-10"
         end_date_range = "2024-05-10"
         expect(VeteranFileFetcher).to receive(:fetch_veteran_file_list_by_date_range)
-        .with(
-          veteran_file_number: veteran_file_number,
-          claim_evidence_request: instance_of(ClaimEvidenceRequest),
-          begin_date_range: begin_date_range,
-          end_date_range: end_date_range
-        )
+          .with(
+            veteran_file_number: veteran_file_number,
+            claim_evidence_request: instance_of(ClaimEvidenceRequest),
+            begin_date_range: begin_date_range,
+            end_date_range: end_date_range
+          )
         expect(mock_json_adapter).to receive(:adapt_v2_fetch_documents_for).and_return([])
         described.fetch_delta_documents_for(veteran_file_number, begin_date_range, end_date_range)
       end
@@ -164,10 +162,7 @@ describe ExternalApi::VBMSService do
   end
 
   describe ".process_fetch_veteran_file_list_response" do
-    let(:mock_json_adapter) { instance_double(JsonApiResponseAdapter) }
-
     before do
-      allow(JsonApiResponseAdapter).to receive(:new).and_return(mock_json_adapter)
       FeatureToggle.enable!(:use_ce_api)
     end
 
@@ -184,10 +179,26 @@ describe ExternalApi::VBMSService do
     end
 
     context "when the adapted response is nil" do
+      let!(:user) do
+        user = User.create(css_id: "VSO", station_id: "283", participant_id: "1234")
+        RequestStore.store[:current_user] = user
+      end
+
       it "logs an exception and returns an empty array" do
         expect(mock_json_adapter).to receive(:adapt_v2_fetch_documents_for).and_return(nil)
         expect(RuntimeError).to receive(:new).with(/API response could not be parsed/).and_call_original
-        expect(ExceptionLogger).to receive(:capture).with(instance_of(RuntimeError))
+        expect(mock_sensitivity_checker).to receive(:sensitivity_level_for_user)
+          .with(user).and_return(4)
+        expect(SecureRandom).to receive(:uuid).and_return("1234")
+        expect(mock_error_handler).to receive(:handle_error)
+          .with(
+            error: instance_of(RuntimeError),
+            error_details: {
+              user_css_id: user.css_id,
+              user_sensitivity_level: 4,
+              error_uuid: "1234"
+            }
+          )
 
         result = described.process_fetch_veteran_file_list_response(nil)
         expect(result).to eq []
@@ -255,6 +266,77 @@ describe ExternalApi::VBMSService do
           expect(result.user_css_id).to eq "CSS_999"
           expect(result.station_id).to eq "999"
         end
+      end
+    end
+  end
+
+  describe "error handling" do
+    let(:example_error) { StandardError.new("My test error") }
+    let(:veteran_file_number) { "123456789" }
+
+    before do
+      FeatureToggle.enable!(:use_ce_api)
+    end
+    after { FeatureToggle.disable!(:use_ce_api) }
+
+    context "when the current_user is set in the RequestStore" do
+      let!(:user) do
+        user = User.create(css_id: "VSO", station_id: "283", participant_id: "1234")
+        RequestStore.store[:current_user] = user
+      end
+
+      it "reports errors to the ClaimEvidenceApiErrorHandler and includes the current_user details" do
+        expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?)
+          .with(user: user, veteran_file_number: veteran_file_number).and_return(true)
+        expect(VeteranFileFetcher).to receive(:fetch_veteran_file_list)
+          .with(
+            veteran_file_number: veteran_file_number,
+            claim_evidence_request: instance_of(ClaimEvidenceRequest)
+          ).and_raise(example_error)
+        expect(mock_sensitivity_checker).to receive(:sensitivity_level_for_user)
+          .with(user).and_return(4)
+        expect(SecureRandom).to receive(:uuid).and_return("1234")
+        expect(mock_error_handler).to receive(:handle_error)
+          .with(
+            error: example_error,
+            error_details: {
+              user_css_id: user.css_id,
+              user_sensitivity_level: 4,
+              error_uuid: "1234"
+            }
+          )
+        expect(mock_json_adapter).to receive(:adapt_v2_fetch_documents_for).with(nil).and_return([])
+
+        response = described.v2_fetch_documents_for(veteran_file_number)
+        expect(response).to eq([])
+      end
+    end
+
+    context "when the current_user is NOT set in the RequestStore" do
+      before { RequestStore.store[:current_user] = nil }
+
+      it "reports errors to the ClaimEvidenceApiErrorHandler" do
+        expect(mock_sensitivity_checker).not_to receive(:sensitivity_levels_compatible?)
+        expect(VeteranFileFetcher).to receive(:fetch_veteran_file_list)
+          .with(
+            veteran_file_number: veteran_file_number,
+            claim_evidence_request: instance_of(ClaimEvidenceRequest)
+          ).and_raise(example_error)
+        expect(mock_sensitivity_checker).not_to receive(:sensitivity_level_for_user)
+        expect(SecureRandom).to receive(:uuid).and_return("1234")
+        expect(mock_error_handler).to receive(:handle_error)
+          .with(
+            error: example_error,
+            error_details: {
+              user_css_id: "User is not set in the RequestStore",
+              user_sensitivity_level: "User is not set in the RequestStore",
+              error_uuid: "1234"
+            }
+          )
+        expect(mock_json_adapter).to receive(:adapt_v2_fetch_documents_for).with(nil).and_return([])
+
+        response = described.v2_fetch_documents_for(veteran_file_number)
+        expect(response).to eq([])
       end
     end
   end
