@@ -1224,9 +1224,9 @@
     "@babel/helper-validator-identifier" "^7.25.7"
     to-fast-properties "^2.0.0"
 
-"@department-of-veterans-affairs/caseflow-frontend-toolkit@https://github.com/department-of-veterans-affairs/caseflow-frontend-toolkit#upgrade-test":
+"@department-of-veterans-affairs/caseflow-frontend-toolkit@https://github.com/department-of-veterans-affairs/caseflow-frontend-toolkit#e5ea4904":
   version "2.6.1"
-  resolved "https://github.com/department-of-veterans-affairs/caseflow-frontend-toolkit#84ff349d740f8a8d2679dcad039b453b88f23fa8"
+  resolved "https://github.com/department-of-veterans-affairs/caseflow-frontend-toolkit#e5ea4904b989fab8bcbbe82bd2a0bdacf7383280"
   dependencies:
     babel-jest "^29.7.0"
     classnames "^2.2.5"
