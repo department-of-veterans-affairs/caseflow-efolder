@@ -27,13 +27,16 @@ class ExternalApi::VBMSService
     documents = []
 
     if FeatureToggle.enabled?(:use_ce_api)
-      verify_user_veteran_access(veteran_file_number)
-      response = send_claim_evidence_request(
-        class_name: VeteranFileFetcher,
-        class_method: :fetch_veteran_file_list,
-        method_args: { veteran_file_number: veteran_file_number, claim_evidence_request: claim_evidence_request }
-      )
-      documents = process_fetch_veteran_file_list_response(response)
+      begin
+        verify_user_veteran_access(veteran_file_number)
+        response = VeteranFileFetcher.fetch_veteran_file_list(
+          veteran_file_number: veteran_file_number,
+          claim_evidence_request: claim_evidence_request
+        )
+        documents = process_fetch_veteran_file_list_response(response)
+      rescue StandardError => e
+        log_claim_evidence_error(e)
+      end
     elsif FeatureToggle.enabled?(:vbms_pagination, user: RequestStore[:current_user])
       service = VBMS::Service::PagedDocuments.new(client: vbms_client)
       documents = call_and_log_service(service: service, vbms_id: veteran_file_number)[:documents]
@@ -50,18 +53,18 @@ class ExternalApi::VBMSService
     documents = []
 
     if FeatureToggle.enabled?(:use_ce_api)
-      verify_user_veteran_access(veteran_file_number)
-      response = send_claim_evidence_request(
-        class_name: VeteranFileFetcher,
-        class_method: :fetch_veteran_file_list_by_date_range,
-        method_args: {
+      begin
+        verify_user_veteran_access(veteran_file_number)
+        response = VeteranFileFetcher.fetch_veteran_file_list_by_date_range(
           veteran_file_number: veteran_file_number,
           claim_evidence_request: claim_evidence_request,
           begin_date_range: begin_date_range,
           end_date_range: end_date_range
-        }
-      )
-      documents = process_fetch_veteran_file_list_response(response)
+        )
+        documents = process_fetch_veteran_file_list_response(response)
+      rescue StandardError => e
+        log_claim_evidence_error(e)
+      end
     else
       request = VBMS::Requests::FindDocumentVersionReferenceByDateRange.new(veteran_file_number, begin_date_range, end_date_range)
       documents = send_and_log_request(veteran_file_number, request)
@@ -79,13 +82,15 @@ class ExternalApi::VBMSService
 
   def self.v2_fetch_document_file(document)
     if FeatureToggle.enabled?(:use_ce_api)
-      verify_user_veteran_access(document.file_number)
-      # Not using #send_and_log_request because logging to MetricService implemeneted in CE API gem
-      send_claim_evidence_request(
-        class_name: VeteranFileFetcher,
-        class_method: :get_document_content,
-        method_args: { doc_series_id: document.series_id, claim_evidence_request: claim_evidence_request }
-      )
+      begin
+        verify_user_veteran_access(document.file_number)
+        VeteranFileFetcher.get_document_content(
+          doc_series_id: document.series_id,
+          claim_evidence_request: claim_evidence_request
+        )
+      rescue StandardError => e
+        log_claim_evidence_error(e)
+      end
     else
       request = VBMS::Requests::GetDocumentContent.new(document.document_id)
       result = send_and_log_request(document.document_id, request)
@@ -159,14 +164,6 @@ class ExternalApi::VBMSService
 
   class << self
     private
-
-    def send_claim_evidence_request(class_name:, class_method:, method_args:)
-      class_name.public_send(class_method, **method_args)
-    rescue StandardError => e
-      log_claim_evidence_error(e)
-
-      nil
-    end
 
     def log_claim_evidence_error(error)
       current_user = RequestStore[:current_user]
