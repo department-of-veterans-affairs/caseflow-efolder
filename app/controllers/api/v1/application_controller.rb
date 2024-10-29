@@ -29,7 +29,10 @@ class Api::V1::ApplicationController < BaseController
     ErrorHandlers::ClaimEvidenceApiErrorHandler.new.handle_error(error: e, error_details: error_details)
 
     render json: {
-      status: e.message
+      status: e.message,
+      featureToggles: {
+        use_ce_api: FeatureToggle.enabled?(:use_ce_api)
+      }
     }, status: :forbidden
   end
 
