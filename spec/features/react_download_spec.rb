@@ -59,7 +59,7 @@ RSpec.feature "React Downloads" do
   let(:zip_file_name) { "Lee, Stan - 2222" }
 
   before do
-    allow_any_instance_of(VeteranFinder).to receive(:find) { [ { file: claim_number } ] }
+    allow_any_instance_of(VeteranFinder).to receive(:find) { [{ file: claim_number }] }
   end
 
   scenario "Creating a download" do
@@ -71,6 +71,7 @@ RSpec.feature "React Downloads" do
     fill_in "Search for a Veteran ID number below to get started.", with: veteran_id
 
     click_on "Search"
+
     expect(page).to have_content "STAN LEE VETERAN ID #{claim_number}"
     expect(page).to have_content "We are gathering the list of files in the eFolder now"
 
@@ -79,7 +80,6 @@ RSpec.feature "React Downloads" do
     expect(page).to have_css(".ee-page-loading .ee-page-loading-icon")
 
     expect(page).to have_current_path("/downloads/#{manifest.id}")
-
     expect(manifest).to_not be_nil
     expect(manifest.file_number).to eq(claim_number)
     expect(manifest.veteran_first_name).to eq("Stan")
