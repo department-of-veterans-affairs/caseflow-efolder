@@ -30,7 +30,11 @@ class Manifest < ApplicationRecord
   def start!
     # Reset stale manifests.
     update!(fetched_files_status: :initialized) if ready_for_refresh?
+    start_vbms_with_sensitivity_check
+    vva_source.start! unless FeatureToggle.enabled?(:skip_vva)
+  end
 
+  def start_vbms_with_sensitivity_check
     if FeatureToggle.enabled?(:use_ce_api)
       if sensitivity_checker.sensitivity_levels_compatible?(
         user: user,
@@ -43,7 +47,6 @@ class Manifest < ApplicationRecord
     else
       vbms_source.start!
     end
-    vva_source.start! unless FeatureToggle.enabled?(:skip_vva)
   end
 
   def download_and_package_files!
