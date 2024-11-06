@@ -23,17 +23,16 @@ class Api::V2::ApplicationController < Api::V1::ApplicationController
 
     return invalid_file_number unless bgs_service.valid_file_number?(file_number)
 
-    if FeatureToggle.enabled?(:use_ce_api)
-      if sensitivity_checker.sensitivity_levels_compatible?(
-        user: current_user,
-        veteran_file_number: file_number
-      )
-        return file_number
-      else
-        raise BGS::SensitivityLevelCheckFailure.new, "You are not authorized to access this file number"
-      end
+    return handle_ce_api_check(file_number) if FeatureToggle.enabled?(:use_ce_api)
+
+    fetch_veteran_by_file_number(file_number)
+  end
+
+  def handle_ce_api_check(file_number)
+    if sensitivity_checker.sensitivity_levels_compatible?(user: current_user, veteran_file_number: file_number)
+      file_number
     else
-      fetch_veteran_by_file_number(file_number)
+      raise BGS::SensitivityLevelCheckFailure.new, "You are not authorized to access this file number"
     end
   end
 
