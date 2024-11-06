@@ -72,6 +72,8 @@ describe "Manifests API v2", type: :request do
       it "gates access to the start action" do
         expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?)
           .with(user: user, veteran_file_number: "DEMO987").and_return(false)
+        expect(mock_sensitivity_checker).to receive(:sensitivity_level_for_user)
+          .with(user).and_return(4)
 
         post "/api/v2/manifests", params: nil, headers: headers
 
@@ -82,6 +84,8 @@ describe "Manifests API v2", type: :request do
       it "gates access to the refresh action" do
         expect(mock_sensitivity_checker).to receive(:sensitivity_levels_compatible?)
           .with(user: user, veteran_file_number: "DEMO987").and_return(false)
+        expect(mock_sensitivity_checker).to receive(:sensitivity_level_for_user)
+          .with(user).and_return(4)
 
         post "/api/v2/manifests/#{manifest.id}", params: nil, headers: headers
 
