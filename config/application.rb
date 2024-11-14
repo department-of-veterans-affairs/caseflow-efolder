@@ -10,6 +10,7 @@ module CaseflowEfolder
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.1
+    config.autoloader = :classic
 
     # Configuration for the application, engines, and railties goes here.
     #
@@ -121,51 +122,9 @@ module CaseflowEfolder
     # eFolder Specific configs
     #---------------------------------------------------------------------------------------
     config.download_filepath = Rails.root + "tmp/files"
-    
-
-    # --------------------------------------------------------------------------------------
-    # Autoloading & Eager loading
-
-    # Zeitwerk has specific requirements for auto/eager loading. See below links for more details
-    # https://guides.rubyonrails.org/classic_to_zeitwerk_howto.html
-    # https://github.com/fxn/zeitwerk
-
-    config.autoload_paths += [
-      "#{root}/lib",
-    ]
-
-    config.eager_load_paths += [
-      "#{root}/lib",
-    ]
-    
-    Rails.autoloaders.each do | autoloader |
-      # "file_name" => Expected Module or Class name.
-      autoloader.inflector.inflect(
-        "bgs" => "BGS",
-        "bgs_service" => "BGSService",
-        "poa_mapper" => "POAMapper",
-        "vbms_service" => "VBMSService",
-        "vva_service" => "VVAService"
-      )
-    end
-
-    # A collapse statement will remove the need for a namespace based on the direcotry given.
-    # Tasks::Support::ModuleOrClassName becomes ModuleOrClassName with the two statements below.
-    Rails.autoloaders.main.collapse(
-      "#{root}/lib/tasks",
-      "#{root}/lib/tasks/support"
-    )
-
-    # Will not autoload any files within directories added here
-    Rails.autoloaders.main.ignore(
-      "#{root}/app/jobs/middleware",
-      "#{root}/lib/assets",
-      "#{root}/lib/pdfs",
-      "#{root}/lib/scripts",
-      "#{root}/lib/fakes/test_auth_strategy.rb"
-    )
-    # --------------------------------------------------------------------------------------
-
+    config.autoload_paths += Dir[Rails.root + 'app/jobs']
+    config.autoload_paths << Rails.root.join('lib')
+    config.autoload_paths << Rails.root.join('lib/scripts')
 
     # Currently the Caseflow client makes calls to get document content directly
     # from eFolder Express to reduce load on Caseflow. Since Caseflow and eFolder
