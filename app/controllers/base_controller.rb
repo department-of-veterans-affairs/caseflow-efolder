@@ -1,8 +1,3 @@
-# frozen_string_literal: true
-
-require "bgs"
-require "bgs_errors"
-
 class BaseController < ActionController::Base
   before_action :strict_transport_security
   before_action :current_user
