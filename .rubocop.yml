@@ -1,11 +1,10 @@
-inherit_from: .rubocop_todo.yml
-
-require:
-  - .rubocop/custom_cop/top_level_constants_per_file.rb
-
 AllCops:
   TargetRubyVersion: 2.5
   TargetRailsVersion: 5.1
+  Include:
+    - '**/config.ru'
+    - '**/Rakefile'
+    - '**/*.rake'
   Exclude:
     - 'bin/**/*'
     - 'db/**/*'
@@ -63,11 +62,3 @@ Style/TrailingCommaInArrayLiteral:
 
 Style/TrailingCommaInHashLiteral:
   Enabled: false
-
-CustomCop/TopLevelConstantsPerFile:
-  Enabled: true
-  Include:
-    - 'app/**/*'
-    - 'lib/**/*'
-  Exclude:
-    - '**/*[^.rb]' # exclude non-.rb files (ex: .rake files)
