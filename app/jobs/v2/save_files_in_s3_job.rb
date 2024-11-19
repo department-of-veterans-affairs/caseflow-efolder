@@ -5,7 +5,7 @@ class V2::SaveFilesInS3Job < ApplicationJob
     Raven.extra_context(manifest_source: manifest_source.id, user_id: user_id)
 
     # Set user for permission check if the user is blank
-    if FeatureToggle.enabled?(:use_ce_api) && RequestStore[:current_user].blank?
+    if FeatureToggle.enabled?(:use_ce_api, user: RequestStore[:current_user]) && RequestStore[:current_user].blank?
       user = User.find(user_id)
       RequestStore.store[:current_user] = user
     end

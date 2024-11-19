@@ -31,7 +31,7 @@ class Api::V1::ApplicationController < BaseController
     render json: {
       status: e.message,
       featureToggles: {
-        use_ce_api: FeatureToggle.enabled?(:use_ce_api)
+        use_ce_api: FeatureToggle.enabled?(:use_ce_api, user: RequestStore[:current_user])
       }
     }, status: :forbidden
   end
