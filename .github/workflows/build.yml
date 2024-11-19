@@ -53,6 +53,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
       with:
+        fetch-depth: "0"
         token: ${{ secrets.PRIVATE_REPO_ACCESS_FINE }}
 
     - name: Set up Git for Private Repositories Access
