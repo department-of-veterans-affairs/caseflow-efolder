@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-
+ 
 describe ExternalApi::VBMSService do
   subject(:described) { described_class }
 
@@ -66,7 +66,7 @@ describe ExternalApi::VBMSService do
       it "calls the PagedDocuments SOAP API endpoint" do
         veteran_id = "123456789"
 
-        expect(FeatureToggle).to receive(:enabled?).with(:use_ce_api).and_return(false)
+        expect(FeatureToggle).to receive(:enabled?).with(:use_ce_api, user: user).and_return(false)
         expect(FeatureToggle).to receive(:enabled?).with(:vbms_pagination, user: user).and_return(true)
         expect(described_class).to receive(:vbms_client)
         expect(VBMS::Service::PagedDocuments).to receive(:new).and_return(:test_service)
@@ -78,6 +78,7 @@ describe ExternalApi::VBMSService do
     end
 
     context "with no feature toggles enabled" do
+      
       let!(:user) do
         user = User.create(css_id: "VSO", station_id: "283", participant_id: "1234")
         RequestStore.store[:current_user] = user
@@ -85,8 +86,7 @@ describe ExternalApi::VBMSService do
 
       it "calls the FindDocumentVersionReference SOAP API endpoint" do
         veteran_id = "123456789"
-
-        expect(FeatureToggle).to receive(:enabled?).with(:use_ce_api).and_return(false)
+        expect(FeatureToggle).to receive(:enabled?).with(:use_ce_api, user: user).and_return(false)
         expect(FeatureToggle).to receive(:enabled?).with(:vbms_pagination, user: user).and_return(false)
         expect(VBMS::Requests::FindDocumentVersionReference).to receive(:new)
           .with(veteran_id).and_return(:test_service)

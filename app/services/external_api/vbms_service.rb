@@ -25,8 +25,7 @@ class ExternalApi::VBMSService
 
   def self.v2_fetch_documents_for(veteran_file_number)
     documents = []
-
-    if FeatureToggle.enabled?(:use_ce_api)
+    if use_ce_api?
       begin
         verify_user_veteran_access(veteran_file_number)
         response = VeteranFileFetcher.fetch_veteran_file_list(
@@ -52,7 +51,7 @@ class ExternalApi::VBMSService
   def self.fetch_delta_documents_for(veteran_file_number, begin_date_range, end_date_range = Time.zone.now)
     documents = []
 
-    if FeatureToggle.enabled?(:use_ce_api)
+    if use_ce_api?
       begin
         verify_user_veteran_access(veteran_file_number)
         response = VeteranFileFetcher.fetch_veteran_file_list_by_date_range(
@@ -81,7 +80,7 @@ class ExternalApi::VBMSService
   end
 
   def self.v2_fetch_document_file(document)
-    if FeatureToggle.enabled?(:use_ce_api)
+    if use_ce_api?
       begin
         verify_user_veteran_access(document.file_number)
         VeteranFileFetcher.get_document_content(
@@ -153,13 +152,17 @@ class ExternalApi::VBMSService
 
   def self.claim_evidence_request
     ClaimEvidenceRequest.new(
-      user_css_id: allow_user_info? ? RequestStore[:current_user].css_id : ENV['CLAIM_EVIDENCE_VBMS_USER'],
-      station_id: allow_user_info? ? RequestStore[:current_user].station_id : ENV['CLAIM_EVIDENCE_STATION_ID']
+      user_css_id: allow_user_info? ? RequestStore[:current_user].css_id : ENV["CLAIM_EVIDENCE_VBMS_USER"],
+      station_id: allow_user_info? ? RequestStore[:current_user].station_id : ENV["CLAIM_EVIDENCE_STATION_ID"]
     )
   end
 
   def self.allow_user_info?
     RequestStore[:current_user].present? && FeatureToggle.enabled?(:send_current_user_cred_to_ce_api)
+  end
+
+  def self.use_ce_api?
+    FeatureToggle.enabled?(:use_ce_api, user: RequestStore[:current_user])
   end
 
   class << self

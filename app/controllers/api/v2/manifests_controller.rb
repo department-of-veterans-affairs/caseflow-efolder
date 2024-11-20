@@ -5,7 +5,7 @@ class Api::V2::ManifestsController < Api::V2::ApplicationController
   before_action :veteran_file_number, only: [:start, :refresh]
 
   def start
-    if FeatureToggle.enabled?(:use_ce_api)
+    if use_ce_api?
       return if performed?
 
       manifest = Manifest.includes(:sources, :records).find_or_create_by_user(user: current_user, file_number: veteran_file_number)
@@ -21,7 +21,7 @@ class Api::V2::ManifestsController < Api::V2::ApplicationController
   end
 
   def refresh
-    manifest = if FeatureToggle.enabled?(:use_ce_api) 
+    manifest = if use_ce_api? 
                  Manifest.includes(:sources, :records).find_or_create_by_user(user: current_user, file_number: veteran_file_number)
                else
                  Manifest.find(params[:id])
@@ -50,6 +50,10 @@ class Api::V2::ManifestsController < Api::V2::ApplicationController
   end
 
   private
+
+  def use_ce_api?
+    FeatureToggle.enabled?(:use_ce_api, user: RequestStore[:current_user])
+  end
 
   def veteran_file_number
     @veteran_file_number ||= verify_veteran_file_number
