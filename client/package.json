@@ -58,7 +58,7 @@
     "webpack-cli": "^3.3.10"
   },
   "devDependencies": {
-    "@department-of-veterans-affairs/eslint-config-appeals": "https://github.com/department-of-veterans-affairs/eslint-config-appeals#8ecb62a",
+    "@department-of-veterans-affairs/eslint-config-appeals": "https://github.com/department-of-veterans-affairs/eslint-config-appeals-internal#8c4e5aac",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.8.0"
   }

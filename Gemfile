@@ -47,8 +47,8 @@ gem "opentelemetry-instrumentation-rails", require: false
 gem "opentelemetry-instrumentation-rake", require: false
 gem "opentelemetry-instrumentation-redis", require: false
 
-gem "omniauth-saml-va", git: "https://github.com/department-of-veterans-affairs/omniauth-saml-va", branch: "pek-iam-ssoi"
-#gem "omniauth-saml-va", git: "https://github.com/department-of-veterans-affairs/omniauth-saml-va", ref: "fbe2b878c250b14ee996ef6699c42df2c42e41a1"
+# gem "omniauth-saml-va", git: "https://github.com/department-of-veterans-affairs/omniauth-saml-va", branch: "pek-iam-ssoi"
+gem "omniauth-saml-va", git: "https://github.com/department-of-veterans-affairs/omniauth-saml-va-internal", ref: "7409f77b9ec5348a27a059e48b7df93471f0acdd"
 gem "pg", "~> 1.5.7", platforms: :ruby
 gem "puma", "5.6.4"
 gem "rack-cors", ">= 1.0.4"
@@ -95,7 +95,7 @@ group :test do
   gem "simplecov", require: false
   gem "sinatra", "2.2.0"
   gem "single_cov", require: false
-  gem "sniffybara", git: "https://github.com/department-of-veterans-affairs/sniffybara.git"
+  gem "sniffybara", git: "https://github.com/department-of-veterans-affairs/sniffybara-internal.git"
   gem "timecop"
   gem "webdrivers"
   gem "webmock"

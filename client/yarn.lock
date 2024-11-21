@@ -1244,9 +1244,9 @@
     redux-thunk "^2.2.0"
     regenerator-runtime "^0.14.1"
 
-"@department-of-veterans-affairs/eslint-config-appeals@https://github.com/department-of-veterans-affairs/eslint-config-appeals#8ecb62a":
+"@department-of-veterans-affairs/eslint-config-appeals@https://github.com/department-of-veterans-affairs/eslint-config-appeals-internal#8c4e5aac":
   version "1.0.2"
-  resolved "https://github.com/department-of-veterans-affairs/eslint-config-appeals#8ecb62a01d371268a71c5a25513cf8592660f12d"
+  resolved "https://github.com/department-of-veterans-affairs/eslint-config-appeals-internal#8c4e5aac6f0f04bb0dc165a5cb8d374523c6d778"
   dependencies:
     babel-eslint "^10.1.0"
     eslint-plugin-import "^2.20.1"

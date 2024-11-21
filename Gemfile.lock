@@ -70,9 +70,9 @@ GIT
       savon (~> 2.11, >= 2.11.0)
 
 GIT
-  remote: https://github.com/department-of-veterans-affairs/omniauth-saml-va
-  revision: f95f8d2f9b8a9a1a3df15a63595f49b203ffe31e
-  branch: pek-iam-ssoi
+  remote: https://github.com/department-of-veterans-affairs/omniauth-saml-va-internal
+  revision: 7409f77b9ec5348a27a059e48b7df93471f0acdd
+  ref: 7409f77b9ec5348a27a059e48b7df93471f0acdd
   specs:
     omniauth-saml-va (0.1)
       omniauth-saml (~> 1.10)
@@ -88,8 +88,8 @@ GIT
       savon (~> 2.12)
 
 GIT
-  remote: https://github.com/department-of-veterans-affairs/sniffybara.git
-  revision: 351560b5789ca638ba7c9b093c2bb1a9a6fda4b3
+  remote: https://github.com/department-of-veterans-affairs/sniffybara-internal.git
+  revision: bcd5cb8e6dcb595dd111da5b0758f807d8c7525a
   specs:
     sniffybara (1.1.0)
       rainbow
@@ -263,7 +263,7 @@ GEM
       builder (>= 2.1.2)
       rexml (~> 3.0)
     hashdiff (1.1.0)
-    hashie (4.1.0)
+    hashie (5.0.0)
     httparty (0.18.1)
       mime-types (~> 3.0)
       multi_xml (>= 0.5.2)
@@ -334,12 +334,12 @@ GEM
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     nori (2.6.0)
-    omniauth (1.9.1)
+    omniauth (1.9.2)
       hashie (>= 3.4.6)
       rack (>= 1.6.2, < 3)
-    omniauth-saml (1.10.3)
+    omniauth-saml (1.10.5)
       omniauth (~> 1.3, >= 1.3.2)
-      ruby-saml (~> 1.9)
+      ruby-saml (~> 1.17)
     opentelemetry-api (1.1.0)
     opentelemetry-common (0.19.7)
       opentelemetry-api (~> 1.0)
@@ -543,8 +543,8 @@ GEM
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 2.0)
     ruby-progressbar (1.13.0)
-    ruby-saml (1.12.2)
-      nokogiri (>= 1.10.5)
+    ruby-saml (1.17.0)
+      nokogiri (>= 1.13.10)
       rexml
     ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
