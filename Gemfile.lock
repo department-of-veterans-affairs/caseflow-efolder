@@ -19,9 +19,9 @@ GIT
       sass
 
 GIT
-  remote: https://github.com/department-of-veterans-affairs/caseflow-commons
-  revision: dbd86859856d161d84b0bba4d67a8b62e4684996
-  ref: dbd86859856d161d84b0bba4d67a8b62e4684996
+  remote: https://github.com/department-of-veterans-affairs/caseflow-commons-internal.git
+  revision: 9bd3635fbd8094d25160669f38d8699e2f1d7a98
+  ref: 9bd3635fbd8094d25160669f38d8699e2f1d7a98
   specs:
     caseflow (0.4.8)
       aws-sdk-s3
@@ -33,9 +33,24 @@ GIT
       redis-rails
 
 GIT
-  remote: https://github.com/department-of-veterans-affairs/connect_vbms.git
+  remote: https://github.com/department-of-veterans-affairs/clone_ruby_claim_evidence_api.git
+  revision: c56381d2bea2ffabe79bebbac6598f00450691ff
+  ref: c56381d2bea2ffabe79bebbac6598f00450691ff
+  specs:
+    ruby_claim_evidence_api (0.1.0)
+      activesupport
+      base64
+      faraday
+      faraday-multipart
+      httpi
+      rack (< 3)
+      railties
+      webmock (~> 3.11.0)
+
+GIT
+  remote: https://github.com/department-of-veterans-affairs/connect_vbms-internal.git
   revision: 1834cf61310001c82e2e96d665518407c3bce947
-  branch: master
+  ref: 1834cf61310001c82e2e96d665518407c3bce947
   specs:
     connect_vbms (1.4.0)
       httpclient (~> 2.8.0)
@@ -47,9 +62,9 @@ GIT
       xmlenc
 
 GIT
-  remote: https://github.com/department-of-veterans-affairs/connect_vva.git
-  revision: dfd1aeb2605c1f237f520bcdc41b059202e8944d
-  ref: dfd1aeb2605c1f237f520bcdc41b059202e8944d
+  remote: https://github.com/department-of-veterans-affairs/connect_vva-internal.git
+  revision: f7913cd30ab5a75fb8bbc55dfc76743f362dba58
+  ref: f7913cd30ab5a75fb8bbc55dfc76743f362dba58
   specs:
     connect_vva (0.1)
       savon (~> 2.11, >= 2.11.0)
@@ -63,7 +78,7 @@ GIT
       omniauth-saml (~> 1.10)
 
 GIT
-  remote: https://github.com/department-of-veterans-affairs/ruby-bgs.git
+  remote: https://github.com/department-of-veterans-affairs/ruby-bgs-internal.git
   revision: a2e055b5a52bd1e2bb8c2b3b8d5820b1a404cd3d
   ref: a2e055b5a52bd1e2bb8c2b3b8d5820b1a404cd3d
   specs:
@@ -71,21 +86,6 @@ GIT
       httpclient
       nokogiri (>= 1.11.0.rc4)
       savon (~> 2.12)
-
-GIT
-  remote: https://github.com/department-of-veterans-affairs/ruby_claim_evidence_api.git
-  revision: 095798918338650383b06ff535bc63fc5fbfc8dc
-  ref: 095798918338650383b06ff535bc63fc5fbfc8dc
-  specs:
-    ruby_claim_evidence_api (0.1.0)
-      activesupport
-      base64
-      faraday
-      faraday-multipart
-      httpi
-      rack (< 3)
-      railties
-      webmock (~> 3.11.0)
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/sniffybara.git
@@ -167,7 +167,7 @@ GEM
       zeitwerk (~> 2.3)
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
-    akami (1.3.1)
+    akami (1.3.2)
       gyoku (>= 0.4.0)
       nokogiri
     ast (2.4.2)
@@ -259,8 +259,9 @@ GEM
     google-protobuf (3.25.4)
     googleapis-common-protos-types (1.15.0)
       google-protobuf (>= 3.18, < 5.a)
-    gyoku (1.3.1)
+    gyoku (1.4.0)
       builder (>= 2.1.2)
+      rexml (~> 3.0)
     hashdiff (1.1.0)
     hashie (4.1.0)
     httparty (0.18.1)
@@ -558,14 +559,15 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (>= 1.1, < 3)
-    savon (2.12.1)
+    savon (2.15.0)
       akami (~> 1.2)
       builder (>= 2.1.2)
       gyoku (~> 1.2)
-      httpi (~> 2.3)
+      httpi (>= 2.4.5, < 5)
+      mail (~> 2.5)
       nokogiri (>= 1.8.1)
       nori (~> 2.4)
-      wasabi (~> 3.4)
+      wasabi (>= 3.7, < 6)
     scss_lint (0.59.0)
       sass (~> 3.5, >= 3.5.5)
     selenium-webdriver (4.9.0)
@@ -617,7 +619,7 @@ GEM
     uuid (2.3.9)
       macaddr (~> 1.0)
     wannabe_bool (0.7.1)
-    wasabi (3.6.1)
+    wasabi (3.7.0)
       addressable
       httpi (~> 2.0)
       nokogiri (>= 1.4.2)
@@ -742,4 +744,4 @@ DEPENDENCIES
   zero_downtime_migrations
 
 BUNDLED WITH
-   2.4.17
+   2.4.22

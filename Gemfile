@@ -13,7 +13,7 @@ gem "bootsnap", require: false
 gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons-internal.git", ref: "9bd3635fbd8094d25160669f38d8699e2f1d7a98"
 gem "coffee-rails", "> 4.1.0"
 gem "connect_vbms", git: "https://github.com/department-of-veterans-affairs/connect_vbms-internal.git", ref: "1834cf61310001c82e2e96d665518407c3bce947"
-gem "connect_vva", git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "dfd1aeb2605c1f237f520bcdc41b059202e8944d"
+gem "connect_vva", git: "https://github.com/department-of-veterans-affairs/connect_vva-internal.git", ref: "f7913cd30ab5a75fb8bbc55dfc76743f362dba58"
 gem "distribute_reads"
 gem "httpclient"
 gem "jbuilder", "~> 2.0"
