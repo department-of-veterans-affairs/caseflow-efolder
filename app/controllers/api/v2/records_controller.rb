@@ -2,16 +2,9 @@ class Api::V2::RecordsController < Api::V2::ApplicationController
   before_action :validate_access
 
   def show
-    result = if FeatureToggle.enabled?(:vbms_to_reader_on_s3_miss, user: current_user)
-               # return s3 cache miss directly from VBMS
-               # instead of saving to s3 first
-               record.api_fetch!
-             else
-               record.fetch!
-             end
-
+    #Check before fetch if the file is saved in S3
     document_source_to_headers
-
+    result = record.fetch!
     return document_failed if record.failed?
 
     # Only cache if we're not returning an error
@@ -54,6 +47,7 @@ class Api::V2::RecordsController < Api::V2::ApplicationController
   end
 
   def document_source_to_headers
-    headers["X-Document-Source"] = @record.sourced || ""
+    from_s3 ||= S3Service.exists? record.s3_filename
+    headers["X-Document-Source"] = !!from_s3 ? "S3" : "VBMS"
   end
 end
