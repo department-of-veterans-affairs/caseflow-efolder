@@ -256,7 +256,7 @@ GEM
     ffi (1.14.2)
     globalid (1.2.1)
       activesupport (>= 6.1)
-    google-protobuf (3.25.4)
+    google-protobuf (3.25.5)
     googleapis-common-protos-types (1.15.0)
       google-protobuf (>= 3.18, < 5.a)
     gyoku (1.4.0)
@@ -439,7 +439,7 @@ GEM
       byebug (~> 11.0)
       pry (~> 0.13.0)
     public_suffix (5.1.1)
-    puma (5.6.4)
+    puma (5.6.9)
       nio4r (~> 2.0)
     racc (1.8.0)
     rack (2.2.9)
@@ -707,7 +707,7 @@ DEPENDENCIES
   pg (~> 1.5.7)
   pry
   pry-byebug
-  puma (= 5.6.4)
+  puma (= 5.6.9)
   rack-cors (>= 1.0.4)
   rails (= 6.1.7.4)
   rails_stdout_logging
