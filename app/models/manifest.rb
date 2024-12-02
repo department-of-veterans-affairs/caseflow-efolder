@@ -19,8 +19,8 @@ class Manifest < ApplicationRecord
     failed: 3
   }
 
-  UI_HOURS_UNTIL_EXPIRY = 72
-  API_HOURS_UNTIL_EXPIRY = 3
+  UI_HOURS_UNTIL_EXPIRY = Rails.non_production_env? && Rails.non_test_env? ? 0.25 : 72
+  API_HOURS_UNTIL_EXPIRY = Rails.non_production_env? && Rails.non_test_env? ? 0.25 : 3
 
   SECONDS_TO_AUTO_UNLOCK = 5
 
@@ -28,11 +28,9 @@ class Manifest < ApplicationRecord
   attr_accessor :user
 
   def start!
-    # Reset stale manifests.
-    update!(fetched_files_status: :initialized) if ready_for_refresh?
-
-    vbms_source.start!
-    vva_source.start! unless FeatureToggle.enabled?(:skip_vva)
+    reset_stale_manifests if ready_for_refresh?
+    process_vbms_source
+    start_vva_source
   end
 
   def download_and_package_files!
@@ -41,6 +39,7 @@ class Manifest < ApplicationRecord
                              expiration: SECONDS_TO_AUTO_UNLOCK)
     s.lock(SECONDS_TO_AUTO_UNLOCK) do
       return if pending?
+
       update(fetched_files_status: :pending)
     end
 
@@ -167,5 +166,33 @@ class Manifest < ApplicationRecord
     update(veteran_first_name: veteran.first_name || "",
            veteran_last_name: veteran.last_name || "",
            veteran_last_four_ssn: veteran.last_four_ssn || "")
+  end
+
+  def sensitivity_checker
+    @sensitivity_checker ||= SensitivityChecker.new
+  end
+
+  def reset_stale_manifests
+    update!(fetched_files_status: :initialized)
+  end
+
+  def process_vbms_source
+    if FeatureToggle.enabled?(:use_ce_api, user: RequestStore[:current_user])
+      check_sensitivity_and_start_vbms
+    else
+      vbms_source.start!
+    end
+  end
+
+  def check_sensitivity_and_start_vbms
+    if sensitivity_checker.sensitivity_levels_compatible?(user: user, veteran_file_number: file_number)
+      vbms_source.start!
+    else
+      raise BGS::SensitivityLevelCheckFailure.new, "You are not authorized to access this manifest"
+    end
+  end
+
+  def start_vva_source
+    vva_source.start! unless FeatureToggle.enabled?(:skip_vva)
   end
 end

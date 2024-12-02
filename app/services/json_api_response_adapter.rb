@@ -3,12 +3,16 @@
 # Translates JSON API responses into a format that's compatible with the legacy SOAP responses expected
 # by most of caseflow-efolder
 class JsonApiResponseAdapter
+  include Caseflow::DocumentTypes
+
   def adapt_v2_fetch_documents_for(json_response)
+    json_response = normalize_json_response(json_response)
+
+    return [] if check_empty_result?(json_response)
+    return nil unless valid_file_response?(json_response)
+
     documents = []
-
-    return documents unless valid_json_response?(json_response)
-
-    json_response.body["files"].each do |file_resp|
+    json_response["files"].each do |file_resp|
       documents.push(v2_fetch_documents_file_response(file_resp))
     end
 
@@ -17,10 +21,22 @@ class JsonApiResponseAdapter
 
   private
 
-  def valid_json_response?(json_response)
-    return false if json_response&.body.blank?
+  def normalize_json_response(json_response)
+    if json_response.blank?
+      {}
+    elsif json_response.instance_of?(Hash)
+      json_response.with_indifferent_access
+    elsif json_response.instance_of?(String)
+      JSON.parse(json_response)
+    end
+  end
 
-    json_response.body.key?("files")
+  def valid_file_response?(json_response)
+    json_response.key?("files")
+  end
+
+  def check_empty_result?(json_response)
+    json_response.key?("page") && json_response["page"]["totalResults"].to_i == 0
   end
 
   def v2_fetch_documents_file_response(file_json)
@@ -31,7 +47,9 @@ class JsonApiResponseAdapter
       document_id: "{#{file_json['currentVersionUuid'].upcase}}",
       series_id: "{#{file_json['uuid'].upcase}}",
       version: "1",
-      type_description: provider_data["subject"],
+      # CE Api doesn't provide document category type desciption.
+      # Use Caseflow document type mapping instead, and if not found then "Unknown"
+      type_description: TYPES[provider_data["documentTypeId"]] || TYPES[10],
       type_id: provider_data["documentTypeId"],
       doc_type: provider_data["documentTypeId"],
       subject: provider_data["subject"],
