@@ -39,47 +39,19 @@ class ExternalApi::BGSService
   end
 
   def sensitivity_level_for_user(user)
-    fail "Invalid user" if !user.instance_of?(User)
+    validate_user(user)
 
-    participant_id = user.participant_id
-
-    Rails.cache.fetch("sensitivity_level_for_user_id_#{user.id}", expires_in: 1.hour) do
-      MetricsService.record(
-        "Efolder BGS: sensitivity level for user #{user.id}",
-        service: :bgs,
-        name: "security.find_person_scrty_log_by_ptcpnt_id"
-      ) do
-        response = client.security.find_person_scrty_log_by_ptcpnt_id(participant_id)
-
-        response.key?(:scrty_level_type_cd) ? Integer(response[:scrty_level_type_cd]) : 0
-      rescue BGS::ShareError
-        0
-      end
+    Rails.cache.fetch(cache_key_for_user(user), expires_in: 1.hour) do
+      fetch_sensitivity_level(user)
     end
   end
 
   def sensitivity_level_for_veteran(veteran_file_number)
-    vet_info = fetch_veteran_info(veteran_file_number)
+    participant_id = fetch_participant_id(veteran_file_number)
+    validate_participant_id(participant_id)
 
-    participant_id = vet_info.present? ? vet_info[:participant_id] : nil
-
-    fail "Invalid veteran" if participant_id.blank?
-
-    Rails.cache.fetch("sensitivity_level_for_veteran_participant_id_#{participant_id}", expires_in: 1.hour) do
-      MetricsService.record(
-        "Efolder BGS: sensitivity level for veteran participant ID #{participant_id}",
-        service: :bgs,
-        name: "security.find_sensitivity_level_by_participant_id"
-      ) do
-        response = client.security.find_sensitivity_level_by_participant_id(participant_id)
-
-        # guard clause for no response
-        return 0 if response.blank?
-
-        response&.key?(:scrty_level_type_cd) ? Integer(response[:scrty_level_type_cd]) : 0
-      rescue BGS::ShareError
-        0
-      end
+    Rails.cache.fetch(cache_key_for_veteran(participant_id), expires_in: 1.hour) do
+      record_sensitivity_level_metric(participant_id)
     end
   end
 
@@ -303,5 +275,66 @@ class ExternalApi::BGSService
   # See: https://github.com/department-of-veterans-affairs/caseflow/issues/15829
   def fetch_veteran_info_cache_key(file_number)
     "bgs_veteran_info_#{client.client_username}_#{client.client_station_id}_#{file_number}"
+  end
+
+  def validate_user(user)
+    raise "Invalid user" unless user.instance_of?(User)
+  end
+
+  def cache_key_for_user(user)
+    "sensitivity_level_for_user_id_#{user.id}"
+  end
+
+  def fetch_sensitivity_level(user)
+    participant_id = user.participant_id
+
+    MetricsService.record(
+      "Efolder BGS: sensitivity level for user #{user.id}",
+      service: :bgs,
+      name: "security.find_person_scrty_log_by_ptcpnt_id"
+    ) do
+      response = client.security.find_person_scrty_log_by_ptcpnt_id(participant_id)
+
+      parse_sensitivity_level(response)
+    rescue BGS::ShareError
+      0
+    end
+  end
+
+  def fetch_participant_id(veteran_file_number)
+    vet_info = fetch_veteran_info(veteran_file_number)
+    vet_info.present? ? vet_info[:participant_id] : nil
+  end
+
+  def validate_participant_id(participant_id)
+    raise "Invalid veteran" if participant_id.blank?
+  end
+
+  def cache_key_for_veteran(participant_id)
+    "sensitivity_level_for_veteran_participant_id_#{participant_id}"
+  end
+
+  def record_sensitivity_level_metric(participant_id)
+    MetricsService.record(
+      "Efolder BGS: sensitivity level for veteran participant ID #{participant_id}",
+      service: :bgs,
+      name: "security.find_sensitivity_level_by_participant_id"
+    ) do
+      fetch_sensitivity_level(participant_id)
+    end
+  end
+
+  def fetch_sensitivity_level(participant_id)
+    response = client.security.find_sensitivity_level_by_participant_id(participant_id)
+
+    return 0 if response.blank? # Guard clause for no response
+
+    parse_sensitivity_level(response)
+  rescue BGS::ShareError
+    0
+  end
+
+  def parse_sensitivity_level(response)
+    response.key?(:scrty_level_type_cd) ? Integer(response[:scrty_level_type_cd]) : 0
   end
 end

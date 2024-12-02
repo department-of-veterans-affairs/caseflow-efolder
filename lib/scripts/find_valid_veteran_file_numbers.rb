@@ -2,7 +2,7 @@
 
 class FindValidVeteranFileNumbers
   def initialize(user: nil)
-    fail "Non-prod only" unless Rails.non_production_env?
+    raise "Non-prod only" unless Rails.non_production_env?
 
     self.current_user = user || User.system_user
 
@@ -20,12 +20,10 @@ class FindValidVeteranFileNumbers
         level = bgs_service.sensitivity_level_for_veteran(file_number)
 
         key = "sensitivity_level_#{level}"
-        if !valid_file_numbers.key?(key)
-          valid_file_numbers[key] = []
-        end
+        valid_file_numbers[key] = [] if !valid_file_numbers.key?(key)
 
         valid_file_numbers[key].push(file_number)
-      rescue => e
+      rescue StandardError => e
         invalid_file_numbers.push("#{manifest.file_number} (#{e.message})")
         next
       end
@@ -43,11 +41,11 @@ class FindValidVeteranFileNumbers
     puts "================================================================================"
 
     puts "VALID FILE NUMBERS:"
-    valid_file_numbers.sort.to_h.each do |k, v|
+    valid_file_numbers.sort.to_h.each do |k, _v|
       puts "#{k.upcase} (#{valid_file_numbers[k].count} total numbers)"
 
       valid_file_numbers[k].each do |number|
-        puts "#{number}"
+        puts number.to_s
       end
 
       puts ""
@@ -57,7 +55,7 @@ class FindValidVeteranFileNumbers
 
     puts "\nINVALID FILE NUMBERS (#{invalid_file_numbers.count} total numbers):"
     invalid_file_numbers.each do |number|
-      puts "#{number}"
+      puts number.to_s
     end
 
     puts "================================================================================"

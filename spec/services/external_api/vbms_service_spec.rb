@@ -1,5 +1,5 @@
 # frozen_string_literal: true
- 
+
 describe ExternalApi::VBMSService do
   subject(:described) { described_class }
 
@@ -78,7 +78,6 @@ describe ExternalApi::VBMSService do
     end
 
     context "with no feature toggles enabled" do
-      
       let!(:user) do
         user = User.create(css_id: "VSO", station_id: "283", participant_id: "1234")
         RequestStore.store[:current_user] = user

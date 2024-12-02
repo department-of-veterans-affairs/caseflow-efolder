@@ -5,23 +5,16 @@ class Api::V2::ManifestsController < Api::V2::ApplicationController
   before_action :veteran_file_number, only: [:start, :refresh]
 
   def start
-    if use_ce_api?
-      return if performed?
-
-      manifest = Manifest.includes(:sources, :records).find_or_create_by_user(user: current_user, file_number: veteran_file_number)
-    else
-      file_number = verify_veteran_file_number
-      return if performed?
-
-      manifest = Manifest.includes(:sources, :records).find_or_create_by_user(user: current_user, file_number: file_number)
-    end
+    return if performed?
+    file_number = use_ce_api? ? veteran_file_number : verify_veteran_file_number
+    manifest = Manifest.includes(:sources, :records).find_or_create_by_user(user: current_user, file_number: file_number)
 
     manifest.start!
     render json: json_manifests(manifest)
   end
 
   def refresh
-    manifest = if use_ce_api? 
+    manifest = if use_ce_api?
                  Manifest.includes(:sources, :records).find_or_create_by_user(user: current_user, file_number: veteran_file_number)
                else
                  Manifest.find(params[:id])
