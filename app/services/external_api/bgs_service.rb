@@ -42,7 +42,7 @@ class ExternalApi::BGSService
     validate_user(user)
 
     Rails.cache.fetch(cache_key_for_user(user), expires_in: 1.hour) do
-      fetch_sensitivity_level(user)
+      fetch_sensitivity_level_for_user(user)
     end
   end
 
@@ -285,7 +285,7 @@ class ExternalApi::BGSService
     "sensitivity_level_for_user_id_#{user.id}"
   end
 
-  def fetch_sensitivity_level(user)
+  def fetch_sensitivity_level_for_user(user)
     participant_id = user.participant_id
 
     MetricsService.record(
