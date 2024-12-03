@@ -10,7 +10,7 @@ gem "aws-sdk-s3"
 gem "aws-sdk-sqs"
 gem "bgs", git: "https://github.com/department-of-veterans-affairs/ruby-bgs-internal.git", ref: "a2e055b5a52bd1e2bb8c2b3b8d5820b1a404cd3d"
 gem "bootsnap", require: false
-gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons-internal.git", ref: "9bd3635fbd8094d25160669f38d8699e2f1d7a98"
+gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons-internal.git", ref: "f85d4ce99c371359b18699310ef66a2f9ca35121"
 gem "coffee-rails", "> 4.1.0"
 gem "connect_vbms", git: "https://github.com/department-of-veterans-affairs/connect_vbms-internal.git", ref: "1834cf61310001c82e2e96d665518407c3bce947"
 gem "connect_vva", git: "https://github.com/department-of-veterans-affairs/connect_vva-internal.git", ref: "f7913cd30ab5a75fb8bbc55dfc76743f362dba58"
