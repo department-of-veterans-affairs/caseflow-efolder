@@ -8,12 +8,12 @@ gem "aws-sdk-core", "3.131.0"
 gem "aws-sdk-ec2"
 gem "aws-sdk-s3"
 gem "aws-sdk-sqs"
-gem "bgs", git: "https://github.com/department-of-veterans-affairs/ruby-bgs.git", ref: "a2e055b5a52bd1e2bb8c2b3b8d5820b1a404cd3d"
+gem "bgs", git: "https://github.com/department-of-veterans-affairs/ruby-bgs-internal.git", ref: "a2e055b5a52bd1e2bb8c2b3b8d5820b1a404cd3d"
 gem "bootsnap", require: false
-gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons", ref: "dbd86859856d161d84b0bba4d67a8b62e4684996"
+gem "caseflow", git: "https://github.com/department-of-veterans-affairs/caseflow-commons-internal.git", ref: "f85d4ce99c371359b18699310ef66a2f9ca35121"
 gem "coffee-rails", "> 4.1.0"
-gem "connect_vbms", git: "https://github.com/department-of-veterans-affairs/connect_vbms.git", branch: "master"
-gem "connect_vva", git: "https://github.com/department-of-veterans-affairs/connect_vva.git", ref: "dfd1aeb2605c1f237f520bcdc41b059202e8944d"
+gem "connect_vbms", git: "https://github.com/department-of-veterans-affairs/connect_vbms-internal.git", ref: "1834cf61310001c82e2e96d665518407c3bce947"
+gem "connect_vva", git: "https://github.com/department-of-veterans-affairs/connect_vva-internal.git", ref: "f7913cd30ab5a75fb8bbc55dfc76743f362dba58"
 gem "distribute_reads"
 gem "httpclient"
 gem "jbuilder", "~> 2.0"
@@ -47,17 +47,17 @@ gem "opentelemetry-instrumentation-rails", require: false
 gem "opentelemetry-instrumentation-rake", require: false
 gem "opentelemetry-instrumentation-redis", require: false
 
-gem "omniauth-saml-va", git: "https://github.com/department-of-veterans-affairs/omniauth-saml-va", branch: "pek-iam-ssoi"
-#gem "omniauth-saml-va", git: "https://github.com/department-of-veterans-affairs/omniauth-saml-va", ref: "fbe2b878c250b14ee996ef6699c42df2c42e41a1"
+# gem "omniauth-saml-va", git: "https://github.com/department-of-veterans-affairs/omniauth-saml-va", branch: "pek-iam-ssoi"
+gem "omniauth-saml-va", git: "https://github.com/department-of-veterans-affairs/omniauth-saml-va-internal", ref: "7409f77b9ec5348a27a059e48b7df93471f0acdd"
 gem "pg", "~> 1.5.7", platforms: :ruby
-gem "puma", "5.6.4"
+gem "puma", "5.6.9"
 gem "rack-cors", ">= 1.0.4"
 gem "rails", "6.1.7.4"
 gem "redis-namespace"
 gem "redis-rails", "~> 5.0.2"
 gem "redis-semaphore"
 gem "request_store"
-gem "ruby_claim_evidence_api", git: "https://github.com/department-of-veterans-affairs/ruby_claim_evidence_api.git", ref: "095798918338650383b06ff535bc63fc5fbfc8dc"
+gem "ruby_claim_evidence_api", git: "https://github.com/department-of-veterans-affairs/clone_ruby_claim_evidence_api.git", ref: "c56381d2bea2ffabe79bebbac6598f00450691ff"
 gem "rubyzip", ">= 1.3.0"
 gem "sass-rails", "~> 5.0"
 gem "sentry-raven"
@@ -95,7 +95,7 @@ group :test do
   gem "simplecov", require: false
   gem "sinatra", "2.2.0"
   gem "single_cov", require: false
-  gem "sniffybara", git: "https://github.com/department-of-veterans-affairs/sniffybara.git"
+  gem "sniffybara", git: "https://github.com/department-of-veterans-affairs/sniffybara-internal.git"
   gem "timecop"
   gem "webdrivers"
   gem "webmock"
