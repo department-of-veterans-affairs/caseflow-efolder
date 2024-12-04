@@ -13,6 +13,29 @@ class Api::V1::ApplicationController < BaseController
     }, status: 500
   end
 
+  rescue_from BGS::SensitivityLevelCheckFailure do |e|
+    current_user = RequestStore[:current_user]
+    user_sensitivity_level = if current_user.present?
+                               SensitivityChecker.new.sensitivity_level_for_user(current_user)
+                             else
+                               "User is not set in the RequestStore"
+                             end
+
+    error_details = {
+      user_css_id: current_user&.css_id || "User is not set in the RequestStore",
+      user_sensitivity_level: user_sensitivity_level,
+      error_uuid: SecureRandom.uuid
+    }
+    ErrorHandlers::ClaimEvidenceApiErrorHandler.new.handle_error(error: e, error_details: error_details)
+
+    render json: {
+      status: e.message,
+      featureToggles: {
+        use_ce_api: FeatureToggle.enabled?(:use_ce_api, user: RequestStore[:current_user])
+      }
+    }, status: :forbidden
+  end
+
   rescue_from BGS::PublicError do |error|
     forbidden(error.public_message)
   end
@@ -28,7 +51,7 @@ class Api::V1::ApplicationController < BaseController
   end
 
   def forbidden(reason = "Forbidden: unspecified")
-    render json: { status: reason }, status: 403
+    render json: { status: reason }, status: :forbidden
   end
 
   def missing_header(header)

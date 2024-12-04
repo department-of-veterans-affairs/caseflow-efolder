@@ -18,12 +18,37 @@ class Api::V2::ApplicationController < Api::V1::ApplicationController
   end
 
   def verify_veteran_file_number
-    file_number = request.headers["HTTP_FILE_NUMBER"]
-    return missing_header("File Number") unless file_number
+    file_number = fetch_file_number_from_headers
+    validate_file_number(file_number)
 
-    return invalid_file_number unless bgs_service.valid_file_number?(file_number)
+    return file_number if use_ce_api? && sensitivity_check_passed?(file_number)
 
     fetch_veteran_by_file_number(file_number)
+  end
+
+  def fetch_file_number_from_headers
+    file_number = request.headers["HTTP_FILE_NUMBER"]
+    missing_header("File Number") unless file_number
+    file_number
+  end
+
+  def validate_file_number(file_number)
+    invalid_file_number unless bgs_service.valid_file_number?(file_number)
+  end
+
+  def use_ce_api?
+    FeatureToggle.enabled?(:use_ce_api, user: RequestStore[:current_user])
+  end
+
+  def sensitivity_check_passed?(file_number)
+    if sensitivity_checker.sensitivity_levels_compatible?(
+      user: current_user,
+      veteran_file_number: file_number
+    )
+      true
+    else
+      raise BGS::SensitivityLevelCheckFailure.new, "You are not authorized to access this file number"
+    end
   end
 
   def fetch_veteran_by_file_number(file_number)
@@ -40,5 +65,9 @@ class Api::V2::ApplicationController < Api::V1::ApplicationController
     else
       raise BGS::ShareError, "Cannot access Veteran record"
     end
+  end
+
+  def sensitivity_checker
+    @sensitivity_checker ||= SensitivityChecker.new
   end
 end
