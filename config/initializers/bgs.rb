@@ -8,7 +8,6 @@ Rails.application.config.to_prepare do
     class NoActiveStations < StandardError; end
     class NoCaseflowAccess < StandardError; end
     class StationAssertionRequired < StandardError; end
-    class SensitivityLevelCheckFailure < StandardError; end
   end
 end
 

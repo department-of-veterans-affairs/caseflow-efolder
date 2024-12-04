@@ -16,7 +16,6 @@ export const initState = {
   errorMessage: { title: '', message: '' },
   recentDownloads: [],
   searchInputText: '',
-  showUnauthorizedVeteranMessage: false,
   ...defaultManifestState
 };
 
@@ -58,12 +57,6 @@ export default function reducer(state = {}, action = {}) {
   case Actions.SET_DOCUMENTS_FETCH_STATUS:
     return { ...state,
       documentsFetchStatus: action.payload };
-
-  case Actions.SET_SHOW_UNAUTHORIZED_VETERAN_MESSAGE:
-    return {
-      ...state,
-      showUnauthorizedVeteranMessage: action.payload
-    };
 
   case Actions.SET_ERROR_MESSAGE:
     return {
